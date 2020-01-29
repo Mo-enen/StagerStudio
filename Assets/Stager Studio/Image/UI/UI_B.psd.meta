@@ -1,0 +1,406 @@
+fileFormatVersion: 2
+guid: da7f946bf2fc8f84f95134f233c99156
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 21300000
+    second: Play
+  - first:
+      213: 21300002
+    second: Pause
+  - first:
+      213: 21300004
+    second: Stop
+  - first:
+      213: 21300006
+    second: Replay
+  - first:
+      213: 21300008
+    second: Repause
+  - first:
+      213: 21300010
+    second: Arrow Right
+  - first:
+      213: 21300012
+    second: Edit
+  - first:
+      213: 21300014
+    second: Warning
+  - first:
+      213: 21300016
+    second: Message
+  - first:
+      213: 21300018
+    second: Error
+  - first:
+      213: 21300020
+    second: Project
+  - first:
+      213: 21300022
+    second: Info
+  - first:
+      213: 21300024
+    second: Dot
+  - first:
+      213: 21300026
+    second: Close
+  - first:
+      213: 21300028
+    second: Arrow Left
+  - first:
+      213: 6541475979423252992
+    second: Setting
+  - first:
+      213: -4520631482261092190
+    second: Ring
+  - first:
+      213: 2264349294543915619
+    second: Project
+  - first:
+      213: 414770563722757972
+    second: Console
+  - first:
+      213: 8697557011540468700
+    second: Dynamic Speed
+  - first:
+      213: 8896953037892082663
+    second: AerialView
+  - first:
+      213: -7972535905839432385
+    second: Rotate
+  - first:
+      213: 3263697379622129078
+    second: Metronome
+  - first:
+      213: 663955190392991694
+    second: More
+  - first:
+      213: -6859355428130991797
+    second: Sort
+  - first:
+      213: 1932321895275581534
+    second: Cloud
+  - first:
+      213: -4815342487140824337
+    second: Beatmap Mode
+  - first:
+      213: 5252402927627276672
+    second: Motion Mode
+  - first:
+      213: -946234913714167455
+    second: Eye
+  - first:
+      213: -7973028010931935428
+    second: Color H
+  - first:
+      213: -1557013538026691241
+    second: UI_0
+  - first:
+      213: -7349788329817454285
+    second: Color S
+  - first:
+      213: -5273167329586013210
+    second: Color V
+  - first:
+      213: 7374924322283256546
+    second: Color A
+  - first:
+      213: -7468486775484434114
+    second: Plus
+  - first:
+      213: -3702468253195637288
+    second: Upload
+  - first:
+      213: -912884401400416056
+    second: Abreast
+  - first:
+      213: 8951295358188798367
+    second: Color Basic
+  - first:
+      213: 37698321110086636
+    second: Color Alpha
+  - first:
+      213: 8829402245534914706
+    second: Lib Track
+  - first:
+      213: 6200277251137027947
+    second: Lib Stage
+  - first:
+      213: 5394303537026088386
+    second: Lib Note
+  - first:
+      213: -4833928457064920326
+    second: Lib SpeedNote
+  - first:
+      213: 408736907599971988
+    second: Lib Motion Note
+  - first:
+      213: -7832121457899943644
+    second: Delete
+  - first:
+      213: -6739684860053582615
+    second: Rect Rounded
+  - first:
+      213: -483189101119487717
+    second: Rect Rounded U
+  - first:
+      213: 9170760582489488219
+    second: Rect Rounded D
+  - first:
+      213: 2350502419336937207
+    second: Rect Rounded L
+  - first:
+      213: 1331681004370010256
+    second: Rect Rounded R
+  - first:
+      213: -469349188787951888
+    second: Rect Round
+  - first:
+      213: 4057536364796946410
+    second: Bell
+  - first:
+      213: 7486252801092566059
+    second: Default Avatar
+  - first:
+      213: -6557140696080033423
+    second: Trushbin
+  - first:
+      213: 7491557216104332933
+    second: Fullscreen
+  - first:
+      213: 4484011451496232589
+    second: Normal Screen
+  - first:
+      213: 82707731993968007
+    second: Lib Luminous
+  - first:
+      213: -5963601107532862375
+    second: Tag H
+  - first:
+      213: 8121389761955471328
+    second: Tag V
+  - first:
+      213: 3838318795275561306
+    second: Menu
+  - first:
+      213: 4433516547596728504
+    second: Grid
+  - first:
+      213: 9024382940211215174
+    second: Voez Icon
+  - first:
+      213: 3612251082087587809
+    second: Dynamix Icon
+  - first:
+      213: -1067799446711890061
+    second: Deemo Icon
+  - first:
+      213: -8057899562297894655
+    second: Lanota Icon
+  externalObjects: {}
+  serializedVersion: 10
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 1
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 0
+  spriteMeshType: 0
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 0
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Voez Icon
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 118
+        height: 118
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a3646cfcfd45fb40b5e1560b7312489
+      internalID: 9024382940211215174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dynamix Icon
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 1
+        width: 113
+        height: 120
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3ef43909f5358d84f9490be4a97e6258
+      internalID: 3612251082087587809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Deemo Icon
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 124
+        width: 88
+        height: 107
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0ed7e169fddc257498776d2497705d39
+      internalID: -1067799446711890061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Lanota Icon
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 126
+        width: 121
+        height: 116
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dbfed2f6e509791449f0a553f3dc867f
+      internalID: -8057899562297894655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 464f883313c07cc44a49be06d1ea32b2
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

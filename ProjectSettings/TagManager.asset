@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: BG
+    uniqueID: 416702689
+    locked: 0
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Stage
+    uniqueID: 778191249
+    locked: 0
+  - name: Track
+    uniqueID: 1207560611
+    locked: 0
+  - name: Note
+    uniqueID: 1274917977
+    locked: 0
+  - name: SpeedNote
+    uniqueID: 3738023523
+    locked: 0
+  - name: MotionNote
+    uniqueID: 1991258759
+    locked: 0
+  - name: Luminous
+    uniqueID: 2613986007
+    locked: 0
+  - name: UI
+    uniqueID: 3121411473
+    locked: 0

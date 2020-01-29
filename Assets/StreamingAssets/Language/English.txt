@@ -1,0 +1,900 @@
+﻿Author
+Stager Official
+
+Dialog.Error.FailCreateProject
+Error on creating project
+
+Dialog.Library.DeletePrefabConfirm
+Delete prefab? This will not be undo
+
+Dialog.Library.ExportPrefabTitle
+Export Prefabs
+
+Dialog.Library.ImportPrefabConfirm
+Import prefabs? This will overlap current prefabs.
+
+Dialog.Library.ImportPrefabTitle
+Import Prefabs
+
+Dialog.Library.PrefabExported
+Prefabs exported
+
+Dialog.TweenEditor.CancelConfirm
+Close tween editor? Changes will not be save.
+
+Menu.BeatmapItem.DeleteBeatmap
+Delete Beatmap
+
+Menu.BeatmapItem.ExportBeatmap
+Export Beatmap
+
+Menu.BeatmapItem.OpenBeatmap
+Open Beatmap
+
+Menu.ChapterItem.Rename
+Rename
+
+Menu.ChapterItem.ShowInExplorer
+Show in Explorer
+
+Menu.Home.ImportProject
+Import Project
+
+Menu.Home.NewChapter
+New Chapter
+
+Menu.Home.NewProject
+New Project
+
+Menu.Home.PickWorkspace
+Change Workspace
+
+Menu.Home.ShowWorkspace
+Show Workspace
+
+Menu.Home.SortByName
+Sort by Name
+
+Menu.Home.SortByTime
+Sort by Time
+
+Menu.Library.DeletePrefabItem
+Delete
+
+Menu.Library.ExportPrefabs
+Export Prefabs
+
+Menu.Library.ImportPrefabs
+Import Prefabs
+
+Menu.Library.MovePrefabLeft
+Move Left
+
+Menu.Library.MovePrefabRight
+Move Right
+
+Menu.OpenProjectInfo
+Project Info
+
+Menu.OpenSetting
+Setting
+
+Menu.Project.Save
+Save
+
+Menu.ProjectInfo.DeleteClickSound
+Delete
+
+Menu.ProjectInfo.DeletePalette
+Delete
+
+Menu.ProjectInfo.DeleteTween
+Delete
+
+Menu.ProjectItem.Delete
+Delete
+
+Menu.ProjectItem.Move
+Move
+
+Menu.ProjectItem.Open
+Open
+
+Menu.ProjectItem.ShowInExplorer
+Show in Explorer
+
+Menu.UI.QuitConfirm
+Are you sure to quit now?
+
+P-Manager.Error.ChapterAlreadyExists
+Chapter already exists
+
+P-Manager.Error.NewProjectSourceNotExists
+Can not find template for create new project
+
+P-Manager.Error.ProjectAlreadyExists
+Project already exists
+
+P-Manager.Hint.NeedDoubleClick
+Double click to open the project
+
+P-Manager.NewChapterName
+New Chapter
+
+P-Manager.UI.CopyWorkspaceConfirm
+Copy all original projects to the new workspace?
+
+P-Manager.UI.DeleteProjectItemConfirm
+Delete project {0}? This will delete the file in disk.
+
+P-Manager.UI.FolderAlreadyExists
+Some folder didn't move because there already exists a folder with same name
+
+P-Manager.UI.NewProjectConfirm
+Create a new project?
+
+P-Manager.UI.OverlapProjectConfirm
+Already has a file named {0}, overwrite or not?
+
+P-Manager.UI.PickWrokspaceTitle
+Choose Workspace
+
+P-Manager.UI.TrashbinEmpty
+Trashbin is empty
+
+P-Manager.UI.TrashProjectItemConfirm
+Move project {0} into the trashbin?
+
+Project.Error.AudioFormatNotSupport
+Audio format not support
+
+Project.Error.CantDeleteLastBeatmap
+Can not delete last beatmap
+
+Project.Error.CantPickOnLoadingProject
+loading conflict
+
+Project.Error.ErrorOnSavingProject
+Error on saving project
+
+Project.Error.FailGetProjectDataForWrite
+Error on reading project data
+
+Project.Error.FailLoadAudio
+Failed to load audio
+
+Project.Error.FailLoadBeatmap
+Failed to load beatmap
+
+Project.Error.FailLoadImage
+Failed to load image
+
+Project.Error.FailLoadProjectFile
+Failed to load project file
+
+Project.Error.FailLoadProjectInfo
+Failed to load project info
+
+Project.Error.FailLoadProjectPreview
+Failed to load preview
+
+Project.Error.FileNotExist
+File is not exists
+
+Project.Loading.Audio
+Loading Audio
+
+Project.Loading.Beatmap
+Loading Beatmap
+
+Project.Loading.File
+Loading Project File
+
+Project.Loading.Image
+Loading Image
+
+Project.UI.BeatmapLoadedMSG
+Beatmap {0} Loaded
+
+Project.UI.ExportBeatmapDone
+Beatmap exported.
+
+Project.UI.ExportBeatmapTitle
+Export Beatmap
+
+Project.UI.ImportBeatmapTitle
+Import Beatmap
+
+Project.UI.ImportBGTitle
+Import Background
+
+Project.UI.ImportClickSoundTitle
+Import Clicksound
+
+Project.UI.ImportCoverTitle
+Import Cover
+
+Project.UI.ImportMusicTitle
+Import Music
+
+Project.UI.RemoveBackgroundMSG
+Clear the background?
+
+Project.UI.RemoveBeatmapMSG
+Delete beatmap {0}?
+
+Project.UI.RemoveCoverMSG
+Clear the cover?
+
+Project.UI.RemoveMusicMSG
+Clear the music?
+
+Project.UI.SaveProjectConfirmMSG
+Do you want to save the changes?
+
+ProjectCreator.Error.NoMusic
+Music can not be empty
+
+ProjectCreator.Error.NoTitle
+Project name can not be empty
+
+ProjectCreator.Hint.Deemo
+Created as invisible stage / track project, unlimited position and width for notes, no holding notes.
+
+ProjectCreator.Hint.Dynamix
+Create as traditional triple-line project, stages and tracks will be create automatically, you only need to edit the notes.
+
+ProjectCreator.Hint.Lanota
+Create as circle stage, trackless project. Unlimited note x position, allow to use vertical swipe note.
+
+ProjectCreator.Hint.StagerStudio
+Create as standard StageStudio project, all features will be allowed to use.
+
+ProjectCreator.Hint.Voez
+Create as traditional track-movable project, the position, color, and rotation of the tracks will be editable. The x position of the note is locked in the middle of the track.
+
+ProjectInfo.AddTween
++ Tween
+
+ProjectInfo.Dialog.DeletePal
+Delete color {0}? This can not be undo.
+
+ProjectInfo.Dialog.DeleteSound
+Delete click sound {0}? This can not be undo.
+
+ProjectInfo.Dialog.DeleteTween
+Delete tween {0}? This will not be undo.
+
+ProjectInfo.Dialog.ExportGeneTitle
+Export Gene
+
+ProjectInfo.Dialog.ExportPaletteTitle
+Export Palette
+
+ProjectInfo.Dialog.ExportTweenTitle
+Export Tween
+
+ProjectInfo.Dialog.GeneExported
+Gene Exported
+
+ProjectInfo.Dialog.ImportGene
+Import gene now? This will overlap current data.
+
+ProjectInfo.Dialog.ImportGeneTitle
+Import Gene
+
+ProjectInfo.Dialog.ImportPalette
+Import a new palette? This will replace the current palette.
+
+ProjectInfo.Dialog.ImportPaletteTitle
+Import Palette
+
+ProjectInfo.Dialog.ImportTween
+Import tweens? This will overlap the current tweens.
+
+ProjectInfo.Dialog.ImportTweenTitle
+Import Tween
+
+ProjectInfo.Dialog.PaletteExported
+Palette exported.
+
+ProjectInfo.Dialog.PaletteFull
+Can not have more than 256 colors.
+
+ProjectInfo.Dialog.TweenExported
+Tweens exported
+
+ProjectInfo.Dialog.TweenFull
+Can not have more than 256 tweens.
+
+Setting.ResetConfirm
+Reset all settings back to default?
+
+Skin.Confirm.DeleteSkinConfirm
+Delete skin {0}?
+
+Skin.Confirm.NewSkinConfirm
+Create a new skin?
+
+Skin.Error.DeleteDefaultSkin
+Can not delete default skin
+
+Skin.Error.FailToSaveSkin
+Fail to save skin
+
+Skin.Error.SkinNotLoaded
+Fail to load skin
+
+SkinEditor.Dialog.CloseConfirm
+Save skin and close the editor?
+
+SkinEditor.Dialog.DeleteConfirm
+Delete selecting rect?
+
+SkinEditor.Dialog.ImportImageTitle
+Import Image
+
+SkinEditor.Item.ArrowLuminous
+Arrow Lum
+
+SkinEditor.Item.BlackLuminous
+Black Luminous
+
+SkinEditor.Item.Hold
+Hold
+
+SkinEditor.Item.HoldLuminous
+Hold Lum
+
+SkinEditor.Item.LinkPole
+Link Pole
+
+SkinEditor.Item.Luminous
+Luminous
+
+SkinEditor.Item.Slide
+Slide
+
+SkinEditor.Item.Stage
+Stage
+
+SkinEditor.Item.SwipeArrow
+Arrow
+
+SkinEditor.Item.Tap
+Tap
+
+SkinEditor.Item.Track
+Track
+
+SkinEditor.Item.Tray
+Tray
+
+SkinEditor.OpenSkinConfirm
+Editor skin {0}?
+
+SkinEditor.Saved
+Saved
+
+Stager.About
+About
+
+Stager.Quit
+Quit
+
+Tip.AbreastView
+Switch editing mode
+
+Tip.BeatmapSwiper
+Select beatmap and open
+
+Tip.DynamicDropSpeed
+Use dynamic drop speed
+
+Tip.Grid
+Show grid
+
+Tip.HomeMenu
+Menu
+
+Tip.Lib.Lum
+Luminous
+
+Tip.Lib.Motion
+Motion note brush
+
+Tip.Lib.Note
+Note brush
+
+Tip.Lib.Speed
+Speed note brush
+
+Tip.Lib.Stage
+Stage brush
+
+Tip.Lib.Track
+Track brush
+
+Tip.Music.Pause
+Pause music
+
+Tip.Music.Play
+Play music
+
+Tip.Music.Repause
+Pause music and return to the position before play
+
+Tip.Music.Replay
+Play music from the last played position
+
+Tip.PInfo.BrowseBG
+Select background from an image file
+
+Tip.PInfo.BrowseCover
+Select cover from an image file
+
+Tip.PInfo.BrowseMusic
+Select music from an audio file
+
+Tip.PInfo.ClearBG
+Remove background
+
+Tip.PInfo.ClearCover
+Remove cover
+
+Tip.PInfo.ClearMusic
+Remove music
+
+Tip.PInfo.Done
+Save and close the project info window
+
+Tip.ProjectInfo
+Project info: The title, description, music, background... of the project. The difficulty, bpm... of the beatmap.
+
+Tip.Setting
+Setting: Your own setting for this application.
+
+Tip.Setting.BgBright
+Brightness of the background
+
+Tip.Setting.Done
+Save and close the setting window
+
+Tip.Setting.Framerate
+Target framerate
+
+Tip.Setting.LargeUI
+Large UI, for small physical size display
+
+Tip.Setting.MusicVolume
+Music volume
+
+Tip.Setting.NormalUI
+Normal UI, for normal size display
+
+Tip.Setting.PositiveScroll
+Only for mouse scrolling inside editor, such as adjusting y-position of notes
+
+Tip.Setting.Preview
+Show preview of the beatmap on the progress bar or not
+
+Tip.Setting.Reset
+Reset all settings
+
+Tip.Setting.SmallUI
+Small UI, for larger physical size display
+
+Tip.Setting.SnapProgress
+Snap music time based on BPM
+
+Tip.Setting.SoundVolume
+Sound volume
+
+Tip.Setting.Tip
+Show tooltip or not
+
+Tip.Setting.Wave
+Show music wave or not
+
+Tip.Setting.Welcome
+Show a welcome panel on project open
+
+Tip.Setting.Zone
+Show scope of activities or not
+
+Tip.Toolbar.Focus
+Focus mode
+
+Tip.Toolbar.Home
+Back to home page
+
+Tip.ViewContainer.Luminous
+Show/Hide luminous
+
+Tip.ViewContainer.LuminousLock
+This is a useless button. I put it here because I have OCD.
+
+Tip.ViewContainer.Motion
+Show/Hide motion notes
+
+Tip.ViewContainer.MotionLock
+Lock motion note
+
+Tip.ViewContainer.Note
+Show/Hide notes
+
+Tip.ViewContainer.NoteLock
+Lock note
+
+Tip.ViewContainer.Speed
+Show/Hide speed notes
+
+Tip.ViewContainer.SpeedLock
+Lock speed note
+
+Tip.ViewContainer.Stage
+Show/Hide stages
+
+Tip.ViewContainer.StageLock
+Lock stage
+
+Tip.ViewContainer.Track
+Show/Hide tracks
+
+Tip.ViewContainer.TrackLock
+Lock track
+
+UI.BeatmapInfo.BPM
+BPM
+
+UI.BeatmapInfo.Level
+Level
+
+UI.BeatmapInfo.Ratio
+Ratio
+
+UI.BeatmapInfo.Shift
+Shift
+
+UI.BeatmapInfo.Speed
+Speed
+
+UI.BeatmapInfo.Tag
+Tag
+
+UI.Browse
+Browse
+
+UI.Clear
+Clear
+
+UI.ColorPicker.Title
+Color
+
+UI.Create
+Create
+
+UI.Dialog.Cancel
+Cancel
+
+UI.Dialog.Delete
+Delete
+
+UI.Dialog.No
+No
+
+UI.Dialog.OK
+OK
+
+UI.Dialog.Yes
+Yes
+
+UI.Done
+Done
+
+UI.Gene.AllowMotionNoteEdit
+Edit Motion
+
+UI.Gene.AllowNoteClickSound
+Multiple Click Sound
+
+UI.Gene.AllowNoteDuration
+Holding Note
+
+UI.Gene.AllowNoteEdit
+Edit Note
+
+UI.Gene.AllowNoteLink
+Link Note
+
+UI.Gene.AllowNoteSwipeX
+Swipe Note Horizontal
+
+UI.Gene.AllowNoteSwipeY
+Swipe Note Vertical
+
+UI.Gene.AllowNoteTapless
+Tapless Note
+
+UI.Gene.AllowNoteTrackless
+Trackless Note
+
+UI.Gene.AllowSpeedNoteEdit
+Edit Drop Speed
+
+UI.Gene.AllowStageColor
+Stage Color
+
+UI.Gene.AllowStageEdit
+Edit Stage
+
+UI.Gene.AllowTrackColor
+Track Color
+
+UI.Gene.AllowTrackEdit
+Edit Track
+
+UI.Gene.AllowTrackStageless
+Stageless Track
+
+UI.Gene.AllowTrackTray
+Track Tray
+
+UI.Gene.MapRatio
+Map Ratio
+
+UI.Gene.MapSpeed
+Map Speed
+
+UI.Gene.NoteLimit
+Max Note Count
+
+UI.Gene.NotePosition
+Note Position
+
+UI.Gene.NoteWidth
+Note Width
+
+UI.Gene.StageDisc
+Stage Disc
+
+UI.Gene.StageLimit
+Max Stage Count
+
+UI.Gene.StagePositionX
+Stage Position X
+
+UI.Gene.StagePositionY
+Stage Position Y
+
+UI.Gene.StageRotation
+Stage Rotation
+
+UI.Gene.StageSize
+Stage Size
+
+UI.Gene.StageSpeed
+Stage Drop Speed
+
+UI.Gene.TrackLimit
+Max Track Count
+
+UI.Gene.TrackPosition
+Track Position
+
+UI.Gene.TrackRotation
+Track Rotation
+
+UI.Gene.TrackWidth
+Track Width
+
+UI.Gene.TrayPosition
+Tray Position
+
+UI.GoHomeConfirmMsg
+Back to home page?
+
+UI.GoHomeDirtyConfirmMsg
+Save project and back to home page?
+
+UI.ImportBeatmap
+Import
+
+UI.NewBeatmap
+New
+
+UI.NewSkin
+New Skin
+
+UI.OpenLanguageFolder
+Open Language Folder
+
+UI.OpenSkinFolder
+Open Skin Folder
+
+UI.P-Manager.ImportProject
+Import Project
+
+UI.P-Manager.NewProject
+New Project
+
+UI.P-Manager.ProjectEmptyHint
+This chapter is empty, click the button below to create or import a project.
+
+UI.Progress.NoMusicHint
+No music in this project. Click here to import music (ogg, mp3, wav)
+
+UI.ProjectCreator.Back
+Back
+
+UI.ProjectCreator.Next
+Next
+
+UI.ProjectInfo.AddColor
++ Color
+
+UI.ProjectInfo.AddSound
++ Sound
+
+UI.ProjectInfo.AddTween
++ Tween
+
+UI.ProjectInfo.Background
+Background
+
+UI.ProjectInfo.BackgroundAuthor
+Background Author
+
+UI.ProjectInfo.BeatmapAuthor
+Beatmap Author
+
+UI.ProjectInfo.Cover
+Cover
+
+UI.ProjectInfo.Export
+Export
+
+UI.ProjectInfo.Import
+Import
+
+UI.ProjectInfo.Music
+Music
+
+UI.ProjectInfo.MusicAuthor
+Music Author
+
+UI.ProjectInfo.NoBackgroundHint
+No Background
+
+UI.ProjectInfo.NoCoverHint
+No Cover
+
+UI.ProjectInfo.NoMusicHint
+No Music
+
+UI.ProjectInfo.ProjectDescription
+Project Description
+
+UI.ProjectInfo.ProjectName
+Project Name
+
+UI.ResetSettings
+Reset All
+
+UI.Save
+Save
+
+UI.Setting.BGBright
+Background Brightness
+
+UI.Setting.Framerate
+Framerate
+
+UI.Setting.MusicVolume
+Music Volume
+
+UI.Setting.PositiveScroll
+Use Positive Mouse Scroll
+
+UI.Setting.Preview
+Show Beatmap Preview
+
+UI.Setting.SfxVolume
+Sound Volume
+
+UI.Setting.ShowTip
+Show Tooltip
+
+UI.Setting.ShowWelcome
+Show Welcome Panel
+
+UI.Setting.SnapProgress
+Snap When Setting Music Time with Progressbar
+
+UI.Setting.UIScale
+UI Scale
+
+UI.Setting.UIScale.0
+Small
+
+UI.Setting.UIScale.1
+Normal
+
+UI.Setting.UIScale.2
+Large
+
+UI.Setting.Wave
+Show Sound Wave
+
+UI.Setting.Zone
+Show Stage Range
+
+UI.SkinEditor.DarkBG
+Dark
+
+UI.SkinEditor.Duration
+Duration
+
+UI.SkinEditor.Forward
+Forward
+
+UI.SkinEditor.ImportImage
+Import Image
+
+UI.SkinEditor.Loop
+Loop
+
+UI.SkinEditor.NoteThickness
+Note Thick
+
+UI.SkinEditor.PingPong
+PingPong
+
+UI.SkinEditor.Scale
+Scale
+
+UI.SkinEditor.SkinAuthorLabel
+Author
+
+UI.SkinEditor.SkinNameLabel
+Name
+
+UI.Tab.BeatmapInfo
+Beatmap
+
+UI.Tab.ClickSound
+Sound
+
+UI.Tab.ColorEditor
+Color
+
+UI.Tab.Edit
+Edit
+
+UI.Tab.Editor
+Editor
+
+UI.Tab.Gene
+Gene
+
+UI.Tab.General
+General
+
+UI.Tab.Info
+Info
+
+UI.Tab.Language
+Language
+
+UI.Tab.Palette
+Palette
+
+UI.Tab.Skin
+Skin
+
+UI.Tab.Tween
+Tween
+
+UI.TweenEditor.Snap
+Snap
+
