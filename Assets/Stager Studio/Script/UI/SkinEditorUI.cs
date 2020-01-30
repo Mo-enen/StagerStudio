@@ -97,26 +97,24 @@
 
 			// Scale Muti
 			m_ScaleMutiIF.onEndEdit.AddListener((str) => {
-				var ani = GetEditingAniData();
-				if (ani is null) { return; }
 				if (float.TryParse(str, out float scaleMT)) {
-					ani.ScaleMuti_UI = scaleMT;
-					m_ScaleMutiIF.text = ani.ScaleMuti_UI.ToString();
+					Data.ScaleMuti_UI = scaleMT;
+					m_ScaleMutiIF.text = Data.ScaleMuti_UI.ToString();
 				}
 			});
 
 			// Note Thickness
 			m_NoteThicknessIF.onEndEdit.AddListener((str) => {
 				if (float.TryParse(str, out float thick)) {
-					skinData.NoteThickness_UI = thick;
-					m_NoteThicknessIF.text = skinData.NoteThickness_UI.ToString();
+					Data.NoteThickness_UI = thick;
+					m_NoteThicknessIF.text = Data.NoteThickness_UI.ToString();
 				}
 			});
 
 			// UI
 			RefreshInfoUI();
 			Painter.SetItemsDirty();
-			Painter.SetTexture(skinData.Texture);
+			Painter.SetTexture(Data.Texture);
 			TrimAllRects();
 			Painter.SetSelection(-1);
 
@@ -149,7 +147,7 @@
 				// Duration
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				// Scale Muti
-				m_ScaleMutiIF.text = ani.ScaleMuti_UI.ToString();
+				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				// Note Thickness
 				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
 				// Loop

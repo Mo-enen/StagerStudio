@@ -1,4 +1,4 @@
-﻿namespace StagerStudio.UGUIPlus {
+﻿namespace UGUIPlus {
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;

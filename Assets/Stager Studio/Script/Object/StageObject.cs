@@ -71,7 +71,7 @@
 						l.Value,
 						r.Value,
 						TweenEvaluate(
-							Util.Remap(l.Time, r.Time, 0f, 1f, lifeTime),
+							Util.RemapUnclamped(l.Time, r.Time, 0f, 1f, lifeTime),
 							l.Tween
 						)
 					);
@@ -97,7 +97,7 @@
 						new Vector2(l.A, l.B),
 						new Vector2(r.A, r.B),
 						TweenEvaluate(
-							Util.Remap(l.Time, r.Time, 0f, 1f, lifeTime),
+							Util.RemapUnclamped(l.Time, r.Time, 0f, 1f, lifeTime),
 							l.Tween
 						)
 					);
@@ -123,7 +123,7 @@
 						PaletteColor(l.Value),
 						PaletteColor(r.Value),
 						TweenEvaluate(
-							Util.Remap(l.Time, r.Time, 0f, 1f, lifeTime),
+							Util.RemapUnclamped(l.Time, r.Time, 0f, 1f, lifeTime),
 							l.Tween
 						)
 					);

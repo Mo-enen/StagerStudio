@@ -122,16 +122,16 @@
 							endTime = Mathf.Max(endTime, startTime + 0.001f);
 							foreach (var noteData in Notes) {
 								thumb.Add(Rect.MinMaxRect(
-									Util.Remap(startX, endX, 0f, 1f,
+									Util.RemapUnclamped(startX, endX, 0f, 1f,
 										noteData.X - noteData.Width / 2f
 									),
-									Util.Remap(startTime, endTime, 0f, 1f,
+									Util.RemapUnclamped(startTime, endTime, 0f, 1f,
 										noteData.Time
 									),
-									Util.Remap(startX, endX, 0f, 1f,
+									Util.RemapUnclamped(startX, endX, 0f, 1f,
 										noteData.X + noteData.Width / 2f
 									),
-									Util.Remap(startTime, endTime, 0f, 1f,
+									Util.RemapUnclamped(startTime, endTime, 0f, 1f,
 										noteData.Time + noteData.Duration
 									)
 								));

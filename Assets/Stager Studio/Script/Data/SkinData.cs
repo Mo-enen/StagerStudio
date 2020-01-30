@@ -47,12 +47,16 @@
 			get => NoteThickness * 100f;
 			set => NoteThickness = Mathf.Clamp01(value / 100f);
 		}
+		public float ScaleMuti_UI {
+			get => ScaleMuti;
+			set => ScaleMuti = Mathf.Max(value, 0f);
+		}
 
 		// Ser
 		public string Author = "";
+		public float ScaleMuti = 4f;
 		public float NoteThickness = 0.015f;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
-
 
 		// API
 		public static SkinData ByteToSkin (byte[] bytes) {
@@ -192,16 +196,13 @@
 
 		// API
 		public float TotalDuration => FrameDuration / 1000f * Rects.Count;
-		public float ScaleMuti_UI {
-			get => ScaleMuti;
-			set => ScaleMuti = Mathf.Max(value, 0f);
-		}
+
 
 		// Ser
 		public SkinLoopType Loop = SkinLoopType.Forward;
 		public List<RectData> Rects = new List<RectData>();
 		public int FrameDuration = 200;
-		public float ScaleMuti = 4f;
+
 
 
 		// API

@@ -180,6 +180,7 @@
 		#region --- MSG ---
 
 
+		public bool Test = false;
 		private void LateUpdate () {
 
 			// Dirty
@@ -196,7 +197,7 @@
 
 			// Calculate New
 			var rData = data.Rects[Frame];
-			var scale = Scale * Mathf.Max(data.ScaleMuti, 0f);
+			var scale = Scale * Mathf.Max(SkinData.ScaleMuti, 0f);
 			if (scale.x < SCALE_GAP || scale.y < SCALE_GAP || rData.Width <= 0 || rData.Height <= 0) { return; }
 			Color tint = Tint;
 			float pivotX = Pivot.x;
@@ -212,18 +213,27 @@
 				AddQuad01(0f, 1f, 0f, 1f, rData.L / tWidth, rData.R / tWidth, rData.D / tHeight, rData.U / tHeight);
 			} else {
 				// Nine-Slice
-				float _l = Mathf.Min((float)rData.BorderL / rData.Width / scale.x, 0.5f);
-				float _r = Mathf.Max(1f - ((float)rData.BorderR / rData.Width / scale.x), 0.5f);
-				float _d = Mathf.Min((float)rData.BorderD / rData.Height / scale.y, 0.5f);
-				float _u = Mathf.Max(1f - ((float)rData.BorderU / rData.Height / scale.y), 0.5f);
+				float _ornMinL = rData.BorderL > 0 ? (rData.BorderL / (float)(rData.BorderL + rData.BorderR)) : 0f;
+				float _ornMinD = rData.BorderD > 0 ? (rData.BorderD / (float)(rData.BorderD + rData.BorderU)) : 0f;
+				float _l = Mathf.Min((float)rData.BorderL / rData.Width / scale.x, _ornMinL);
+				float _r = Mathf.Max(
+					1f - ((float)rData.BorderR / rData.Width / scale.x),
+					1f - (rData.BorderR > 0 ? (rData.BorderR / (float)(rData.BorderL + rData.BorderR)) : 0f)
+				);
+				float _d = Mathf.Min((float)rData.BorderD / rData.Height / scale.y, _ornMinD);
+				float _u = Mathf.Max(
+					1f - ((float)rData.BorderU / rData.Height / scale.y),
+					1f - (rData.BorderU > 0 ? (rData.BorderU / (float)(rData.BorderD + rData.BorderU)) : 0f)
+				);
 				float _uvL0 = rData.L / tWidth;
-				float _uvL = (rData.L + rData.BorderL * Mathf.Clamp01(scale.x)) / tWidth;
-				float _uvR = (rData.R - rData.BorderR * Mathf.Clamp01(scale.x)) / tWidth;
+				float _uvL = Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.L, rData.L + rData.BorderL, scale.x) / tWidth;
+				float _uvR = Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.R, rData.R - rData.BorderR, scale.x) / tWidth;
 				float _uvR1 = rData.R / tWidth;
 				float _uvD0 = rData.D / tHeight;
-				float _uvD = (rData.D + rData.BorderD * Mathf.Clamp01(scale.y)) / tHeight;
-				float _uvU = (rData.U - rData.BorderU * Mathf.Clamp01(scale.y)) / tHeight;
+				float _uvD = Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.D, rData.D + rData.BorderD, scale.y) / tHeight;
+				float _uvU = Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.U, rData.U - rData.BorderU, scale.y) / tHeight;
 				float _uvU1 = rData.U / tHeight;
+
 				// Quad
 				if (rData.BorderL > 0) {
 					if (rData.BorderD > 0) {

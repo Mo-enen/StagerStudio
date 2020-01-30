@@ -12017,83 +12017,11 @@ MonoBehaviour:
     NoteThickness: 0.015
     Items:
     - Loop: 0
-      Rects:
-      - X: 0
-        Y: 0
-        Width: 4
-        Height: 4
-        BorderU: 1
-        BorderD: 1
-        BorderL: 2
-        BorderR: 2
-      - X: 4
-        Y: 4
-        Width: 1
-        Height: 2
-        BorderU: 1
-        BorderD: 1
-        BorderL: 2
-        BorderR: 2
-      - X: 15
-        Y: 15
-        Width: 1
-        Height: 1
-        BorderU: 1
-        BorderD: 1
-        BorderL: 2
-        BorderR: 2
-      - X: 1
-        Y: 1
-        Width: 128
-        Height: 64
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
-      - X: 1
-        Y: 1
-        Width: 128
-        Height: 64
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
-      - X: 128
-        Y: 64
-        Width: 512
-        Height: 256
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
+      Rects: []
       FrameDuration: 120
       ScaleMuti: 4
     - Loop: 0
-      Rects:
-      - X: 0
-        Y: 1
-        Width: 3
-        Height: 4
-        BorderU: 1
-        BorderD: 1
-        BorderL: 3
-        BorderR: 2
-      - X: 4
-        Y: 5
-        Width: 1
-        Height: 6
-        BorderU: 1
-        BorderD: 1
-        BorderL: 2
-        BorderR: 2
-      - X: 14
-        Y: 14
-        Width: 2
-        Height: 2
-        BorderU: 1
-        BorderD: 2
-        BorderL: 2
-        BorderR: 2
+      Rects: []
       FrameDuration: 121
       ScaleMuti: 4
     - Loop: 1
@@ -15740,12 +15668,8 @@ MonoBehaviour:
   - Link Pole
   - SkinEditor.Item.Luminous
   - Luminous
-  - 
-  - Motion
   - SkinEditor.Item.Slide
   - Slide
-  - 
-  - Speed
   - SkinEditor.Item.Stage
   - Stage
   - SkinEditor.Item.SwipeArrow

@@ -96,7 +96,7 @@
 
 
 		public static float GetTrackWidth (Beatmap.Track data, float musicTime) {
-			return Mathf.Max(data.Width + Evaluate(data.Widths, musicTime - data.Time), 0f);
+			return Mathf.Clamp(data.Width + Evaluate(data.Widths, musicTime - data.Time), 0f, 2f);
 		}
 
 
