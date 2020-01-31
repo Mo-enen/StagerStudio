@@ -65,7 +65,12 @@
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private StageObject[] m_Prefabs = null;
+		[SerializeField] private StageObject m_Prefab_Stage = null;
+		[SerializeField] private StageObject m_Prefab_Track = null;
+		[SerializeField] private StageObject m_Prefab_Note = null;
+		[SerializeField] private Transform m_Prefab_Speed = null;
+		[SerializeField] private Transform m_Prefab_Motion = null;
+		[SerializeField] private StageObject m_Prefab_Luminous = null;
 		[SerializeField] private Transform[] m_AntiMouseTF = null;
 		[SerializeField] private Transform m_Level = null;
 		[SerializeField] private RectTransform m_ZoneRT = null;
@@ -124,53 +129,62 @@
 			var map = Project.Beatmap;
 			if (!(map is null)) {
 				// Has Beatmap
-				FixObject(m_Prefabs[0], Containers[0], map.Stages.Count);
-				FixObject(m_Prefabs[1], Containers[1], map.Tracks.Count);
-				FixObject(m_Prefabs[2], Containers[2], map.Notes.Count);
-				FixObject(m_Prefabs[3], Containers[3], map.SpeedNotes.Count);
-				FixStageMotionObject(m_Prefabs[4], Containers[4].GetChild(0), map.Stages);
-				FixTrackMotionObject(m_Prefabs[4], Containers[4].GetChild(1), map.Tracks);
-				FixObject(m_Prefabs[5], Containers[5], map.Notes.Count);
+				FixObject(m_Prefab_Stage, null, Containers[0], map.Stages.Count);
+				FixObject(m_Prefab_Track, null, Containers[1], map.Tracks.Count);
+				FixObject(m_Prefab_Note, null, Containers[2], map.Notes.Count);
+				FixObject(null, m_Prefab_Speed, Containers[3], map.SpeedNotes.Count);
+				FixStageMotionObject(m_Prefab_Motion, Containers[4].GetChild(0), map.Stages);
+				FixTrackMotionObject(m_Prefab_Motion, Containers[4].GetChild(1), map.Tracks);
+				FixObject(m_Prefab_Luminous, null, Containers[5], map.Notes.Count);
 			} else {
 				// No Beatmap
 				ClearAllContainers();
 			}
 			// Func
-			void FixObject (StageObject prefab, Transform container, int count) {
+			void FixObject (StageObject prefab, Transform subPrefab, Transform container, int count) {
 				int conCount = container.childCount;
 				if (conCount > count) {
 					container.FixChildcountImmediately(count);
 					OnStageObjectChanged();
 				} else if (conCount < count) {
 					count -= conCount;
-					for (int i = 0; i < count; i++) {
-						if (prefab is null) {
+					if (prefab is null && subPrefab is null) {
+						// Spawn Container
+						for (int i = 0; i < count; i++) {
 							var tf = new GameObject("").transform;
 							tf.SetParent(container);
 							tf.localPosition = Vector3.zero;
-						} else {
+						}
+					} else if (!(prefab is null)) {
+						// Spawn Stage Object
+						for (int i = 0; i < count; i++) {
 							Instantiate(prefab, container).SetSkinData(
 								StageSkin.Data.Data,
 								StageObjectLayerID[container.GetSiblingIndex()],
 								0
 							);
 						}
+					} else {
+						// Spawn Transform Object
+						for (int i = 0; i < count; i++) {
+							Instantiate(subPrefab, container);
+						}
 					}
 					OnStageObjectChanged();
 				}
 			}
-			void FixStageMotionObject (StageObject prefab, Transform container, List<Beatmap.Stage> stages) {
+			void FixStageMotionObject (Transform prefab, Transform container, List<Beatmap.Stage> stages) {
 				int count = stages.Count;
-				FixObject(null, container, count);
+				FixObject(null, null, container, count);
 				for (int i = 0; i < count; i++) {
-					FixObject(prefab, container.GetChild(i), stages[i].GetMotionCount());
+					FixObject(null, prefab, container.GetChild(i), stages[i].GetMotionCount());
 				}
 			}
-			void FixTrackMotionObject (StageObject prefab, Transform container, List<Beatmap.Track> tracks) {
+			void FixTrackMotionObject (Transform prefab, Transform container, List<Beatmap.Track> tracks) {
 				int count = tracks.Count;
-				FixObject(null, container, count);
+				FixObject(null, null, container, count);
 				for (int i = 0; i < count; i++) {
-					FixObject(prefab, container.GetChild(i), tracks[i].GetMotionCount());
+					FixObject(null, prefab, container.GetChild(i), tracks[i].GetMotionCount());
 				}
 			}
 		}

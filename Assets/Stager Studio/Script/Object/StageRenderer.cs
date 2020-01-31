@@ -180,7 +180,6 @@
 		#region --- MSG ---
 
 
-		public bool Test = false;
 		private void LateUpdate () {
 
 			// Dirty

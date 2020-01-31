@@ -2,16 +2,10 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
-	
 
 
-	public class MotionNote : StageObject {
 
-
-		// MSG
-		private void Update () {
-			MainRenderer.RendererEnable = false;
-			//float musicTime = GetMusicTime();
+	public class MotionNote : MonoBehaviour {
 
 
 
@@ -19,15 +13,8 @@
 
 
 
-			//MainRenderer.RendererEnable = true;
 
 
-
-
-
-
-
-		}
 
 
 	}

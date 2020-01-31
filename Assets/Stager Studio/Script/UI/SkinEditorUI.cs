@@ -43,6 +43,7 @@
 		[SerializeField] private InputField m_NoteThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Image m_Background = null;
+		[SerializeField] private RectTransform m_TypeTgContainer = null;
 		[SerializeField] private Button[] m_LoopTypeBtns = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
@@ -111,13 +112,27 @@
 				}
 			});
 
+			// Type TGs
+			int len = m_TypeTgContainer.childCount;
+			for (int i = 0; i < len; i++) {
+				var tg = m_TypeTgContainer.GetChild(i).GetComponent<Toggle>();
+				int index = i;
+				tg.onValueChanged.AddListener((isOn) => {
+					EditingType = (SkinType)index;
+					Painter.SetItemsDirty();
+					Painter.ResetRootPositionSize();
+					Painter.SetSelection(-1);
+					RefreshInfoUI();
+					TrimAllRects();
+				});
+			}
+
 			// UI
 			RefreshInfoUI();
 			Painter.SetItemsDirty();
 			Painter.SetTexture(Data.Texture);
 			TrimAllRects();
 			Painter.SetSelection(-1);
-
 		}
 
 
@@ -171,7 +186,7 @@
 
 		// UI
 		public void UI_ImportImage () {
-			const int TEXTURE_MAX_SIZE = 1024;
+			const int TEXTURE_MAX_SIZE = 2048;
 			if (Data is null) { return; }
 			var path = DialogUtil.PickFileDialog(DIALOG_ImportImageTitle, "image", "png", "jpg");
 			if (string.IsNullOrEmpty(path)) { return; }
@@ -191,16 +206,6 @@
 			Data.Texture = texture;
 			Save();
 			Painter.SetTexture(Data.Texture);
-			TrimAllRects();
-		}
-
-
-		public void UI_SetEditingType (int typeIndex) {
-			EditingType = (SkinType)typeIndex;
-			Painter.SetItemsDirty();
-			Painter.ResetRootPositionSize();
-			Painter.SetSelection(-1);
-			RefreshInfoUI();
 			TrimAllRects();
 		}
 

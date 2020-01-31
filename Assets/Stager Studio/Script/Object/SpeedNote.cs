@@ -5,21 +5,12 @@
 	
 
 
-	public class SpeedNote : StageObject {
-
-
-		// MSG
-		private void Update () {
-			MainRenderer.RendererEnable = false;
-			
+	public class SpeedNote : MonoBehaviour {
 
 
 
 
 
-
-
-		}
 
 
 	}

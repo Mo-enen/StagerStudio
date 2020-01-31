@@ -10,20 +10,21 @@
 	public enum SkinType {
 
 		Stage = 0,
+		JudgeLine = 1,
 
-		Track = 1,
-		Tray = 2,
+		Track = 2,
+		Tray = 3,
 
-		TapNote = 3,
-		HoldNote = 4,
-		SwipeArrow = 5,
-		SlideNote = 6,
-		LinkPole = 7,
+		TapNote = 4,
+		HoldNote = 5,
+		SwipeArrow = 6,
+		SlideNote = 7,
+		LinkPole = 8,
 
-		NoteLuminous = 8,
-		HoldLuminous = 9,
-		ArrowLuminous = 10,
-		BlackLuminous = 11,
+		NoteLuminous = 9,
+		HoldLuminous = 10,
+		ArrowLuminous = 11,
+		BlackLuminous = 12,
 
 	}
 

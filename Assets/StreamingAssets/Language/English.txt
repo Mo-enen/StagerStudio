@@ -1,4 +1,7 @@
-﻿Author
+﻿SkinEditor.Item.Judgeline
+Judge Line
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

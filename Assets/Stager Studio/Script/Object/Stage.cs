@@ -11,13 +11,15 @@
 
 		// Var
 		private const float TRANSATION_DURATION = 0.22f;
-
+		private StageRenderer JudgelineRenderer => m_JudgelineRenderer;
+		[SerializeField] private StageRenderer m_JudgelineRenderer = null;
 
 
 		// MSG
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
+			m_JudgelineRenderer.RendererEnable = false;
 			float musicTime = GetMusicTime();
 
 			// Get StageData
@@ -45,33 +47,43 @@
 			float disc = GetStageDisc(stageData, musicTime);
 			float width = GetStageWidth(stageData, musicTime);
 			float height = GetStageHeight(stageData, musicTime);
-			bool normalDisc = disc < DISC_GAP;
+			bool noDisc = disc < DISC_GAP;
+			float stageScaleY = Mathf.Max(zoneSize * (noDisc ? height : width), 0.00001f);
 
 			// Movement
 			transform.position = GetStageWorldPosition(stageData, musicTime);
 			transform.localRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData, musicTime));
-			transform.localScale = new Vector3(
-				zoneSize * width,
-				zoneSize * (normalDisc ? height : width),
-				1f
-			);
+			transform.localScale = new Vector3(zoneSize * width, stageScaleY, 1f);
+			JudgelineRenderer.transform.localScale = new Vector3(1f, Note.NoteThickness / stageScaleY, 1f);
 
 			// Renderer
-			MainRenderer.RendererEnable = true;
+			MainRenderer.RendererEnable = JudgelineRenderer.RendererEnable = true;
 			MainRenderer.Type = SkinType.Stage;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.LifeTime = musicTime - Time + TRANSATION_DURATION;
-			MainRenderer.Alpha = GetStageAlpha(stageData, musicTime, TRANSATION_DURATION);
-			MainRenderer.Disc = disc;
-			MainRenderer.DiscWidth = 1f;
+			MainRenderer.LifeTime = JudgelineRenderer.LifeTime = musicTime - Time + TRANSATION_DURATION;
+			MainRenderer.Alpha = JudgelineRenderer.Alpha = GetStageAlpha(stageData, musicTime, TRANSATION_DURATION);
+			MainRenderer.Disc = JudgelineRenderer.Disc = disc;
+			MainRenderer.DiscWidth = JudgelineRenderer.DiscWidth = 1f;
 			MainRenderer.DiscHeight = height / Mathf.Max(width, 0.0000001f);
 			MainRenderer.Tint = GetStageColor(stageData, musicTime);
-			MainRenderer.Pivot = new Vector3(0.5f, normalDisc ? 0f : disc / 720f);
+			MainRenderer.Pivot = new Vector3(0.5f, noDisc ? 0f : disc / 720f);
+			JudgelineRenderer.Type = SkinType.JudgeLine;
+			JudgelineRenderer.Scale = new Vector2(width, Note.NoteThickness);
+			JudgelineRenderer.DiscHeight = 1f;
+			JudgelineRenderer.Tint = Color.white;
+			JudgelineRenderer.Pivot = new Vector2(0.5f, 0f);
 
 		}
 
 
 		// API
+		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
+			base.SetSkinData(skin, layerID, orderID);
+			JudgelineRenderer.SkinData = skin;
+			JudgelineRenderer.SetSortingLayer(layerID, orderID + 1);
+		}
+
+
 		public static Vector3 GetStageWorldPosition (Beatmap.Stage data, float musicTime) {
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			var stagePos = new Vector2(data.X, data.Y) + Evaluate(data.Positions, musicTime - data.Time);
