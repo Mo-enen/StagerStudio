@@ -197,7 +197,12 @@
 		}
 
 
-		public string Get (string key) => Map.ContainsKey(key) ? Map[key] : DefaultMap.ContainsKey(key) ? DefaultMap[key] : "";
+		public string Get (string key) {
+#if UNITY_EDITOR
+			Editor.StageLanguage_Inspector.Editor_LogUsage(key);
+#endif
+			return Map.ContainsKey(key) ? Map[key] : DefaultMap.ContainsKey(key) ? DefaultMap[key] : "";
+		}
 
 
 		public string GetDisplayName () => GetDisplayName((SystemLanguage)LanguageIndex.Value);
@@ -230,18 +235,20 @@ namespace StagerStudio.Editor {
 	public class StageLanguage_Inspector : Editor {
 
 
-
+		// SUB
 		private class StringStringComparer : IComparer<(string, string)> {
 			public int Compare ((string, string) x, (string, string) y) => x.Item1.CompareTo(y.Item1);
 		}
 
 
-
+		// VAR
 		private List<SystemLanguage> Languages { get; } = new List<SystemLanguage>();
 		private (string, string)[][] Datas { get; set; } = new (string, string)[0][];
+		private readonly static Dictionary<string, bool> UsageMap = new Dictionary<string, bool>();
 
 
 
+		// MSG
 		private void OnEnable () {
 			var targetLanguage = target as StageLanguage;
 			// Get Languages
@@ -337,8 +344,11 @@ namespace StagerStudio.Editor {
 				}
 				prevKey = key;
 				// Content
+				var oldC = GUI.color;
 				LayoutH(() => {
+					GUI.color = UsageMap.ContainsKey(Datas[0][i].Item1) ? Color.green : oldC;
 					var newKey = EditorGUI.DelayedTextField(GUIRect(0, 18), Datas[0][i].Item1);
+					GUI.color = oldC;
 					// Key
 					if (newKey != Datas[0][i].Item1) {
 						for (int j = 0; j < Datas.Length; j++) {
@@ -354,11 +364,28 @@ namespace StagerStudio.Editor {
 						}
 					}
 				});
+				GUI.color = oldC;
 			}
 			Space(4);
+			LayoutH(() => {
+				GUIRect(0, 18);
+				if (GUI.Button(GUIRect(102, 18), "Refresh Usage", EditorStyles.miniButton)) {
+					UsageMap.Clear();
+				}
+				GUIRect(0, 18);
+			});
 		}
 
 
+		// API
+		public static void Editor_LogUsage (string key) {
+			if (!UsageMap.ContainsKey(key)) {
+				UsageMap.Add(key, true);
+			}
+		}
+
+
+		// LGC
 		private void Save () {
 			// Save Maps
 			int defaultIndex = 0;
@@ -395,31 +422,23 @@ namespace StagerStudio.Editor {
 				prop.stringValue = dataValues[i].Item2;
 			}
 			serializedObject.ApplyModifiedProperties();
+			// Save Helper
+			var hBuilder = new System.Text.StringBuilder();
+			foreach (var name in System.Enum.GetNames(typeof(SystemLanguage))) {
+				if (name == "Hugarian" || name == "Chinese" || name == "Unknown") { continue; }
+				hBuilder.AppendLine(name);
+			}
+			var helperPath = Util.CombinePaths(Application.streamingAssetsPath, "Language", "_File Name Helper.txt");
+			Util.TextToFile(hBuilder.ToString(), helperPath);
 		}
 
 
-		#region --- UTL ---
-
-
+		// UTL
 		private Rect GUIRect (float width, float height) => GUILayoutUtility.GetRect(
 			width, height,
 			GUILayout.ExpandWidth(width == 0),
 			GUILayout.ExpandHeight(height == 0)
 		);
-
-
-		private void LayoutV (System.Action action, bool box = false, GUIStyle style = null) {
-			if (box) {
-				style = GUI.skin.box;
-			}
-			if (style != null) {
-				GUILayout.BeginVertical(style);
-			} else {
-				GUILayout.BeginVertical();
-			}
-			action();
-			GUILayout.EndVertical();
-		}
 
 
 		private void LayoutH (System.Action action, bool box = false, GUIStyle style = null) {
@@ -437,18 +456,6 @@ namespace StagerStudio.Editor {
 
 
 		private void Space (float space = 4f) => GUILayout.Space(space);
-
-
-		private void ColorBlock (Rect rect, Color color) {
-			var oldC = GUI.color;
-			GUI.color = color;
-			GUI.DrawTexture(rect, Texture2D.whiteTexture);
-			GUI.color = oldC;
-		}
-
-
-		#endregion
-
 
 
 

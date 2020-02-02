@@ -9,9 +9,6 @@
 	public class Luminous : StageObject {
 
 
-		// Ser
-		[SerializeField] private StageRenderer m_SubRenderer = null;
-
 		// Data
 		private readonly float[] LuminousDuration = { 0f, 0f, 0f, };
 
@@ -19,7 +16,7 @@
 		// MSG
 		private void Update () {
 
-			MainRenderer.RendererEnable = m_SubRenderer.RendererEnable = false;
+			MainRenderer.RendererEnable = false;
 
 			// Active Check
 			int index = transform.GetSiblingIndex();
@@ -54,17 +51,16 @@
 			transform.localScale = Note.GetNoteWorldScale(linkedStage, linkedTrack, noteData, noteData.Time);
 
 			// Renderer
-			MainRenderer.RendererEnable = m_SubRenderer.RendererEnable = true;
+			MainRenderer.RendererEnable = true;
 			MainRenderer.Type = type;
-			m_SubRenderer.Type = SkinType.BlackLuminous;
-			MainRenderer.LifeTime = m_SubRenderer.LifeTime = musicTime > noteEndTime ? musicTime - noteEndTime : musicTime - noteData.Time;
-			MainRenderer.Scale = m_SubRenderer.Scale = Note.GetNoteRendererScale(linkedStage, linkedTrack, noteData, noteData.Time);
-			MainRenderer.Disc = m_SubRenderer.Disc = disc;
-			MainRenderer.Pivot = m_SubRenderer.Pivot = new Vector3(0.5f, 0f);
+			MainRenderer.LifeTime = musicTime > noteEndTime ? musicTime - noteEndTime : musicTime - noteData.Time;
+			MainRenderer.Scale = Note.GetNoteRendererScale(linkedStage, linkedTrack, noteData, noteData.Time);
+			MainRenderer.Disc = disc;
+			MainRenderer.Pivot = new Vector3(0.5f, 0f);
 			if (disc >= DISC_GAP) {
-				MainRenderer.DiscOffsetY = m_SubRenderer.DiscOffsetY = 0f;
-				MainRenderer.DiscWidth = m_SubRenderer.DiscWidth = Track.GetTrackWidth(linkedTrack, musicTime) * noteData.Width;
-				MainRenderer.DiscHeight = m_SubRenderer.DiscHeight = zoneSize * LUMINOUS_SIZE;
+				MainRenderer.DiscOffsetY = 0f;
+				MainRenderer.DiscWidth = Track.GetTrackWidth(linkedTrack, musicTime) * noteData.Width;
+				MainRenderer.DiscHeight = zoneSize * LUMINOUS_SIZE;
 			}
 
 		}
@@ -76,9 +72,6 @@
 			LuminousDuration[0] = skin is null ? 0f : skin.Items[(int)SkinType.NoteLuminous].TotalDuration;
 			LuminousDuration[1] = skin is null ? 0f : skin.Items[(int)SkinType.HoldLuminous].TotalDuration;
 			LuminousDuration[2] = skin is null ? 0f : skin.Items[(int)SkinType.ArrowLuminous].TotalDuration;
-			// SUB
-			m_SubRenderer.SkinData = skin;
-			m_SubRenderer.SetSortingLayer(layerID, orderID - 1);
 		}
 
 

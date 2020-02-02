@@ -1,7 +1,4 @@
-﻿SkinEditor.Item.Judgeline
-判定线
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -100,9 +97,6 @@ Menu.ProjectItem.Delete
 Menu.ProjectItem.Move
 移动
 
-Menu.ProjectItem.Open
-打开
-
 Menu.ProjectItem.ShowInExplorer
 查看
 
@@ -132,9 +126,6 @@ P-Manager.UI.DeleteProjectItemConfirm
 
 P-Manager.UI.FolderAlreadyExists
 部分文件夹没有移动，因为存在同名文件夹
-
-P-Manager.UI.NewProjectConfirm
-是否创建新工程？
 
 P-Manager.UI.OverlapProjectConfirm
 已包含一个名为"{0}"的文件，是否覆盖文件？
@@ -256,9 +247,6 @@ ProjectCreator.Hint.StagerStudio
 ProjectCreator.Hint.Voez
 创建为传统的移动轨道式工程，可编辑轨道的位置、颜色、角度等信息，音符的横向位置锁定在轨道正中间。
 
-ProjectInfo.AddTween
-+ 补间
-
 ProjectInfo.Dialog.DeletePal
 确认删除颜色{0}吗？本操作不可撤销。
 
@@ -319,9 +307,6 @@ Skin.Confirm.DeleteSkinConfirm
 Skin.Confirm.NewSkinConfirm
 创建新皮肤？
 
-Skin.Error.DeleteDefaultSkin
-不能删除默认皮肤
-
 Skin.Error.FailToSaveSkin
 皮肤保存失败
 
@@ -340,14 +325,14 @@ SkinEditor.Dialog.ImportImageTitle
 SkinEditor.Item.ArrowLuminous
 方向光效
 
-SkinEditor.Item.BlackLuminous
-光效背景
-
 SkinEditor.Item.Hold
 长按音符
 
 SkinEditor.Item.HoldLuminous
 长按光效
+
+SkinEditor.Item.Judgeline
+判定线
 
 SkinEditor.Item.LinkPole
 连接杆
@@ -372,9 +357,6 @@ SkinEditor.Item.Track
 
 SkinEditor.Item.Tray
 托盘
-
-SkinEditor.OpenSkinConfirm
-编辑皮肤{0}?
 
 SkinEditor.Saved
 已保存
@@ -571,9 +553,6 @@ UI.Browse
 UI.Clear
 清除
 
-UI.ColorPicker.Title
-颜色
-
 UI.Create
 创建
 
@@ -706,9 +685,6 @@ UI.ImportBeatmap
 UI.NewBeatmap
 新建
 
-UI.NewSkin
-新建皮肤
-
 UI.OpenLanguageFolder
 打开语言文件夹
 
@@ -740,7 +716,7 @@ UI.ProjectInfo.AddSound
 + 按键音
 
 UI.ProjectInfo.AddTween
-+补间
++ 补间
 
 UI.ProjectInfo.Background
 背景
@@ -867,12 +843,6 @@ UI.Tab.BeatmapInfo
 
 UI.Tab.ClickSound
 按键音
-
-UI.Tab.ColorEditor
-颜色
-
-UI.Tab.Edit
-编辑
 
 UI.Tab.Editor
 编辑器

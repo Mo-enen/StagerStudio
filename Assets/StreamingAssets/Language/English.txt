@@ -1,7 +1,4 @@
-﻿SkinEditor.Item.Judgeline
-Judge Line
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -100,9 +97,6 @@ Delete
 Menu.ProjectItem.Move
 Move
 
-Menu.ProjectItem.Open
-Open
-
 Menu.ProjectItem.ShowInExplorer
 Show in Explorer
 
@@ -132,9 +126,6 @@ Delete project {0}? This will delete the file in disk.
 
 P-Manager.UI.FolderAlreadyExists
 Some folder didn't move because there already exists a folder with same name
-
-P-Manager.UI.NewProjectConfirm
-Create a new project?
 
 P-Manager.UI.OverlapProjectConfirm
 Already has a file named {0}, overwrite or not?
@@ -256,9 +247,6 @@ Create as standard StageStudio project, all features will be allowed to use.
 ProjectCreator.Hint.Voez
 Create as traditional track-movable project, the position, color, and rotation of the tracks will be editable. The x position of the note is locked in the middle of the track.
 
-ProjectInfo.AddTween
-+ Tween
-
 ProjectInfo.Dialog.DeletePal
 Delete color {0}? This can not be undo.
 
@@ -319,9 +307,6 @@ Delete skin {0}?
 Skin.Confirm.NewSkinConfirm
 Create a new skin?
 
-Skin.Error.DeleteDefaultSkin
-Can not delete default skin
-
 Skin.Error.FailToSaveSkin
 Fail to save skin
 
@@ -340,14 +325,14 @@ Import Image
 SkinEditor.Item.ArrowLuminous
 Arrow Lum
 
-SkinEditor.Item.BlackLuminous
-Black Luminous
-
 SkinEditor.Item.Hold
 Hold
 
 SkinEditor.Item.HoldLuminous
 Hold Lum
+
+SkinEditor.Item.Judgeline
+Judge Line
 
 SkinEditor.Item.LinkPole
 Link Pole
@@ -372,9 +357,6 @@ Track
 
 SkinEditor.Item.Tray
 Tray
-
-SkinEditor.OpenSkinConfirm
-Editor skin {0}?
 
 SkinEditor.Saved
 Saved
@@ -571,9 +553,6 @@ Browse
 UI.Clear
 Clear
 
-UI.ColorPicker.Title
-Color
-
 UI.Create
 Create
 
@@ -705,9 +684,6 @@ Import
 
 UI.NewBeatmap
 New
-
-UI.NewSkin
-New Skin
 
 UI.OpenLanguageFolder
 Open Language Folder
@@ -867,12 +843,6 @@ Beatmap
 
 UI.Tab.ClickSound
 Sound
-
-UI.Tab.ColorEditor
-Color
-
-UI.Tab.Edit
-Edit
 
 UI.Tab.Editor
 Editor
