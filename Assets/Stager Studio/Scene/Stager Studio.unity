@@ -12021,6 +12021,7 @@ MonoBehaviour:
     Author: "Stager\u5B98\u65B9"
     ScaleMuti: 4
     NoteThickness: 0.015
+    LuminousWidthAppend: 0
     Items:
     - Loop: 0
       Rects: []
@@ -15419,6 +15420,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - UI.SkinEditor.LuminousWidth
+  - Lum Width
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject

@@ -181,11 +181,9 @@
 
 
 		private void LateUpdate () {
-
 			// Dirty
 			if (!MeshDirty) { return; }
 			MeshDirty = false;
-
 			// Data
 			var data = AniData;
 			if (data is null || SkinData.Texture is null || data.Rects.Count == 0) {
@@ -193,7 +191,6 @@
 				return;
 			}
 			ClearMeshCache();
-
 			// Calculate New
 			var rData = data.Rects[Frame];
 			var scale = Scale * Mathf.Max(SkinData.ScaleMuti, 0f);
@@ -205,69 +202,67 @@
 			float tWidth = SkinData.Texture.width;
 			float tHeight = SkinData.Texture.height;
 			bool disced = disc >= DISC_GAP;
-
 			// Add Rect Mesh Cache
 			if (rData.BorderL <= 0 && rData.BorderR <= 0 && rData.BorderD <= 0 && rData.BorderU <= 0) {
 				// No Border
 				AddQuad01(0f, 1f, 0f, 1f, rData.L / tWidth, rData.R / tWidth, rData.D / tHeight, rData.U / tHeight);
 			} else {
 				// Nine-Slice
-				float _ornMinL = rData.BorderL > 0 ? (rData.BorderL / (float)(rData.BorderL + rData.BorderR)) : 0f;
-				float _ornMinD = rData.BorderD > 0 ? (rData.BorderD / (float)(rData.BorderD + rData.BorderU)) : 0f;
-				float _l = Mathf.Min((float)rData.BorderL / rData.Width / scale.x, _ornMinL);
-				float _r = Mathf.Max(
-					1f - ((float)rData.BorderR / rData.Width / scale.x),
-					1f - (rData.BorderR > 0 ? (rData.BorderR / (float)(rData.BorderL + rData.BorderR)) : 0f)
-				);
-				float _d = Mathf.Min((float)rData.BorderD / rData.Height / scale.y, _ornMinD);
-				float _u = Mathf.Max(
-					1f - ((float)rData.BorderU / rData.Height / scale.y),
-					1f - (rData.BorderU > 0 ? (rData.BorderU / (float)(rData.BorderD + rData.BorderU)) : 0f)
-				);
+				bool hasBorderL = rData.BorderL > 0;
+				bool hasBorderR = rData.BorderR > 0;
+				bool hasBorderD = rData.BorderD > 0;
+				bool hasBorderU = rData.BorderU > 0;
+				float _ornMinL = hasBorderL ? (rData.BorderL / (float)(rData.BorderL + rData.BorderR)) : 0f;
+				float _ornMaxR = hasBorderR ? (rData.BorderR / (float)(rData.BorderL + rData.BorderR)) : 0f;
+				float _ornMinD = hasBorderD ? (rData.BorderD / (float)(rData.BorderD + rData.BorderU)) : 0f;
+				float _ornMaxU = hasBorderU ? (rData.BorderU / (float)(rData.BorderD + rData.BorderU)) : 0f;
+				// Vs
+				float _l = Mathf.Min(rData.BorderL / scale.x, _ornMinL);
+				float _r = Mathf.Max(1f - (rData.BorderR / scale.x), 1f - _ornMaxR);
+				float _d = Mathf.Min(rData.BorderD / scale.y, _ornMinD);
+				float _u = Mathf.Max(1f - (rData.BorderU / scale.y), 1f - _ornMaxU);
+				// UV
 				float _uvL0 = rData.L / tWidth;
-				float _uvL = Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.L, rData.L + rData.BorderL, scale.x) / tWidth;
-				float _uvR = Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.R, rData.R - rData.BorderR, scale.x) / tWidth;
 				float _uvR1 = rData.R / tWidth;
 				float _uvD0 = rData.D / tHeight;
-				float _uvD = Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.D, rData.D + rData.BorderD, scale.y) / tHeight;
-				float _uvU = Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.U, rData.U - rData.BorderU, scale.y) / tHeight;
 				float _uvU1 = rData.U / tHeight;
-
+				float _uvL = hasBorderL ? (Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.L, rData.L + rData.BorderL, scale.x) / tWidth) : _uvL0;
+				float _uvR = hasBorderR ? (Util.Remap(0f, rData.BorderR / (rData.Width * _ornMaxR), rData.R, rData.R - rData.BorderR, scale.x) / tWidth) : _uvR1;
+				float _uvD = hasBorderD ? (Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.D, rData.D + rData.BorderD, scale.y) / tHeight) : _uvD0;
+				float _uvU = hasBorderU ? (Util.Remap(0f, rData.BorderU / (rData.Height * _ornMaxU), rData.U, rData.U - rData.BorderU, scale.y) / tHeight) : _uvU1;
 				// Quad
-				if (rData.BorderL > 0) {
-					if (rData.BorderD > 0) {
+				if (hasBorderL) {
+					if (hasBorderD) {
 						AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD);
 					}
-					if (rData.BorderU > 0) {
+					if (hasBorderU) {
 						AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1);
 					}
 					AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU);
 				}
-				if (rData.BorderD > 0) {
+				if (hasBorderD) {
 					AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD);
 				}
-				if (rData.BorderU > 0) {
+				if (hasBorderU) {
 					AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1);
 				}
 				AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU);
-				if (rData.BorderR > 0) {
-					if (rData.BorderD > 0) {
+				if (hasBorderR) {
+					if (hasBorderD) {
 						AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD);
 					}
-					if (rData.BorderU > 0) {
+					if (hasBorderU) {
 						AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1);
 					}
 					AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU);
 				}
 			}
-
 			// Final
 			Mesh.SetVertices(Vertices);
 			Mesh.SetColors(Colors);
 			Mesh.SetUVs(0, UVs);
 			Mesh.SetTriangles(Triangles, 0);
 			Mesh.UploadMeshData(false);
-
 			// Func
 			void ClearMeshCache () {
 				Mesh.Clear();

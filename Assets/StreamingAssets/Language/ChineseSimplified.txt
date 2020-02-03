@@ -823,6 +823,9 @@ UI.SkinEditor.ImportImage
 UI.SkinEditor.Loop
 循环播放
 
+UI.SkinEditor.LuminousWidth
+光效宽度
+
 UI.SkinEditor.NoteThickness
 音符厚度
 

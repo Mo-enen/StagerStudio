@@ -51,11 +51,16 @@
 			get => ScaleMuti;
 			set => ScaleMuti = Mathf.Max(value, 0f);
 		}
+		public float LuminousWidthAppend_UI {
+			get => LuminousWidthAppend;
+			set => LuminousWidthAppend = Mathf.Max(value, -1f);
+		}
 
 		// Ser
 		public string Author = "";
 		public float ScaleMuti = 4f;
 		public float NoteThickness = 0.015f;
+		public float LuminousWidthAppend = 0f;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
 		// API

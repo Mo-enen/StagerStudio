@@ -823,6 +823,9 @@ Import Image
 UI.SkinEditor.Loop
 Loop
 
+UI.SkinEditor.LuminousWidth
+Lum Width
+
 UI.SkinEditor.NoteThickness
 Note Thick
 

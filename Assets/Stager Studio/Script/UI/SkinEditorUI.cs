@@ -40,6 +40,7 @@
 		[SerializeField] private InputField m_SkinNameIF = null;
 		[SerializeField] private InputField m_SkinAuthorIF = null;
 		[SerializeField] private InputField m_ScaleMutiIF = null;
+		[SerializeField] private InputField m_LuminWidthAppendIF = null;
 		[SerializeField] private InputField m_NoteThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Image m_Background = null;
@@ -104,6 +105,14 @@
 				}
 			});
 
+			// Luminous Width Append
+			m_LuminWidthAppendIF.onEndEdit.AddListener((str) => {
+				if (float.TryParse(str, out float lwa)) {
+					Data.LuminousWidthAppend_UI = lwa;
+					m_LuminWidthAppendIF.text = Data.LuminousWidthAppend_UI.ToString();
+				}
+			});
+
 			// Note Thickness
 			m_NoteThicknessIF.onEndEdit.AddListener((str) => {
 				if (float.TryParse(str, out float thick)) {
@@ -163,6 +172,8 @@
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				// Scale Muti
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
+				// Luminous Width Append
+				m_LuminWidthAppendIF.text = data.LuminousWidthAppend_UI.ToString();
 				// Note Thickness
 				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
 				// Loop
