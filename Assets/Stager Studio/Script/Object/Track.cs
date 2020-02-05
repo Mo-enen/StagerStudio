@@ -9,9 +9,6 @@
 	public class Track : StageObject {
 
 
-		// Var
-		private const float TRANSATION_DURATION = 0.264f;
-
 		// Ser
 		[SerializeField] StageRenderer m_TrayRenderer = null;
 
@@ -49,10 +46,13 @@
 			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
 			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
 			float disc = Stage.GetStageDisc(linkedStage, musicTime);
+			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
+			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
+			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData, musicTime), 0f, stagePos, stageWidth, stageHeight, stageRotZ, disc);
 
 			// Movement
-			transform.position = GetTrackWorldPosition(linkedStage, trackData, musicTime);
-			transform.localRotation = GetTrackWorldRotation(linkedStage, trackData, musicTime);
+			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
+			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(GetTrackRotation(trackData, musicTime), 0, 0);
 			transform.localScale = disc < DISC_GAP ?
 				new Vector3(
 					zoneSize * trackWidth * stageWidth,
@@ -81,20 +81,6 @@
 
 
 		// API
-		public static Vector3 GetTrackWorldPosition (Beatmap.Stage stageData, Beatmap.Track trackData, float musicTime) {
-			var (zoneMin, zoneMax, _) = GetZoneMinMax();
-			var (pos, _, _) = Stage.Inside(stageData, musicTime, GetTrackX(trackData, musicTime), 0f);
-			return Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-		}
-
-
-		public static Quaternion GetTrackWorldRotation (Beatmap.Stage stageData, Beatmap.Track trackData, float musicTime) {
-			var (_, _, rotZ) = Stage.Inside(stageData, musicTime, GetTrackX(trackData, musicTime), 0f);
-			return Quaternion.Euler(0f, 0f, rotZ) *
-				Quaternion.Euler(GetTrackRotation(trackData, musicTime), 0, 0);
-		}
-
-
 		public static float GetTrackWidth (Beatmap.Track data, float musicTime) {
 			return Mathf.Clamp(data.Width + Evaluate(data.Widths, musicTime - data.Time), 0f, 2f);
 		}
@@ -103,13 +89,15 @@
 		public static bool GetTrackActive (Beatmap.Track data, float musicTime) => musicTime > data.Time - TRANSATION_DURATION && musicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static (Vector3 pos, float rotX, float rotZ) Inside (Beatmap.Stage stage, Beatmap.Track track, float musicTime, float x01, float y01) {
-			float trackX = GetTrackX(track, musicTime);
-			float halfTrackWidth = GetTrackWidth(track, musicTime) * 0.5f;
-			float trackRotX = GetTrackRotation(track, musicTime);
+		public static (Vector3 pos, float rotX, float rotZ) Inside (
+			float x01, float y01,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			float trackX, float trackWidth, float trackRotX, float disc
+		) {
+			float halfTrackWidth = trackWidth * 0.5f;
 			var (pos, pivot, rotZ) = Stage.Inside(
-				stage, musicTime,
-				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01
+				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,
+				stagePos, stageWidth, stageHeight, stageRotZ, disc
 			);
 			return (
 				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
@@ -118,8 +106,12 @@
 		}
 
 
-		// LGC
-		private static Color GetTrackColor (Beatmap.Track data, float musicTime) {
+		public static float GetTrackX (Beatmap.Track data, float musicTime) {
+			return Mathf.Repeat(data.X + Evaluate(data.Xs, musicTime - data.Time), 1f);
+		}
+
+
+		public static Color GetTrackColor (Beatmap.Track data, float musicTime) {
 			if (data.Colors is null) {
 				return PaletteColor(data.Color);
 			} else {
@@ -128,20 +120,22 @@
 		}
 
 
-		private static float GetTrackAlpha (Beatmap.Track data, float musicTime, float transation) => Mathf.Clamp01(
+		public static float GetTrackAlpha (Beatmap.Track data, float musicTime, float transation) => Mathf.Clamp01(
 			musicTime < data.Time ? (musicTime - data.Time + transation) / transation :
 			musicTime > data.Time + data.Duration ? (data.Time + data.Duration - musicTime + transation) / transation :
 			1f
 		);
 
 
-		private static float GetTrackRotation (Beatmap.Track data, float musicTime) {
+		public static float GetTrackRotation (Beatmap.Track data, float musicTime) {
 			return data.Rotation + Evaluate(data.Rotations, musicTime - data.Time);
 		}
 
 
-		private static float GetTrackX (Beatmap.Track data, float musicTime) {
-			return Mathf.Repeat(data.X + Evaluate(data.Xs, musicTime - data.Time), 1f);
+		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
+			base.SetSkinData(skin, layerID, orderID);
+			m_TrayRenderer.SkinData = skin;
+			m_TrayRenderer.SetSortingLayer(layerID, orderID + 1);
 		}
 
 

@@ -226,10 +226,34 @@
 				float _uvR1 = rData.R / tWidth;
 				float _uvD0 = rData.D / tHeight;
 				float _uvU1 = rData.U / tHeight;
-				float _uvL = hasBorderL ? (Util.Remap(0f, rData.BorderL / (rData.Width * _ornMinL), rData.L, rData.L + rData.BorderL, scale.x) / tWidth) : _uvL0;
-				float _uvR = hasBorderR ? (Util.Remap(0f, rData.BorderR / (rData.Width * _ornMaxR), rData.R, rData.R - rData.BorderR, scale.x) / tWidth) : _uvR1;
-				float _uvD = hasBorderD ? (Util.Remap(0f, rData.BorderD / (rData.Height * _ornMinD), rData.D, rData.D + rData.BorderD, scale.y) / tHeight) : _uvD0;
-				float _uvU = hasBorderU ? (Util.Remap(0f, rData.BorderU / (rData.Height * _ornMaxU), rData.U, rData.U - rData.BorderU, scale.y) / tHeight) : _uvU1;
+				float _uvL = hasBorderL ? (Util.Remap(
+					0f,
+					rData.BorderL / _ornMinL,
+					rData.L,
+					rData.L + rData.BorderL,
+					scale.x
+				) / tWidth) : _uvL0;
+				float _uvR = hasBorderR ? (Util.Remap(
+					0f,
+					rData.BorderR / _ornMaxR,
+					rData.R,
+					rData.R - rData.BorderR,
+					scale.x
+				) / tWidth) : _uvR1;
+				float _uvD = hasBorderD ? (Util.Remap(
+					0f,
+					rData.BorderD / _ornMinD,
+					rData.D,
+					rData.D + rData.BorderD,
+					scale.y
+				) / tHeight) : _uvD0;
+				float _uvU = hasBorderU ? (Util.Remap(
+					0f,
+					rData.BorderU / _ornMaxU,
+					rData.U,
+					rData.U - rData.BorderU,
+					scale.y
+				) / tHeight) : _uvU1;
 				// Quad
 				if (hasBorderL) {
 					if (hasBorderD) {

@@ -1,6 +1,7 @@
 ﻿namespace StagerStudio {
 	using UnityEngine;
-	using Crosstales.FB;
+	//using Crosstales.FB;
+	using SFB;
 	using UI;
 
 
@@ -64,7 +65,9 @@
 				"DialogUtil.LastPickedFolder",
 				System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)
 			);
-			string path = FileBrowser.OpenSingleFolder(GetLanguage(key), lastPickedFolder);
+			var paths = StandaloneFileBrowser.OpenFolderPanel(GetLanguage(key), lastPickedFolder, false);
+			var path = paths is null || paths.Length == 0 ? "" : paths[0];
+			//string path = FileBrowser.OpenSingleFolder(GetLanguage(key), lastPickedFolder);
 			if (!string.IsNullOrEmpty(path)) {
 				PlayerPrefs.SetString("DialogUtil.LastPickedFolder", GetParentPath(path));
 				return path;
@@ -78,7 +81,9 @@
 				"DialogUtil.LastPickedFolder",
 				System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)
 			);
-			var path = FileBrowser.OpenSingleFile(GetLanguage(key), lastPickedFolder, new ExtensionFilter[1] { new ExtensionFilter(filterName, filters) });
+			var paths = StandaloneFileBrowser.OpenFilePanel(GetLanguage(key), lastPickedFolder, new ExtensionFilter[1] { new ExtensionFilter(filterName, filters) }, false);
+			var path = paths is null || paths.Length == 0 ? "" : paths[0];
+			//var path = FileBrowser.OpenSingleFile(GetLanguage(key), lastPickedFolder, new ExtensionFilter[1] { new ExtensionFilter(filterName, filters) });
 			if (!string.IsNullOrEmpty(path)) {
 				PlayerPrefs.SetString("DialogUtil.LastPickedFolder", GetParentPath(path));
 				return path;
@@ -93,7 +98,8 @@
 				"DialogUtil.LastPickedFolder",
 				System.Environment.GetFolderPath(System.Environment.SpecialFolder.Desktop)
 			);
-			var path = FileBrowser.SaveFile(GetLanguage(key), lastPickedFolder, defaultName, ext);
+			var path = StandaloneFileBrowser.SaveFilePanel(GetLanguage(key), lastPickedFolder, defaultName, ext);
+			//var path = FileBrowser.SaveFile(GetLanguage(key), lastPickedFolder, defaultName, ext);
 			if (!string.IsNullOrEmpty(path)) {
 				PlayerPrefs.SetString("DialogUtil.LastPickedFolder", GetParentPath(path));
 				return path;

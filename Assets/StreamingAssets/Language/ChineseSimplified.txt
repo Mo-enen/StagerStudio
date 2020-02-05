@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.LuminousHeight
+光效高度
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -807,6 +810,9 @@ UI.Setting.Wave
 
 UI.Setting.Zone
 显示舞台范围
+
+UI.SkinEditor.ApplyAllSprite
+应用到所有图块
 
 UI.SkinEditor.DarkBG
 深色

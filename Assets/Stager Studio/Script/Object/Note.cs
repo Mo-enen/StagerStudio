@@ -29,7 +29,7 @@
 		[SerializeField] private StageRenderer m_SubRenderer = null;
 
 		// Data
-		private static byte CacheDirtyID { get; set; } = 1;
+		private static byte CacheDirtyID = 1;
 		private byte LocalCacheDirtyID = 0;
 		private float AppearTime = 0f;
 		private float LocalSpeedMuti = float.MinValue;
@@ -70,6 +70,7 @@
 
 
 		private void Update_Cache (Beatmap.Note noteData, float speedMuti) {
+			if (GetMusicPlaying()) { return; }
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
@@ -102,21 +103,25 @@
 
 		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, float musicTime, float speedMuti) {
 
+			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
 			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
 			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
+			float disc = Stage.GetStageDisc(linkedStage, musicTime);
+			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
+			float trackX = Track.GetTrackX(linkedTrack, musicTime);
 			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
+			float trackRotX = Track.GetTrackRotation(linkedTrack, musicTime);
 			float gameOffset = GetGameDropOffset(speedMuti);
 			float noteY01 = musicTime < Time ? GetNoteY(gameOffset, NoteDropStart) : 0f;
 			float noteSizeY = GetNoteY(gameOffset, NoteDropEnd) - noteY01;
-			float disc = Stage.GetStageDisc(linkedStage, musicTime);
-			bool noDisc = disc < DISC_GAP;
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
+			bool noDisc = disc < DISC_GAP;
 
 			// Movement
 			var (pos, rotX, rotZ) = Track.Inside(
-				linkedStage, linkedTrack, musicTime,
-				noteData.X,
-				noDisc ? noteY01 : 0f
+				noteData.X, noDisc ? noteY01 : 0f,
+				stagePos, stageWidth, stageHeight, stageRotZ,
+				trackX, trackWidth, trackRotX, disc
 			);
 			var notePos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			notePos.z += pos.z * zoneSize;
@@ -130,11 +135,11 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
-			if (SubRenderer.SkinData != MainRenderer.SkinData) {
-				SetSkinData(MainRenderer.SkinData, MainRenderer.SortingLayer, 1);
-			}
 			MainRenderer.LifeTime = SubRenderer.LifeTime = musicTime - Time;
-			MainRenderer.Alpha = SubRenderer.Alpha = Mathf.Clamp01(16f - noteY01 * 16f);
+			MainRenderer.Alpha = SubRenderer.Alpha =
+				Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) *
+				Track.GetTrackAlpha(linkedTrack, musicTime, TRANSATION_DURATION) *
+				Mathf.Clamp01(16f - noteY01 * 16f);
 			MainRenderer.Scale = new Vector2(
 				stageWidth * trackWidth * noteData.Width,
 				Mathf.Max(noDisc ? noteSizeY * stageHeight : noteSizeY, NoteThickness)
@@ -161,57 +166,10 @@
 		public static void SetCacheDirty () => CacheDirtyID++;
 
 
-		public static Vector3 GetNoteWorldPosition (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, float musicTime) {
-			var (zoneMin, zoneMax, _) = GetZoneMinMax();
-			float speedMuti = GetGameSpeedMuti() * linkedStage.Speed;
-			var (pos, _, _) = Track.Inside(
-				linkedStage, linkedTrack, musicTime,
-				noteData.X,
-				Stage.GetStageDisc(linkedStage, musicTime) < DISC_GAP && musicTime < noteData.Time ?
-				GetNoteY(GetGameDropOffset(speedMuti), GetDropOffset(noteData.Time, speedMuti)) : 0f
-			);
-			return Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-		}
-
-
-		public static Vector3 GetNoteWorldScale (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, float musicTime) {
-			var (_, _, zoneSize) = GetZoneMinMax();
-			bool noDisc = Stage.GetStageDisc(linkedStage, musicTime) < DISC_GAP;
-			float speedMuti = GetGameSpeedMuti() * linkedStage.Speed;
-			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
-			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
-			float gameOffset = GetGameDropOffset(speedMuti);
-			float noteSizeY = GetNoteY(
-				gameOffset,
-				GetDropOffset(noteData.Time + noteData.Duration, speedMuti)
-			) - (musicTime < noteData.Time ? GetNoteY(gameOffset, GetDropOffset(noteData.Time, speedMuti)) : 0f);
-			return new Vector3(
-				zoneSize * stageWidth * (noDisc ? trackWidth * noteData.Width : 1f),
-				zoneSize * Mathf.Max(
-					noDisc ? noteSizeY * stageHeight : stageWidth,
-					NoteThickness
-				),
-				1f
-			);
-		}
-
-
-		public static Vector2 GetNoteRendererScale (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, float musicTime) {
-			bool noDisc = Stage.GetStageDisc(linkedStage, musicTime) < DISC_GAP;
-			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
-			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
-			float speedMuti = GetGameSpeedMuti() * linkedStage.Speed;
-			float gameOffset = GetGameDropOffset(speedMuti);
-			float noteSizeY = GetNoteY(
-				gameOffset,
-				GetDropOffset(noteData.Time + noteData.Duration, speedMuti)
-			) - (musicTime < noteData.Time ? GetNoteY(gameOffset, GetDropOffset(noteData.Time, speedMuti)) : 0f);
-			return new Vector2(
-			   stageWidth * trackWidth * noteData.Width,
-			   Mathf.Max(noDisc ? noteSizeY * stageHeight : noteSizeY, NoteThickness)
-		   );
+		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
+			base.SetSkinData(skin, layerID, orderID);
+			SubRenderer.SkinData = skin;
+			SubRenderer.SetSortingLayer(layerID, orderID + 1);
 		}
 
 

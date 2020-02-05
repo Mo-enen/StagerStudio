@@ -19,6 +19,7 @@
 		public delegate float FloatFloatIntHandler (float time, int index);
 		public delegate Color ColorByteHandler (byte index);
 		public delegate Beatmap BeatmapHandler ();
+		public delegate bool BoolHandler ();
 
 
 		#endregion
@@ -32,6 +33,7 @@
 		// Const
 		protected const float DISC_GAP = 0.001f;
 		protected const float DURATION_GAP = 0.0001f;
+		protected const float TRANSATION_DURATION = 0.264f;
 
 		// Handler
 		public static Vector3MinMaxSizeHandler GetZoneMinMax { get; set; } = null;
@@ -39,6 +41,7 @@
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorByteHandler PaletteColor { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
+		public static BoolHandler GetMusicPlaying { get; set; } = null;
 
 		// API
 		public StageRenderer MainRenderer => m_MainRenderer;

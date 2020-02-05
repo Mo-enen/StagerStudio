@@ -92,7 +92,7 @@
 		public static LanguageHandler GetLanguage { get; set; } = null;
 
 		// Short
-		private StageProject Project => _Project ?? (_Project = FindObjectOfType<StageProject>());
+		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 
 		private string Workspace { get => Project.TheWorkspace; set => Project.TheWorkspace = value; }
 		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Trashbin");
@@ -107,7 +107,6 @@
 		[SerializeField] private RectTransform m_MoveProjectContent = null;
 		[SerializeField] private RectTransform m_MoveProjectRoot = null;
 		[SerializeField] private RectTransform m_NoProjectHint = null;
-		[SerializeField] private RectTransform m_Bar = null;
 		[SerializeField] private Grabber m_ChapterItemPrefab = null;
 		[SerializeField] private Grabber m_ChapterItemAltPrefab = null;
 		[SerializeField] private Grabber m_ProjectItemPrefab = null;
@@ -260,25 +259,34 @@
 						bool existsWarning = false;
 						var dirs = Util.GetDirectsIn(oldWorkSpace, true);
 						foreach (var dir in dirs) {
-							string to = Util.CombinePaths(path, dir.Name);
-							if (Util.DirectoryExists(to)) {
-								existsWarning = true;
-								continue;
-							}
-							Util.MoveDirectory(dir.FullName, to);
+							try {
+								string to = Util.CombinePaths(path, dir.Name);
+								if (Util.DirectoryExists(to)) {
+									var files = Util.GetFilesIn(dir.FullName, true, "*.stager");
+									foreach (var file in files) {
+										try {
+											string fTo = Util.CombinePaths(to, Util.GetNameWithExtension(file.FullName));
+											if (!Util.FileExists(fTo)) {
+												Util.MoveFile(file.FullName, fTo);
+											} else {
+												existsWarning = true;
+											}
+										} catch { }
+									}
+								} else {
+									Util.MoveDirectory(dir.FullName, to);
+								}
+							} catch { }
 						}
 						if (existsWarning) {
-							DialogUtil.Dialog_OK(LanguageData.UI_FolderAlreadyExists, DialogUtil.MarkType.Warning);
+							Invoke("Invoke_ExistDialog", 0.1f);
 						}
+						InvokeOpen();
 					});
+					Workspace = path;
 				}
-				Workspace = path;
-				OpenLogic();
 			} catch { }
 		}
-
-
-		public void RefreshBarUI () => Invoke("RefreshBarUILogic", 0.01f);
 
 
 		public void NewChapter () => NewChapterLogic();
@@ -306,6 +314,12 @@
 		public void OpenTrashbin () => OpenTrashbinLogic();
 
 
+		public void Invoke_ShowDoubleClickHint () => LogHint(GetLanguage(LanguageData.Hint_DoubleClick));
+
+
+		public void Invoke_ExistDialog () => DialogUtil.Dialog_OK(LanguageData.UI_FolderAlreadyExists, DialogUtil.MarkType.Warning);
+
+
 		#endregion
 
 
@@ -319,7 +333,6 @@
 			ClearProjectContent();
 			CloseMoveProjectWindowLogic();
 			m_NoProjectHint.gameObject.SetActive(false);
-			Invoke("RefreshBarUILogic", 0.01f);
 			// Load Chapters
 			bool openFlag = false;
 			var dirs = Util.GetDirectsIn(Workspace, true);
@@ -368,7 +381,7 @@
 					if (success && name == OpeningChapter) {
 						OpeningChapter.Value = editText;
 					}
-					Invoke("OpenLogic", 0.01f);
+					InvokeOpen();
 				}
 				void OnTrigger () => Menu.OpenMenu(CHAPTER_ITEM_MENU_KEY, rt);
 			}
@@ -475,7 +488,7 @@
 				// Func
 				void OnClick () {
 					bool success = MoveProjectItemLogic(projectPath, name);
-					Invoke("OpenLogic", 0.01f);
+					InvokeOpen();
 				}
 			}
 		}
@@ -538,15 +551,6 @@
 		}
 
 
-		private void RefreshBarUILogic () {
-			int len = m_Bar.childCount;
-			for (int i = 0; i < len; i++) {
-				var rt = m_Bar.GetChild(i) as RectTransform;
-				rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (rt.GetChild(0) as RectTransform).rect.width);
-			}
-		}
-
-
 		private void NewChapterLogic () {
 			// Get Path
 			string basicName = GetLanguage?.Invoke(LanguageData.NewChapterName);
@@ -606,9 +610,6 @@
 		}
 
 
-		private void Invoke_ShowDoubleClickHint () => LogHint(GetLanguage(LanguageData.Hint_DoubleClick));
-
-
 		// Clear
 		private void ClearChapterContent () {
 			int len = m_ChapterContent.childCount;
@@ -632,6 +633,9 @@
 				DestroyImmediate(m_MoveProjectContent.GetChild(0).gameObject, false);
 			}
 		}
+
+
+		private void InvokeOpen (float dely = 0.01f) => Invoke("OpenLogic", dely);
 
 
 		#endregion

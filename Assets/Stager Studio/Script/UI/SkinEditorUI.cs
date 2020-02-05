@@ -34,6 +34,7 @@
 		public int EditingFrame { get; private set; } = 0;
 		public string SkinName { get => m_SkinNameIF.text; set => m_SkinNameIF.text = value; }
 		public string SkinAuthor { get => m_SkinAuthorIF.text; set => m_SkinAuthorIF.text = value; }
+		public bool ApplyToAllSprite { get; private set; } = false;
 
 		// Ser
 		[SerializeField] private SkinEditorPainterUI m_Painter = null;
@@ -41,6 +42,7 @@
 		[SerializeField] private InputField m_SkinAuthorIF = null;
 		[SerializeField] private InputField m_ScaleMutiIF = null;
 		[SerializeField] private InputField m_LuminWidthAppendIF = null;
+		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_NoteThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Image m_Background = null;
@@ -105,11 +107,17 @@
 				}
 			});
 
-			// Luminous Width Append
+			// Luminous Append
 			m_LuminWidthAppendIF.onEndEdit.AddListener((str) => {
 				if (float.TryParse(str, out float lwa)) {
-					Data.LuminousWidthAppend_UI = lwa;
-					m_LuminWidthAppendIF.text = Data.LuminousWidthAppend_UI.ToString();
+					Data.LuminousAppendX = Mathf.Clamp(lwa, -1f, 1f);
+					m_LuminWidthAppendIF.text = Data.LuminousAppendX.ToString();
+				}
+			});
+			m_LuminHeightAppendIF.onEndEdit.AddListener((str) => {
+				if (float.TryParse(str, out float lwa)) {
+					Data.LuminousAppendY = Mathf.Clamp(lwa, -1f, 1f);
+					m_LuminHeightAppendIF.text = Data.LuminousAppendY.ToString();
 				}
 			});
 
@@ -158,6 +166,7 @@
 			DialogUtil.Dialog_OK_Cancel(DIALOG_CloseConfirm, DialogUtil.MarkType.Warning, () => {
 				Skin.SaveSkin(Data, SkinName);
 				Skin.ReloadSkin();
+				Resources.UnloadUnusedAssets();
 				StagerStudio.Main.UI_SpawnSetting();
 			});
 		}
@@ -172,8 +181,9 @@
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				// Scale Muti
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
-				// Luminous Width Append
-				m_LuminWidthAppendIF.text = data.LuminousWidthAppend_UI.ToString();
+				// Luminous Append
+				m_LuminWidthAppendIF.text = data.LuminousAppendX.ToString();
+				m_LuminHeightAppendIF.text = data.LuminousAppendY.ToString();
 				// Note Thickness
 				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
 				// Loop
@@ -235,6 +245,11 @@
 
 
 		public void UI_SetDarkBackground (bool dark) => m_Background.color = dark ? new Color(0.055f, 0.055f, 0.055f, 1f) : Color.white;
+
+
+		public void UI_SetApplyAllSprite (bool apply) {
+			ApplyToAllSprite = apply;
+		}
 
 
 		#endregion

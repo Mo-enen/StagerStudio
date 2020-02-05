@@ -9,8 +9,7 @@
 	public class Stage : StageObject {
 
 
-		// Var
-		private const float TRANSATION_DURATION = 0.22f;
+		// VAR
 		private StageRenderer JudgelineRenderer => m_JudgelineRenderer;
 		[SerializeField] private StageRenderer m_JudgelineRenderer = null;
 
@@ -49,9 +48,10 @@
 			float height = GetStageHeight(stageData, musicTime);
 			bool noDisc = disc < DISC_GAP;
 			float stageScaleY = Mathf.Max(zoneSize * (noDisc ? height : width), 0.00001f);
+			var stagePos = GetStagePosition(stageData, musicTime);
 
 			// Movement
-			transform.position = GetStageWorldPosition(stageData, musicTime);
+			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
 			transform.localRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData, musicTime));
 			transform.localScale = new Vector3(zoneSize * width, stageScaleY, 1f);
 			JudgelineRenderer.transform.localScale = new Vector3(1f, Note.NoteThickness / stageScaleY, 1f);
@@ -81,13 +81,6 @@
 			base.SetSkinData(skin, layerID, orderID);
 			JudgelineRenderer.SkinData = skin;
 			JudgelineRenderer.SetSortingLayer(layerID, orderID + 1);
-		}
-
-
-		public static Vector3 GetStageWorldPosition (Beatmap.Stage data, float musicTime) {
-			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
-			var stagePos = new Vector2(data.X, data.Y) + Evaluate(data.Positions, musicTime - data.Time);
-			return Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
 		}
 
 
@@ -124,23 +117,21 @@
 		public static bool GetStageActive (Beatmap.Stage data, float musicTime) => musicTime > data.Time - TRANSATION_DURATION && musicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static (Vector2 pos, Vector2 zero, float rot) Inside (Beatmap.Stage stage, float musicTime, float x01, float y01) {
-			Vector2 stagePos = GetStagePosition(stage, musicTime);
-			float stageWidth = GetStageWidth(stage, musicTime);
-			float stageHeight = GetStageHeight(stage, musicTime);
-			float rotZ = GetStageWorldRotationZ(stage, musicTime);
-			float disc = GetStageDisc(stage, musicTime);
+		public static (Vector2 pos, Vector2 zero, float rot) Inside (
+			float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight,
+			float stageRotZ, float disc
+		) {
 			float halfWidth = stageWidth * 0.5f;
 			if (disc < DISC_GAP) {
 				x01 = Mathf.LerpUnclamped(stagePos.x - halfWidth, stagePos.x + halfWidth, x01);
 				return (
-					(Vector2)(Quaternion.Euler(0f, 0f, rotZ) * (
+					(Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (
 					new Vector2(
 						x01,
 						Mathf.LerpUnclamped(stagePos.y, stagePos.y + stageHeight, y01)
 					) - stagePos)) + stagePos,
-					(Vector2)(Quaternion.Euler(0f, 0f, rotZ) * (new Vector2(x01, stagePos.y) - stagePos)) + stagePos,
-					rotZ
+					(Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (new Vector2(x01, stagePos.y) - stagePos)) + stagePos,
+					stageRotZ
 				);
 			} else {
 				float scope = stageWidth > 0.0001f ? stageHeight / stageWidth : 0f;
@@ -150,11 +141,11 @@
 				newOne.x = Mathf.LerpUnclamped(stagePos.x - halfWidth, stagePos.x + halfWidth, newOne.x);
 				newZero.y -= disc / 720f;
 				newOne.y -= disc / 720f;
-				Vector2 zero = (Vector2)(Quaternion.Euler(0f, 0f, rotZ) * (new Vector2(
+				Vector2 zero = (Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (new Vector2(
 					newZero.x,
 					Mathf.LerpUnclamped(stagePos.y, stagePos.y + stageWidth, newZero.y)
 				) - stagePos)) + stagePos;
-				Vector2 one = (Vector2)(Quaternion.Euler(0f, 0f, rotZ) * (new Vector2(
+				Vector2 one = (Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (new Vector2(
 					newOne.x,
 					Mathf.LerpUnclamped(stagePos.y, stagePos.y + stageWidth, newOne.y)
 				) - stagePos)) + stagePos;
@@ -167,11 +158,11 @@
 		}
 
 
-		// LGC
-		private static Vector2 GetStagePosition (Beatmap.Stage data, float musicTime) =>
+		public static Vector2 GetStagePosition (Beatmap.Stage data, float musicTime) =>
 			new Vector2(data.X, data.Y) + Evaluate(data.Positions, musicTime - data.Time);
 
 
+		// LGC
 		private static Color GetStageColor (Beatmap.Stage data, float musicTime) {
 			if (data.Colors is null) {
 				return PaletteColor(data.Color);
@@ -179,6 +170,7 @@
 				return PaletteColor(data.Color) * EvaluateColor(data.Colors, musicTime - data.Time);
 			}
 		}
+
 
 
 	}

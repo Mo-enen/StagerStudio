@@ -1826,7 +1826,6 @@ MonoBehaviour:
   m_MoveProjectContent: {fileID: 1495198464}
   m_MoveProjectRoot: {fileID: 2077047479}
   m_NoProjectHint: {fileID: 468612698}
-  m_Bar: {fileID: 1443414470}
   m_ChapterItemPrefab: {fileID: 7398630293454224618, guid: a3141b52f9ab76e4b9c8d4a9d7462125,
     type: 3}
   m_ChapterItemAltPrefab: {fileID: 7398630293454224618, guid: fbfd485510b3c1d40bfc736440fdf199,
@@ -11253,7 +11252,6 @@ MonoBehaviour:
   - {fileID: 1784150844}
   - {fileID: 1916953320}
   - {fileID: 377318581}
-  m_Home: {fileID: 213184615}
   m_Background: {fileID: 40944130}
   m_Progress: {fileID: 1876790200}
   m_Hint: {fileID: 797034088}
@@ -12018,37 +12016,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultSkin:
-    Author: "Stager\u5B98\u65B9"
-    ScaleMuti: 4
-    NoteThickness: 0.015
-    LuminousWidthAppend: 0
+    Author: "\u6211"
+    ScaleMuti: 4000
+    NoteThickness: 0.036
+    LuminousAppendX: 0
+    LuminousAppendY: 0
     Items:
-    - Loop: 0
-      Rects: []
-      FrameDuration: 120
-    - Loop: 0
-      Rects: []
-      FrameDuration: 121
-    - Loop: 1
-      Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
-      FrameDuration: 120
     - Loop: 1
       Rects: []
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
+      - X: 384
+        Y: 15
+        Width: 128
+        Height: 178
         BorderU: 0
         BorderD: 0
         BorderL: 0
@@ -12056,73 +12038,250 @@ MonoBehaviour:
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
-        BorderU: 0
+      - X: 384
+        Y: 205
+        Width: 128
+        Height: 263
+        BorderU: 103
+        BorderD: 8
+        BorderL: 52
+        BorderR: 52
+      FrameDuration: 120
+    - Loop: 1
+      Rects:
+      - X: 16
+        Y: 589
+        Width: 356
+        Height: 111
+        BorderU: 37
+        BorderD: 58
+        BorderL: 173
+        BorderR: 173
+      FrameDuration: 120
+    - Loop: 1
+      Rects:
+      - X: 14
+        Y: 14
+        Width: 356
+        Height: 180
+        BorderU: 52
+        BorderD: 58
+        BorderL: 172
+        BorderR: 172
+      FrameDuration: 120
+    - Loop: 1
+      Rects:
+      - X: 16
+        Y: 204
+        Width: 356
+        Height: 180
+        BorderU: 55
+        BorderD: 59
+        BorderL: 168
+        BorderR: 169
+      FrameDuration: 120
+    - Loop: 1
+      Rects:
+      - X: 20
+        Y: 714
+        Width: 188
+        Height: 351
+        BorderU: 351
         BorderD: 0
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
-      FrameDuration: 123
-    - Loop: 1
-      Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
+      - X: 16
+        Y: 396
+        Width: 356
+        Height: 180
+        BorderU: 83
+        BorderD: 82
+        BorderL: 170
+        BorderR: 170
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
-        BorderU: 0
+      - X: 220
+        Y: 714
+        Width: 135
+        Height: 355
+        BorderU: 355
         BorderD: 0
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
+      - X: 570
+        Y: 809
+        Width: 552
+        Height: 252
         BorderU: 0
-        BorderD: 0
+        BorderD: 252
         BorderL: 0
         BorderR: 0
-      FrameDuration: 120
+      - X: 1132
+        Y: 809
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      - X: 570
+        Y: 545
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 1132
+        Y: 545
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 570
+        Y: 282
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 1132
+        Y: 282
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 570
+        Y: 19
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      - X: 1132
+        Y: 19
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      FrameDuration: 40
     - Loop: 1
       Rects:
-      - X: 0
-        Y: 0
-        Width: 0
-        Height: 0
+      - X: 1693
+        Y: 18
+        Width: 243
+        Height: 97
         BorderU: 0
-        BorderD: 0
+        BorderD: 97
         BorderL: 0
         BorderR: 0
-      FrameDuration: 120
+      - X: 1693
+        Y: 119
+        Width: 243
+        Height: 97
+        BorderU: 0
+        BorderD: 97
+        BorderL: 0
+        BorderR: 0
+      - X: 1693
+        Y: 220
+        Width: 243
+        Height: 97
+        BorderU: 0
+        BorderD: 97
+        BorderL: 0
+        BorderR: 0
+      - X: 1693
+        Y: 322
+        Width: 243
+        Height: 97
+        BorderU: 0
+        BorderD: 97
+        BorderL: 0
+        BorderR: 0
+      FrameDuration: 30
     - Loop: 1
-      Rects: []
-      FrameDuration: 120
+      Rects:
+      - X: 7
+        Y: 1613
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      - X: 569
+        Y: 1613
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      - X: 1128
+        Y: 1613
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 7
+        Y: 1349
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 569
+        Y: 1349
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 1128
+        Y: 1350
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      - X: 7
+        Y: 1086
+        Width: 552
+        Height: 253
+        BorderU: 0
+        BorderD: 253
+        BorderL: 0
+        BorderR: 0
+      - X: 570
+        Y: 1086
+        Width: 552
+        Height: 252
+        BorderU: 0
+        BorderD: 252
+        BorderL: 0
+        BorderR: 0
+      FrameDuration: 40
     - Loop: 1
       Rects: []
       FrameDuration: 120
@@ -15420,8 +15579,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.LuminousWidth
-  - Lum Width
+  - UI.SkinEditor.LuminousHeight
+  - Lum Height
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -15968,6 +16127,8 @@ MonoBehaviour:
   - Show Sound Wave
   - UI.Setting.Zone
   - Show Stage Range
+  - UI.SkinEditor.ApplyAllSprite
+  - Apply to All Sprites
   - UI.SkinEditor.DarkBG
   - Dark
   - UI.SkinEditor.Duration
@@ -15978,6 +16139,8 @@ MonoBehaviour:
   - Import Image
   - UI.SkinEditor.Loop
   - Loop
+  - UI.SkinEditor.LuminousWidth
+  - Lum Width
   - UI.SkinEditor.NoteThickness
   - Note Thick
   - UI.SkinEditor.PingPong

@@ -197,11 +197,14 @@ TextureImporter:
   - first:
       213: 7698148936575896213
     second: Home
+  - first:
+      213: 303197491328815229
+    second: Check
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 1
+    enableMipMap: 0
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -215,7 +218,7 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
-  isReadable: 1
+  isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   grayScaleToAlpha: 0
@@ -1224,6 +1227,27 @@ TextureImporter:
       bones: []
       spriteID: f5bc6959506906341b4db8b8c4c7e3a0
       internalID: 7698148936575896213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Check
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 214
+        width: 40
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d70917f038c253400800000000000000
+      internalID: 303197491328815229
       vertices: []
       indices: 
       edges: []

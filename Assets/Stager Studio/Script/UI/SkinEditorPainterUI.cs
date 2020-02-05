@@ -269,6 +269,7 @@
 				aimPos01.y = Snap01(aimPos01.y, tHeight);
 				rData.X = Mathf.Clamp(Mathf.RoundToInt(aimPos01.x * tWidth), 0, tWidth - rData.Width);
 				rData.Y = Mathf.Clamp(Mathf.RoundToInt(aimPos01.y * tHeight), 0, tHeight - rData.Height);
+				ani.Rects[SelectingRectIndex] = rData;
 			} else {
 				aimPos01.x = Snap01(aimPos01.x, tWidth);
 				aimPos01.y = Snap01(aimPos01.y, tHeight);
@@ -302,9 +303,9 @@
 				rData.BorderD = Mathf.Clamp(rData.BorderD, 0, rData.Height);
 				rData.BorderL = Mathf.Clamp(rData.BorderL, 0, rData.Width);
 				rData.BorderR = Mathf.Clamp(rData.BorderR, 0, rData.Width);
+				ani.Rects[SelectingRectIndex] = rData;
 			}
 			// Final
-			ani.Rects[SelectingRectIndex] = rData;
 			RefreshRectPosition(SelectingRectIndex, rData, tWidth, tHeight);
 			SetSelection(SelectingRectIndex);
 		}
@@ -347,8 +348,18 @@
 					);
 				}
 			}
-			// Final
+			// Apply
 			ani.Rects[SelectingRectIndex] = rData;
+			if (m_Editor.ApplyToAllSprite) {
+				for (int i = 0; i < ani.Rects.Count; i++) {
+					var r = ani.Rects[i];
+					r.BorderU = Mathf.Clamp(rData.BorderU, 0, rData.Height);
+					r.BorderD = Mathf.Clamp(rData.BorderD, 0, rData.Height);
+					r.BorderL = Mathf.Clamp(rData.BorderL, 0, rData.Width);
+					r.BorderR = Mathf.Clamp(rData.BorderR, 0, rData.Width);
+					ani.Rects[i] = r;
+				}
+			}
 			SetSelection(SelectingRectIndex);
 		}
 

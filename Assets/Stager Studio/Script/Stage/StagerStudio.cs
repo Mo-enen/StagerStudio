@@ -67,7 +67,6 @@
 		[Header("UI")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
-		[SerializeField] private HomeUI m_Home = null;
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
 		[SerializeField] private HintBarUI m_Hint = null;
@@ -151,7 +150,6 @@
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
 			StageLanguage.OnLanguageLoaded = () => {
-				m_Home.RefreshBarUI();
 				TryRefreshSetting();
 				ReloadSSLanguageTexts();
 			};
@@ -195,6 +193,7 @@
 			StageObject.GetZoneMinMax = m_Zone.GetZoneMinMax;
 			StageObject.GetMusicTime = () => Music.Time;
 			StageObject.GetBeatmap = () => Project.Beatmap;
+			StageObject.GetMusicPlaying = () => Music.IsPlaying;
 			Note.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
@@ -358,6 +357,7 @@
 				TryRefreshSetting();
 				Game.ClearAllContainers();
 				Note.NoteThickness = data.NoteThickness;
+				Luminous.SetLuminousSkin(data);
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();

@@ -26,7 +26,7 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 
 		// Short
-		private StageProject Project => _Project ?? (_Project = FindObjectOfType<StageProject>());
+		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 
 		// Ser
 		[SerializeField] private HomeUI m_Home = null;
@@ -113,7 +113,6 @@
 
 				// Show
 				m_Home.gameObject.SetActive(true);
-				m_Home.RefreshBarUI();
 
 				m_UIAni.SetTrigger(m_ShowHomeKey);
 				yield return new WaitForSeconds(m_Duration);

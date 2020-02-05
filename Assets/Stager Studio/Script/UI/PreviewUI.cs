@@ -83,7 +83,7 @@
 			}
 			foreach (var note in map.Notes) {
 				if (note is null) { continue; }
-				NoteList.Add((GetMusicTime01(note.Time), GetMusicTime01(Mathf.Max(note.Duration, 0.04f))));
+				NoteList.Add((GetMusicTime01(note.Time), GetMusicTime01(Mathf.Max(note.Duration, 0.1f))));
 			}
 			var rect = GetPixelAdjustedRect();
 			Fill(StageList, 0f, rect.height * 0.05f, m_StageColor);
