@@ -127,6 +127,7 @@
 
 
 		private void BeatmapUpdate () {
+			if (Music.IsPlaying) { return; }
 			var map = Project.Beatmap;
 			if (!(map is null)) {
 				// Has Beatmap
@@ -192,6 +193,7 @@
 
 
 		private void CacheUpdate () {
+			if (Music.IsPlaying) { return; }
 			// Speed Curve
 			if (Project.Beatmap is null || Project.Beatmap.SpeedNotes is null || Project.Beatmap.SpeedNotes.Count == 0) {
 				if (SpeedCurve.Count > 0) {
@@ -219,6 +221,7 @@
 
 
 		private void MouseUpdate () {
+			if (Music.IsPlaying) { return; }
 			// Wheel
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
 				if (CheckAntiMouse()) {

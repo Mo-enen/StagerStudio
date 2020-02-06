@@ -9,13 +9,31 @@
 	public class Luminous : StageObject {
 
 
+
+
+		#region --- VAR ---
+
+
 		// Data
 		private readonly static float[] LuminousDuration = { 0f, 0f, 0f, };
 		private static Vector2 LuminousAppend = Vector2.zero;
 		private bool MovementDirty = true;
 
 
-		// MSG
+		#endregion
+
+
+
+
+		#region --- MSG ---
+
+
+		private void Awake () {
+			MainRenderer.Pivot = new Vector3(0.5f, 0f);
+
+		}
+
+
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
@@ -31,7 +49,7 @@
 				MovementDirty = true;
 				SkinType type =
 					noteData.Duration > DURATION_GAP && musicTime < noteEndTime ? SkinType.HoldLuminous :
-					noteData.SwipeX.HasValue || noteData.SwipeY.HasValue ? SkinType.ArrowLuminous :
+					noteData.SwipeX != 1 || noteData.SwipeY != 1 ? SkinType.ArrowLuminous :
 					SkinType.NoteLuminous;
 				Duration = type == SkinType.NoteLuminous ? LuminousDuration[0] :
 					 type == SkinType.HoldLuminous ? LuminousDuration[1] : LuminousDuration[2];
@@ -66,26 +84,24 @@
 
 			Time = noteData.Time;
 			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
-			float disc = Stage.GetStageDisc(linkedStage, musicTime);
 			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
 			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
 			float trackX = Track.GetTrackX(linkedTrack, musicTime);
 			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
-			float trackRotX = Track.GetTrackRotation(linkedTrack, musicTime);
-			bool noDisc = disc < DISC_GAP;
+			float trackRotX = Stage.GetStageAngle(linkedStage, musicTime);
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			var (pos, _, rotZ) = Track.Inside(
 				noteData.X, 0f,
 				stagePos, stageWidth, stageHeight, stageRotZ,
-				trackX, trackWidth, trackRotX, disc
+				trackX, trackWidth, trackRotX
 			);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
-			transform.localScale = new Vector3(
-				zoneSize * (stageWidth * (noDisc ? trackWidth * noteData.Width : 1f) + LuminousAppend.x),
+			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
+			MainRenderer.transform.localScale = new Vector3(
+				zoneSize * (stageWidth * trackWidth * noteData.Width + LuminousAppend.x),
 				zoneSize * LuminousAppend.y,
 				1f
 			);
@@ -94,20 +110,22 @@
 			MainRenderer.LifeTime = musicTime > noteEndTime ? musicTime - noteEndTime : musicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, 1f);
-			MainRenderer.Disc = disc;
-			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-			if (disc >= DISC_GAP) {
-				MainRenderer.DiscOffsetY = 0f;
-				MainRenderer.DiscWidth = trackWidth * noteData.Width;
-				MainRenderer.DiscHeight = zoneSize * LuminousAppend.y;
-			}
+
+
 
 			// Final
 			MovementDirty = false;
 		}
 
 
-		// API
+		#endregion
+
+
+
+
+		#region --- API ---
+
+
 		public static void SetLuminousSkin (SkinData skin) {
 			LuminousAppend.x = skin is null ? 0f : skin.LuminousAppendX;
 			LuminousAppend.y = skin is null ? 0f : skin.LuminousAppendY;
@@ -118,6 +136,10 @@
 			LuminousDuration[1] = lumAni1 is null ? 0f : lumAni1.TotalDuration;
 			LuminousDuration[2] = lumAni2 is null ? 0f : lumAni2.TotalDuration;
 		}
+
+
+		#endregion
+
 
 
 

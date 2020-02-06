@@ -51,7 +51,6 @@
 			Range_Stage_Rotation,
 			Range_Stage_Size,
 			Range_Stage_Speed,
-			Range_Stage_Disc,
 
 			Range_Track_Position,
 			Range_Track_Rotation,

@@ -1,5 +1,5 @@
-﻿UI.SkinEditor.LuminousHeight
-Lum Height
+﻿UI.SkinEditor.PoleThickness
+Pole Thick
 
 Author
 Stager Official
@@ -240,9 +240,6 @@ Created as invisible stage / track project, unlimited position and width for not
 
 ProjectCreator.Hint.Dynamix
 Create as traditional triple-line project, stages and tracks will be create automatically, you only need to edit the notes.
-
-ProjectCreator.Hint.Lanota
-Create as circle stage, trackless project. Unlimited note x position, allow to use vertical swipe note.
 
 ProjectCreator.Hint.StagerStudio
 Create as standard StageStudio project, all features will be allowed to use.
@@ -828,6 +825,9 @@ Import Image
 
 UI.SkinEditor.Loop
 Loop
+
+UI.SkinEditor.LuminousHeight
+Lum Height
 
 UI.SkinEditor.LuminousWidth
 Lum Width

@@ -9,6 +9,7 @@
 
 
 
+
 		public static void DestroyAllChildImmediately (this Transform transform) {
 			int len = transform.childCount;
 			for (int i = 0; i < len; i++) {

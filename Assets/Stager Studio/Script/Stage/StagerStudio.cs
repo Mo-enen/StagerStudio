@@ -356,7 +356,7 @@
 			StageSkin.OnSkinLoaded = (data) => {
 				TryRefreshSetting();
 				Game.ClearAllContainers();
-				Note.NoteThickness = data.NoteThickness;
+				Note.SetNoteSkin(data);
 				Luminous.SetLuminousSkin(data);
 			};
 			StageSkin.OnSkinDeleted = () => {

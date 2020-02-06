@@ -104,29 +104,29 @@
 		[System.Serializable]
 		public class Stage {
 			// SER-API
-			public float Time;
-			public float Duration;
-			public float Speed;
-			public float X;
-			public float Y;
-			public float Width;
-			public float Height;
-			public float Rotation;
-			public float Disc;
-			public byte Color;
+			public float Time = 0f;
+			public float Duration = 0f;
+			public float Speed = 1f;
+			public float X = 0f;
+			public float Y = 0f;
+			public float Width = 1f;
+			public float Height = 1f;
+			public float Rotation = 0f;
+			public byte Color = 0;
+			public float Angle = 0f;
+			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatFloatTween> Positions;
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
-			public List<TimeFloatTween> Rotations;
-			public List<TimeFloatTween> Discs;
+			public List<TimeFloatTween> Angles;
 			public List<TimeByteTween> Colors;
 			// API
 			public int GetMotionCount () =>
 				(Positions is null ? 1 : (Positions.Count + 1)) +
+				(Positions is null ? 1 : (Positions.Count + 1)) +
 				(Widths is null ? 1 : (Widths.Count + 1)) +
 				(Heights is null ? 1 : (Heights.Count + 1)) +
-				(Rotations is null ? 1 : (Rotations.Count + 1)) +
-				(Discs is null ? 1 : (Discs.Count + 1)) +
+				(Angles is null ? 1 : (Angles.Count + 1)) +
 				(Colors is null ? 1 : (Colors.Count + 1));
 		}
 
@@ -134,22 +134,19 @@
 
 		[System.Serializable]
 		public class Track {
-			public int StageIndex;
-			public float Time;
-			public float Duration;
-			public bool HasTray;
-			public float X;
-			public float Rotation;
-			public float Width;
-			public byte Color;
+			public int StageIndex = -1;
+			public float Time = 0f;
+			public float Duration = 0f;
+			public bool HasTray = false;
+			public float X = 0f;
+			public float Width = 1f;
+			public byte Color = 0;
 			public List<TimeFloatTween> Xs;
-			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatTween> Widths;
 			public List<TimeByteTween> Colors;
 			// API
 			public int GetMotionCount () =>
 				(Xs is null ? 1 : (Xs.Count + 1)) +
-				(Rotations is null ? 1 : (Rotations.Count + 1)) +
 				(Widths is null ? 1 : (Widths.Count + 1)) +
 				(Colors is null ? 1 : (Colors.Count + 1));
 		}
@@ -159,44 +156,23 @@
 		[System.Serializable]
 		public class Note {
 
-			// API
-			public bool? SwipeX {
-				get {
-					if (m_SwipeX == 0) {
-						return null;
-					} else {
-						return m_SwipeX == 1;
-					}
-				}
-				set {
-					m_SwipeX = (byte)(value.HasValue ? value.Value ? 1 : 2 : 0);
-				}
-			}
-
-			public bool? SwipeY {
-				get {
-					if (m_SwipeY == 0) {
-						return null;
-					} else {
-						return m_SwipeY == 1;
-					}
-				}
-				set {
-					m_SwipeY = (byte)(value.HasValue ? value.Value ? 1 : 2 : 0);
-				}
-			}
-
 			// SER-API
-			public int TrackIndex;
-			public int LinkedNoteIndex;
-			public float Time;
-			public float Duration;
-			public float X;
-			public float Width;
-			public byte ClickSoundIndex;
-			public bool Tap;
-			public byte m_SwipeX;
-			public byte m_SwipeY;
+			public int TrackIndex = -1;
+			public int LinkedNoteIndex = -1;
+			public float Time = 0f;
+			public float Duration = 0f;
+			public float X = 0f;
+			public float Width = 1f;
+			public byte ClickSoundIndex = 0;
+			public bool Tap = true;
+			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
+			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
+
+			// Cache
+			[System.NonSerialized] public float AppearTime = 0f;
+			[System.NonSerialized] public float SpeedMuti = float.MinValue;
+			[System.NonSerialized] public float NoteDropStart = float.MinValue;
+			[System.NonSerialized] public float NoteDropEnd = float.MinValue;
 
 		}
 
@@ -221,19 +197,19 @@
 			Time = 0f,
 			Duration = float.MaxValue,
 			Color = PALETTE_CLEAR,
-			Disc = 0f,
 			Rotation = 0f,
 			Height = 1f,
 			Width = 1f,
 			X = 0.5f,
 			Y = 0f,
 			Speed = 1f,
+			Angle = 0f,
 			Rotations = { },
 			Colors = { },
-			Discs = { },
 			Positions = { },
 			Heights = { },
 			Widths = { },
+			Angles = { },
 		};
 		public readonly static Track DEFAULT_TRACK = new Track() {
 			Time = 0f,
@@ -243,10 +219,8 @@
 			Width = 1f,
 			HasTray = false,
 			StageIndex = -1,
-			Rotation = 0f,
 			Xs = { },
 			Colors = { },
-			Rotations = { },
 			Widths = { },
 		};
 		public string Tag = "Normal";

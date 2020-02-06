@@ -9,12 +9,28 @@
 	public class Track : StageObject {
 
 
+
+		#region --- VAR ---
+
+
 		// Ser
 		[SerializeField] StageRenderer m_TrayRenderer = null;
 
 
+		#endregion
 
-		// MSG
+
+
+
+		#region --- MSG ---
+
+
+		private void Awake () {
+			MainRenderer.Pivot = m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
+
+		}
+
+
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
@@ -45,24 +61,18 @@
 			float trackWidth = GetTrackWidth(trackData, musicTime);
 			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
 			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float disc = Stage.GetStageDisc(linkedStage, musicTime);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
 			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
-			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData, musicTime), 0f, stagePos, stageWidth, stageHeight, stageRotZ, disc);
+			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData, musicTime), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(GetTrackRotation(trackData, musicTime), 0, 0);
-			transform.localScale = disc < DISC_GAP ?
-				new Vector3(
-					zoneSize * trackWidth * stageWidth,
-					zoneSize * stageHeight,
-					1f
-				) : new Vector3(
-					zoneSize * stageWidth,
-					zoneSize * stageWidth,
-					1f
-				);
+			MainRenderer.transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage, musicTime), 0, 0);
+			MainRenderer.transform.localScale = new Vector3(
+				zoneSize * trackWidth * stageWidth,
+				zoneSize * stageHeight,
+				1f
+			);
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
@@ -72,15 +82,20 @@
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageWidth);
 			MainRenderer.Tint = GetTrackColor(trackData, musicTime);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) * GetTrackAlpha(trackData, musicTime, TRANSATION_DURATION);
-			MainRenderer.Disc = disc;
-			MainRenderer.DiscWidth = trackWidth;
-			MainRenderer.DiscHeight = stageHeight / Mathf.Max(stageWidth, 0.0000001f);
-			MainRenderer.Pivot = m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
+
+
 
 		}
 
 
-		// API
+		#endregion
+
+
+
+
+		#region --- API ---
+
+
 		public static float GetTrackWidth (Beatmap.Track data, float musicTime) {
 			return Mathf.Clamp(data.Width + Evaluate(data.Widths, musicTime - data.Time), 0f, 2f);
 		}
@@ -92,12 +107,12 @@
 		public static (Vector3 pos, float rotX, float rotZ) Inside (
 			float x01, float y01,
 			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
-			float trackX, float trackWidth, float trackRotX, float disc
+			float trackX, float trackWidth, float trackRotX
 		) {
 			float halfTrackWidth = trackWidth * 0.5f;
 			var (pos, pivot, rotZ) = Stage.Inside(
 				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,
-				stagePos, stageWidth, stageHeight, stageRotZ, disc
+				stagePos, stageWidth, stageHeight, stageRotZ
 			);
 			return (
 				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
@@ -127,16 +142,16 @@
 		);
 
 
-		public static float GetTrackRotation (Beatmap.Track data, float musicTime) {
-			return data.Rotation + Evaluate(data.Rotations, musicTime - data.Time);
-		}
-
-
 		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
 			base.SetSkinData(skin, layerID, orderID);
 			m_TrayRenderer.SkinData = skin;
 			m_TrayRenderer.SetSortingLayer(layerID, orderID + 1);
 		}
+
+
+		#endregion
+
+
 
 
 	}

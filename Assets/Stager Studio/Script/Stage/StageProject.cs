@@ -832,13 +832,14 @@
 				if (map is null) { continue; }
 				foreach (var stage in map.Stages) {
 					FixBeatmapTweenValueIndexForDelete(stage.Colors, index, false);
-					FixBeatmapTweenValueIndexForDelete(stage.Discs, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Positions, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Rotations, index);
+					FixBeatmapTweenValueIndexForDelete(stage.Angles, index);
+					FixBeatmapTweenValueIndexForDelete(stage.Widths, index);
+					FixBeatmapTweenValueIndexForDelete(stage.Heights, index);
 				}
 				foreach (var track in map.Tracks) {
 					FixBeatmapTweenValueIndexForDelete(track.Xs, index);
-					FixBeatmapTweenValueIndexForDelete(track.Rotations, index);
 					FixBeatmapTweenValueIndexForDelete(track.Widths, index);
 					FixBeatmapTweenValueIndexForDelete(track.Colors, index, false);
 				}
@@ -1217,12 +1218,13 @@
 					FixRange_TBT(stage.Colors, palLen);
 					FixRange_TFFT(stage.Positions);
 					FixRange_TFT(stage.Rotations);
-					FixRange_TFT(stage.Discs);
+					FixRange_TFT(stage.Angles);
+					FixRange_TFT(stage.Widths);
+					FixRange_TFT(stage.Heights);
 				}
 				foreach (var track in map.Tracks) {
 					FixRange_TBT(track.Colors, palLen);
 					FixRange_TFT(track.Xs);
-					FixRange_TFT(track.Rotations);
 					FixRange_TFT(track.Widths);
 				}
 			}

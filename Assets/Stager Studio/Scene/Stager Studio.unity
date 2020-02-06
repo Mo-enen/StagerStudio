@@ -12019,6 +12019,7 @@ MonoBehaviour:
     Author: "\u6211"
     ScaleMuti: 4000
     NoteThickness: 0.036
+    PoleThickness: 0.007
     LuminousAppendX: 0
     LuminousAppendY: 0
     Items:
@@ -15579,8 +15580,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.LuminousHeight
-  - Lum Height
+  - UI.SkinEditor.PoleThickness
+  - Pole Thick
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -15743,9 +15744,6 @@ MonoBehaviour:
   - ProjectCreator.Hint.Dynamix
   - Create as traditional triple-line project, stages and tracks will be create automatically,
     you only need to edit the notes.
-  - ProjectCreator.Hint.Lanota
-  - Create as circle stage, trackless project. Unlimited note x position, allow to
-    use vertical swipe note.
   - ProjectCreator.Hint.StagerStudio
   - Create as standard StageStudio project, all features will be allowed to use.
   - ProjectCreator.Hint.Voez
@@ -16139,6 +16137,8 @@ MonoBehaviour:
   - Import Image
   - UI.SkinEditor.Loop
   - Loop
+  - UI.SkinEditor.LuminousHeight
+  - Lum Height
   - UI.SkinEditor.LuminousWidth
   - Lum Width
   - UI.SkinEditor.NoteThickness

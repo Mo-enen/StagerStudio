@@ -25,6 +25,7 @@
 		private const string PAINTER_MENU_KEY = "Menu.SkinEditor.Painter";
 		private const string DIALOG_CloseConfirm = "SkinEditor.Dialog.CloseConfirm";
 		private const string DIALOG_ImportImageTitle = "SkinEditor.Dialog.ImportImageTitle";
+		private const int TEXTURE_MAX_SIZE = 1024;
 
 		// API
 		public static LanguageHandler GetLanguage { get; set; } = null;
@@ -44,6 +45,7 @@
 		[SerializeField] private InputField m_LuminWidthAppendIF = null;
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_NoteThicknessIF = null;
+		[SerializeField] private InputField m_PoleThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
@@ -129,6 +131,14 @@
 				}
 			});
 
+			// Pole Thickness
+			m_PoleThicknessIF.onEndEdit.AddListener((str) => {
+				if (float.TryParse(str, out float thick)) {
+					Data.PoleThickness_UI = thick;
+					m_PoleThicknessIF.text = Data.PoleThickness_UI.ToString();
+				}
+			});
+
 			// Type TGs
 			int len = m_TypeTgContainer.childCount;
 			for (int i = 0; i < len; i++) {
@@ -186,6 +196,8 @@
 				m_LuminHeightAppendIF.text = data.LuminousAppendY.ToString();
 				// Note Thickness
 				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
+				// Pole Thickness
+				m_PoleThicknessIF.text = data.PoleThickness_UI.ToString();
 				// Loop
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
@@ -207,7 +219,6 @@
 
 		// UI
 		public void UI_ImportImage () {
-			const int TEXTURE_MAX_SIZE = 2048;
 			if (Data is null) { return; }
 			var path = DialogUtil.PickFileDialog(DIALOG_ImportImageTitle, "image", "png", "jpg");
 			if (string.IsNullOrEmpty(path)) { return; }

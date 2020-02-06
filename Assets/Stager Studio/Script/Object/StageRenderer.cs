@@ -14,7 +14,6 @@
 		#region --- VAR ---
 
 		// Const
-		private const float DISC_GAP = 0.001f;
 		private const float SCALE_GAP = 0.0001f;
 
 		// API
@@ -40,6 +39,7 @@
 			set {
 				if (value != _TypeIndex) {
 					_TypeIndex = value;
+					Frame = 0;
 					SetDirty();
 				}
 			}
@@ -77,40 +77,6 @@
 				byte a = (byte)Mathf.RoundToInt(value * byte.MaxValue);
 				if (a != _Tint.a) {
 					_Tint.a = a;
-					SetDirty();
-				}
-			}
-		}
-		public float Disc {
-			get => _Disc;
-			set {
-				if (Mathf.Abs(value - _Disc) > 0.0001f) {
-					_Disc = value;
-					SetDirty();
-					ReCalculateFrame();
-				}
-			}
-		}
-		public float DiscWidth {
-			get => _DiscWidth; set {
-				if (Mathf.Abs(value - _DiscWidth) > 0.0001f) {
-					_DiscWidth = value;
-					SetDirty();
-				}
-			}
-		}
-		public float DiscHeight {
-			get => _DiscHeight; set {
-				if (Mathf.Abs(value - _DiscHeight) > 0.0001f) {
-					_DiscHeight = value;
-					SetDirty();
-				}
-			}
-		}
-		public float DiscOffsetY {
-			get => _DiscOffsetY; set {
-				if (Mathf.Abs(value - _DiscOffsetY) > 0.0001f) {
-					_DiscOffsetY = value;
 					SetDirty();
 				}
 			}
@@ -157,10 +123,6 @@
 		private Vector2 _Scale = Vector2.one;
 		private Color32 _Tint = Color.white;
 		private SkinType _TypeIndex = SkinType.Stage;
-		private float _Disc = 0f;
-		private float _DiscWidth = 1f;
-		private float _DiscHeight = 1f;
-		private float _DiscOffsetY = 0f;
 		private float _LifeTime = 0f;
 
 		// Cache
@@ -198,10 +160,8 @@
 			Color tint = Tint;
 			float pivotX = Pivot.x;
 			float pivotY = Pivot.y;
-			float disc = Mathf.Clamp(Disc, 0f, 360f);
 			float tWidth = SkinData.Texture.width;
 			float tHeight = SkinData.Texture.height;
-			bool disced = disc >= DISC_GAP;
 			// Add Rect Mesh Cache
 			if (rData.BorderL <= 0 && rData.BorderR <= 0 && rData.BorderD <= 0 && rData.BorderU <= 0) {
 				// No Border
@@ -296,76 +256,29 @@
 				Triangles.Clear();
 			}
 			void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU) {
-				const float BASIC_STEP_ANGLE = 6f;
 				int vIndex = Vertices.Count;
-				if (disced) {
-					// Rect
-					int step = Mathf.RoundToInt((r - l) * Mathf.Max(disc / BASIC_STEP_ANGLE, 12f)) + 1;
-					float x = 0f;
-					Vector2 a, b;
-					for (int i = 0; i <= step; i++, x += 1f / step) {
-						// Vert
-						a = Util.GetDisc01(new Vector2(Mathf.Lerp(l, r, x), d),
-							disc, DiscWidth, DiscHeight, DiscOffsetY
-						);
-						b = Util.GetDisc01(new Vector2(Mathf.Lerp(l, r, x), u),
-							disc, DiscWidth, DiscHeight, DiscOffsetY
-						);
-						a.x -= pivotX;
-						b.x -= pivotX;
-						a.y -= pivotY;
-						b.y -= pivotY;
-						Vertices.Add(a);
-						Vertices.Add(b);
-						// Tri
-						if (i < step) {
-							if (x > 0.5f) {
-								Triangles.Add(vIndex + i * 2 + 0);
-								Triangles.Add(vIndex + i * 2 + 1);
-								Triangles.Add(vIndex + i * 2 + 2);
-								Triangles.Add(vIndex + i * 2 + 2);
-								Triangles.Add(vIndex + i * 2 + 1);
-								Triangles.Add(vIndex + i * 2 + 3);
-							} else {
-								Triangles.Add(vIndex + i * 2 + 0);
-								Triangles.Add(vIndex + i * 2 + 1);
-								Triangles.Add(vIndex + i * 2 + 3);
-								Triangles.Add(vIndex + i * 2 + 0);
-								Triangles.Add(vIndex + i * 2 + 3);
-								Triangles.Add(vIndex + i * 2 + 2);
-							}
-						}
-						// UV
-						UVs.Add(new Vector2(Mathf.Lerp(uvL, uvR, x), uvD));
-						UVs.Add(new Vector2(Mathf.Lerp(uvL, uvR, x), uvU));
-						// Color
-						Colors.Add(tint);
-						Colors.Add(tint);
-					}
-				} else {
-					// Rect
-					Vertices.Add(new Vector3(l - pivotX, d - pivotY, 0f));
-					Vertices.Add(new Vector3(l - pivotX, u - pivotY, 0f));
-					Vertices.Add(new Vector3(r - pivotX, u - pivotY, 0f));
-					Vertices.Add(new Vector3(r - pivotX, d - pivotY, 0f));
-					// UV
-					UVs.Add(new Vector2(uvL, uvD));
-					UVs.Add(new Vector2(uvL, uvU));
-					UVs.Add(new Vector2(uvR, uvU));
-					UVs.Add(new Vector2(uvR, uvD));
-					// Tri
-					Triangles.Add(vIndex + 0);
-					Triangles.Add(vIndex + 1);
-					Triangles.Add(vIndex + 2);
-					Triangles.Add(vIndex + 0);
-					Triangles.Add(vIndex + 2);
-					Triangles.Add(vIndex + 3);
-					// Color
-					Colors.Add(tint);
-					Colors.Add(tint);
-					Colors.Add(tint);
-					Colors.Add(tint);
-				}
+				// Rect
+				Vertices.Add(new Vector3(l - pivotX, d - pivotY, 0f));
+				Vertices.Add(new Vector3(l - pivotX, u - pivotY, 0f));
+				Vertices.Add(new Vector3(r - pivotX, u - pivotY, 0f));
+				Vertices.Add(new Vector3(r - pivotX, d - pivotY, 0f));
+				// UV
+				UVs.Add(new Vector2(uvL, uvD));
+				UVs.Add(new Vector2(uvL, uvU));
+				UVs.Add(new Vector2(uvR, uvU));
+				UVs.Add(new Vector2(uvR, uvD));
+				// Tri
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 1);
+				Triangles.Add(vIndex + 2);
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 2);
+				Triangles.Add(vIndex + 3);
+				// Color
+				Colors.Add(tint);
+				Colors.Add(tint);
+				Colors.Add(tint);
+				Colors.Add(tint);
 			}
 		}
 
