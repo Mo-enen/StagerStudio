@@ -347,13 +347,6 @@
 
 
 		// Set
-		private void ClearAllAreas () {
-			for (int i = 0; i < Items.Count; i++) {
-				ClearAreasAt(i);
-			}
-		}
-
-
 		private void ClearAreasAt (int index) => ClearAreas(Items.Keys[index], index);
 
 

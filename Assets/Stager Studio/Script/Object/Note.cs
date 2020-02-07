@@ -152,6 +152,9 @@
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			bool isSwipe = noteData.SwipeX != 1 || noteData.SwipeY != 1;
 			bool isLink = noteData.LinkedNoteIndex >= 0;
+			float alpha = Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) *
+				Track.GetTrackAlpha(linkedTrack, musicTime, TRANSATION_DURATION) *
+				Mathf.Clamp01(16f - noteY01 * 16f);
 
 			// Movement
 			var (pos, rotX, rotZ) = Track.Inside(
@@ -171,40 +174,22 @@
 			);
 
 			if (isLink) {
-				Update_Linked(
-					linkedTrack.StageIndex, noteData, musicTime,
-					noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle
-				);
+				Update_Linked(linkedTrack.StageIndex, noteData, musicTime, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, alpha);
 			} else if (isSwipe) {
-				SubRenderer.transform.localPosition = new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
-				SubRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + (noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY)));
-				SubRenderer.transform.localScale = new Vector3(zoneSize * NoteThickness, zoneSize * ArrowSize, 1f);
-				SubRenderer.RendererEnable = true;
-				SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
-				SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
+				Update_Swipe(noteData, zoneSize, rotZ, alpha);
 			}
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
 			MainRenderer.LifeTime = SubRenderer.LifeTime = musicTime - Time;
-			MainRenderer.Alpha = SubRenderer.Alpha =
-				Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) *
-				Track.GetTrackAlpha(linkedTrack, musicTime, TRANSATION_DURATION) *
-				Mathf.Clamp01(16f - noteY01 * 16f);
-			MainRenderer.Scale = new Vector2(
-				stageWidth * trackWidth * noteData.Width,
-				Mathf.Max(noteSizeY * stageHeight, NoteThickness)
-			);
-			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote :
-				noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
+			MainRenderer.Alpha = alpha;
+			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, Mathf.Max(noteSizeY * stageHeight, NoteThickness));
+			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
 		}
 
 
-		private void Update_Linked (
-			int stageIndex, Beatmap.Note noteData, float musicTime,
-			Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle
-		) {
+		private void Update_Linked (int stageIndex, Beatmap.Note noteData, float musicTime, Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle, float alpha) {
 			// Get Linked Data
 			var beatmap = GetBeatmap();
 			var linkedNote = !(beatmap is null) && noteData.LinkedNoteIndex < beatmap.Notes.Count ? beatmap.Notes[noteData.LinkedNoteIndex] : null;
@@ -215,16 +200,15 @@
 			// Movement
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			float gameOffset = GetGameDropOffset(noteData.SpeedMuti);
-			float noteSizeY = musicTime < Time ?
-				(noteData.NoteDropEnd - noteData.NoteDropStart) :
-				(noteData.NoteDropEnd - gameOffset);
+			float linkedNoteY01 = musicTime < linkedNote.Time ? (linkedNote.NoteDropStart - gameOffset) : 0f;
+			float noteSizeY = musicTime < Time ? noteData.NoteDropEnd - noteData.NoteDropStart : noteData.NoteDropEnd - gameOffset;
 			SubRenderer.transform.localPosition = noteRot * Vector3.up * (
 				zoneSize * Mathf.Max(noteSizeY * stageHeight - NoteThickness * 0.5f, NoteThickness * 0.5f)
 			);
 			var subPivotPos = SubRenderer.transform.position;
-			var (pos, _, _) = Track.Inside(
+			var (linkedPos, _, _) = Track.Inside(
 				linkedNote.X,
-				musicTime < linkedNote.Time ? (linkedNote.NoteDropStart - gameOffset) : 0f,
+				linkedNoteY01,
 				stagePos,
 				stageWidth,
 				stageHeight,
@@ -233,26 +217,31 @@
 				Track.GetTrackWidth(linkedTrack, musicTime),
 				stageAngle
 			);
-			pos += noteRot * Vector3.up * (zoneSize * NoteThickness * 0.5f);
-			var linkedNotePos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			linkedNotePos.z += pos.z * zoneSize;
-			float scaleY;
-			if (musicTime > linkedNote.AppearTime) {
-				scaleY = Vector3.Distance(subPivotPos, linkedNotePos);
-			} else {
-
-
-				//////////////////// TEMP /////////////////////////////
-
-
-				scaleY = Vector3.Distance(subPivotPos, linkedNotePos);
+			linkedPos += noteRot * Vector3.up * (zoneSize * NoteThickness * 0.5f);
+			var linkedNotePos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedPos.x, linkedPos.y);
+			linkedNotePos.z += linkedPos.z * zoneSize;
+			float scaleY = Vector3.Distance(subPivotPos, linkedNotePos);
+			if (musicTime < linkedNote.AppearTime) {
+				float noteYEnd01 = musicTime < Time ? (noteData.NoteDropEnd - gameOffset) : 0f;
+				scaleY -= scaleY * (linkedNoteY01 - 1f) / (linkedNoteY01 - noteYEnd01);
 			}
 			SubRenderer.transform.rotation = Quaternion.FromToRotation(Vector3.up, linkedNotePos - subPivotPos);
 			SubRenderer.transform.localScale = new Vector3(zoneSize * PoleThickness, scaleY, 1f);
 			SubRenderer.RendererEnable = true;
 			SubRenderer.Pivot = new Vector3(0.5f, 0f);
 			SubRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
+			SubRenderer.Alpha = alpha * Mathf.Clamp01((noteData.NoteDropEnd - gameOffset) * 16f);
+		}
 
+
+		private void Update_Swipe (Beatmap.Note noteData, float zoneSize, float rotZ, float alpha) {
+			SubRenderer.transform.localPosition = new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
+			SubRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + (noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY)));
+			SubRenderer.transform.localScale = new Vector3(zoneSize * NoteThickness, zoneSize * ArrowSize, 1f);
+			SubRenderer.RendererEnable = true;
+			SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
+			SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
+			SubRenderer.Alpha = alpha;
 		}
 
 

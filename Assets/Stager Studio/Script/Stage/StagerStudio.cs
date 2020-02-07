@@ -245,6 +245,8 @@
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
+				System.GC.Collect();
+				Resources.UnloadUnusedAssets();
 			};
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();

@@ -87,7 +87,7 @@
 
 		protected static Vector2 Evaluate (List<Beatmap.TimeFloatFloatTween> data, float lifeTime) {
 			if (data is null || data.Count == 0) {
-				return default;
+				return Vector2.zero;
 			} else if (data.Count == 1) {
 				var d = data[0];
 				return new Vector2(d.A, d.B);
