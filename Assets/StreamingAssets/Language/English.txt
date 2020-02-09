@@ -1,5 +1,32 @@
-﻿UI.SkinEditor.PoleThickness
-Pole Thick
+﻿UI.SkinEditor.SubPos
+Position
+
+UI.SkinEditor.SubX
+X
+
+UI.SkinEditor.SubY
+Y
+
+UI.SkinEditor.SubW
+W
+
+UI.SkinEditor.SubH
+H
+
+UI.SkinEditor.SubBorder
+Border
+
+UI.SkinEditor.SubL
+L
+
+UI.SkinEditor.SubR
+R
+
+UI.SkinEditor.SubB
+B
+
+UI.SkinEditor.SubT
+T
 
 Author
 Stager Official
@@ -837,6 +864,9 @@ Note Thick
 
 UI.SkinEditor.PingPong
 PingPong
+
+UI.SkinEditor.PoleThickness
+Pole Thick
 
 UI.SkinEditor.Scale
 Scale

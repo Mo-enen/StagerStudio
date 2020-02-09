@@ -1,5 +1,32 @@
-﻿UI.SkinEditor.PoleThickness
-连杆尺寸
+﻿UI.SkinEditor.SubPos
+位置
+
+UI.SkinEditor.SubX
+X
+
+UI.SkinEditor.SubY
+Y
+
+UI.SkinEditor.SubW
+宽
+
+UI.SkinEditor.SubH
+高
+
+UI.SkinEditor.SubBorder
+边框
+
+UI.SkinEditor.SubL
+左
+
+UI.SkinEditor.SubR
+右
+
+UI.SkinEditor.SubB
+下
+
+UI.SkinEditor.SubT
+上
 
 Author
 Stager 官方
@@ -837,6 +864,9 @@ UI.SkinEditor.NoteThickness
 
 UI.SkinEditor.PingPong
 折返播放
+
+UI.SkinEditor.PoleThickness
+连杆尺寸
 
 UI.SkinEditor.Scale
 尺寸

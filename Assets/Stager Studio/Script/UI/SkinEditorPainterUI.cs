@@ -43,10 +43,20 @@
 		[SerializeField] private RectTransform m_DragRect = null;
 		[SerializeField] private Grabber m_RectPrefab = null;
 		[SerializeField] private RectTransform[] m_SelectionBorders = null; // UDLR
+		[Header("Sub"), SerializeField] private RectTransform m_SubPanelRoot = null;
+		[SerializeField] private InputField m_SubX = null;
+		[SerializeField] private InputField m_SubY = null;
+		[SerializeField] private InputField m_SubW = null;
+		[SerializeField] private InputField m_SubH = null;
+		[SerializeField] private InputField m_SubL = null;
+		[SerializeField] private InputField m_SubR = null;
+		[SerializeField] private InputField m_SubB = null;
+		[SerializeField] private InputField m_SubT = null;
 
 		// Data
 		private const string DIALOG_DeleteConfirm = "SkinEditor.Dialog.DeleteConfirm";
 		private bool ItemDirty = true;
+		private bool SubUIReady = true;
 		private float Ratio = 1f;
 		private Camera _Camera = null;
 		private Vector4 ContainerZeroPosSize = default;
@@ -97,7 +107,7 @@
 						SetPositionAsRect(rt, rect, textureWidth, textureHeight);
 						// Index
 						int index = rt.GetSiblingIndex();
-						grab.Grab<Text>("Index").text = index.ToString();
+						grab.Grab<Text>("Index").text = (index + 1).ToString();
 						// Trigger
 						var trigger = grab.Grab<EventTrigger>();
 						trigger.triggers[0].callback.AddListener((bEvent) => {
@@ -252,16 +262,14 @@
 			}
 		}
 		private void Selection_Drag_Rect (PointerEventData e, bool? right, bool? up) {
-			var data = m_Editor.Data;
-			var ani = m_Editor.GetEditingAniData();
-			if (ani is null || ani.Rects is null || data is null || data.Texture is null || SelectingRectIndex < 0) { return; }
+			var (rData, ani, data) = GetSelectingRect();
+			if (ani is null) { return; }
 			SelectingRectIndex = Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1);
 			int tWidth = data.Texture.width;
 			int tHeight = data.Texture.height;
 			// Get Drag Pos
 			Vector2 aimPos01 = m_Root.Get01Position(e.position, Camera);
 			// Move
-			var rData = ani.Rects[SelectingRectIndex];
 			if (right is null && up is null) {
 				// M
 				aimPos01 -= DragOffset_SelectionMove;
@@ -311,9 +319,8 @@
 		}
 		private void Selection_Drag_Border (PointerEventData e, bool? right, bool? up) {
 			if (right is null && up is null) { return; }
-			var data = m_Editor.Data;
-			var ani = m_Editor.GetEditingAniData();
-			if (ani is null || ani.Rects is null || data is null || data.Texture is null || SelectingRectIndex < 0) { return; }
+			var (rData, ani, data) = GetSelectingRect();
+			if (ani is null) { return; }
 			SelectingRectIndex = Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1);
 			int tWidth = data.Texture.width;
 			int tHeight = data.Texture.height;
@@ -321,7 +328,6 @@
 			Vector2 aimPos01 = m_Root.Get01Position(e.position, Camera);
 			aimPos01.x = Snap01(aimPos01.x, tWidth);
 			aimPos01.y = Snap01(aimPos01.y, tHeight);
-			var rData = ani.Rects[SelectingRectIndex];
 			// Set Rect Data
 			if (right.HasValue) {
 				if (right.Value) {
@@ -361,6 +367,63 @@
 				}
 			}
 			SetSelection(SelectingRectIndex);
+		}
+
+		public void UI_SubPositionX (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(value, -1, -1, -1, -1, -1, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubPositionY (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, value, -1, -1, -1, -1, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubPositionW (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, value, -1, -1, -1, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubPositionH (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, value, -1, -1, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubBorderL (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, value, -1, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubBorderR (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, value, -1, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubBorderB (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, -1, value, -1);
+				SetSelection(SelectingRectIndex);
+			}
+		}
+		public void UI_SubBorderT (string str) {
+			if (!SubUIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, -1, -1, value);
+				SetSelection(SelectingRectIndex);
+			}
 		}
 
 
@@ -407,6 +470,7 @@
 			}
 			SelectingRectIndex = Mathf.Clamp(index, -1, ani.Rects.Count - 1);
 			m_Selection.gameObject.SetActive(SelectingRectIndex >= 0);
+			m_SubPanelRoot.gameObject.SetActive(SelectingRectIndex >= 0);
 			if (SelectingRectIndex >= 0) {
 				var rData = ani.Rects[SelectingRectIndex];
 				// Position
@@ -424,6 +488,19 @@
 				m_SelectionBorders[2].anchorMax = new Vector2(l01, 1);
 				m_SelectionBorders[3].anchorMin = new Vector2(r01, 0);
 				m_SelectionBorders[3].anchorMax = new Vector2(r01, 1);
+				// Sub
+				SubUIReady = false;
+				try {
+					m_SubX.text = rData.X.ToString();
+					m_SubY.text = rData.Y.ToString();
+					m_SubW.text = rData.Width.ToString();
+					m_SubH.text = rData.Height.ToString();
+					m_SubL.text = rData.BorderL.ToString();
+					m_SubR.text = rData.BorderR.ToString();
+					m_SubB.text = rData.BorderD.ToString();
+					m_SubT.text = rData.BorderU.ToString();
+				} catch { }
+				SubUIReady = true;
 			}
 		}
 
@@ -545,6 +622,31 @@
 			int childCount = m_RectContainer.childCount;
 			if (index < 0 || index >= childCount) { return; }
 			SetPositionAsRect(m_RectContainer.GetChild(index) as RectTransform, rData, textureWidth, textureHeight);
+		}
+
+
+		private void SetSelectingRect (int x, int y, int w, int h, int l, int r, int d, int u) {
+			var (rData, ani, data) = GetSelectingRect();
+			if (ani is null) { return; }
+			int tWidth = data.Texture.width;
+			int tHeight = data.Texture.height;
+			rData.X = x < 0 ? rData.X : Mathf.Clamp(x, 0, tWidth);
+			rData.Y = y < 0 ? rData.Y : Mathf.Clamp(y, 0, tHeight);
+			rData.Width = w < 0 ? rData.Width : Mathf.Clamp(w, 0, tWidth);
+			rData.Height = h < 0 ? rData.Height : Mathf.Clamp(h, 0, tHeight);
+			rData.BorderL = l < 0 ? rData.BorderL : Mathf.Clamp(l, 0, rData.Width);
+			rData.BorderR = r < 0 ? rData.BorderR : Mathf.Clamp(r, 0, rData.Width);
+			rData.BorderD = d < 0 ? rData.BorderD : Mathf.Clamp(d, 0, rData.Height);
+			rData.BorderU = u < 0 ? rData.BorderU : Mathf.Clamp(u, 0, rData.Height);
+			ani.Rects[SelectingRectIndex] = rData;
+		}
+
+
+		private (AnimatedItemData.RectData rData, AnimatedItemData ani, SkinData data) GetSelectingRect () {
+			var data = m_Editor.Data;
+			var ani = m_Editor.GetEditingAniData();
+			if (ani is null || ani.Rects is null || data is null || data.Texture is null || SelectingRectIndex < 0) { return (default, null, null); }
+			return (ani.Rects[Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1)], ani, data);
 		}
 
 
