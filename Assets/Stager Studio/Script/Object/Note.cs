@@ -38,6 +38,9 @@
 		public StageRenderer SubRenderer => m_SubRenderer;
 		public static float NoteThickness { get; private set; } = 0.015f;
 		public static float PoleThickness { get; private set; } = 0.007f;
+		public static int LayerID_Note { get; set; } = -1;
+		public static int LayerID_Pole { get; set; } = -1;
+		public static int LayerID_Arrow { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private StageRenderer m_SubRenderer = null;
@@ -80,17 +83,16 @@
 			if (noteData is null) { return; }
 
 			// Get/Check Linked Track/Stage
-			float musicTime = GetMusicTime();
 			var linkedTrack = beatmap.GetTrackAt(noteData.TrackIndex);
-			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack, musicTime)) { return; }
+			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
 			var linkedStage = beatmap.GetStageAt(linkedTrack.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, musicTime)) { return; }
+			if (linkedStage is null || !Stage.GetStageActive(linkedStage)) { return; }
 
 			// Cache
 			Update_Cache(noteData, GetGameSpeedMuti() * linkedStage.Speed);
 
 			// Active
-			if (!GetNoteActive(noteData, musicTime, noteData.AppearTime)) { return; }
+			if (!GetNoteActive(noteData, noteData.AppearTime)) { return; }
 
 			// Final
 			LateStage = linkedStage;
@@ -102,12 +104,12 @@
 
 		private void LateUpdate () {
 			if (LateNote is null) { return; }
-			Update_Movement(LateStage, LateTrack, LateNote, GetMusicTime());
+			Update_Movement(LateStage, LateTrack, LateNote);
 		}
 
 
 		private void Update_Cache (Beatmap.Note noteData, float speedMuti) {
-			if (GetMusicPlaying()) { return; }
+			if (MusicPlaying) { return; }
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
@@ -137,23 +139,23 @@
 		}
 
 
-		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, float musicTime) {
+		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData) {
 
-			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
-			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
-			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
-			float trackX = Track.GetTrackX(linkedTrack, musicTime);
-			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
-			float stageAngle = Stage.GetStageAngle(linkedStage, musicTime);
+			var stagePos = Stage.GetStagePosition(linkedStage);
+			float stageWidth = Stage.GetStageWidth(linkedStage);
+			float stageHeight = Stage.GetStageHeight(linkedStage);
+			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
+			float trackX = Track.GetTrackX(linkedTrack);
+			float trackWidth = Track.GetTrackWidth(linkedTrack);
+			float stageAngle = Stage.GetStageAngle(linkedStage);
 			float gameOffset = GetGameDropOffset(noteData.SpeedMuti);
-			float noteY01 = musicTime < Time ? (noteData.NoteDropStart - gameOffset) : 0f;
+			float noteY01 = MusicTime < Time ? (noteData.NoteDropStart - gameOffset) : 0f;
 			float noteSizeY = noteData.NoteDropEnd - gameOffset - noteY01;
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			bool isSwipe = noteData.SwipeX != 1 || noteData.SwipeY != 1;
 			bool isLink = noteData.LinkedNoteIndex >= 0;
-			float alpha = Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) *
-				Track.GetTrackAlpha(linkedTrack, musicTime, TRANSATION_DURATION) *
+			float alpha = Stage.GetStageAlpha(linkedStage, TRANSATION_DURATION) *
+				Track.GetTrackAlpha(linkedTrack, TRANSATION_DURATION) *
 				Mathf.Clamp01(16f - noteY01 * 16f);
 
 			// Movement
@@ -174,34 +176,36 @@
 			);
 
 			if (isLink) {
-				Update_Linked(linkedTrack.StageIndex, noteData, musicTime, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, alpha);
+				Update_Linked(linkedTrack.StageIndex, noteData, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, alpha);
 			} else if (isSwipe) {
 				Update_Swipe(noteData, zoneSize, rotZ, alpha);
 			}
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
-			MainRenderer.LifeTime = SubRenderer.LifeTime = musicTime - Time;
+			MainRenderer.LifeTime = SubRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, Mathf.Max(noteSizeY * stageHeight, NoteThickness));
 			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
+			MainRenderer.SetSortingLayer(LayerID_Note, GetSortingOrder());
 		}
 
 
-		private void Update_Linked (int stageIndex, Beatmap.Note noteData, float musicTime, Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle, float alpha) {
+		private void Update_Linked (int stageIndex, Beatmap.Note noteData, Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle, float alpha) {
+
 			// Get Linked Data
 			var beatmap = GetBeatmap();
 			var linkedNote = !(beatmap is null) && noteData.LinkedNoteIndex < beatmap.Notes.Count ? beatmap.Notes[noteData.LinkedNoteIndex] : null;
 			if (linkedNote is null || noteData.Time + noteData.Duration > linkedNote.Time) { return; }
 			var linkedTrack = beatmap.GetTrackAt(linkedNote.TrackIndex);
-			if (linkedTrack is null || linkedTrack.StageIndex != stageIndex || !Track.GetTrackActive(linkedTrack, musicTime)) { return; }
+			if (linkedTrack is null || linkedTrack.StageIndex != stageIndex || !Track.GetTrackActive(linkedTrack)) { return; }
 
 			// Movement
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			float gameOffset = GetGameDropOffset(noteData.SpeedMuti);
-			float linkedNoteY01 = musicTime < linkedNote.Time ? (linkedNote.NoteDropStart - gameOffset) : 0f;
-			float noteSizeY = musicTime < Time ? noteData.NoteDropEnd - noteData.NoteDropStart : noteData.NoteDropEnd - gameOffset;
+			float linkedNoteY01 = MusicTime < linkedNote.Time ? (linkedNote.NoteDropStart - gameOffset) : 0f;
+			float noteSizeY = MusicTime < Time ? noteData.NoteDropEnd - noteData.NoteDropStart : noteData.NoteDropEnd - gameOffset;
 			SubRenderer.transform.localPosition = noteRot * Vector3.up * (
 				zoneSize * Mathf.Max(noteSizeY * stageHeight - NoteThickness * 0.5f, NoteThickness * 0.5f)
 			);
@@ -213,16 +217,16 @@
 				stageWidth,
 				stageHeight,
 				stageRotZ,
-				Track.GetTrackX(linkedTrack, musicTime),
-				Track.GetTrackWidth(linkedTrack, musicTime),
+				Track.GetTrackX(linkedTrack),
+				Track.GetTrackWidth(linkedTrack),
 				stageAngle
 			);
 			linkedPos += noteRot * Vector3.up * (zoneSize * NoteThickness * 0.5f);
 			var linkedNotePos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedPos.x, linkedPos.y);
 			linkedNotePos.z += linkedPos.z * zoneSize;
 			float scaleY = Vector3.Distance(subPivotPos, linkedNotePos);
-			if (musicTime < linkedNote.AppearTime) {
-				float noteYEnd01 = musicTime < Time ? (noteData.NoteDropEnd - gameOffset) : 0f;
+			if (MusicTime < linkedNote.AppearTime) {
+				float noteYEnd01 = MusicTime < Time ? (noteData.NoteDropEnd - gameOffset) : 0f;
 				scaleY -= scaleY * (linkedNoteY01 - 1f) / (linkedNoteY01 - noteYEnd01);
 			}
 			SubRenderer.transform.rotation = Quaternion.FromToRotation(Vector3.up, linkedNotePos - subPivotPos);
@@ -231,6 +235,7 @@
 			SubRenderer.Pivot = new Vector3(0.5f, 0f);
 			SubRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
 			SubRenderer.Alpha = alpha * Mathf.Clamp01((noteData.NoteDropEnd - gameOffset) * 16f);
+			SubRenderer.SetSortingLayer(LayerID_Pole, GetSortingOrder());
 		}
 
 
@@ -242,6 +247,7 @@
 			SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
 			SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
 			SubRenderer.Alpha = alpha;
+			SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
 		}
 
 
@@ -256,10 +262,9 @@
 		public static void SetCacheDirty () => CacheDirtyID++;
 
 
-		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
-			base.SetSkinData(skin, layerID, orderID);
+		public override void SetSkinData (SkinData skin) {
+			base.SetSkinData(skin);
 			SubRenderer.SkinData = skin;
-			SubRenderer.SetSortingLayer(layerID, orderID + 1);
 		}
 
 
@@ -285,7 +290,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetNoteActive (Beatmap.Note data, float musicTime, float appearTime) => musicTime > appearTime && musicTime < data.Time + data.Duration;
+		private static bool GetNoteActive (Beatmap.Note data, float appearTime) => MusicTime > appearTime && MusicTime < data.Time + data.Duration;
 
 
 		#endregion

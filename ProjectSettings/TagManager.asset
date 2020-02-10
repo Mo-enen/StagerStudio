@@ -50,13 +50,22 @@ TagManager:
   - name: Track
     uniqueID: 1207560611
     locked: 0
+  - name: Tray
+    uniqueID: 296525073
+    locked: 0
+  - name: Pole
+    uniqueID: 4270631489
+    locked: 0
   - name: Note
     uniqueID: 1274917977
     locked: 0
-  - name: SpeedNote
+  - name: Arrow
+    uniqueID: 271100707
+    locked: 0
+  - name: Speed
     uniqueID: 3738023523
     locked: 0
-  - name: MotionNote
+  - name: Motion
     uniqueID: 1991258759
     locked: 0
   - name: Luminous

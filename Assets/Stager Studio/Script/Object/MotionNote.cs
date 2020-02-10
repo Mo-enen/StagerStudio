@@ -8,6 +8,8 @@
 	public class MotionNote : MonoBehaviour {
 
 
+		// Api
+		public static int LayerID_Motion { get; set; } = -1;
 
 
 

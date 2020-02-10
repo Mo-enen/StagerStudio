@@ -292,8 +292,12 @@
 
 
 		public void SetSortingLayer (int layerID, int layerOrder) {
-			Renderer.sortingLayerID = layerID;
-			Renderer.sortingOrder = layerOrder;
+			if (layerID != Renderer.sortingLayerID) {
+				Renderer.sortingLayerID = layerID;
+			}
+			if (layerOrder != Renderer.sortingOrder) {
+				Renderer.sortingOrder = layerOrder;
+			}
 		}
 
 

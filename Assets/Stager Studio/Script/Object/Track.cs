@@ -13,6 +13,13 @@
 		#region --- VAR ---
 
 
+		// API
+		public static int LayerID_Track { get; set; } = -1;
+		public static int LayerID_Tray { get; set; } = -1;
+
+		// Short
+		private StageRenderer TrayRenderer => m_TrayRenderer;
+
 		// Ser
 		[SerializeField] StageRenderer m_TrayRenderer = null;
 
@@ -26,7 +33,7 @@
 
 
 		private void Awake () {
-			MainRenderer.Pivot = m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
+			MainRenderer.Pivot = TrayRenderer.Pivot = new Vector3(0.5f, 0f);
 
 		}
 
@@ -43,31 +50,30 @@
 
 			Time = trackData.Time;
 			Duration = trackData.Duration;
-			float musicTime = GetMusicTime();
 
 			// Get/Check Track/Stage
 			var linkedStage = beatmap.GetStageAt(trackData.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, musicTime) || !GetTrackActive(trackData, musicTime)) { return; }
+			if (linkedStage is null || !Stage.GetStageActive(linkedStage) || !GetTrackActive(trackData)) { return; }
 
 			// Movement
-			Update_Movement(linkedStage, trackData, musicTime);
+			Update_Movement(linkedStage, trackData);
 
 		}
 
 
-		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track trackData, float musicTime) {
+		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track trackData) {
 
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
-			float trackWidth = GetTrackWidth(trackData, musicTime);
-			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
-			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
-			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
-			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData, musicTime), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
+			float trackWidth = GetTrackWidth(trackData);
+			float stageWidth = Stage.GetStageWidth(linkedStage);
+			float stageHeight = Stage.GetStageHeight(linkedStage);
+			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
+			var stagePos = Stage.GetStagePosition(linkedStage);
+			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			MainRenderer.transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage, musicTime), 0, 0);
+			MainRenderer.transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
 			MainRenderer.transform.localScale = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
@@ -76,13 +82,14 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
-			m_TrayRenderer.RendererEnable = trackData.HasTray;
+			TrayRenderer.RendererEnable = trackData.HasTray;
 			MainRenderer.Type = SkinType.Track;
-			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = musicTime - Time + TRANSATION_DURATION;
+			MainRenderer.LifeTime = TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageWidth);
-			MainRenderer.Tint = GetTrackColor(trackData, musicTime);
-			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage, musicTime, TRANSATION_DURATION) * GetTrackAlpha(trackData, musicTime, TRANSATION_DURATION);
-
+			MainRenderer.Tint = GetTrackColor(trackData);
+			MainRenderer.Alpha = TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage, TRANSATION_DURATION) * GetTrackAlpha(trackData, TRANSATION_DURATION);
+			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
+			TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
 
 
 		}
@@ -96,12 +103,12 @@
 		#region --- API ---
 
 
-		public static float GetTrackWidth (Beatmap.Track data, float musicTime) {
-			return Mathf.Clamp(data.Width + Evaluate(data.Widths, musicTime - data.Time), 0f, 2f);
+		public static float GetTrackWidth (Beatmap.Track data) {
+			return Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
 		}
 
 
-		public static bool GetTrackActive (Beatmap.Track data, float musicTime) => musicTime > data.Time - TRANSATION_DURATION && musicTime < data.Time + data.Duration + TRANSATION_DURATION;
+		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
 		public static (Vector3 pos, float rotX, float rotZ) Inside (
@@ -121,31 +128,30 @@
 		}
 
 
-		public static float GetTrackX (Beatmap.Track data, float musicTime) {
-			return Mathf.Repeat(data.X + Evaluate(data.Xs, musicTime - data.Time), 1f);
+		public static float GetTrackX (Beatmap.Track data) {
+			return Mathf.Repeat(data.X + Evaluate(data.Xs, MusicTime - data.Time), 1f);
 		}
 
 
-		public static Color GetTrackColor (Beatmap.Track data, float musicTime) {
+		public static Color GetTrackColor (Beatmap.Track data) {
 			if (data.Colors is null) {
 				return PaletteColor(data.Color);
 			} else {
-				return PaletteColor(data.Color) * EvaluateColor(data.Colors, musicTime - data.Time);
+				return PaletteColor(data.Color) * EvaluateColor(data.Colors, MusicTime - data.Time);
 			}
 		}
 
 
-		public static float GetTrackAlpha (Beatmap.Track data, float musicTime, float transation) => Mathf.Clamp01(
-			musicTime < data.Time ? (musicTime - data.Time + transation) / transation :
-			musicTime > data.Time + data.Duration ? (data.Time + data.Duration - musicTime + transation) / transation :
+		public static float GetTrackAlpha (Beatmap.Track data, float transation) => Mathf.Clamp01(
+			MusicTime < data.Time ? (MusicTime - data.Time + transation) / transation :
+			MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + transation) / transation :
 			1f
 		);
 
 
-		public override void SetSkinData (SkinData skin, int layerID, int orderID) {
-			base.SetSkinData(skin, layerID, orderID);
+		public override void SetSkinData (SkinData skin) {
+			base.SetSkinData(skin);
 			m_TrayRenderer.SkinData = skin;
-			m_TrayRenderer.SetSortingLayer(layerID, orderID + 1);
 		}
 
 

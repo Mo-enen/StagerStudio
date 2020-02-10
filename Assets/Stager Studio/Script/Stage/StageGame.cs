@@ -80,7 +80,6 @@
 		private StageMusic _Music = null;
 		private Camera _Camera = null;
 		private Transform[] Containers = null;
-		private readonly static int[] StageObjectLayerID = { -1, -1, -1, -1, -1, -1 };
 		private float _Ratio = 1.5f;
 
 		// Saving
@@ -105,12 +104,17 @@
 
 
 		private void Awake () {
-			StageObjectLayerID[0] = SortingLayer.NameToID("Stage");
-			StageObjectLayerID[1] = SortingLayer.NameToID("Track");
-			StageObjectLayerID[2] = SortingLayer.NameToID("Note");
-			StageObjectLayerID[3] = SortingLayer.NameToID("SpeedNote");
-			StageObjectLayerID[4] = SortingLayer.NameToID("MotionNote");
-			StageObjectLayerID[5] = SortingLayer.NameToID("Luminous");
+			// Layer ID
+			Stage.LayerID_Stage = SortingLayer.NameToID("Stage");
+			Track.LayerID_Track = SortingLayer.NameToID("Track");
+			Track.LayerID_Tray = SortingLayer.NameToID("Tray");
+			Note.LayerID_Pole = SortingLayer.NameToID("Pole");
+			Note.LayerID_Note = SortingLayer.NameToID("Note");
+			Note.LayerID_Arrow = SortingLayer.NameToID("Arrow");
+			SpeedNote.LayerID_Speed = SortingLayer.NameToID("Speed");
+			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
+			Luminous.LayerID_Lum = SortingLayer.NameToID("Luminous");
+			// Misc
 			ShowGrid.Load();
 			Containers = new Transform[m_Level.childCount];
 			for (int i = 0; i < Containers.Length; i++) {
@@ -160,11 +164,7 @@
 					} else if (!(prefab is null)) {
 						// Spawn Stage Object
 						for (int i = 0; i < count; i++) {
-							Instantiate(prefab, container).SetSkinData(
-								StageSkin.Data.Data,
-								StageObjectLayerID[container.GetSiblingIndex()],
-								0
-							);
+							Instantiate(prefab, container).SetSkinData(StageSkin.Data.Data);
 						}
 					} else {
 						// Spawn Transform Object

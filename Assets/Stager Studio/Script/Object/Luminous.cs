@@ -14,6 +14,9 @@
 		#region --- VAR ---
 
 
+		// Api
+		public static int LayerID_Lum { get; set; } = -1;
+
 		// Data
 		private readonly static float[] LuminousDuration = { 0f, 0f, 0f, };
 		private static Vector2 LuminousAppend = Vector2.zero;
@@ -42,13 +45,12 @@
 			var beatmap = GetBeatmap();
 			var noteData = !(beatmap is null) && index < beatmap.Notes.Count ? beatmap.Notes[index] : null;
 			if (noteData is null) { return; }
-			float musicTime = GetMusicTime();
 			float noteEndTime = noteData.Time + noteData.Duration;
 
-			if (!GetMusicPlaying()) {
+			if (!MusicPlaying) {
 				MovementDirty = true;
 				SkinType type =
-					noteData.Duration > DURATION_GAP && musicTime < noteEndTime ? SkinType.HoldLuminous :
+					noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous :
 					noteData.SwipeX != 1 || noteData.SwipeY != 1 ? SkinType.ArrowLuminous :
 					SkinType.NoteLuminous;
 				Duration = type == SkinType.NoteLuminous ? LuminousDuration[0] :
@@ -58,18 +60,18 @@
 			}
 
 			// === Playing Only ===
-			Update_Movement(beatmap, noteData, musicTime, noteEndTime);
+			Update_Movement(beatmap, noteData, noteEndTime);
 
 		}
 
 
-		private void Update_Movement (Beatmap beatmap, Beatmap.Note noteData, float musicTime, float noteEndTime) {
+		private void Update_Movement (Beatmap beatmap, Beatmap.Note noteData, float noteEndTime) {
 
 			// Active Check
-			if (musicTime < noteData.Time || Duration <= DURATION_GAP || musicTime > noteEndTime + Duration) { return; }
+			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
 
 			// Life Time
-			MainRenderer.LifeTime = musicTime > noteEndTime ? musicTime - noteEndTime : musicTime - noteData.Time;
+			MainRenderer.LifeTime = MusicTime > noteEndTime ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 
 			// Movement Dirty Check
@@ -78,18 +80,18 @@
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
 			var linkedTrack = beatmap.GetTrackAt(noteData.TrackIndex);
-			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack, musicTime)) { return; }
+			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
 			var linkedStage = beatmap.GetStageAt(linkedTrack.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, musicTime)) { return; }
+			if (linkedStage is null || !Stage.GetStageActive(linkedStage)) { return; }
 
 			Time = noteData.Time;
-			var stagePos = Stage.GetStagePosition(linkedStage, musicTime);
-			float stageWidth = Stage.GetStageWidth(linkedStage, musicTime);
-			float stageHeight = Stage.GetStageHeight(linkedStage, musicTime);
-			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage, musicTime);
-			float trackX = Track.GetTrackX(linkedTrack, musicTime);
-			float trackWidth = Track.GetTrackWidth(linkedTrack, musicTime);
-			float trackRotX = Stage.GetStageAngle(linkedStage, musicTime);
+			var stagePos = Stage.GetStagePosition(linkedStage);
+			float stageWidth = Stage.GetStageWidth(linkedStage);
+			float stageHeight = Stage.GetStageHeight(linkedStage);
+			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
+			float trackX = Track.GetTrackX(linkedTrack);
+			float trackWidth = Track.GetTrackWidth(linkedTrack);
+			float trackRotX = Stage.GetStageAngle(linkedStage);
 			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
 			var (pos, _, rotZ) = Track.Inside(
 				noteData.X, 0f,
@@ -107,10 +109,10 @@
 			);
 
 			// Renderer
-			MainRenderer.LifeTime = musicTime > noteEndTime ? musicTime - noteEndTime : musicTime - noteData.Time;
+			MainRenderer.LifeTime = MusicTime > noteEndTime ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, 1f);
-
+			MainRenderer.SetSortingLayer(LayerID_Lum, GetSortingOrder());
 
 
 			// Final

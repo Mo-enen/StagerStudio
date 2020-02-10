@@ -191,9 +191,7 @@
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => Project.Palette[Mathf.Clamp(index, 0, Project.Palette.Count - 1)];
 			StageObject.GetZoneMinMax = m_Zone.GetZoneMinMax;
-			StageObject.GetMusicTime = () => Music.Time;
 			StageObject.GetBeatmap = () => Project.Beatmap;
-			StageObject.GetMusicPlaying = () => Music.IsPlaying;
 			Note.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
@@ -325,14 +323,16 @@
 
 
 		private void Awake_Music () {
-			StageMusic.OnMusicPlayPause = () => {
+			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
-				SetNavigationInteractable(!Music.IsPlaying);
+				SetNavigationInteractable(!playing);
+				StageObject.MusicPlaying = playing;
 			};
-			StageMusic.OnMusicTimeChanged = () => {
-				float time = Music.Time;
+			StageMusic.OnMusicTimeChanged = (time, duration) => {
 				m_Progress.SetProgress(time, Game.BPM);
-				m_Wave.Time01 = time / Music.Duration;
+				m_Wave.Time01 = time / duration;
+				StageObject.MusicTime = time;
+				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
 				m_Progress.RefreshControlUI();

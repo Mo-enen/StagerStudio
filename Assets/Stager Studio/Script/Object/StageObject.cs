@@ -37,14 +37,15 @@
 
 		// Handler
 		public static Vector3MinMaxSizeHandler GetZoneMinMax { get; set; } = null;
-		public static FloatHandler GetMusicTime { get; set; } = null;
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorByteHandler PaletteColor { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
-		public static BoolHandler GetMusicPlaying { get; set; } = null;
 
 		// API
 		public StageRenderer MainRenderer => m_MainRenderer;
+		public static float MusicTime { get; set; } = 0f;
+		public static float MusicDuration { get; set; } = 0f;
+		public static bool MusicPlaying { get; set; } = false;
 		public virtual float Time { get; protected set; } = 0f;
 		public virtual float Duration { get; protected set; } = 0f;
 
@@ -137,10 +138,10 @@
 		}
 
 
-		public virtual void SetSkinData (SkinData skin, int layerID, int orderID) {
-			MainRenderer.SkinData = skin;
-			MainRenderer.SetSortingLayer(layerID, orderID);
-		}
+		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);
+
+
+		public virtual void SetSkinData (SkinData skin) => MainRenderer.SkinData = skin;
 
 
 		#endregion

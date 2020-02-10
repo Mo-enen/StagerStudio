@@ -14,6 +14,8 @@
 
 
 		public delegate void VoidHandler ();
+		public delegate void VoidFloatFloatHandler (float a, float b);
+		public delegate void VoidBoolHandler (bool a);
 
 
 		#endregion
@@ -25,9 +27,9 @@
 
 
 		// Handler
-		public static VoidHandler OnMusicPlayPause { get; set; } = null;
+		public static VoidBoolHandler OnMusicPlayPause { get; set; } = null;
 
-		public static VoidHandler OnMusicTimeChanged { get; set; } = null;
+		public static VoidFloatFloatHandler OnMusicTimeChanged { get; set; } = null;
 
 		public static VoidHandler OnMusicClipLoaded { get; set; } = null;
 
@@ -51,7 +53,7 @@
 		public float Duration {
 			get;
 			private set;
-		} = float.Epsilon;
+		} = DURATION_MIN;
 
 		public float Volume {
 			get => Mathf.Sqrt(Source.volume);
@@ -101,6 +103,7 @@
 		[SerializeField] private AudioClip m_DefaultSfx = null;
 
 		// Data
+		private const float DURATION_MIN = 0.001f;
 		private AudioSource _Source = null;
 		private AudioSource[] _ClickSource = null;
 		private readonly List<AudioClip> ClickSoundClips = new List<AudioClip>();
@@ -121,7 +124,7 @@
 		private void Update () {
 			if (IsReady) {
 				if (Time != LastUpdateTime) {
-					OnMusicTimeChanged?.Invoke();
+					OnMusicTimeChanged(Time, Duration);
 					LastUpdateTime = Time;
 				}
 			}
@@ -289,7 +292,7 @@
 			Source.PlayDelayed(Source.time);
 			//Source.UnPause();
 			LastPlayTime = time;
-			OnMusicPlayPause?.Invoke();
+			OnMusicPlayPause(IsPlaying);
 			ResetInvoke();
 		}
 
@@ -300,7 +303,7 @@
 				Time = Source.time;
 			}
 			Source.Pause();
-			OnMusicPlayPause?.Invoke();
+			OnMusicPlayPause(IsPlaying);
 			ResetInvoke();
 		}
 
@@ -321,7 +324,7 @@
 			Source.Pause();
 			Source.time = LastPlayTime;
 			Time = LastPlayTime;
-			OnMusicPlayPause?.Invoke();
+			OnMusicPlayPause(IsPlaying);
 			ResetInvoke();
 		}
 
@@ -331,7 +334,7 @@
 			Source.Pause();
 			Source.time = 0f;
 			Time = 0f;
-			OnMusicPlayPause?.Invoke();
+			OnMusicPlayPause(IsPlaying);
 			ResetInvoke();
 		}
 
@@ -341,7 +344,7 @@
 			Source.clip = clip;
 			if (clip) {
 				while (Source.clip.loadState == AudioDataLoadState.Loading) { }
-				Duration = Mathf.Max(clip.length, float.Epsilon);
+				Duration = Mathf.Max(clip.length, DURATION_MIN);
 			}
 			IsReady = clip && clip.loadState == AudioDataLoadState.Loaded;
 			Source.Play();
@@ -374,7 +377,7 @@
 		private void PauseForEnd () {
 			Source.Pause();
 			Time = Source.time;
-			OnMusicPlayPause?.Invoke();
+			OnMusicPlayPause(IsPlaying);
 		}
 
 
