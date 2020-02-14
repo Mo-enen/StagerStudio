@@ -10540,7 +10540,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -10}
+  m_SizeDelta: {x: 0, y: -19}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1380368367
 MonoBehaviour:
@@ -10560,7 +10560,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300004, guid: c3712293cc281f844b19bd4bd57eeb38, type: 3}
+  m_Sprite: {fileID: 3838318795275561306, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -12016,10 +12017,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultSkin:
-    Author: "\u6211"
-    ScaleMuti: 4000
+    Author: Stager
+    ScaleMuti: 4096
     NoteThickness: 0.036
-    PoleThickness: 0.007
+    PoleThickness: 0.004
     LuminousAppendX: 0
     LuminousAppendY: 0
     Items:
@@ -12028,10 +12029,10 @@ MonoBehaviour:
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 384
-        Y: 15
-        Width: 128
-        Height: 178
+      - X: 747
+        Y: 1
+        Width: 169
+        Height: 169
         BorderU: 0
         BorderD: 0
         BorderL: 0
@@ -12039,249 +12040,225 @@ MonoBehaviour:
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 384
-        Y: 205
-        Width: 128
-        Height: 263
-        BorderU: 103
-        BorderD: 8
-        BorderL: 52
-        BorderR: 52
+      - X: 1
+        Y: 1
+        Width: 405
+        Height: 1018
+        BorderU: 728
+        BorderD: 128
+        BorderL: 64
+        BorderR: 64
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 16
-        Y: 589
-        Width: 356
-        Height: 111
-        BorderU: 37
-        BorderD: 58
-        BorderL: 173
-        BorderR: 173
+      - X: 747
+        Y: 171
+        Width: 169
+        Height: 169
+        BorderU: 0
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 14
-        Y: 14
-        Width: 356
-        Height: 180
-        BorderU: 52
-        BorderD: 58
-        BorderL: 172
-        BorderR: 172
+      - X: 407
+        Y: 1
+        Width: 169
+        Height: 169
+        BorderU: 0
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 16
-        Y: 204
-        Width: 356
-        Height: 180
-        BorderU: 55
-        BorderD: 59
-        BorderL: 168
-        BorderR: 169
+      - X: 407
+        Y: 171
+        Width: 169
+        Height: 508
+        BorderU: 169
+        BorderD: 169
+        BorderL: 64
+        BorderR: 64
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 20
-        Y: 714
-        Width: 188
-        Height: 351
-        BorderU: 351
+      - X: 407
+        Y: 680
+        Width: 169
+        Height: 236
+        BorderU: 0
         BorderD: 0
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 16
-        Y: 396
-        Width: 356
-        Height: 180
-        BorderU: 83
-        BorderD: 82
-        BorderL: 170
-        BorderR: 170
+      - X: 577
+        Y: 1
+        Width: 169
+        Height: 169
+        BorderU: 64
+        BorderD: 64
+        BorderL: 64
+        BorderR: 64
       FrameDuration: 120
     - Loop: 1
       Rects:
-      - X: 220
-        Y: 714
-        Width: 135
-        Height: 355
-        BorderU: 355
+      - X: 407
+        Y: 917
+        Width: 55
+        Height: 103
+        BorderU: 51
+        BorderD: 51
+        BorderL: 0
+        BorderR: 0
+      FrameDuration: 120
+    - Loop: 1
+      Rects:
+      - X: 577
+        Y: 255
+        Width: 169
+        Height: 85
+        BorderU: 64
         BorderD: 0
-        BorderL: 0
-        BorderR: 0
-      FrameDuration: 120
+        BorderL: 64
+        BorderR: 64
+      - X: 577
+        Y: 425
+        Width: 169
+        Height: 85
+        BorderU: 64
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
+      - X: 577
+        Y: 595
+        Width: 169
+        Height: 85
+        BorderU: 64
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
+      - X: 577
+        Y: 765
+        Width: 169
+        Height: 85
+        BorderU: 64
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
+      - X: 577
+        Y: 935
+        Width: 169
+        Height: 85
+        BorderU: 64
+        BorderD: 0
+        BorderL: 64
+        BorderR: 64
+      FrameDuration: 24
     - Loop: 1
       Rects:
-      - X: 570
-        Y: 809
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 1132
-        Y: 809
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 570
-        Y: 545
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 1132
-        Y: 545
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 570
-        Y: 282
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 1132
-        Y: 282
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 570
-        Y: 19
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 1132
-        Y: 19
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      FrameDuration: 40
+      - X: 747
+        Y: 425
+        Width: 169
+        Height: 85
+        BorderU: 84
+        BorderD: 0
+        BorderL: 84
+        BorderR: 84
+      - X: 747
+        Y: 595
+        Width: 169
+        Height: 85
+        BorderU: 84
+        BorderD: 0
+        BorderL: 84
+        BorderR: 84
+      - X: 747
+        Y: 765
+        Width: 169
+        Height: 85
+        BorderU: 84
+        BorderD: 0
+        BorderL: 84
+        BorderR: 84
+      - X: 747
+        Y: 935
+        Width: 169
+        Height: 85
+        BorderU: 84
+        BorderD: 0
+        BorderL: 84
+        BorderR: 84
+      FrameDuration: 24
     - Loop: 1
       Rects:
-      - X: 1693
-        Y: 18
-        Width: 243
-        Height: 97
+      - X: 3
+        Y: 806
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 97
-        BorderL: 0
-        BorderR: 0
-      - X: 1693
-        Y: 119
-        Width: 243
-        Height: 97
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 284
+        Y: 806
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 97
-        BorderL: 0
-        BorderR: 0
-      - X: 1693
-        Y: 220
-        Width: 243
-        Height: 97
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 564
+        Y: 806
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 97
-        BorderL: 0
-        BorderR: 0
-      - X: 1693
-        Y: 322
-        Width: 243
-        Height: 97
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 3
+        Y: 674
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 97
-        BorderL: 0
-        BorderR: 0
-      FrameDuration: 30
-    - Loop: 1
-      Rects:
-      - X: 7
-        Y: 1613
-        Width: 552
-        Height: 252
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 284
+        Y: 674
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 569
-        Y: 1613
-        Width: 552
-        Height: 252
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 564
+        Y: 675
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 1128
-        Y: 1613
-        Width: 552
-        Height: 253
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 3
+        Y: 543
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 7
-        Y: 1349
-        Width: 552
-        Height: 253
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
+      - X: 285
+        Y: 543
+        Width: 276
+        Height: 126
         BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 569
-        Y: 1349
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 1128
-        Y: 1350
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
-      - X: 7
-        Y: 1086
-        Width: 552
-        Height: 253
-        BorderU: 0
-        BorderD: 253
-        BorderL: 0
-        BorderR: 0
-      - X: 570
-        Y: 1086
-        Width: 552
-        Height: 252
-        BorderU: 0
-        BorderD: 252
-        BorderL: 0
-        BorderR: 0
+        BorderD: 0
+        BorderL: 138
+        BorderR: 138
       FrameDuration: 40
     - Loop: 1
       Rects: []
@@ -15580,26 +15557,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.SubPos
-  - Position
-  - UI.SkinEditor.SubX
-  - X
-  - UI.SkinEditor.SubY
-  - Y
-  - UI.SkinEditor.SubW
-  - W
-  - UI.SkinEditor.SubH
-  - H
-  - UI.SkinEditor.SubBorder
-  - Border
-  - UI.SkinEditor.SubL
-  - L
-  - UI.SkinEditor.SubR
-  - R
-  - UI.SkinEditor.SubB
-  - B
-  - UI.SkinEditor.SubT
-  - T
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -15818,8 +15775,6 @@ MonoBehaviour:
   - Delete selecting rect?
   - SkinEditor.Dialog.ImportImageTitle
   - Import Image
-  - SkinEditor.Item.ArrowLuminous
-  - Arrow Lum
   - SkinEditor.Item.Hold
   - Hold
   - SkinEditor.Item.HoldLuminous
@@ -15849,7 +15804,7 @@ MonoBehaviour:
   - Stager.Quit
   - Quit
   - Tip.AbreastView
-  - Switch editing mode
+  - Panorama mode
   - Tip.BeatmapSwiper
   - Select beatmap and open
   - Tip.DynamicDropSpeed
@@ -16171,6 +16126,26 @@ MonoBehaviour:
   - Author
   - UI.SkinEditor.SkinNameLabel
   - Name
+  - UI.SkinEditor.SubB
+  - B
+  - UI.SkinEditor.SubBorder
+  - Border
+  - UI.SkinEditor.SubH
+  - H
+  - UI.SkinEditor.SubL
+  - L
+  - UI.SkinEditor.SubPos
+  - Position
+  - UI.SkinEditor.SubR
+  - R
+  - UI.SkinEditor.SubT
+  - T
+  - UI.SkinEditor.SubW
+  - W
+  - UI.SkinEditor.SubX
+  - X
+  - UI.SkinEditor.SubY
+  - Y
   - UI.Tab.BeatmapInfo
   - Beatmap
   - UI.Tab.ClickSound
@@ -17011,8 +16986,8 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -8}
-  m_Pivot: {x: 0.6, y: 0.5}
+  m_SizeDelta: {x: 0, y: -19}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2066472179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -17031,7 +17006,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300004, guid: c3712293cc281f844b19bd4bd57eeb38, type: 3}
+  m_Sprite: {fileID: 3838318795275561306, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1

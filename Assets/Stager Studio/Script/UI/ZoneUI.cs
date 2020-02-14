@@ -24,9 +24,12 @@
 
 
 		// API
-		public Vector3 ZoneMinPos { get; private set; } = default;
-		public Vector3 ZoneMaxPos { get; private set; } = default;
 		public bool IsShowing => m_ZoneGraphics[0].enabled;
+
+		// Short
+		private Vector3 ZoneMinPos { get; set; } = default;
+		private Vector3 ZoneMaxPos { get; set; } = default;
+		private float Ratio { get; set; } = 1f;
 
 		// Ser
 		[SerializeField] private Transform m_ZoneMin = null;
@@ -41,21 +44,19 @@
 
 		// MSG
 		private void Update () {
-			CacheUpdate();
-
-		}
-
-
-		void CacheUpdate () {
 			var min = m_ZoneMin.position;
 			var max = m_ZoneMax.position;
+			Ratio = Mathf.Clamp(
+				Mathf.Abs(max.y - min.y) > 0.0001f ? (max.x - min.x) / (max.y - min.y) : float.MaxValue,
+				0.0001f,
+				float.MaxValue
+			);
 			max.y = min.y + max.x - min.x;
 			if (min != ZoneMinPos || max != ZoneMaxPos) {
 				ZoneMinPos = min;
 				ZoneMaxPos = max;
 			}
 		}
-
 
 
 		// API
@@ -85,7 +86,7 @@
 		}
 
 
-		public (Vector3, Vector3, float) GetZoneMinMax () => (ZoneMinPos, ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x);
+		public (Vector3, Vector3, float, float) GetZoneMinMax () => (ZoneMinPos, ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x, Ratio);
 
 
 

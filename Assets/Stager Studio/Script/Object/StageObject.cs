@@ -14,12 +14,8 @@
 		#region --- SUB ---
 
 
-		public delegate (Vector3 min, Vector3 max, float size) Vector3MinMaxSizeHandler ();
-		public delegate float FloatHandler ();
 		public delegate float FloatFloatIntHandler (float time, int index);
 		public delegate Color ColorByteHandler (byte index);
-		public delegate Beatmap BeatmapHandler ();
-		public delegate bool BoolHandler ();
 
 
 		#endregion
@@ -36,16 +32,18 @@
 		protected const float TRANSATION_DURATION = 0.264f;
 
 		// Handler
-		public static Vector3MinMaxSizeHandler GetZoneMinMax { get; set; } = null;
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorByteHandler PaletteColor { get; set; } = null;
-		public static BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// API
-		public StageRenderer MainRenderer => m_MainRenderer;
+		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
+		public static Beatmap Beatmap { get; set; } = null;
+		public static bool Abreast => AbreastIndex >= 0;
+		public static int AbreastIndex { get; set; } = -1;
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
+		public StageRenderer MainRenderer => m_MainRenderer;
 		public virtual float Time { get; protected set; } = 0f;
 		public virtual float Duration { get; protected set; } = 0f;
 

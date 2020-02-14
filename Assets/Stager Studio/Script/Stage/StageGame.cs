@@ -20,6 +20,7 @@
 		public delegate void VoidHandler ();
 		public delegate void VoidFloatHandler (float ratio);
 		public delegate void VoidBoolHandler (bool value);
+		public delegate void VoidIntHandler (int value);
 		public delegate float FloatHandler ();
 		public delegate void VoidStageObjectHandler (StageObject obj);
 
@@ -36,7 +37,7 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
 		public static VoidBoolHandler OnUserDynamicSpeedChanged { get; set; } = null;
-		public static VoidBoolHandler OnViewModeChanged { get; set; } = null;
+		public static VoidIntHandler OnAbreastChanged { get; set; } = null;
 		public static VoidBoolHandler OnShowGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 
@@ -57,6 +58,7 @@
 		public bool UseAbreastView { get; private set; } = false;
 		public bool UseGrid => ShowGrid;
 		public bool PositiveScroll { get; set; } = true;
+		public int AbreastIndex { get; private set; } = -1;
 
 		// Short
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
@@ -195,26 +197,38 @@
 		private void CacheUpdate () {
 			if (Music.IsPlaying) { return; }
 			// Speed Curve
-			if (Project.Beatmap is null || Project.Beatmap.SpeedNotes is null || Project.Beatmap.SpeedNotes.Count == 0) {
+			if (Project.Beatmap is null) {
+				// No Map
 				if (SpeedCurve.Count > 0) {
 					SpeedCurve.Clear();
 				}
-				if (!(Project.Beatmap is null)) {
-					Project.Beatmap.SpeedNotes = new List<Beatmap.SpeedNote>() {
-						new Beatmap.SpeedNote(0, 0, 1),
-					};
-				}
-			} else if (SpeedCurve.Count != Project.Beatmap.SpeedNotes.Count) {
-				float value = 1f;
-				foreach (var note in Project.Beatmap.SpeedNotes) {
-					float time = note.Time;
-					while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
+			} else {
+				var speedNotes = Project.Beatmap.SpeedNotes;
+				if (speedNotes is null || speedNotes.Count == 0) {
+					// No SpeedNote
+					if (SpeedCurve.Count > 0) {
+						SpeedCurve.Clear();
+					}
+					// Init Speed Note
+					if (speedNotes is null) {
+						Project.Beatmap.SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 0, 1), };
+					} else {
+						speedNotes.Add(new Beatmap.SpeedNote(0, 0, 1));
+					}
+				} else if (SpeedCurve.Count != speedNotes.Count * 2) {
+					// Reset Speed Curve
+					SpeedCurve.Clear();
+					float value = 1f;
+					foreach (var note in speedNotes) {
+						float time = note.Time;
+						while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
+						SpeedCurve.Add(time, value);
+						value = note.Speed;
+						time += note.Duration;
+						while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
+						SpeedCurve.Add(time, value);
+					}
 
-					SpeedCurve.Add(time, value);
-					value = note.Speed;
-					time += note.Duration;
-					while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
-					SpeedCurve.Add(time, value);
 				}
 			}
 		}
@@ -315,7 +329,13 @@
 
 		public void SetUseAbreastView (bool abreast) {
 			UseAbreastView = abreast;
-			OnViewModeChanged(abreast);
+			OnAbreastChanged(AbreastIndex);
+		}
+
+
+		public void SetAbreastIndex (int newIndex) {
+			AbreastIndex = newIndex;
+			OnAbreastChanged(AbreastIndex);
 		}
 
 

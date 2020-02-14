@@ -23,7 +23,6 @@
 
 		NoteLuminous = 9,
 		HoldLuminous = 10,
-		ArrowLuminous = 11,
 
 	}
 

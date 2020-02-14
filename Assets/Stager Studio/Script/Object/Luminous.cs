@@ -18,7 +18,8 @@
 		public static int LayerID_Lum { get; set; } = -1;
 
 		// Data
-		private readonly static float[] LuminousDuration = { 0f, 0f, 0f, };
+		private static float LuminousDuration_Tap = 0f;
+		private static float LuminousDuration_Hold = 0f;
 		private static Vector2 LuminousAppend = Vector2.zero;
 		private bool MovementDirty = true;
 
@@ -42,30 +43,25 @@
 			MainRenderer.RendererEnable = false;
 
 			int index = transform.GetSiblingIndex();
-			var beatmap = GetBeatmap();
-			var noteData = !(beatmap is null) && index < beatmap.Notes.Count ? beatmap.Notes[index] : null;
+			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
 			if (noteData is null) { return; }
 			float noteEndTime = noteData.Time + noteData.Duration;
 
 			if (!MusicPlaying) {
 				MovementDirty = true;
-				SkinType type =
-					noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous :
-					noteData.SwipeX != 1 || noteData.SwipeY != 1 ? SkinType.ArrowLuminous :
-					SkinType.NoteLuminous;
-				Duration = type == SkinType.NoteLuminous ? LuminousDuration[0] :
-					 type == SkinType.HoldLuminous ? LuminousDuration[1] : LuminousDuration[2];
+				SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+				Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 				MainRenderer.Type = type;
 				return;
 			}
 
 			// === Playing Only ===
-			Update_Movement(beatmap, noteData, noteEndTime);
+			Update_Movement(noteData, noteEndTime);
 
 		}
 
 
-		private void Update_Movement (Beatmap beatmap, Beatmap.Note noteData, float noteEndTime) {
+		private void Update_Movement (Beatmap.Note noteData, float noteEndTime) {
 
 			// Active Check
 			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
@@ -79,10 +75,10 @@
 
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
-			var linkedTrack = beatmap.GetTrackAt(noteData.TrackIndex);
+			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
 			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
-			var linkedStage = beatmap.GetStageAt(linkedTrack.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage)) { return; }
+			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
+			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
 			Time = noteData.Time;
 			var stagePos = Stage.GetStagePosition(linkedStage);
@@ -92,7 +88,7 @@
 			float trackX = Track.GetTrackX(linkedTrack);
 			float trackWidth = Track.GetTrackWidth(linkedTrack);
 			float trackRotX = Stage.GetStageAngle(linkedStage);
-			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
+			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var (pos, _, rotZ) = Track.Inside(
 				noteData.X, 0f,
 				stagePos, stageWidth, stageHeight, stageRotZ,
@@ -100,20 +96,21 @@
 			);
 
 			// Movement
+			float scaleX = stageWidth * trackWidth * noteData.Width + LuminousAppend.x;
+			float scaleY = Note.NoteThickness + LuminousAppend.y;
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 			MainRenderer.transform.localScale = new Vector3(
-				zoneSize * (stageWidth * trackWidth * noteData.Width + LuminousAppend.x),
-				zoneSize * LuminousAppend.y,
+				zoneSize * scaleX,
+				zoneSize * scaleY,
 				1f
 			);
 
 			// Renderer
 			MainRenderer.LifeTime = MusicTime > noteEndTime ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
-			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, 1f);
+			MainRenderer.Scale = new Vector2(scaleX, scaleY);
 			MainRenderer.SetSortingLayer(LayerID_Lum, GetSortingOrder());
-
 
 			// Final
 			MovementDirty = false;
@@ -133,10 +130,8 @@
 			LuminousAppend.y = skin is null ? 0f : skin.LuminousAppendY;
 			var lumAni0 = skin?.Items[(int)SkinType.NoteLuminous];
 			var lumAni1 = skin?.Items[(int)SkinType.HoldLuminous];
-			var lumAni2 = skin?.Items[(int)SkinType.ArrowLuminous];
-			LuminousDuration[0] = lumAni0 is null ? 0f : lumAni0.TotalDuration;
-			LuminousDuration[1] = lumAni1 is null ? 0f : lumAni1.TotalDuration;
-			LuminousDuration[2] = lumAni2 is null ? 0f : lumAni2.TotalDuration;
+			LuminousDuration_Tap = lumAni0 is null ? 0f : lumAni0.TotalDuration;
+			LuminousDuration_Hold = lumAni1 is null ? 0f : lumAni1.TotalDuration;
 		}
 
 

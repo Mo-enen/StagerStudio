@@ -169,6 +169,7 @@
 			Skin.SaveSkin(Data, SkinName);
 			Skin.ReloadSkin();
 			Hint?.SetHint(Language.Get(HINT_Saved));
+			Resources.UnloadUnusedAssets();
 		}
 
 

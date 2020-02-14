@@ -104,7 +104,7 @@
 						// RT
 						var rt = grab.transform as RectTransform;
 						rt.SetAsLastSibling();
-						SetPositionAsRect(rt, rect, textureWidth, textureHeight);
+						SetPositionRect(rt, rect, textureWidth, textureHeight);
 						// Index
 						int index = rt.GetSiblingIndex();
 						grab.Grab<Text>("Index").text = (index + 1).ToString();
@@ -155,7 +155,7 @@
 				DragOffset_View = null;
 			}
 			// Delete
-			if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace)) {
+			if (!Util.IsTypeing && (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))) {
 				DeleteSelection();
 			}
 			// No Mouse Drag
@@ -355,17 +355,7 @@
 				}
 			}
 			// Apply
-			ani.Rects[SelectingRectIndex] = rData;
-			if (m_Editor.ApplyToAllSprite) {
-				for (int i = 0; i < ani.Rects.Count; i++) {
-					var r = ani.Rects[i];
-					r.BorderU = Mathf.Clamp(rData.BorderU, 0, rData.Height);
-					r.BorderD = Mathf.Clamp(rData.BorderD, 0, rData.Height);
-					r.BorderL = Mathf.Clamp(rData.BorderL, 0, rData.Width);
-					r.BorderR = Mathf.Clamp(rData.BorderR, 0, rData.Width);
-					ani.Rects[i] = r;
-				}
-			}
+			ApplyData(ani, rData);
 			SetSelection(SelectingRectIndex);
 		}
 
@@ -473,8 +463,6 @@
 			m_SubPanelRoot.gameObject.SetActive(SelectingRectIndex >= 0);
 			if (SelectingRectIndex >= 0) {
 				var rData = ani.Rects[SelectingRectIndex];
-				// Position
-				SetPositionAsRect(m_Selection, rData, data.Texture.width, data.Texture.height);
 				// Borders
 				float u01 = rData.Height <= 0 ? 0 : Mathf.Clamp01((float)(rData.Height - rData.BorderU) / rData.Height);
 				float d01 = rData.Height <= 0 ? 0 : Mathf.Clamp01((float)rData.BorderD / rData.Height);
@@ -501,6 +489,9 @@
 					m_SubT.text = rData.BorderU.ToString();
 				} catch { }
 				SubUIReady = true;
+				// Pos
+				SetPositionRect(m_Selection, rData, data.Texture.width, data.Texture.height);
+				RefreshRectPosition(SelectingRectIndex, rData, data.Texture.width, data.Texture.height);
 			}
 		}
 
@@ -598,7 +589,7 @@
 		}
 
 
-		private void SetPositionAsRect (RectTransform rt, AnimatedItemData.RectData rect, int textureWidth, int textureHeight) {
+		private void SetPositionRect (RectTransform rt, AnimatedItemData.RectData rect, int textureWidth, int textureHeight) {
 			rt.anchoredPosition3D = rt.anchoredPosition;
 			rt.localRotation = Quaternion.identity;
 			rt.localScale = Vector3.one;
@@ -621,7 +612,7 @@
 		private void RefreshRectPosition (int index, AnimatedItemData.RectData rData, int textureWidth, int textureHeight) {
 			int childCount = m_RectContainer.childCount;
 			if (index < 0 || index >= childCount) { return; }
-			SetPositionAsRect(m_RectContainer.GetChild(index) as RectTransform, rData, textureWidth, textureHeight);
+			SetPositionRect(m_RectContainer.GetChild(index) as RectTransform, rData, textureWidth, textureHeight);
 		}
 
 
@@ -638,7 +629,12 @@
 			rData.BorderR = r < 0 ? rData.BorderR : Mathf.Clamp(r, 0, rData.Width);
 			rData.BorderD = d < 0 ? rData.BorderD : Mathf.Clamp(d, 0, rData.Height);
 			rData.BorderU = u < 0 ? rData.BorderU : Mathf.Clamp(u, 0, rData.Height);
-			ani.Rects[SelectingRectIndex] = rData;
+			// Apply
+			if (x < 0 && y < 0) {
+				ApplyData(ani, rData);
+			} else {
+				ani.Rects[SelectingRectIndex] = rData;
+			}
 		}
 
 
@@ -647,6 +643,21 @@
 			var ani = m_Editor.GetEditingAniData();
 			if (ani is null || ani.Rects is null || data is null || data.Texture is null || SelectingRectIndex < 0) { return (default, null, null); }
 			return (ani.Rects[Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1)], ani, data);
+		}
+
+
+		private void ApplyData (AnimatedItemData ani, AnimatedItemData.RectData rData) {
+			ani.Rects[SelectingRectIndex] = rData;
+			if (m_Editor.ApplyToAllSprite) {
+				for (int i = 0; i < ani.Rects.Count; i++) {
+					var r = ani.Rects[i];
+					r.BorderU = Mathf.Clamp(rData.BorderU, 0, rData.Height);
+					r.BorderD = Mathf.Clamp(rData.BorderD, 0, rData.Height);
+					r.BorderL = Mathf.Clamp(rData.BorderL, 0, rData.Width);
+					r.BorderR = Mathf.Clamp(rData.BorderR, 0, rData.Width);
+					ani.Rects[i] = r;
+				}
+			}
 		}
 
 

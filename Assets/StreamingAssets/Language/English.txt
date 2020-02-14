@@ -1,34 +1,4 @@
-﻿UI.SkinEditor.SubPos
-Position
-
-UI.SkinEditor.SubX
-X
-
-UI.SkinEditor.SubY
-Y
-
-UI.SkinEditor.SubW
-W
-
-UI.SkinEditor.SubH
-H
-
-UI.SkinEditor.SubBorder
-Border
-
-UI.SkinEditor.SubL
-L
-
-UI.SkinEditor.SubR
-R
-
-UI.SkinEditor.SubB
-B
-
-UI.SkinEditor.SubT
-T
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -349,9 +319,6 @@ Delete selecting rect?
 SkinEditor.Dialog.ImportImageTitle
 Import Image
 
-SkinEditor.Item.ArrowLuminous
-Arrow Lum
-
 SkinEditor.Item.Hold
 Hold
 
@@ -395,7 +362,7 @@ Stager.Quit
 Quit
 
 Tip.AbreastView
-Switch editing mode
+Panorama mode
 
 Tip.BeatmapSwiper
 Select beatmap and open
@@ -876,6 +843,36 @@ Author
 
 UI.SkinEditor.SkinNameLabel
 Name
+
+UI.SkinEditor.SubB
+B
+
+UI.SkinEditor.SubBorder
+Border
+
+UI.SkinEditor.SubH
+H
+
+UI.SkinEditor.SubL
+L
+
+UI.SkinEditor.SubPos
+Position
+
+UI.SkinEditor.SubR
+R
+
+UI.SkinEditor.SubT
+T
+
+UI.SkinEditor.SubW
+W
+
+UI.SkinEditor.SubX
+X
+
+UI.SkinEditor.SubY
+Y
 
 UI.Tab.BeatmapInfo
 Beatmap

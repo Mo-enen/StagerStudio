@@ -44,16 +44,15 @@
 
 			// Get TrackData
 			int index = transform.GetSiblingIndex();
-			var beatmap = GetBeatmap();
-			var trackData = !(beatmap is null) && index < beatmap.Tracks.Count ? beatmap.Tracks[index] : null;
+			var trackData = !(Beatmap is null) && index < Beatmap.Tracks.Count ? Beatmap.Tracks[index] : null;
 			if (trackData is null) { return; }
 
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
 			// Get/Check Track/Stage
-			var linkedStage = beatmap.GetStageAt(trackData.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage) || !GetTrackActive(trackData)) { return; }
+			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
+			if (linkedStage is null || !Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData)) { return; }
 
 			// Movement
 			Update_Movement(linkedStage, trackData);
@@ -63,7 +62,7 @@
 
 		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track trackData) {
 
-			var (zoneMin, zoneMax, zoneSize) = GetZoneMinMax();
+			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			float trackWidth = GetTrackWidth(trackData);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
@@ -87,7 +86,7 @@
 			MainRenderer.LifeTime = TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageWidth);
 			MainRenderer.Tint = GetTrackColor(trackData);
-			MainRenderer.Alpha = TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage, TRANSATION_DURATION) * GetTrackAlpha(trackData, TRANSATION_DURATION);
+			MainRenderer.Alpha = TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
 			TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
 
@@ -142,9 +141,9 @@
 		}
 
 
-		public static float GetTrackAlpha (Beatmap.Track data, float transation) => Mathf.Clamp01(
-			MusicTime < data.Time ? (MusicTime - data.Time + transation) / transation :
-			MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + transation) / transation :
+		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(
+			MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION :
+			MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION :
 			1f
 		);
 

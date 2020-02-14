@@ -1,34 +1,4 @@
-﻿UI.SkinEditor.SubPos
-位置
-
-UI.SkinEditor.SubX
-X
-
-UI.SkinEditor.SubY
-Y
-
-UI.SkinEditor.SubW
-宽
-
-UI.SkinEditor.SubH
-高
-
-UI.SkinEditor.SubBorder
-边框
-
-UI.SkinEditor.SubL
-左
-
-UI.SkinEditor.SubR
-右
-
-UI.SkinEditor.SubB
-下
-
-UI.SkinEditor.SubT
-上
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -349,9 +319,6 @@ SkinEditor.Dialog.DeleteConfirm
 SkinEditor.Dialog.ImportImageTitle
 导入图片
 
-SkinEditor.Item.ArrowLuminous
-方向光效
-
 SkinEditor.Item.Hold
 长按音符
 
@@ -395,7 +362,7 @@ Stager.Quit
 退出
 
 Tip.AbreastView
-切换编辑模式
+全景模式
 
 Tip.BeatmapSwiper
 选择谱面并打开
@@ -876,6 +843,36 @@ UI.SkinEditor.SkinAuthorLabel
 
 UI.SkinEditor.SkinNameLabel
 名称
+
+UI.SkinEditor.SubB
+下
+
+UI.SkinEditor.SubBorder
+边框
+
+UI.SkinEditor.SubH
+高
+
+UI.SkinEditor.SubL
+左
+
+UI.SkinEditor.SubPos
+位置
+
+UI.SkinEditor.SubR
+右
+
+UI.SkinEditor.SubT
+上
+
+UI.SkinEditor.SubW
+宽
+
+UI.SkinEditor.SubX
+X
+
+UI.SkinEditor.SubY
+Y
 
 UI.Tab.BeatmapInfo
 谱面

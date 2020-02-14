@@ -68,10 +68,10 @@
 		public int IndexOf (float key) => Items.IndexOfKey(key);
 
 
-		public int SearchKey (float key) => Search(key);
+		public int SearchKey (float key) => Search(Items.Keys, key);
 
 
-		public Item Evaluate (float key, float muti = 1f) => Items.Count == 0 ? default : EvaluateKey(key, muti);
+		public Item Evaluate (float key, float muti = 1f) => Items.Count == 0 ? default : EvaluateKey(Items.Keys, Items.Values, key, muti);
 
 
 		public float GetAreaBetween (float keyA, float keyB, float muti = 1f) => Items.Count == 0 ? 0f : GetAreaBetweenKeys(keyA, keyB, muti);
@@ -84,16 +84,18 @@
 			float deltaArea;
 			bool right = area > 0f;
 			area = right ? area : -area;
+			var itemKeys = Items.Keys;
+			var itemValues = Items.Values;
 
 			// Start Overlap
-			if (key < Items.Keys[0]) {
-				float firstValue = ItemToFloat(ItemMuti(Items.Values[0].Value, muti));
+			if (key < itemKeys[0]) {
+				float firstValue = ItemToFloat(ItemMuti(itemValues[0].Value, muti));
 				if (right) {
 					// Right-Moving Left Overlap
-					deltaArea = (Items.Keys[0] - key) * firstValue;
+					deltaArea = (itemKeys[0] - key) * firstValue;
 					if (area >= deltaArea) {
 						area -= deltaArea;
-						key = Items.Keys[0];
+						key = itemKeys[0];
 					} else {
 						return key + Abs(area / firstValue);
 					}
@@ -101,17 +103,17 @@
 					// Left-Moving Left Overlap
 					return firstValue > 0f ? key - (area / firstValue) : key;
 				}
-			} else if (key > Items.Keys[Items.Count - 1]) {
-				float lastValue = ItemToFloat(ItemMuti(Items.Values[Items.Count - 1].Value, muti));
+			} else if (key > itemKeys[Items.Count - 1]) {
+				float lastValue = ItemToFloat(ItemMuti(itemValues[Items.Count - 1].Value, muti));
 				if (right) {
 					// Right-Moving Right Overlap
 					return lastValue > 0f ? key + (area / lastValue) : key;
 				} else {
 					// Left-Moving Right Overlap
-					deltaArea = (key - Items.Keys[Items.Count - 1]) * lastValue;
+					deltaArea = (key - itemKeys[Items.Count - 1]) * lastValue;
 					if (area >= deltaArea) {
 						area -= deltaArea;
-						key = Items.Keys[Items.Count - 1];
+						key = itemKeys[Items.Count - 1];
 					} else {
 						return key - Abs(area / lastValue);
 					}
@@ -121,19 +123,19 @@
 			// Main
 			if (Items.Count > 1) {
 				float keyAlt;
-				float value = ItemToFloat(EvaluateKey(key, muti));
+				float value = ItemToFloat(EvaluateKey(itemKeys, itemValues, key, muti));
 				float valueAlt;
 				bool rootFlag = false;
 				for (
-					int index = right ? Search(key) + 1 : Search(key);
+					int index = right ? Search(itemKeys, key) + 1 : Search(itemKeys, key);
 					index >= 0 && index < Items.Count;
 					index += right ? 1 : -1
 				) {
-					keyAlt = Items.Keys[index];
+					keyAlt = itemKeys[index];
 					valueAlt = ItemToFloat(ItemMuti(Items[keyAlt].Value, muti));
 					if (value > 0f && valueAlt < 0f) {
 						deltaArea = GetAreaAt(right ? index - 1 : index, true, muti);
-						float prevKey = Items.Keys[right ? index - 1 : index + 1];
+						float prevKey = itemKeys[right ? index - 1 : index + 1];
 						deltaArea -= 0.5f * Abs(key - prevKey) * (value + ItemToFloat(ItemMuti(Items[prevKey].Value, muti)));
 						if (area <= deltaArea) {
 							rootFlag = true;
@@ -172,14 +174,14 @@
 
 			// End Overlap
 			if (area > 0f) {
-				float firstValue = ItemToFloat(ItemMuti(Items.Values[0].Value, muti));
-				float lastValue = ItemToFloat(ItemMuti(Items.Values[Items.Count - 1].Value, muti));
+				float firstValue = ItemToFloat(ItemMuti(itemValues[0].Value, muti));
+				float lastValue = ItemToFloat(ItemMuti(itemValues[Items.Count - 1].Value, muti));
 				if (right && lastValue > 0f) {
 					// Right-Moving Overlap
-					return Items.Keys[Items.Count - 1] + (area / lastValue);
+					return itemKeys[Items.Count - 1] + (area / lastValue);
 				} else if (!right && firstValue > 0f) {
 					// Left-Moving Overlap
-					return Items.Keys[0] - (area / firstValue);
+					return itemKeys[0] - (area / firstValue);
 				}
 			}
 
@@ -215,6 +217,15 @@
 		public void RemoveAt (int index) {
 			ClearAreasAt(index);
 			Items.RemoveAt(index);
+		}
+
+
+		public void RemoveRange (int newCount) {
+			int oldCount = Items.Count;
+			for (int i = newCount; i < oldCount; i++) {
+				ClearAreasAt(0);
+				Items.RemoveAt(0);
+			}
 		}
 
 
@@ -258,11 +269,12 @@
 
 		// Get
 		private float GetAreaAt (int index, bool positiveOnly, float muti) {
-			float key = Items.Keys[index];
+			var itemKeys = Items.Keys;
+			float key = itemKeys[index];
 			var pair = Items[key];
 			if (!pair.Area.HasValue) {
 				if (index < Items.Count - 1) {
-					float nextKey = Items.Keys[index + 1];
+					float nextKey = itemKeys[index + 1];
 					float value = ItemToFloat(Items[key].Value);
 					float nextValue = ItemToFloat(Items[nextKey].Value);
 					pair.Area = 0.5f * (nextKey - key) * (value + nextValue);
@@ -285,18 +297,18 @@
 		}
 
 
-		private Item EvaluateKey (float key, float muti) {
-			if (key <= Items.Keys[0]) {
-				return ItemMuti(Items.Values[0].Value, muti);
-			} else if (key >= Items.Keys[Items.Count - 1]) {
-				return ItemMuti(Items.Values[Items.Count - 1].Value, muti);
+		private Item EvaluateKey (IList<float> itemKeys, IList<(Item Value, float? Area, float? PositiveArea)> itemValues, float key, float muti) {
+			if (key <= itemKeys[0]) {
+				return ItemMuti(itemValues[0].Value, muti);
+			} else if (key >= itemKeys[Items.Count - 1]) {
+				return ItemMuti(itemValues[Items.Count - 1].Value, muti);
 			} else {
 				if (Items.ContainsKey(key)) {
 					return ItemMuti(Items[key].Value, muti);
 				} else {
-					int indexL = Search(key);
-					float keyL = Items.Keys[indexL];
-					float keyR = Items.Keys[indexL + 1];
+					int indexL = Search(itemKeys, key);
+					float keyL = itemKeys[indexL];
+					float keyR = itemKeys[indexL + 1];
 					return ItemMuti(Lerp(
 						Items[keyL].Value,
 						Items[keyR].Value,
@@ -313,29 +325,31 @@
 			} else if (keyA > keyB) {
 				return GetAreaBetweenKeys(keyB, keyA, muti);
 			} else {
+				var itemKeys = Items.Keys;
+				var itemValues = Items.Values;
 				float area = 0f;
-				int indexA = Search(keyA);
-				int indexB = Search(keyB);
+				int indexA = Search(itemKeys, keyA);
+				int indexB = Search(itemKeys, keyB);
 				if (indexA == indexB) {
-					return 0.5f * (keyB - keyA) * (ItemToFloat(EvaluateKey(keyA, muti)) + ItemToFloat(EvaluateKey(keyB, muti)));
+					return 0.5f * (keyB - keyA) * (ItemToFloat(EvaluateKey(itemKeys, itemValues, keyA, muti)) + ItemToFloat(EvaluateKey(itemKeys, itemValues, keyB, muti)));
 				} else {
-					float keyL = Items.Keys[0];
-					float keyR = Items.Keys[Items.Count - 1];
+					float keyL = itemKeys[0];
+					float keyR = itemKeys[Items.Count - 1];
 					if (keyA < keyL) {
-						area += ItemToFloat(ItemMuti(Items.Values[0].Value, muti)) * (keyL - keyA);
+						area += ItemToFloat(ItemMuti(itemValues[0].Value, muti)) * (keyL - keyA);
 						keyA = keyL;
 					}
 					if (keyB > keyR) {
-						area += ItemToFloat(ItemMuti(Items.Values[Items.Count - 1].Value, muti)) * (keyB - keyR);
+						area += ItemToFloat(ItemMuti(itemValues[Items.Count - 1].Value, muti)) * (keyB - keyR);
 						keyB = keyR;
 					}
-					keyL = Items.Keys[indexA + 1];
-					keyR = Items.Keys[indexB];
+					keyL = itemKeys[indexA + 1];
+					keyR = itemKeys[indexB];
 					if (keyL > keyA) {
-						area += 0.5f * (keyL - keyA) * (ItemToFloat(ItemMuti(Items[keyL].Value, muti)) + ItemToFloat(EvaluateKey(keyA, muti)));
+						area += 0.5f * (keyL - keyA) * (ItemToFloat(ItemMuti(Items[keyL].Value, muti)) + ItemToFloat(EvaluateKey(itemKeys, itemValues, keyA, muti)));
 					}
 					if (keyB > keyR) {
-						area += 0.5f * (keyB - keyR) * (ItemToFloat(ItemMuti(Items[keyR].Value, muti)) + ItemToFloat(EvaluateKey(keyB, muti)));
+						area += 0.5f * (keyB - keyR) * (ItemToFloat(ItemMuti(Items[keyR].Value, muti)) + ItemToFloat(EvaluateKey(itemKeys, itemValues, keyB, muti)));
 					}
 					for (int i = indexA + 1; i < indexB; i++) {
 						area += GetAreaAt(i, false, muti);
@@ -374,15 +388,15 @@
 		#region --- UTL ---
 
 
-		private int Search (float key) {
+		private int Search (IList<float> itemKeys, float key) {
 			int start = 0;
 			int end = Items.Count - 1;
 			int mid;
 			while (start <= end) {
 				mid = (start + end) / 2;
-				if (Items.Keys[mid] < key) {
+				if (itemKeys[mid] < key) {
 					start = mid + 1;
-				} else if (Items.Keys[mid] > key) {
+				} else if (itemKeys[mid] > key) {
 					end = mid - 1;
 				} else {
 					return mid;

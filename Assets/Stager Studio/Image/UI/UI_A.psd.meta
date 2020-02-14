@@ -200,6 +200,9 @@ TextureImporter:
   - first:
       213: 303197491328815229
     second: Check
+  - first:
+      213: -8080841097035478247
+    second: Menu
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1240,7 +1243,7 @@ TextureImporter:
         width: 40
         height: 31
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1248,6 +1251,27 @@ TextureImporter:
       bones: []
       spriteID: d70917f038c253400800000000000000
       internalID: 303197491328815229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Menu
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 162
+        width: 28
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91b82dc16d51bdf80800000000000000
+      internalID: -8080841097035478247
       vertices: []
       indices: 
       edges: []

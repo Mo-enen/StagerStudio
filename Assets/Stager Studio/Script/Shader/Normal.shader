@@ -1,4 +1,4 @@
-Shader "Moenen/Normal" {
+Shader "Object/Normal" {
 	Properties{
 		_MainTex("Base (RGB) Trans (A)", 2D) = "white" {}
 	}

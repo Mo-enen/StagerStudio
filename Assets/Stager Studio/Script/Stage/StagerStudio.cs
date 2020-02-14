@@ -98,7 +98,7 @@
 
 		private void Awake () {
 			Awake_Message();
-			Awake_StageObject();
+			Awake_Object();
 			Awake_Setting();
 			Awake_Project();
 			Awake_Game();
@@ -125,6 +125,8 @@
 		private void Update () {
 			CursorUI.GlobalUpdate();
 			StageUndo.GlobalUpdate();
+			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
+			StageObject.AbreastIndex = Game.UseAbreastView ? Game.AbreastIndex : -1;
 		}
 
 
@@ -187,11 +189,9 @@
 		}
 
 
-		private void Awake_StageObject () {
+		private void Awake_Object () {
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => Project.Palette[Mathf.Clamp(index, 0, Project.Palette.Count - 1)];
-			StageObject.GetZoneMinMax = m_Zone.GetZoneMinMax;
-			StageObject.GetBeatmap = () => Project.Beatmap;
 			Note.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
@@ -204,12 +204,14 @@
 			// Project
 			StageProject.OnProjectLoadingStart = () => {
 				Music.SetClip(null);
-				m_Preview.SetDirty();
 				Game.SetSpeedCurveDirty();
+				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
+				StageObject.Beatmap = null;
 			};
 			StageProject.OnProjectLoaded = () => {
+				Game.SetSpeedCurveDirty();
 				UI_RemoveUI();
 				TryRefreshLoading(-1f);
 				if (ShowWelcome) {
@@ -222,10 +224,11 @@
 				StartCoroutine(SaveProgressing());
 			};
 			StageProject.OnProjectClosed = () => {
+				Game.SetSpeedCurveDirty();
 				Music.SetClip(null);
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
-
+				StageObject.Beatmap = null;
 			};
 
 			// Beatmap
@@ -236,6 +239,7 @@
 					Game.MapDropSpeed = map.DropSpeed;
 					Game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
+					StageObject.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				TryRefreshLoading(-1f);
@@ -295,27 +299,22 @@
 		private void Awake_Game () {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
-
 			};
-			StageGame.OnViewModeChanged = (abreast) => {
-				m_UseAbreastView.isOn = abreast;
-				m_Wave.gameObject.SetActive(abreast);
-
+			StageGame.OnAbreastChanged = (abreastIndex) => {
+				m_UseAbreastView.isOn = abreastIndex >= 0;
+				m_Wave.gameObject.SetActive(abreastIndex >= 0 && !Game.UseDynamicSpeed);
 			};
 			StageGame.OnUserDynamicSpeedChanged = (use) => {
 				m_UseDynamicSpeed.isOn = use;
+				m_Wave.gameObject.SetActive(Game.AbreastIndex >= 0 && !use);
 				Note.SetCacheDirty();
-
 			};
 			StageGame.OnShowGridChanged = (show) => {
 				m_GridTG.isOn = show;
-
-
 			};
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
 				Data.Beatmap.DEFAULT_STAGE.Height = 1f / ratio;
-
 			};
 			m_UseDynamicSpeed.isOn = Game.UseDynamicSpeed;
 			m_GridTG.isOn = Game.UseGrid;
@@ -360,6 +359,7 @@
 				Game.ClearAllContainers();
 				Note.SetNoteSkin(data);
 				Luminous.SetLuminousSkin(data);
+				Resources.UnloadUnusedAssets();
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();
