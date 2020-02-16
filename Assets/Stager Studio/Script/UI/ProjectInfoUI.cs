@@ -137,7 +137,7 @@
 			get => (BeatmapSortMode)BeatmapSortIndex.Value;
 			set => BeatmapSortIndex.Value = (int)value;
 		}
-		private static StageProject Project => _Project ?? (_Project = FindObjectOfType<StageProject>());
+		private static StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
 
@@ -176,7 +176,6 @@
 			foreach (var tx in m_LanguageLabels) {
 				tx.text = GetLanguage(tx.name);
 			}
-			BeatmapSortIndex.Load();
 			Awake_ProjectInfo();
 			Awake_Gene();
 		}

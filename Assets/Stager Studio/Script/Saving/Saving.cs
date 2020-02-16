@@ -1,49 +1,53 @@
 ﻿namespace StagerStudio.Saving {
-
-	using UnityEngine;
-
-
 	public abstract class Saving<T> {
 
+
+		// API
 		public T Value {
 			get {
+				if (!Loaded) {
+					_Value = GetValueFromPref();
+					Loaded = true;
+				}
 				return _Value;
 			}
 			set {
 				if (_Value != null && !_Value.Equals(value)) {
 					_Value = value;
+					Loaded = true;
 					SetValueToPref();
 				}
 			}
 		}
-		public string Key;
+		public string Key { get; private set; }
+		public T DefaultValue { get; private set; }
 
-		protected T DefaultValue;
+		// Data
+		private T _Value;
+		private bool Loaded;
 
-		protected T _Value;
 
-
+		// API
 		public Saving (string key, T defaultValue) {
 			Key = key;
 			DefaultValue = defaultValue;
 			_Value = defaultValue;
+			Loaded = false;
+		}
+
+		public void Reset () {
+			_Value = DefaultValue;
+			DeleteKey();
 		}
 
 
-		public void Load () {
-			_Value = GetValueFromPref();
-		}
+		// ABS
+		protected abstract void DeleteKey ();
 
-
-
-		public abstract void Reset ();
 		protected abstract T GetValueFromPref ();
+
 		protected abstract void SetValueToPref ();
 
 
 	}
-
-
-
-
 }

@@ -47,7 +47,6 @@
 
 		// MSG
 		private void Awake () {
-			ShowBeatTime.Load();
 			m_TimeLabel.ShowBeatTime = ShowBeatTime;
 		}
 

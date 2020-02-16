@@ -16,13 +16,11 @@
 		#region --- SUB ---
 
 
-		public delegate string StringStringHandler (string str);
 		public delegate void VoidHandler ();
 		public delegate void VoidFloatHandler (float ratio);
 		public delegate void VoidBoolHandler (bool value);
-		public delegate void VoidIntHandler (int value);
-		public delegate float FloatHandler ();
-		public delegate void VoidStageObjectHandler (StageObject obj);
+		public delegate void VoidIntBoolBoolHandler (int a, bool b, bool c);
+		public delegate string StringStringHandler (string str);
 
 
 		#endregion
@@ -37,7 +35,7 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
 		public static VoidBoolHandler OnUserDynamicSpeedChanged { get; set; } = null;
-		public static VoidIntHandler OnAbreastChanged { get; set; } = null;
+		public static VoidIntBoolBoolHandler OnAbreastChanged { get; set; } = null;
 		public static VoidBoolHandler OnShowGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 
@@ -53,12 +51,12 @@
 		public float Shift { get; set; } = 0f;
 		public float MapDropSpeed { get; set; } = 1f;
 		public float GameDropSpeed { get; private set; } = 1f;
-		public float SPB => 60f / BPM;
 		public bool UseDynamicSpeed { get; private set; } = true;
-		public bool UseAbreastView { get; private set; } = false;
+		public bool UseAbreast { get; private set; } = false;
+		public bool AllStageAbreast { get; private set; } = false;
+		public int AbreastIndex => Mathf.Max(_AbreastIndex, 0);
 		public bool UseGrid => ShowGrid;
 		public bool PositiveScroll { get; set; } = true;
-		public int AbreastIndex { get; private set; } = -1;
 
 		// Short
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
@@ -83,6 +81,7 @@
 		private Camera _Camera = null;
 		private Transform[] Containers = null;
 		private float _Ratio = 1.5f;
+		private int _AbreastIndex = 0;
 
 		// Saving
 		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
@@ -117,11 +116,15 @@
 			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
 			Luminous.LayerID_Lum = SortingLayer.NameToID("Luminous");
 			// Misc
-			ShowGrid.Load();
 			Containers = new Transform[m_Level.childCount];
 			for (int i = 0; i < Containers.Length; i++) {
 				Containers[i] = m_Level.GetChild(i);
 			}
+		}
+
+
+		private void Start () {
+			SetShowGrid(ShowGrid);
 		}
 
 
@@ -251,7 +254,7 @@
 						} else if (Input.GetKey(KeyCode.LeftShift)) {
 							delta *= 10f;
 						}
-						Music.Seek(Music.Time + delta * SPB);
+						Music.Seek(Music.Time + delta * (60f / BPM));
 					}
 				}
 			}
@@ -305,8 +308,8 @@
 
 		// Grid
 		public float SnapTime (float time, int step) {
-			float gap = SPB / step;
-			float offset = Mathf.Repeat(Shift, SPB);
+			float gap = 60f / BPM / step;
+			float offset = Mathf.Repeat(Shift, 60f / BPM);
 			return Mathf.Round((time - offset) / gap) * gap + offset;
 		}
 
@@ -315,7 +318,7 @@
 		public void SwitchUseDynamicSpeed () => SetUseDynamicSpeed(!UseDynamicSpeed);
 
 
-		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreastView);
+		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreast);
 
 
 		public void SwitchShowGrid () => SetShowGrid(!ShowGrid);
@@ -328,14 +331,21 @@
 
 
 		public void SetUseAbreastView (bool abreast) {
-			UseAbreastView = abreast;
-			OnAbreastChanged(AbreastIndex);
+			UseAbreast = abreast;
+			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
+		}
+
+
+		public void SetAllStageAbreast (bool abreast) {
+			AllStageAbreast = abreast;
+			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
+
 		}
 
 
 		public void SetAbreastIndex (int newIndex) {
-			AbreastIndex = newIndex;
-			OnAbreastChanged(AbreastIndex);
+			_AbreastIndex = Mathf.Max(newIndex, 0);
+			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
 		}
 
 

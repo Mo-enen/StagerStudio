@@ -361,6 +361,9 @@ About
 Stager.Quit
 Quit
 
+Tip.AbreastSwitcher.Item
+Switch to specified stage
+
 Tip.AbreastView
 Panorama mode
 

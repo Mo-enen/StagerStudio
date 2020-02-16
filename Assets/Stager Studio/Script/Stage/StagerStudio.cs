@@ -70,6 +70,7 @@
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
 		[SerializeField] private HintBarUI m_Hint = null;
+		[SerializeField] private AbreastSwitcherUI m_AbreastSwitcherUI = null;
 		[SerializeField] private ZoneUI m_Zone = null;
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
@@ -126,7 +127,7 @@
 			CursorUI.GlobalUpdate();
 			StageUndo.GlobalUpdate();
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
-			StageObject.AbreastIndex = Game.UseAbreastView ? Game.AbreastIndex : -1;
+			StageObject.Abreast = (Game.AbreastIndex, Game.UseAbreast, Game.AllStageAbreast);
 		}
 
 
@@ -209,6 +210,9 @@
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
 				StageObject.Beatmap = null;
+				Game.SetAbreastIndex(0);
+				Game.SetUseAbreastView(false);
+				Game.SetUseDynamicSpeed(true);
 			};
 			StageProject.OnProjectLoaded = () => {
 				Game.SetSpeedCurveDirty();
@@ -300,9 +304,10 @@
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
 			};
-			StageGame.OnAbreastChanged = (abreastIndex) => {
-				m_UseAbreastView.isOn = abreastIndex >= 0;
-				m_Wave.gameObject.SetActive(abreastIndex >= 0 && !Game.UseDynamicSpeed);
+			StageGame.OnAbreastChanged = (abreastIndex, useAbreast, allAbreast) => {
+				m_UseAbreastView.isOn = useAbreast;
+				m_Wave.gameObject.SetActive(useAbreast && !Game.UseDynamicSpeed);
+				m_AbreastSwitcherUI.RefreshUI();
 			};
 			StageGame.OnUserDynamicSpeedChanged = (use) => {
 				m_UseDynamicSpeed.isOn = use;
@@ -316,8 +321,6 @@
 				m_Zone.SetFitterRatio(ratio);
 				Data.Beatmap.DEFAULT_STAGE.Height = 1f / ratio;
 			};
-			m_UseDynamicSpeed.isOn = Game.UseDynamicSpeed;
-			m_GridTG.isOn = Game.UseGrid;
 		}
 
 

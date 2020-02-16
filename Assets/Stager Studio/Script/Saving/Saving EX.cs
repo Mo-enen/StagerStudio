@@ -19,8 +19,8 @@
 			return value.Value;
 		}
 
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
+
 			PlayerPrefs.DeleteKey(Key);
 		}
 
@@ -45,8 +45,8 @@
 		public static implicit operator int (SavingInt value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
+
 			PlayerPrefs.DeleteKey(Key);
 		}
 	}
@@ -70,8 +70,8 @@
 		public static implicit operator string (SavingString value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
+
 			PlayerPrefs.DeleteKey(Key);
 		}
 	}
@@ -95,8 +95,7 @@
 		public static implicit operator float (SavingFloat value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
 			PlayerPrefs.DeleteKey(Key);
 		}
 	}
@@ -124,8 +123,7 @@
 		public static implicit operator Vector2 (SavingVector2 value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
 			PlayerPrefs.DeleteKey(Key + ".x");
 			PlayerPrefs.DeleteKey(Key + ".y");
 		}
@@ -155,8 +153,7 @@
 		public static implicit operator Vector3 (SavingVector3 value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
 			PlayerPrefs.DeleteKey(Key + ".x");
 			PlayerPrefs.DeleteKey(Key + ".y");
 			PlayerPrefs.DeleteKey(Key + ".z");
@@ -190,8 +187,7 @@
 		public static implicit operator Color (SavingColor value) {
 			return value.Value;
 		}
-		public override void Reset () {
-			_Value = DefaultValue;
+		protected override void DeleteKey () {
 			PlayerPrefs.DeleteKey(Key + ".r");
 			PlayerPrefs.DeleteKey(Key + ".g");
 			PlayerPrefs.DeleteKey(Key + ".b");

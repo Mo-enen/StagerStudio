@@ -224,29 +224,17 @@
 
 		// LGC
 		private void LoadAllSettings () {
-			FrameRate.Load();
 			SetFramerate(FrameRate);
-			UIScale.Load();
 			SetUIScale(UIScale);
-			MusicVolume.Load();
 			SetMusicVolume(MusicVolume);
-			SfxVolume.Load();
 			SetSfxVolume(SfxVolume);
-			BgBrightness.Load();
 			SetBgBrightness(BgBrightness);
-			ShowZone.Load();
 			SetShowZone(ShowZone);
-			ShowWave.Load();
 			SetShowWave(ShowWave);
-			ShowPreview.Load();
 			SetShowPreview(ShowPreview);
-			ShowTip.Load();
 			SetShowTip(ShowTip);
-			ShowWelcome.Load();
 			SetShowWelcome(ShowWelcome);
-			SnapProgress.Load();
 			SetSnapProgress(SnapProgress);
-			PositiveScroll.Load();
 			SetPositiveScroll(PositiveScroll);
 		}
 		private void ResetAllSettings () {

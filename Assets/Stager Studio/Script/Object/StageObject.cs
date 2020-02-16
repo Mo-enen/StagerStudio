@@ -38,8 +38,7 @@
 		// API
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
 		public static Beatmap Beatmap { get; set; } = null;
-		public static bool Abreast => AbreastIndex >= 0;
-		public static int AbreastIndex { get; set; } = -1;
+		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;

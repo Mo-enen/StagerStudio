@@ -33,7 +33,8 @@
 
 
 		private void Awake () {
-			MainRenderer.Pivot = TrayRenderer.Pivot = new Vector3(0.5f, 0f);
+			MainRenderer.Pivot = new Vector3(0.5f, 0f);
+			TrayRenderer.Pivot = new Vector3(0.5f, 0f);
 
 		}
 
@@ -52,7 +53,7 @@
 
 			// Get/Check Track/Stage
 			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData)) { return; }
+			if (!Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData)) { return; }
 
 			// Movement
 			Update_Movement(linkedStage, trackData);
@@ -90,7 +91,6 @@
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
 			TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
 
-
 		}
 
 
@@ -102,28 +102,11 @@
 		#region --- API ---
 
 
-		public static float GetTrackWidth (Beatmap.Track data) {
-			return Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
-		}
-
-
 		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static (Vector3 pos, float rotX, float rotZ) Inside (
-			float x01, float y01,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
-			float trackX, float trackWidth, float trackRotX
-		) {
-			float halfTrackWidth = trackWidth * 0.5f;
-			var (pos, pivot, rotZ) = Stage.Inside(
-				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,
-				stagePos, stageWidth, stageHeight, stageRotZ
-			);
-			return (
-				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
-				trackRotX, rotZ
-			);
+		public static float GetTrackWidth (Beatmap.Track data) {
+			return Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
 		}
 
 
@@ -146,6 +129,23 @@
 			MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION :
 			1f
 		);
+
+
+		public static (Vector3 pos, float rotX, float rotZ) Inside (
+			float x01, float y01,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			float trackX, float trackWidth, float trackRotX
+		) {
+			float halfTrackWidth = trackWidth * 0.5f;
+			var (pos, pivot, rotZ) = Stage.Inside(
+				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,
+				stagePos, stageWidth, stageHeight, stageRotZ
+			);
+			return (
+				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
+				trackRotX, rotZ
+			);
+		}
 
 
 		public override void SetSkinData (SkinData skin) {

@@ -361,6 +361,9 @@ Stager.About
 Stager.Quit
 退出
 
+Tip.AbreastSwitcher.Item
+切换到指定编号的舞台
+
 Tip.AbreastView
 全景模式
 

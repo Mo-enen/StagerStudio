@@ -95,7 +95,6 @@
 
 		private void Awake () {
 			// Load Skin
-			SkinName.Load();
 			LoadSkin(SkinName);
 
 

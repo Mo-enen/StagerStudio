@@ -134,8 +134,6 @@
 		private void Awake () {
 			Menu = FindObjectOfType<StageMenu>();
 			State = FindObjectOfType<StageState>();
-			OpeningChapter.Load();
-			ProjectSortIndex.Load();
 			Util.CreateFolder(Trashbin);
 		}
 

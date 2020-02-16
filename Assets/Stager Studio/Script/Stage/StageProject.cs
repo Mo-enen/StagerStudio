@@ -143,7 +143,6 @@
 		private void Awake () {
 			// Workspace
 			try {
-				Workspace.Load();
 				if (string.IsNullOrEmpty(Workspace)) {
 					Workspace.Value = Util.GetFullPath(Util.CombinePaths(Application.persistentDataPath, "Projects"));
 				}

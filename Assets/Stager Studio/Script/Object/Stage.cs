@@ -108,30 +108,28 @@
 		}
 
 
-		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Abreast ? 0f : -Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f);
+		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Abreast.active ? 0f : -Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f);
 
 
-		public static float GetStageWidth (Beatmap.Stage data) => Abreast ? 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
+		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
 
 
-		public static float GetStageHeight (Beatmap.Stage data) => Abreast ? 1f / ZoneMinMax.ratio : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
+		public static float GetStageHeight (Beatmap.Stage data) => Abreast.active ? 1f / ZoneMinMax.ratio : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
 
 
-		public static float GetStageAlpha (Beatmap.Stage data) => Abreast ? 1f : Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
+		public static float GetStageAlpha (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
 
 
-		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (Abreast && AbreastIndex == stageIndex) || (MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION);
+		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || Abreast.index == stageIndex) && MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static Vector2 GetStagePosition (Beatmap.Stage data) => Abreast ? new Vector2(0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
+		public static Vector2 GetStagePosition (Beatmap.Stage data) => Abreast.active ? new Vector2(0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
 
 
-		public static float GetStageAngle (Beatmap.Stage data) => Abreast ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
+		public static float GetStageAngle (Beatmap.Stage data) => Abreast.active ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
 
 
-		public static (Vector2 pos, Vector2 zero, float rot) Inside (
-			float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
-		) {
+		public static (Vector2 pos, Vector2 zero, float rot) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ) {
 			float halfWidth = stageWidth * 0.5f;
 			x01 = Mathf.LerpUnclamped(stagePos.x - halfWidth, stagePos.x + halfWidth, x01);
 			return (

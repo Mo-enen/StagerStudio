@@ -110,7 +110,6 @@
 			m_DefaultData = null;
 
 			// Init Index
-			LanguageIndex.Load();
 			if (LanguageIndex < 0) {
 				LanguageIndex.Value = (int)Application.systemLanguage;
 			}
@@ -198,9 +197,6 @@
 
 
 		public string Get (string key) {
-#if UNITY_EDITOR
-			Editor.StageLanguage_Inspector.Editor_LogUsage(key);
-#endif
 			return Map.ContainsKey(key) ? Map[key] : DefaultMap.ContainsKey(key) ? DefaultMap[key] : "";
 		}
 
@@ -244,7 +240,6 @@ namespace StagerStudio.Editor {
 		// VAR
 		private List<SystemLanguage> Languages { get; } = new List<SystemLanguage>();
 		private (string, string)[][] Datas { get; set; } = new (string, string)[0][];
-		private readonly static Dictionary<string, bool> UsageMap = new Dictionary<string, bool>();
 
 
 
@@ -344,11 +339,8 @@ namespace StagerStudio.Editor {
 				}
 				prevKey = key;
 				// Content
-				var oldC = GUI.color;
 				LayoutH(() => {
-					GUI.color = UsageMap.ContainsKey(Datas[0][i].Item1) ? Color.green : oldC;
 					var newKey = EditorGUI.DelayedTextField(GUIRect(0, 18), Datas[0][i].Item1);
-					GUI.color = oldC;
 					// Key
 					if (newKey != Datas[0][i].Item1) {
 						for (int j = 0; j < Datas.Length; j++) {
@@ -364,24 +356,8 @@ namespace StagerStudio.Editor {
 						}
 					}
 				});
-				GUI.color = oldC;
 			}
 			Space(4);
-			LayoutH(() => {
-				GUIRect(0, 18);
-				if (GUI.Button(GUIRect(102, 18), "Refresh Usage", EditorStyles.miniButton)) {
-					UsageMap.Clear();
-				}
-				GUIRect(0, 18);
-			});
-		}
-
-
-		// API
-		public static void Editor_LogUsage (string key) {
-			if (!UsageMap.ContainsKey(key)) {
-				UsageMap.Add(key, true);
-			}
 		}
 
 
