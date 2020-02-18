@@ -25,6 +25,8 @@
 		private const string PAINTER_MENU_KEY = "Menu.SkinEditor.Painter";
 		private const string DIALOG_CloseConfirm = "SkinEditor.Dialog.CloseConfirm";
 		private const string DIALOG_ImportImageTitle = "SkinEditor.Dialog.ImportImageTitle";
+		private const string DIALOG_ExportImageTitle = "SkinEditor.Dialog.ExportImageTitle";
+		private const string DIALOG_SkinImageExported = "SkinEditor.Dialog.SkinImageExported";
 		private const int TEXTURE_MAX_SIZE = 1024;
 
 		// API
@@ -240,6 +242,17 @@
 			Save();
 			Painter.SetTexture(Data.Texture);
 			TrimAllRects();
+		}
+
+
+		public void UI_ExportImage () {
+			if (Data is null || Data.Texture is null) { return; }
+			var path = DialogUtil.CreateFileDialog(DIALOG_ExportImageTitle, $"{SkinName}_Export", "png");
+			if (string.IsNullOrEmpty(path)) { return; }
+			try {
+				Util.ByteToFile(Data.Texture.EncodeToPNG(), path);
+				DialogUtil.Dialog_OK(DIALOG_SkinImageExported, DialogUtil.MarkType.Success);
+			} catch { }
 		}
 
 

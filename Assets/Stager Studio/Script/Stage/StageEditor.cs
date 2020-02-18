@@ -10,14 +10,37 @@
 
 
 
+		#region --- SUB ---
+
+
+		public enum EditMode {
+			Stage = 0,
+			Track = 1,
+			Note = 2,
+			Speed = 3,
+			Motion = 4,
+		}
+
+
+		public delegate void VoidEditModeHandler (EditMode mode);
+
+
+
+		#endregion
+
+
+
 		#region --- VAR ---
 
 
-		// Handler
-		public delegate void VoidHandler ();
-		public static VoidHandler OnLockedChanged { get; set; } = null;
+		// Handle
+		public static VoidEditModeHandler OnEditModeChanged { get; set; } = null;
+
+		// Api
+		public EditMode TheEditMode { get; private set; } = EditMode.Stage;
 
 		// Ser
+		[SerializeField] private Toggle[] m_EditModeTGs = null;
 		[SerializeField] private Toggle[] m_EyeTGs = null;
 		[SerializeField] private Toggle[] m_LockTGs = null;
 		[SerializeField] private Transform[] m_Containers = null;
@@ -31,6 +54,7 @@
 		private readonly bool[] ItemLock = { false, false, false, false, false, false, };
 		private bool FocusMode = false;
 		private Coroutine FocusAniCor = null;
+		private bool UIReady = true;
 
 
 		#endregion
@@ -42,6 +66,15 @@
 
 
 		private void Awake () {
+			// Init Edit Mode TGs
+			for (int i = 0; i < m_EditModeTGs.Length; i++) {
+				int index = i;
+				m_EditModeTGs[index].onValueChanged.AddListener((isOn) => {
+					if (UIReady && isOn) {
+						SetEditMode(index);
+					}
+				});
+			}
 			// Eye TGs
 			for (int i = 0; i < m_EyeTGs.Length; i++) {
 				int index = i;
@@ -56,7 +89,6 @@
 				tg.isOn = ItemLock[index];
 				tg.onValueChanged.AddListener((locked) => {
 					ItemLock[index] = locked;
-					OnLockedChanged();
 				});
 			}
 		}
@@ -68,6 +100,12 @@
 
 
 		#region --- API ---
+
+
+		public void UI_SetEditMode (int index) {
+			if (!UIReady) { return; }
+			SetEditMode(index);
+		}
 
 
 		public bool GetItemLock (int item) => item >= 0 ? ItemLock[item] : false;
@@ -93,7 +131,6 @@
 		public void UI_SwitchLock (int index) {
 			ItemLock[index] = !ItemLock[index];
 			m_LockTGs[index].isOn = ItemLock[index];
-			OnLockedChanged();
 		}
 
 
@@ -135,6 +172,23 @@
 
 
 
+		#region --- LGC ---
+
+
+		private void SetEditMode (int index) {
+			TheEditMode = (EditMode)index;
+			UIReady = false;
+			try {
+				for (int j = 0; j < m_EditModeTGs.Length; j++) {
+					m_EditModeTGs[j].isOn = (int)TheEditMode == j;
+				}
+			} catch { }
+			UIReady = true;
+			OnEditModeChanged(TheEditMode);
+		}
+
+
+		#endregion
 
 	}
 }

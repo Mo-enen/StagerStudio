@@ -73,15 +73,6 @@ Menu.Library.MovePrefabLeft
 Menu.Library.MovePrefabRight
 右移
 
-Menu.OpenProjectInfo
-工程信息
-
-Menu.OpenSetting
-设置
-
-Menu.Project.Save
-保存
-
 Menu.ProjectInfo.DeleteClickSound
 删除
 
@@ -316,8 +307,14 @@ SkinEditor.Dialog.CloseConfirm
 SkinEditor.Dialog.DeleteConfirm
 是否删除选中的图块？
 
+SkinEditor.Dialog.ExportImageTitle
+导出图片
+
 SkinEditor.Dialog.ImportImageTitle
 导入图片
+
+SkinEditor.Dialog.SkinImageExported
+图片已导出
 
 SkinEditor.Item.Hold
 长按音符
@@ -361,6 +358,9 @@ Stager.About
 Stager.Quit
 退出
 
+Tip.AbreastSwitcher.All
+显示所有舞台
+
 Tip.AbreastSwitcher.Item
 切换到指定编号的舞台
 
@@ -370,32 +370,38 @@ Tip.AbreastView
 Tip.BeatmapSwiper
 选择谱面并打开
 
+Tip.CancelFocus
+取消专注模式
+
 Tip.DynamicDropSpeed
 使用动态下落速度
 
 Tip.Grid
 显示网格
 
-Tip.HomeMenu
-菜单
-
-Tip.Lib.Lum
-光效
-
-Tip.Lib.Motion
-运动音符笔刷
-
-Tip.Lib.Note
+Tip.Lib.DefaultNote
 音符笔刷
 
-Tip.Lib.Speed
-速度音符笔刷
-
-Tip.Lib.Stage
+Tip.Lib.DefaultStage
 舞台笔刷
 
-Tip.Lib.Track
+Tip.Lib.DefaultTrack
 轨道笔刷
+
+Tip.Lib.Motion
+运动模式
+
+Tip.Lib.Note
+音符模式
+
+Tip.Lib.Speed
+速度模式
+
+Tip.Lib.Stage
+舞台模式
+
+Tip.Lib.Track
+轨道模式
 
 Tip.Music.Pause
 暂停音乐
@@ -433,8 +439,11 @@ Tip.PInfo.Done
 Tip.ProjectInfo
 工程信息：工程的标题、简介、音乐、背景等资源，谱面的难度、BPM等信息。
 
+Tip.Save
+保存工程
+
 Tip.Setting
-设置：你专属的本地设置
+设置：本地设置
 
 Tip.Setting.BgBright
 背景图片的明暗度
@@ -489,12 +498,6 @@ Tip.Toolbar.Focus
 
 Tip.Toolbar.Home
 返回主页
-
-Tip.ViewContainer.Luminous
-显示/隐藏光效
-
-Tip.ViewContainer.LuminousLock
-这是个没用的按钮，我把它放在这是因为我强迫症。
 
 Tip.ViewContainer.Motion
 显示/隐藏运动音符
@@ -813,6 +816,9 @@ UI.SkinEditor.DarkBG
 
 UI.SkinEditor.Duration
 帧时长
+
+UI.SkinEditor.ExportImage
+导出图片
 
 UI.SkinEditor.Forward
 顺序播放

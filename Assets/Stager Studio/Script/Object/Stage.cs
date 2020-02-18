@@ -16,9 +16,7 @@
 
 		// Api
 		public static int LayerID_Stage { get; set; } = -1;
-
-		// Short
-		private StageRenderer JudgelineRenderer => m_JudgelineRenderer;
+		public static int StageCount { get; set; } = 0;
 
 		// Ser
 		[SerializeField] private StageRenderer m_JudgelineRenderer = null;
@@ -34,9 +32,9 @@
 
 		private void Awake () {
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-			JudgelineRenderer.Tint = Color.white;
-			JudgelineRenderer.Pivot = new Vector2(0.5f, 0f);
-
+			MainRenderer.Tint = Color.white;
+			m_JudgelineRenderer.Tint = Color.white;
+			m_JudgelineRenderer.Pivot = new Vector2(0.5f, 0f);
 		}
 
 
@@ -46,49 +44,48 @@
 			m_JudgelineRenderer.RendererEnable = false;
 
 			// Get StageData
-			int index = transform.GetSiblingIndex();
-			var stageData = !(Beatmap is null) && index < Beatmap.Stages.Count ? Beatmap.Stages[index] : null;
+			int stageIndex = transform.GetSiblingIndex();
+			var stageData = !(Beatmap is null) && stageIndex < Beatmap.Stages.Count ? Beatmap.Stages[stageIndex] : null;
 			if (stageData is null) { return; }
 
 			Time = stageData.Time;
 			Duration = stageData.Duration;
 
 			// Stage Active Check
-			if (!GetStageActive(stageData, index)) { return; }
+			if (!GetStageActive(stageData, stageIndex)) { return; }
 
 			// Update
-			Update_Movement(stageData);
+			Update_Movement(stageData, stageIndex);
 
 		}
 
 
-		private void Update_Movement (Beatmap.Stage stageData) {
+		private void Update_Movement (Beatmap.Stage stageData, int stageIndex) {
 
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			float width = GetStageWidth(stageData);
 			float height = GetStageHeight(stageData);
-			var stagePos = GetStagePosition(stageData);
+			var stagePos = GetStagePosition(stageData, stageIndex);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
 			transform.localRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
 			MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
-			JudgelineRenderer.transform.localScale = new Vector3(
+			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
 				Mathf.Max(zoneSize * Note.NoteThickness, 0.00001f),
 				1f
 			);
 
 			// Renderer
-			MainRenderer.RendererEnable = JudgelineRenderer.RendererEnable = true;
+			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
 			MainRenderer.Type = SkinType.Stage;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.LifeTime = JudgelineRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
-			MainRenderer.Alpha = JudgelineRenderer.Alpha = GetStageAlpha(stageData);
-			MainRenderer.Tint = GetStageColor(stageData);
-			JudgelineRenderer.Type = SkinType.JudgeLine;
-			JudgelineRenderer.Scale = new Vector2(width, Note.NoteThickness);
-			JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
+			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
+			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
+			m_JudgelineRenderer.Type = SkinType.JudgeLine;
+			m_JudgelineRenderer.Scale = new Vector2(width, Note.NoteThickness);
+			m_JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 			MainRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 
 		}
@@ -104,14 +101,14 @@
 
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
-			JudgelineRenderer.SkinData = skin;
+			m_JudgelineRenderer.SkinData = skin;
 		}
 
 
 		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Abreast.active ? 0f : -Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f);
 
 
-		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
+		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ? Abreast.all && StageCount > 0 ? 1f / StageCount : 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
 
 
 		public static float GetStageHeight (Beatmap.Stage data) => Abreast.active ? 1f / ZoneMinMax.ratio : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
@@ -120,10 +117,10 @@
 		public static float GetStageAlpha (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
 
 
-		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || Abreast.index == stageIndex) && MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
+		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static Vector2 GetStagePosition (Beatmap.Stage data) => Abreast.active ? new Vector2(0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ? new Vector2(Abreast.all && StageCount > 0 ? ((2 * stageIndex + 1) / (2f * StageCount)) : 0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
 
 
 		public static float GetStageAngle (Beatmap.Stage data) => Abreast.active ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
@@ -141,23 +138,6 @@
 				(Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (new Vector2(x01, stagePos.y) - stagePos)) + stagePos,
 				stageRotZ
 			);
-		}
-
-
-		#endregion
-
-
-
-
-		#region --- LGC ---
-
-
-		private static Color GetStageColor (Beatmap.Stage data) {
-			if (data.Colors is null) {
-				return PaletteColor(data.Color);
-			} else {
-				return PaletteColor(data.Color) * EvaluateColor(data.Colors, MusicTime - data.Time);
-			}
 		}
 
 

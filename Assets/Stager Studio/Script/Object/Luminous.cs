@@ -81,7 +81,7 @@
 			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
 			Time = noteData.Time;
-			var stagePos = Stage.GetStagePosition(linkedStage);
+			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);

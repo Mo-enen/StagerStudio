@@ -73,15 +73,6 @@ Move Left
 Menu.Library.MovePrefabRight
 Move Right
 
-Menu.OpenProjectInfo
-Project Info
-
-Menu.OpenSetting
-Setting
-
-Menu.Project.Save
-Save
-
 Menu.ProjectInfo.DeleteClickSound
 Delete
 
@@ -316,8 +307,14 @@ Save skin and close the editor?
 SkinEditor.Dialog.DeleteConfirm
 Delete selecting rect?
 
+SkinEditor.Dialog.ExportImageTitle
+Export Image
+
 SkinEditor.Dialog.ImportImageTitle
 Import Image
+
+SkinEditor.Dialog.SkinImageExported
+Image exported
 
 SkinEditor.Item.Hold
 Hold
@@ -361,6 +358,9 @@ About
 Stager.Quit
 Quit
 
+Tip.AbreastSwitcher.All
+Show all stages
+
 Tip.AbreastSwitcher.Item
 Switch to specified stage
 
@@ -370,32 +370,38 @@ Panorama mode
 Tip.BeatmapSwiper
 Select beatmap and open
 
+Tip.CancelFocus
+Cancel focus mode
+
 Tip.DynamicDropSpeed
 Use dynamic drop speed
 
 Tip.Grid
 Show grid
 
-Tip.HomeMenu
-Menu
-
-Tip.Lib.Lum
-Luminous
-
-Tip.Lib.Motion
-Motion note brush
-
-Tip.Lib.Note
+Tip.Lib.DefaultNote
 Note brush
 
-Tip.Lib.Speed
-Speed note brush
-
-Tip.Lib.Stage
+Tip.Lib.DefaultStage
 Stage brush
 
-Tip.Lib.Track
+Tip.Lib.DefaultTrack
 Track brush
+
+Tip.Lib.Motion
+Motion mode
+
+Tip.Lib.Note
+Note mode
+
+Tip.Lib.Speed
+Speed note mode
+
+Tip.Lib.Stage
+Stage mode
+
+Tip.Lib.Track
+Track mode
 
 Tip.Music.Pause
 Pause music
@@ -432,6 +438,9 @@ Save and close the project info window
 
 Tip.ProjectInfo
 Project info: The title, description, music, background... of the project. The difficulty, bpm... of the beatmap.
+
+Tip.Save
+Save project
 
 Tip.Setting
 Setting: Your own setting for this application.
@@ -489,12 +498,6 @@ Focus mode
 
 Tip.Toolbar.Home
 Back to home page
-
-Tip.ViewContainer.Luminous
-Show/Hide luminous
-
-Tip.ViewContainer.LuminousLock
-This is a useless button. I put it here because I have OCD.
 
 Tip.ViewContainer.Motion
 Show/Hide motion notes
@@ -813,6 +816,9 @@ Dark
 
 UI.SkinEditor.Duration
 Duration
+
+UI.SkinEditor.ExportImage
+Export Image
 
 UI.SkinEditor.Forward
 Forward

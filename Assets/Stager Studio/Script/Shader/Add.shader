@@ -7,8 +7,8 @@ Shader "Object/Add" {
 			Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 
 			ZWrite Off
-		//BlendOp Add 
-		Blend SrcColor One, One Zero
+			Cull Off
+			Blend SrcColor One, One Zero
 
 		Pass {
 			CGPROGRAM

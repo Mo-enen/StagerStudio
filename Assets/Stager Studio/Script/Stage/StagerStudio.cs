@@ -128,6 +128,7 @@
 			StageUndo.GlobalUpdate();
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (Game.AbreastIndex, Game.UseAbreast, Game.AllStageAbreast);
+			Object.Stage.StageCount = Game.GetItemCount(0);
 		}
 
 
@@ -217,7 +218,7 @@
 			StageProject.OnProjectLoaded = () => {
 				Game.SetSpeedCurveDirty();
 				UI_RemoveUI();
-				TryRefreshLoading(-1f);
+				RefreshLoading(-1f);
 				if (ShowWelcome) {
 					SpawnWelcome();
 				}
@@ -246,7 +247,7 @@
 					StageObject.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
-				TryRefreshLoading(-1f);
+				RefreshLoading(-1f);
 				Game.SetSpeedCurveDirty();
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
@@ -283,7 +284,7 @@
 
 			// Misc
 			StageProject.OnDirtyChanged = m_DirtyMark.gameObject.SetActive;
-			StageProject.OnLoadProgress = TryRefreshLoading;
+			StageProject.OnLoadProgress = RefreshLoading;
 
 			// Func
 			IEnumerator SaveProgressing () {
@@ -343,14 +344,14 @@
 
 
 		private void Awake_Editor () {
-			StageEditor.OnLockedChanged = () => {
+			StageEditor.OnEditModeChanged = (mode) => {
 
 			};
 		}
 
 
 		private void Awake_Library () {
-			StageLibrary.OnSelectionChanged = () => {
+			StageLibrary.OnSelectionChanged = (index) => {
 
 			};
 		}
@@ -376,13 +377,12 @@
 			StageUndo.GetObjectData = () => new UndoData() {
 				Beatmap = Util.ObjectToBytes(Project.Beatmap),
 				MusicTime = Music.Time,
-				ContainerActive = new bool[6] {
+				ContainerActive = new bool[5] {
 					Editor.GetContainerActive(0),
 					Editor.GetContainerActive(1),
 					Editor.GetContainerActive(2),
 					Editor.GetContainerActive(3),
 					Editor.GetContainerActive(4),
-					Editor.GetContainerActive(5),
 				},
 			};
 			StageUndo.OnUndo = (bytes) => {
@@ -439,6 +439,12 @@
 		public void About () => DialogUtil.Open($"Stager Studio v{Application.version} by 楠瓜Moenen\nEmail moenenn@163.com\nTwitter @_Moenen\nQQ 754100943", DialogUtil.MarkType.Info, () => { });
 
 
+		public void Undo () => StageUndo.Undo();
+
+
+		public void Redo () => StageUndo.Redo();
+
+
 		#endregion
 
 
@@ -456,23 +462,23 @@
 
 		// Try Refresh UI
 		private void TryRefreshSetting () {
-			var setting = FindObjectOfType<SettingUI>();
-			if (setting) {
+			var setting = m_SettingRoot.childCount > 0 ? m_SettingRoot.GetChild(0).GetComponent<SettingUI>() : null;
+			if (!(setting is null)) {
 				setting.Refresh();
 			}
 		}
 
 
 		private void TryRefreshProjectInfo () {
-			var pInfo = FindObjectOfType<ProjectInfoUI>();
-			if (pInfo) {
+			var pInfo = m_ProjectInfoRoot.childCount > 0 ? m_ProjectInfoRoot.GetChild(0).GetComponent<ProjectInfoUI>() : null;
+			if (!(pInfo is null)) {
 				pInfo.Refresh();
 			}
 		}
 
 
-		private void TryRefreshLoading (float progress01, string hint = "") {
-			var loading = FindObjectOfType<LoadingUI>();
+		private void RefreshLoading (float progress01, string hint = "") {
+			var loading = m_LoadingRoot.childCount > 0 ? m_LoadingRoot.GetChild(0).GetComponent<LoadingUI>() : null;
 			if (loading is null) {
 				RemoveLoading();
 				loading = Util.SpawnUI(m_LoadingPrefab, m_LoadingRoot, "Loading");

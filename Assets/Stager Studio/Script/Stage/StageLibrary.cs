@@ -145,6 +145,10 @@
 		}
 
 
+		public delegate void VoidIntHandler (int index);
+		public delegate string StringStringHandler (string key);
+
+
 		#endregion
 
 
@@ -154,10 +158,7 @@
 
 
 		// Handler
-		public delegate void VoidHandler ();
-		public delegate string StringStringHandler (string key);
-		public static VoidHandler OnSelectionChanged { get; set; } = null;
-		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static VoidIntHandler OnSelectionChanged { get; set; } = null;
 
 		// API
 		public int SelectingItemIndex { get; private set; } = -1;
@@ -168,7 +169,6 @@
 
 		// Ser
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
-		[SerializeField] private ToggleGroup m_BrushGroup = null;
 		[SerializeField] private Grabber m_BrushPrefab = null;
 		[SerializeField] private RectTransform m_BrushContainer = null;
 		[SerializeField] private Color m_StagePrefabColor = Color.white;
@@ -196,24 +196,15 @@
 
 
 		private void Awake () {
-			// Init Brush TGs
-			foreach (var tg in m_DefaultBrushTGs) {
-				tg.onValueChanged.AddListener((isOn) => {
+			// Default Brush
+			for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+				int index = i;
+				m_DefaultBrushTGs[index].onValueChanged.AddListener((isOn) => {
 					if (!UIReady) { return; }
-					int item = -1;
-					for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
-						if (m_DefaultBrushTGs[i].isOn) {
-							item = i;
-							break;
-						}
-					}
-					if (item != SelectingItemIndex) {
-						SelectingItemIndex = item;
-						OnSelectionChanged();
-					}
+					SetSelectionLogic(isOn ? index : -1);
 				});
 			}
-			// Fianl
+			// Final
 			LoadFromFile(PrefabJsonPath);
 			ReloadPrefabsUI();
 		}
@@ -232,7 +223,11 @@
 		#region --- API ---
 
 
-		public void UI_SetSelection (int index) => SetSelectionLogic(index);
+		public void UI_SetSelection (int index) {
+			if (UIReady) {
+				SetSelectionLogic(index);
+			}
+		}
 
 
 		public void UI_ImportPrefabs () {
@@ -288,32 +283,28 @@
 
 		private void ReloadPrefabsUI () {
 			m_BrushContainer.DestroyAllChildImmediately();
-			for (int i = 0; i < PrefabDatas.Count; i++) {
-				AddPrefabDataUI(PrefabDatas[i]);
-			}
-		}
-
-
-		private void AddPrefabDataUI (PrefabData prefabData) {
-			var grab = Instantiate(m_BrushPrefab, m_BrushContainer);
-			// RT
-			var rt = grab.transform as RectTransform;
-			rt.SetAsLastSibling();
-			int index = rt.GetSiblingIndex();
 			int defaultCount = m_DefaultBrushTGs.Length;
-			rt.name = (index + defaultCount).ToString();
-			rt.anchoredPosition3D = rt.anchoredPosition;
-			// TG
-			var tg = grab.Grab<Toggle>();
-			tg.isOn = false;
-			tg.group = m_BrushGroup;
-			tg.onValueChanged.AddListener((isOn) => {
-				if (isOn) { SetSelectionLogic(index + defaultCount); }
-			});
-			// Menu
-			grab.Grab<TriggerUI>().CallbackRight.AddListener(() => Menu.OpenMenu(PREFAB_MENU_KEY, rt));
-			// Thumbnail
-			prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"), m_StagePrefabColor, m_TrackPrefabColor, m_NotePrefabColor);
+			for (int i = 0; i < PrefabDatas.Count; i++) {
+				var prefabData = PrefabDatas[i];
+				var grab = Instantiate(m_BrushPrefab, m_BrushContainer);
+				// RT
+				var rt = grab.transform as RectTransform;
+				rt.SetAsLastSibling();
+				rt.anchoredPosition3D = rt.anchoredPosition;
+				// TG
+				int index = i;
+				var tg = grab.Grab<Toggle>();
+				tg.isOn = false;
+				tg.onValueChanged.AddListener((isOn) => {
+					if (!UIReady) { return; }
+					SetSelectionLogic(isOn ? index + defaultCount : -1);
+				});
+				// Menu
+				grab.Grab<TriggerUI>().CallbackRight.AddListener(() => Menu.OpenMenu(PREFAB_MENU_KEY, rt));
+				// Thumbnail
+				prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"), m_StagePrefabColor, m_TrackPrefabColor, m_NotePrefabColor);
+			}
+			SetSelectionLogic(SelectingItemIndex);
 		}
 
 
@@ -341,30 +332,23 @@
 
 		private void SetSelectionLogic (int index) {
 			UIReady = false;
-			SelectingItemIndex = index;
-			// Default
-			int defaultCount = m_DefaultBrushTGs.Length;
-			for (int i = 0; i < defaultCount; i++) {
-				bool isOn = i == index;
-				try {
-					var tg = m_DefaultBrushTGs[i];
-					if (tg.isOn != isOn) {
-						tg.isOn = isOn;
-					}
-				} catch { }
-			}
-			// Custom
-			int prefabCount = m_BrushContainer.childCount;
-			for (int i = 0; i < prefabCount; i++) {
-				try {
+			try {
+				SelectingItemIndex = index;
+				int defaultCount = m_DefaultBrushTGs.Length;
+				for (int i = 0; i < defaultCount; i++) {
+					m_DefaultBrushTGs[i].isOn = i == index;
+				}
+				int prefabCount = m_BrushContainer.childCount;
+				for (int i = 0; i < prefabCount; i++) {
 					var tg = m_BrushContainer.GetChild(i).GetComponent<Toggle>();
 					if (tg is null) { continue; }
 					bool isOn = i + defaultCount == index;
 					if (tg.isOn != isOn) {
 						tg.isOn = isOn;
 					}
-				} catch { }
-			}
+				}
+				OnSelectionChanged(index);
+			} catch { }
 			UIReady = true;
 		}
 

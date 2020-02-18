@@ -13,11 +13,11 @@ Available Actions:
 	DynamicDrop
 	AbreastView
 	OpenCloud
-	LibraryStage
-	LibraryTrack
-	LibraryNote
-	LibrarySpeed
-	LibraryMotion
+	EditModeStage
+	EditModeTrack
+	EditModeNote
+	EditModeSpeed
+	EditModeMotion
 	UndoStage
 	RedoStage
 	EyeStage
@@ -34,6 +34,9 @@ Available Actions:
 	LockMotion
 	LockLuminous
 	SwitchFocus
+	StageBrush
+	TrackBrush
+	NoteBrush
 
 Available Keys:
 

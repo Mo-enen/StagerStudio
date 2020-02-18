@@ -54,7 +54,9 @@
 			public InputField MusicAuthor;
 			public InputField BackgroundAuthor;
 			public Image BackgroundThumbnail;
+			public AspectRatioFitter BackgroundFitter;
 			public Image CoverThumbnail;
+			public AspectRatioFitter CoverFitter;
 			public Text BackgroundHint;
 			public Text CoverHint;
 			public Text MusicHint;
@@ -497,17 +499,21 @@
 		private void RefreshProjectUI () {
 			ReadyForUI = false;
 			try {
+				var bgSprite = Project.Background.sprite;
+				var coverSprite = Project.FrontCover.sprite;
 				m_ProjectInfoComponentData.ProjectName.text = Project.ProjectName;
 				m_ProjectInfoComponentData.ProjectDescription.text = Project.ProjectDescription;
 				m_ProjectInfoComponentData.BeatmapAuthor.text = Project.BeatmapAuthor;
 				m_ProjectInfoComponentData.MusicAuthor.text = Project.MusicAuthor;
 				m_ProjectInfoComponentData.BackgroundAuthor.text = Project.BackgroundAuthor;
-				m_ProjectInfoComponentData.BackgroundThumbnail.sprite = Project.Background.sprite;
-				m_ProjectInfoComponentData.BackgroundThumbnail.enabled = Project.Background.sprite;
+				m_ProjectInfoComponentData.BackgroundThumbnail.sprite = bgSprite;
+				m_ProjectInfoComponentData.BackgroundThumbnail.enabled = bgSprite;
 				m_ProjectInfoComponentData.BackgroundThumbnail.preserveAspect = true;
-				m_ProjectInfoComponentData.CoverThumbnail.sprite = Project.FrontCover.sprite;
-				m_ProjectInfoComponentData.CoverThumbnail.enabled = Project.FrontCover.sprite;
+				m_ProjectInfoComponentData.BackgroundFitter.aspectRatio = bgSprite is null ? 1f : bgSprite.rect.width / bgSprite.rect.height;
+				m_ProjectInfoComponentData.CoverThumbnail.sprite = coverSprite;
+				m_ProjectInfoComponentData.CoverThumbnail.enabled = coverSprite;
 				m_ProjectInfoComponentData.CoverThumbnail.preserveAspect = true;
+				m_ProjectInfoComponentData.CoverFitter.aspectRatio = coverSprite is null ? 1f : coverSprite.rect.width / coverSprite.rect.height;
 				m_ProjectInfoComponentData.BackgroundHint.enabled = !Project.Background.sprite;
 				m_ProjectInfoComponentData.CoverHint.enabled = !Project.FrontCover.sprite;
 				m_ProjectInfoComponentData.MusicHint.text =

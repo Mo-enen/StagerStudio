@@ -203,6 +203,18 @@ TextureImporter:
   - first:
       213: -8080841097035478247
     second: Menu
+  - first:
+      213: -8080841097035478247
+    second: Menu
+  - first:
+      213: -8080841097035478247
+    second: Menu
+  - first:
+      213: -8080841097035478247
+    second: Menu
+  - first:
+      213: 1098643313922838400
+    second: Menu
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1088,48 +1100,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Tag H
-      rect:
-        serializedVersion: 2
-        x: 69
-        y: 29
-        width: 26
-        height: 17
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 5c608a6ad6c5f6f42ada91157ef925e3
-      internalID: -5963601107532862375
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Tag V
-      rect:
-        serializedVersion: 2
-        x: 69
-        y: 2
-        width: 17
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: c7d50ed19d2573742a893d79a28b6ab2
-      internalID: 8121389761955471328
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Grid
       rect:
         serializedVersion: 2
@@ -1259,10 +1229,10 @@ TextureImporter:
       name: Menu
       rect:
         serializedVersion: 2
-        x: 40
-        y: 162
-        width: 28
-        height: 21
+        x: 41
+        y: 161
+        width: 27
+        height: 23
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1272,6 +1242,27 @@ TextureImporter:
       bones: []
       spriteID: 91b82dc16d51bdf80800000000000000
       internalID: -8080841097035478247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Save
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 2
+        width: 39
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 08f8a3de54a2f3f00800000000000000
+      internalID: 1098643313922838400
       vertices: []
       indices: 
       edges: []

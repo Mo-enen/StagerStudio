@@ -103,6 +103,14 @@
 
 		[System.Serializable]
 		public class Stage {
+			public const int MOTION_COUNT = 5;
+			public enum MotionType {
+				Position = 0,
+				Rotation = 1,
+				Width = 2,
+				Height = 3,
+				Angle = 4,
+			}
 			// SER-API
 			public float Time = 0f;
 			public float Duration = 0f;
@@ -112,28 +120,42 @@
 			public float Width = 1f;
 			public float Height = 1f;
 			public float Rotation = 0f;
-			public byte Color = 0;
 			public float Angle = 0f;
-			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatFloatTween> Positions;
+			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
 			public List<TimeFloatTween> Angles;
-			public List<TimeByteTween> Colors;
 			// API
-			public int GetMotionCount () =>
-				(Positions is null ? 1 : (Positions.Count + 1)) +
-				(Positions is null ? 1 : (Positions.Count + 1)) +
-				(Widths is null ? 1 : (Widths.Count + 1)) +
-				(Heights is null ? 1 : (Heights.Count + 1)) +
-				(Angles is null ? 1 : (Angles.Count + 1)) +
-				(Colors is null ? 1 : (Colors.Count + 1));
+			public int GetMotionCount (MotionType type) {
+				switch (type) {
+					default:
+						return 0;
+					case MotionType.Position:
+						return Positions is null ? 0 : Positions.Count;
+					case MotionType.Rotation:
+						return Rotations is null ? 0 : Rotations.Count;
+					case MotionType.Width:
+						return Widths is null ? 0 : Widths.Count;
+					case MotionType.Height:
+						return Heights is null ? 0 : Heights.Count;
+					case MotionType.Angle:
+						return Angles is null ? 0 : Angles.Count;
+				}
+			}
 		}
 
 
 
 		[System.Serializable]
 		public class Track {
+			public const int MOTION_COUNT = 3;
+			public enum MotionType {
+				X = 0,
+				Width = 1,
+				Color = 2,
+			}
+			// API - Ser
 			public int StageIndex = -1;
 			public float Time = 0f;
 			public float Duration = 0f;
@@ -145,10 +167,18 @@
 			public List<TimeFloatTween> Widths;
 			public List<TimeByteTween> Colors;
 			// API
-			public int GetMotionCount () =>
-				(Xs is null ? 1 : (Xs.Count + 1)) +
-				(Widths is null ? 1 : (Widths.Count + 1)) +
-				(Colors is null ? 1 : (Colors.Count + 1));
+			public int GetMotionCount (MotionType type) {
+				switch (type) {
+					default:
+						return 0;
+					case MotionType.X:
+						return Xs is null ? 0 : Xs.Count;
+					case MotionType.Width:
+						return Widths is null ? 0 : Widths.Count;
+					case MotionType.Color:
+						return Colors is null ? 0 : Colors.Count;
+				}
+			}
 		}
 
 
@@ -196,7 +226,6 @@
 		public readonly static Stage DEFAULT_STAGE = new Stage() {
 			Time = 0f,
 			Duration = float.MaxValue,
-			Color = PALETTE_CLEAR,
 			Rotation = 0f,
 			Height = 1f,
 			Width = 1f,
@@ -205,7 +234,6 @@
 			Speed = 1f,
 			Angle = 0f,
 			Rotations = { },
-			Colors = { },
 			Positions = { },
 			Heights = { },
 			Widths = { },

@@ -7,6 +7,7 @@ Shader "Object/Normal" {
 			Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 
 			ZWrite Off
+			Cull Off
 			Blend SrcAlpha OneMinusSrcAlpha
 
 			Pass {

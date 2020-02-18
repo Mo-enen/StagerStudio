@@ -17,9 +17,6 @@
 		public static int LayerID_Track { get; set; } = -1;
 		public static int LayerID_Tray { get; set; } = -1;
 
-		// Short
-		private StageRenderer TrayRenderer => m_TrayRenderer;
-
 		// Ser
 		[SerializeField] StageRenderer m_TrayRenderer = null;
 
@@ -34,7 +31,7 @@
 
 		private void Awake () {
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-			TrayRenderer.Pivot = new Vector3(0.5f, 0f);
+			m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
 
 		}
 
@@ -68,7 +65,7 @@
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
-			var stagePos = Stage.GetStagePosition(linkedStage);
+			var stagePos = Stage.GetStagePosition(linkedStage, trackData.StageIndex);
 			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
@@ -82,14 +79,14 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
-			TrayRenderer.RendererEnable = trackData.HasTray;
+			m_TrayRenderer.RendererEnable = trackData.HasTray;
 			MainRenderer.Type = SkinType.Track;
-			MainRenderer.LifeTime = TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
+			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageWidth);
 			MainRenderer.Tint = GetTrackColor(trackData);
-			MainRenderer.Alpha = TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
+			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
-			TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
+			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
 
 		}
 
@@ -105,37 +102,19 @@
 		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
 
 
-		public static float GetTrackWidth (Beatmap.Track data) {
-			return Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
-		}
+		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
 
 
-		public static float GetTrackX (Beatmap.Track data) {
-			return Mathf.Repeat(data.X + Evaluate(data.Xs, MusicTime - data.Time), 1f);
-		}
+		public static float GetTrackX (Beatmap.Track data) => Mathf.Repeat(data.X + Evaluate(data.Xs, MusicTime - data.Time), 1f);
 
 
-		public static Color GetTrackColor (Beatmap.Track data) {
-			if (data.Colors is null) {
-				return PaletteColor(data.Color);
-			} else {
-				return PaletteColor(data.Color) * EvaluateColor(data.Colors, MusicTime - data.Time);
-			}
-		}
+		public static Color GetTrackColor (Beatmap.Track data) => PaletteColor(data.Color) * EvaluateColor(data.Colors, MusicTime - data.Time);
 
 
-		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(
-			MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION :
-			MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION :
-			1f
-		);
+		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
 
 
-		public static (Vector3 pos, float rotX, float rotZ) Inside (
-			float x01, float y01,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
-			float trackX, float trackWidth, float trackRotX
-		) {
+		public static (Vector3 pos, float rotX, float rotZ) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float trackX, float trackWidth, float trackRotX) {
 			float halfTrackWidth = trackWidth * 0.5f;
 			var (pos, pivot, rotZ) = Stage.Inside(
 				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,

@@ -140,59 +140,20 @@
 			var map = Project.Beatmap;
 			if (!(map is null)) {
 				// Has Beatmap
-				FixObject(m_Prefab_Stage, null, Containers[0], map.Stages.Count);
-				FixObject(m_Prefab_Track, null, Containers[1], map.Tracks.Count);
-				FixObject(m_Prefab_Note, null, Containers[2], map.Notes.Count);
-				FixObject(null, m_Prefab_Speed, Containers[3], map.SpeedNotes.Count);
-				FixStageMotionObject(m_Prefab_Motion, Containers[4].GetChild(0), map.Stages);
-				FixTrackMotionObject(m_Prefab_Motion, Containers[4].GetChild(1), map.Tracks);
-				FixObject(m_Prefab_Luminous, null, Containers[5], map.Notes.Count);
+				bool changed = false;
+				changed = FixObject(m_Prefab_Stage, null, Containers[0], map.Stages.Count) || changed;
+				changed = FixObject(m_Prefab_Track, null, Containers[1], map.Tracks.Count) || changed;
+				changed = FixObject(m_Prefab_Note, null, Containers[2], map.Notes.Count) || changed;
+				changed = FixObject(null, m_Prefab_Speed, Containers[3], map.SpeedNotes.Count) || changed;
+				changed = FixStageMotionObject(m_Prefab_Motion, Containers[4].GetChild(0), map.Stages) || changed;
+				changed = FixTrackMotionObject(m_Prefab_Motion, Containers[4].GetChild(1), map.Tracks) || changed;
+				changed = FixObject(m_Prefab_Luminous, null, Containers[5], map.Notes.Count) || changed;
+				if (changed) {
+					OnStageObjectChanged();
+				}
 			} else {
 				// No Beatmap
 				ClearAllContainers();
-			}
-			// Func
-			void FixObject (StageObject prefab, Transform subPrefab, Transform container, int count) {
-				int conCount = container.childCount;
-				if (conCount > count) {
-					container.FixChildcountImmediately(count);
-					OnStageObjectChanged();
-				} else if (conCount < count) {
-					count -= conCount;
-					if (prefab is null && subPrefab is null) {
-						// Spawn Container
-						for (int i = 0; i < count; i++) {
-							var tf = new GameObject("").transform;
-							tf.SetParent(container);
-							tf.localPosition = Vector3.zero;
-						}
-					} else if (!(prefab is null)) {
-						// Spawn Stage Object
-						for (int i = 0; i < count; i++) {
-							Instantiate(prefab, container).SetSkinData(StageSkin.Data.Data);
-						}
-					} else {
-						// Spawn Transform Object
-						for (int i = 0; i < count; i++) {
-							Instantiate(subPrefab, container);
-						}
-					}
-					OnStageObjectChanged();
-				}
-			}
-			void FixStageMotionObject (Transform prefab, Transform container, List<Beatmap.Stage> stages) {
-				int count = stages.Count;
-				FixObject(null, null, container, count);
-				for (int i = 0; i < count; i++) {
-					FixObject(null, prefab, container.GetChild(i), stages[i].GetMotionCount());
-				}
-			}
-			void FixTrackMotionObject (Transform prefab, Transform container, List<Beatmap.Track> tracks) {
-				int count = tracks.Count;
-				FixObject(null, null, container, count);
-				for (int i = 0; i < count; i++) {
-					FixObject(null, prefab, container.GetChild(i), tracks[i].GetMotionCount());
-				}
 			}
 		}
 
@@ -296,6 +257,9 @@
 		}
 
 
+		public int GetItemCount (int index) => Containers[index].childCount;
+
+
 		// Speed Curve
 		public void SetSpeedCurveDirty () => SpeedCurve.Clear();
 
@@ -336,6 +300,9 @@
 		}
 
 
+		public void SwitchAllAbreast () => SetAllStageAbreast(!AllStageAbreast);
+
+
 		public void SetAllStageAbreast (bool abreast) {
 			AllStageAbreast = abreast;
 			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
@@ -360,9 +327,78 @@
 
 
 
+		#region --- LGC ---
+
+
+		// Beatmap Update
+		private bool FixObject (StageObject prefab, Transform subPrefab, Transform container, int count) {
+			bool changed = false;
+			int conCount = container.childCount;
+			if (conCount > count) {
+				container.FixChildcountImmediately(count);
+				changed = true;
+			} else if (conCount < count) {
+				count -= conCount;
+				if (prefab is null && subPrefab is null) {
+					// Spawn Container
+					for (int i = 0; i < count; i++) {
+						var tf = new GameObject("").transform;
+						tf.SetParent(container);
+						tf.localPosition = Vector3.zero;
+					}
+				} else if (!(prefab is null)) {
+					// Spawn Stage Object
+					for (int i = 0; i < count; i++) {
+						Instantiate(prefab, container).SetSkinData(StageSkin.Data.Data);
+					}
+				} else {
+					// Spawn Transform Object
+					for (int i = 0; i < count; i++) {
+						Instantiate(subPrefab, container);
+					}
+				}
+				changed = true;
+			}
+			return changed;
+		}
+
+
+		private bool FixStageMotionObject (Transform prefab, Transform container, List<Beatmap.Stage> stages) {
+			bool changed = false;
+			int count = stages.Count;
+			changed = FixObject(null, null, container, count) || changed;
+			for (int i = 0; i < count; i++) {
+				var stageCon = container.GetChild(i);
+				changed = FixObject(null, null, stageCon, Beatmap.Stage.MOTION_COUNT) || changed;
+				for (int j = 0; j < Beatmap.Stage.MOTION_COUNT; j++) {
+					changed = FixObject(null, prefab, stageCon.GetChild(j), stages[i].GetMotionCount((Beatmap.Stage.MotionType)j)) || changed;
+				}
+			}
+			return changed;
+		}
+
+
+		private bool FixTrackMotionObject (Transform prefab, Transform container, List<Beatmap.Track> tracks) {
+			bool changed = false;
+			int count = tracks.Count;
+			changed = FixObject(null, null, container, count) || changed;
+			for (int i = 0; i < count; i++) {
+				var trackCon = container.GetChild(i);
+				changed = FixObject(null, null, trackCon, Beatmap.Track.MOTION_COUNT) || changed;
+				for (int j = 0; j < Beatmap.Track.MOTION_COUNT; j++) {
+					changed = FixObject(null, prefab, trackCon.GetChild(j), tracks[i].GetMotionCount((Beatmap.Track.MotionType)j)) || changed;
+				}
+			}
+			return changed;
+		}
+
+
+		#endregion
+
+
+
+
 	}
-
-
 }
 
 

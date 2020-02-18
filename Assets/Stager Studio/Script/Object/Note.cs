@@ -35,7 +35,6 @@
 		public static FilledTimeHandler GetFilledTime { get; set; } = null;
 
 		// API
-		public StageRenderer SubRenderer => m_SubRenderer;
 		public static float NoteThickness { get; private set; } = 0.015f;
 		public static float PoleThickness { get; private set; } = 0.007f;
 		public static int LayerID_Note { get; set; } = -1;
@@ -76,7 +75,7 @@
 			LateNote = null;
 			LateLinkedNote = null;
 			MainRenderer.RendererEnable = false;
-			SubRenderer.RendererEnable = false;
+			m_SubRenderer.RendererEnable = false;
 
 			// Get NoteData
 			int index = transform.GetSiblingIndex();
@@ -146,7 +145,7 @@
 
 		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, Beatmap.Note linkedNote) {
 
-			var stagePos = Stage.GetStagePosition(linkedStage);
+			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
@@ -180,19 +179,20 @@
 				1f
 			);
 
+			// Sub Update
 			if (isLink) {
 				Update_Linked(linkedTrack.StageIndex, noteData, linkedNote, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, noteZonePos.x, alpha);
 			} else if (isSwipe) {
-				Update_Swipe(noteData, zoneSize, rotZ, alpha);
+				Update_Swipe(noteData, zoneSize, noteRot, alpha);
 			}
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || GetNoteActive(noteData, null, noteData.AppearTime);
-			MainRenderer.LifeTime = SubRenderer.LifeTime = MusicTime - Time;
+			MainRenderer.LifeTime = m_SubRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, Mathf.Max(noteSizeY * stageHeight, NoteThickness));
 			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
-			SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
+			m_SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
 			MainRenderer.SetSortingLayer(LayerID_Note, GetSortingOrder());
 		}
 
@@ -220,7 +220,7 @@
 				stageAngle
 			);
 			linkedZonePos += noteRot * Vector3.up * (zoneSize * NoteThickness * 0.5f);
-			SubRenderer.transform.localPosition = noteRot * new Vector3(
+			m_SubRenderer.transform.localPosition = noteRot * new Vector3(
 				MusicTime < noteData.Time + noteData.Duration ? 0f : zoneSize * (
 					linkedNoteY01 * (noteZoneX - linkedZonePos.x) / (linkedNoteY01 - noteData.NoteDropEnd + gameOffset) - noteZoneX + linkedZonePos.x
 				),
@@ -229,32 +229,33 @@
 					NoteThickness * 0.5f
 				)
 			);
-			var poleWorldPos = SubRenderer.transform.position;
+			var poleWorldPos = m_SubRenderer.transform.position;
 			var linkedNoteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedZonePos.x, linkedZonePos.y);
 			linkedNoteWorldPos.z += linkedZonePos.z * zoneSize;
 			float scaleY = Vector3.Distance(poleWorldPos, linkedNoteWorldPos);
 			if (MusicTime < linkedNote.AppearTime) {
 				scaleY -= scaleY * (linkedNoteY01 - 1f) / (linkedNoteY01 - noteData.NoteDropEnd + gameOffset);
 			}
-			SubRenderer.transform.rotation = Quaternion.FromToRotation(Vector3.up, linkedNoteWorldPos - poleWorldPos);
-			SubRenderer.transform.localScale = new Vector3(zoneSize * PoleThickness, scaleY, 1f);
-			SubRenderer.RendererEnable = true;
-			SubRenderer.Pivot = new Vector3(0.5f, 0f);
-			SubRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
-			SubRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
-			SubRenderer.SetSortingLayer(LayerID_Pole, GetSortingOrder());
+			m_SubRenderer.transform.rotation = Quaternion.FromToRotation(Vector3.up, linkedNoteWorldPos - poleWorldPos);
+			m_SubRenderer.transform.localScale = new Vector3(zoneSize * PoleThickness, scaleY, 1f);
+			m_SubRenderer.RendererEnable = true;
+			m_SubRenderer.Pivot = new Vector3(0.5f, 0f);
+			m_SubRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
+			m_SubRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
+			m_SubRenderer.SetSortingLayer(LayerID_Pole, GetSortingOrder());
 		}
 
 
-		private void Update_Swipe (Beatmap.Note noteData, float zoneSize, float rotZ, float alpha) {
-			SubRenderer.transform.localPosition = new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
-			SubRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ + (noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY)));
-			SubRenderer.transform.localScale = new Vector3(zoneSize * NoteThickness, zoneSize * ArrowSize, 1f);
-			SubRenderer.RendererEnable = true;
-			SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
-			SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
-			SubRenderer.Alpha = alpha;
-			SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
+		private void Update_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha) {
+			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
+			m_SubRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
+			m_SubRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
+			m_SubRenderer.transform.localScale = new Vector3(zoneSize * NoteThickness, zoneSize * ArrowSize, 1f);
+			m_SubRenderer.RendererEnable = true;
+			m_SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
+			m_SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
+			m_SubRenderer.Alpha = alpha;
+			m_SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
 		}
 
 
@@ -271,7 +272,7 @@
 
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
-			SubRenderer.SkinData = skin;
+			m_SubRenderer.SkinData = skin;
 		}
 
 

@@ -59,8 +59,8 @@
 
 
 		protected static float Evaluate (List<Beatmap.TimeFloatTween> data, float lifeTime) {
-			if (data is null || data.Count == 0) {
-				return 0;
+			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
+				return 0f;
 			} else if (data.Count == 1) {
 				return data[0].Value;
 			} else {
@@ -84,7 +84,7 @@
 
 
 		protected static Vector2 Evaluate (List<Beatmap.TimeFloatFloatTween> data, float lifeTime) {
-			if (data is null || data.Count == 0) {
+			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
 				return Vector2.zero;
 			} else if (data.Count == 1) {
 				var d = data[0];
@@ -111,7 +111,7 @@
 
 
 		protected static Color EvaluateColor (List<Beatmap.TimeByteTween> data, float lifeTime) {
-			if (data is null || data.Count == 0) {
+			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
 				return Color.white;
 			} else if (data.Count == 1) {
 				return PaletteColor(data[0].Value);

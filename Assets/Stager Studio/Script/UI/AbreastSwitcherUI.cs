@@ -17,6 +17,7 @@
 		[SerializeField] private Transform m_StageContainer = null;
 		[SerializeField] private RectTransform m_Container = null;
 		[SerializeField] private Grabber m_ItemPrefab = null;
+		[SerializeField] private RectTransform m_AbreastAllHighlight = null;
 
 		// Data
 		private StageGame _Game = null;
@@ -24,7 +25,7 @@
 
 		// MSG
 		private void Update () {
-			int itemCount = m_StageContainer.childCount + 1;
+			int itemCount = m_StageContainer.childCount;
 			int conCount = m_Container.childCount;
 			if (conCount != itemCount) {
 				if (conCount > itemCount) {
@@ -38,13 +39,9 @@
 						rt.localScale = Vector3.one;
 						grab.Grab<Button>().onClick.AddListener(() => {
 							int sIndex = grab.transform.GetSiblingIndex();
-							if (sIndex == 0) {
-								Game.SetAllStageAbreast(true);
-							} else {
-								Game.SetAbreastIndex(sIndex - 1);
-								if (Game.AllStageAbreast) {
-									Game.SetAllStageAbreast(false);
-								}
+							Game.SetAbreastIndex(sIndex);
+							if (Game.AllStageAbreast) {
+								Game.SetAllStageAbreast(false);
 							}
 						});
 					}
@@ -63,10 +60,11 @@
 				int aIndex = Game.AbreastIndex;
 				int count = m_Container.childCount;
 				bool allA = Game.AllStageAbreast;
+				m_AbreastAllHighlight.gameObject.SetActive(allA);
 				for (int i = 0; i < count; i++) {
 					var grab = m_Container.GetChild(i).GetComponent<Grabber>();
-					grab.Grab<RectTransform>("Highlight").gameObject.SetActive(allA ? i == 0 : i - 1 == aIndex);
-					grab.Grab<Text>("Index").text = i == 0 ? "All" : (i - 1).ToString();
+					grab.Grab<RectTransform>("Highlight").gameObject.SetActive(!allA && i == aIndex);
+					grab.Grab<Text>("Index").text = i.ToString();
 				}
 			}
 		}

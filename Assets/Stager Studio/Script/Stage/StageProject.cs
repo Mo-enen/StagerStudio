@@ -777,16 +777,6 @@
 			foreach (var pair in BeatmapMap) {
 				var map = pair.Value;
 				if (map is null) { continue; }
-				foreach (var stage in map.Stages) {
-					// Color
-					if (stage.Color > index) {
-						stage.Color--;
-					} else if (stage.Color == index) {
-						stage.Color = 0;
-					}
-					// Colors
-					FixBeatmapTweenValueIndexForDelete(stage.Colors, index, true);
-				}
 				foreach (var track in map.Tracks) {
 					// Color
 					if (track.Color > index) {
@@ -830,7 +820,6 @@
 				var map = pair.Value;
 				if (map is null) { continue; }
 				foreach (var stage in map.Stages) {
-					FixBeatmapTweenValueIndexForDelete(stage.Colors, index, false);
 					FixBeatmapTweenValueIndexForDelete(stage.Positions, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Rotations, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Angles, index);
@@ -1214,7 +1203,6 @@
 				var map = pair.Value;
 				if (map is null) { continue; }
 				foreach (var stage in map.Stages) {
-					FixRange_TBT(stage.Colors, palLen);
 					FixRange_TFFT(stage.Positions);
 					FixRange_TFT(stage.Rotations);
 					FixRange_TFT(stage.Angles);
