@@ -81,6 +81,7 @@
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
 			if (noteData is null) { return; }
+			noteData.Active = false;
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
@@ -95,7 +96,9 @@
 			var linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteData.LinkedNoteIndex] : null;
 
 			// Active
-			if (!GetNoteActive(noteData, linkedNote, noteData.AppearTime)) { return; }
+			bool active = GetNoteActive(noteData, linkedNote, noteData.AppearTime);
+			noteData.Active = active;
+			if (!active) { return; }
 
 			// Final
 			LateStage = linkedStage;
@@ -171,9 +174,9 @@
 			var notePos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			notePos.z += noteZonePos.z * zoneSize;
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-			transform.position = notePos;
-			MainRenderer.transform.rotation = noteRot;
-			MainRenderer.transform.localScale = new Vector3(
+			transform.position = noteData.Zone.Position = notePos;
+			MainRenderer.transform.rotation = noteData.Zone.Rotation = noteRot;
+			MainRenderer.transform.localScale = noteData.Zone.Size = new Vector3(
 				zoneSize * Mathf.Max(stageWidth * trackWidth * noteData.Width, NoteThickness),
 				zoneSize * Mathf.Max(noteSizeY * stageHeight, NoteThickness),
 				1f

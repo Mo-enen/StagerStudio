@@ -50,7 +50,9 @@
 
 			// Get/Check Track/Stage
 			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
-			if (!Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData)) { return; }
+			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData);
+			trackData.Active = active;
+			if (!active) { return; }
 
 			// Movement
 			Update_Movement(linkedStage, trackData);
@@ -69,9 +71,9 @@
 			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
-			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			MainRenderer.transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
-			MainRenderer.transform.localScale = new Vector3(
+			transform.position = trackData.Zone.Position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
+			MainRenderer.transform.localRotation = trackData.Zone.Rotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
+			MainRenderer.transform.localScale = trackData.Zone.Size = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
 				1f
@@ -82,7 +84,7 @@
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
 			MainRenderer.Type = SkinType.Track;
 			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
-			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageWidth);
+			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
 			MainRenderer.Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());

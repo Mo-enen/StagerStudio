@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using Data;
 
 
 	public class StageEditor : MonoBehaviour {
@@ -23,6 +24,8 @@
 
 
 		public delegate void VoidEditModeHandler (EditMode mode);
+		public delegate void VoidIntHandler (int a);
+		public delegate Beatmap BeatmapHandler ();
 
 
 
@@ -35,9 +38,16 @@
 
 		// Handle
 		public static VoidEditModeHandler OnEditModeChanged { get; set; } = null;
+		public static VoidIntHandler OnSelectionChanged { get; set; } = null;
+		public static BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// Api
 		public EditMode TheEditMode { get; private set; } = EditMode.Stage;
+		public int SelectingObjectIndex { get; private set; } = -1;
+		public int HoveringObjectIndex { get; private set; } = -1;
+
+		// Short
+		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
 		[SerializeField] private Toggle[] m_EditModeTGs = null;
@@ -53,8 +63,9 @@
 		// Data
 		private readonly bool[] ItemLock = { false, false, false, false, false, false, };
 		private bool FocusMode = false;
-		private Coroutine FocusAniCor = null;
 		private bool UIReady = true;
+		private Coroutine FocusAniCor = null;
+		private Camera _Camera = null;
 
 
 		#endregion
@@ -94,6 +105,68 @@
 		}
 
 
+		private void LateUpdate () {
+			var map = GetBeatmap();
+			if (map is null) { return; }
+			// Mouse
+			HoveringObjectIndex = -1;
+			var mouseRay = Camera.ScreenPointToRay(Input.mousePosition);
+			switch (TheEditMode) {
+				case EditMode.Stage:
+					LateUpdate_Mouse_Stage(map.Stages, mouseRay);
+					break;
+				case EditMode.Track:
+					LateUpdate_Mouse_Track(map.Tracks, mouseRay);
+					break;
+				case EditMode.Note:
+					LateUpdate_Mouse_Note(map.Notes, mouseRay);
+					break;
+			}
+		}
+
+
+		private void LateUpdate_Mouse_Stage (List<Beatmap.Stage> stages, Ray mouseRay) {
+			if (stages is null) { return; }
+			int count = stages.Count;
+			for (int i = count - 1; i >= 0; i--) {
+				var stage = stages[i];
+				if (!stage.Active) { continue; }
+				if (stage.Zone.Cast(mouseRay)) {
+					HoveringObjectIndex = i;
+					break;
+				}
+			}
+		}
+
+
+		private void LateUpdate_Mouse_Track (List<Beatmap.Track> tracks, Ray mouseRay) {
+			if (tracks is null) { return; }
+			int count = tracks.Count;
+			for (int i = count - 1; i >= 0; i--) {
+				var track = tracks[i];
+				if (!track.Active) { continue; }
+				if (track.Zone.Cast(mouseRay)) {
+					HoveringObjectIndex = i;
+					break;
+				}
+			}
+		}
+
+
+		private void LateUpdate_Mouse_Note (List<Beatmap.Note> notes, Ray mouseRay) {
+			if (notes is null) { return; }
+			int count = notes.Count;
+			for (int i = count - 1; i >= 0; i--) {
+				var note = notes[i];
+				if (!note.Active) { continue; }
+				if (note.Zone.Cast(mouseRay)) {
+					HoveringObjectIndex = i;
+					break;
+				}
+			}
+		}
+
+
 		#endregion
 
 
@@ -102,16 +175,17 @@
 		#region --- API ---
 
 
+		// Edit Mode
 		public void UI_SetEditMode (int index) {
 			if (!UIReady) { return; }
 			SetEditMode(index);
 		}
 
 
-		public bool GetItemLock (int item) => item >= 0 ? ItemLock[item] : false;
-
-
 		// Container Active
+		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
+
+
 		public bool GetContainerActive (int index) => m_Containers[index].gameObject.activeSelf;
 
 
@@ -121,11 +195,8 @@
 		}
 
 
-		public void UI_SwitchContainerActive (int index) {
-			bool active = !m_Containers[index].gameObject.activeSelf;
-			m_Containers[index].gameObject.SetActive(active);
-			m_EyeTGs[index].isOn = !active;
-		}
+		// Item Lock
+		public bool GetItemLock (int item) => item >= 0 ? ItemLock[item] : false;
 
 
 		public void UI_SwitchLock (int index) {
@@ -175,6 +246,13 @@
 		#region --- LGC ---
 
 
+		private void SetSelection (int index) {
+			index = Mathf.Max(index, -1);
+			SelectingObjectIndex = index;
+			OnSelectionChanged(index);
+		}
+
+
 		private void SetEditMode (int index) {
 			TheEditMode = (EditMode)index;
 			UIReady = false;
@@ -185,6 +263,7 @@
 			} catch { }
 			UIReady = true;
 			OnEditModeChanged(TheEditMode);
+			SetSelection(-1);
 		}
 
 

@@ -347,6 +347,10 @@
 			StageEditor.OnEditModeChanged = (mode) => {
 
 			};
+			StageEditor.OnSelectionChanged = (index) => {
+
+			};
+			StageEditor.GetBeatmap = () => Project.Beatmap;
 		}
 
 

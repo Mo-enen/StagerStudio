@@ -101,6 +101,21 @@
 
 
 
+		public struct Zone {
+			public Vector3 Position;
+			public Vector3 Size;
+			public Quaternion Rotation;
+			public bool Cast (Ray ray) {
+				if (new Plane(Rotation * Vector3.back, Position).Raycast(ray, out float enter)) {
+					var point = Quaternion.Inverse(Rotation) * (ray.GetPoint(enter) - Position);
+					return point.x > -Size.x * 0.5f && point.x < Size.x * 0.5f && point.y > 0f && point.y < Size.y;
+				}
+				return false;
+			}
+		}
+
+
+
 		[System.Serializable]
 		public class Stage {
 			public const int MOTION_COUNT = 5;
@@ -126,6 +141,9 @@
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
 			public List<TimeFloatTween> Angles;
+			// Cache
+			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public Zone Zone = default;
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -166,6 +184,9 @@
 			public List<TimeFloatTween> Xs;
 			public List<TimeFloatTween> Widths;
 			public List<TimeByteTween> Colors;
+			// Cache
+			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public Zone Zone = default;
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -199,10 +220,12 @@
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
 
 			// Cache
+			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public float AppearTime = 0f;
 			[System.NonSerialized] public float SpeedMuti = float.MinValue;
 			[System.NonSerialized] public float NoteDropStart = float.MinValue;
 			[System.NonSerialized] public float NoteDropEnd = float.MinValue;
+			[System.NonSerialized] public Zone Zone = default;
 
 		}
 
