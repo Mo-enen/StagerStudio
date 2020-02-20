@@ -76,6 +76,7 @@
 			LateLinkedNote = null;
 			MainRenderer.RendererEnable = false;
 			m_SubRenderer.RendererEnable = false;
+			ColSize = null;
 
 			// Get NoteData
 			int index = transform.GetSiblingIndex();
@@ -109,9 +110,10 @@
 		}
 
 
-		private void LateUpdate () {
+		protected override void LateUpdate () {
 			if (LateNote is null) { return; }
 			Update_Movement(LateStage, LateTrack, LateNote, LateLinkedNote);
+			base.LateUpdate();
 		}
 
 
@@ -174,9 +176,9 @@
 			var notePos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			notePos.z += noteZonePos.z * zoneSize;
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-			transform.position = noteData.Zone.Position = notePos;
-			MainRenderer.transform.rotation = noteData.Zone.Rotation = noteRot;
-			MainRenderer.transform.localScale = noteData.Zone.Size = new Vector3(
+			transform.position = notePos;
+			ColRot = MainRenderer.transform.rotation = noteRot;
+			ColSize = MainRenderer.transform.localScale = new Vector3(
 				zoneSize * Mathf.Max(stageWidth * trackWidth * noteData.Width, NoteThickness),
 				zoneSize * Mathf.Max(noteSizeY * stageHeight, NoteThickness),
 				1f

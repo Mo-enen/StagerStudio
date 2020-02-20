@@ -29,6 +29,7 @@
 		// Short
 		private Vector3 ZoneMinPos { get; set; } = default;
 		private Vector3 ZoneMaxPos { get; set; } = default;
+		private Vector3 ZoneMaxPos_Real { get; set; } = default;
 		private float Ratio { get; set; } = 1f;
 
 		// Ser
@@ -51,11 +52,10 @@
 				0.0001f,
 				float.MaxValue
 			);
+			ZoneMaxPos_Real = max;
 			max.y = min.y + max.x - min.x;
-			if (min != ZoneMinPos || max != ZoneMaxPos) {
-				ZoneMinPos = min;
-				ZoneMaxPos = max;
-			}
+			ZoneMinPos = min;
+			ZoneMaxPos = max;
 		}
 
 
@@ -86,7 +86,7 @@
 		}
 
 
-		public (Vector3, Vector3, float, float) GetZoneMinMax () => (ZoneMinPos, ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x, Ratio);
+		public (Vector3, Vector3, float, float) GetZoneMinMax (bool real = false) => (ZoneMinPos, real ? ZoneMaxPos_Real : ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x, Ratio);
 
 
 

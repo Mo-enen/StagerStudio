@@ -35,6 +35,7 @@
 			MainRenderer.Tint = Color.white;
 			m_JudgelineRenderer.Tint = Color.white;
 			m_JudgelineRenderer.Pivot = new Vector2(0.5f, 0f);
+			ColRot = null;
 		}
 
 
@@ -42,6 +43,7 @@
 
 			MainRenderer.RendererEnable = false;
 			m_JudgelineRenderer.RendererEnable = false;
+			ColSize = null;
 
 			// Get StageData
 			int stageIndex = transform.GetSiblingIndex();
@@ -50,7 +52,6 @@
 
 			Time = stageData.Time;
 			Duration = stageData.Duration;
-
 
 			// Stage Active Check
 			bool active = GetStageActive(stageData, stageIndex);
@@ -71,9 +72,9 @@
 			var stagePos = GetStagePosition(stageData, stageIndex);
 
 			// Movement
-			transform.position = stageData.Zone.Position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
-			transform.localRotation = stageData.Zone.Rotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
-			MainRenderer.transform.localScale = stageData.Zone.Size = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
+			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
+			transform.localRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
+			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
 				Mathf.Max(zoneSize * Note.NoteThickness, 0.00001f),

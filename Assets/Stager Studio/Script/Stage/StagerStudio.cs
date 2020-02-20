@@ -52,6 +52,7 @@
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageGame Game => _Game != null ? _Game : (_Game = FindObjectOfType<StageGame>());
 		private StageEditor Editor => _Editor != null ? _Editor : (_Editor = FindObjectOfType<StageEditor>());
+		private StageLibrary Library => _Library != null ? _Library : (_Library = FindObjectOfType<StageLibrary>());
 		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
 		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
 		private StageShortcut Short => _Short != null ? _Short : (_Short = FindObjectOfType<StageShortcut>());
@@ -83,6 +84,7 @@
 		private StageProject _Project = null;
 		private StageGame _Game = null;
 		private StageEditor _Editor = null;
+		private StageLibrary _Library = null;
 		private StageLanguage _Language = null;
 		private StageSkin _Skin = null;
 		private StageShortcut _Short = null;
@@ -233,6 +235,7 @@
 				Music.SetClip(null);
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
+				Editor.ClearSelection();
 				StageObject.Beatmap = null;
 			};
 
@@ -248,6 +251,7 @@
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
+				Editor.ClearSelection();
 				Game.SetSpeedCurveDirty();
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
@@ -344,12 +348,14 @@
 
 
 		private void Awake_Editor () {
+			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnEditModeChanged = (mode) => {
 
 			};
-			StageEditor.OnSelectionChanged = (index) => {
+			StageEditor.OnSelectionChanged = () => {
 
 			};
+			StageEditor.GetBrushIndex = () => Library.SelectingItemIndex;
 			StageEditor.GetBeatmap = () => Project.Beatmap;
 		}
 
@@ -392,11 +398,16 @@
 			StageUndo.OnUndo = (bytes) => {
 				var step = Util.BytesToObject(bytes) as UndoData;
 				if (step is null || step.Beatmap is null) { return; }
+				// Map
 				Project.Beatmap.LoadFromBytes(step.Beatmap);
+				// Music Time
 				Music.Seek(step.MusicTime);
+				// Container Active
 				for (int i = 0; i < step.ContainerActive.Length; i++) {
 					Editor.SetContainerActive(i, step.ContainerActive[i]);
 				}
+				// Final
+				Editor.ClearSelection();
 			};
 		}
 

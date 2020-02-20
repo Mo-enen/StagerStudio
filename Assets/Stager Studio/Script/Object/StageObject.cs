@@ -42,17 +42,36 @@
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
-		public StageRenderer MainRenderer => m_MainRenderer;
-		public virtual float Time { get; protected set; } = 0f;
-		public virtual float Duration { get; protected set; } = 0f;
+		protected StageRenderer MainRenderer => m_MainRenderer;
+		protected virtual float Time { get; set; } = 0f;
+		protected virtual float Duration { get; set; } = 0f;
+		protected Vector2? ColSize { get; set; } = null;
+		protected Quaternion? ColRot { get; set; } = null;
 
 		// Ser
 		[SerializeField] private StageRenderer m_MainRenderer = null;
+		[SerializeField] private BoxCollider2D m_Col = null;
+
+		// Data
+		private Quaternion PrevColRot = Quaternion.identity;
 
 
 		#endregion
 
 
+		protected virtual void LateUpdate () {
+			if (m_Col == null) { return; }
+			if (m_Col.enabled != ColSize.HasValue) {
+				m_Col.enabled = ColSize.HasValue;
+			}
+			if (ColSize.HasValue && (m_Col.size != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
+				m_Col.size = ColSize.Value;
+				m_Col.offset = new Vector2(0f, ColSize.Value.y * 0.5f);
+				if (ColRot.HasValue) {
+					m_Col.transform.rotation = PrevColRot = ColRot.Value;
+				}
+			}
+		}
 
 
 		#region --- API ---

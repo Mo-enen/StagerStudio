@@ -32,13 +32,14 @@
 		private void Awake () {
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
-
+			ColRot = null;
 		}
 
 
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
+			ColSize = null;
 
 			// Get TrackData
 			int index = transform.GetSiblingIndex();
@@ -71,9 +72,9 @@
 			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
-			transform.position = trackData.Zone.Position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			MainRenderer.transform.localRotation = trackData.Zone.Rotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
-			MainRenderer.transform.localScale = trackData.Zone.Size = new Vector3(
+			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
+			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
+			ColSize = MainRenderer.transform.localScale = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
 				1f
