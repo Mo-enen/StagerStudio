@@ -62,9 +62,9 @@
 		#region --- MSG ---
 
 
-		private void Awake () {
+		protected override void Awake () {
+			base.Awake();
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-
 		}
 
 
@@ -79,16 +79,20 @@
 			ColSize = null;
 
 			// Get NoteData
-			int index = transform.GetSiblingIndex();
-			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
+			int noteIndex = transform.GetSiblingIndex();
+			var noteData = !(Beatmap is null) && noteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteIndex] : null;
 			if (noteData is null) { return; }
+			bool oldSelecting = noteData.Selecting;
 			noteData.Active = false;
+			noteData.Selecting = false;
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
-			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
 			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
+			if (!Stage.GetStageActive(linkedStage, linkedTrack.StageIndex) || !Track.GetTrackActive(linkedTrack)) {
+				Update_Gizmos(null, noteIndex);
+				return;
+			}
 
 			// Cache
 			Update_Cache(noteData, GetGameSpeedMuti() * linkedStage.Speed);
@@ -99,7 +103,9 @@
 			// Active
 			bool active = GetNoteActive(noteData, linkedNote, noteData.AppearTime);
 			noteData.Active = active;
+			Update_Gizmos(noteData, noteIndex);
 			if (!active) { return; }
+			noteData.Selecting = oldSelecting;
 
 			// Final
 			LateStage = linkedStage;
@@ -186,9 +192,9 @@
 
 			// Sub Update
 			if (isLink) {
-				Update_Linked(linkedTrack.StageIndex, noteData, linkedNote, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, noteZonePos.x, alpha);
+				Update_Movement_Linked(linkedTrack.StageIndex, noteData, linkedNote, noteRot, stagePos, stageWidth, stageHeight, stageRotZ, stageAngle, noteZonePos.x, alpha);
 			} else if (isSwipe) {
-				Update_Swipe(noteData, zoneSize, noteRot, alpha);
+				Update_Movement_Swipe(noteData, zoneSize, noteRot, alpha);
 			}
 
 			// Renderer
@@ -202,7 +208,7 @@
 		}
 
 
-		private void Update_Linked (int stageIndex, Beatmap.Note noteData, Beatmap.Note linkedNote, Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle, float noteZoneX, float alpha) {
+		private void Update_Movement_Linked (int stageIndex, Beatmap.Note noteData, Beatmap.Note linkedNote, Quaternion noteRot, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float stageAngle, float noteZoneX, float alpha) {
 
 			// Get Linked Data
 			if (linkedNote is null || noteData.Time + noteData.Duration > linkedNote.Time) { return; }
@@ -251,7 +257,7 @@
 		}
 
 
-		private void Update_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha) {
+		private void Update_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha) {
 			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
 			m_SubRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
 			m_SubRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
@@ -261,6 +267,25 @@
 			m_SubRenderer.Scale = new Vector2(NoteThickness, ArrowSize);
 			m_SubRenderer.Alpha = alpha;
 			m_SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
+		}
+
+
+		private void Update_Gizmos (Beatmap.Note noteData, int noteIndex) {
+
+			bool active = ShowIndexLabel && !MusicPlaying && !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
+
+			// ID
+			Label.gameObject.SetActive(active);
+			if (active) {
+				Label.text = noteIndex.ToString();
+				Label.transform.localRotation = MainRenderer.transform.localRotation;
+			}
+
+			// Selection Highlight
+
+
+
+
 		}
 
 

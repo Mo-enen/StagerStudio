@@ -66,14 +66,17 @@
 
 		// Data
 		private readonly bool[] ItemLock = { false, false, false, false, false, false, };
-		private readonly List<int> SelectingObjectsIndex = new List<int>();
-		private readonly Collider2D[] CastCols = new Collider2D[64];
 		private bool FocusMode = false;
 		private bool UIReady = true;
 		private Coroutine FocusAniCor = null;
 		private Camera _Camera = null;
+
+		// Mouse
+		private readonly List<int> SelectingObjectsIndex = new List<int>();
+		private readonly Collider2D[] CastCols = new Collider2D[64];
+		private bool ClickStartInsideSelection = false;
+		private bool ClickStartInsideZone = false;
 		private Ray? MouseRayDown = null;
-		private bool MouseDown = false;
 
 
 		#endregion
@@ -90,8 +93,8 @@
 				int index = i;
 				m_EditModeTGs[index].onValueChanged.AddListener((isOn) => {
 					if (UIReady && isOn) {
-						SetEditMode(index);
 						ClearSelection();
+						SetEditMode(index);
 					}
 				});
 			}
@@ -117,47 +120,56 @@
 		private void LateUpdate () {
 			var map = GetBeatmap();
 			if (map is null || !AntiTargetCheck()) {
-				SetSelectionRect(false, default, default);
+				MouseRayDown = null;
+				ClickStartInsideSelection = false;
+				SetSelectionRectUI(false);
 				return;
 			}
 			// Mouse
 			if (Input.GetMouseButton(0)) {
-				if (!MouseDown) {
-					MouseDown = true;
+				if (!MouseRayDown.HasValue) {
 					MouseRayDown = GetMouseRay();
 					OnMouseLeftDown();
 				} else {
 					OnMouseLeftDrag();
 				}
 			} else {
-				if (MouseDown) {
-					MouseDown = false;
-					SetSelectionRect(false, default, default);
-					OnMouseLeftUp();
-				}
 				if (MouseRayDown.HasValue) {
-					SetSelectionRect(false, default, default);
+					SetSelectionRectUI(false);
+					OnMouseLeftUp();
 					MouseRayDown = null;
 				}
+				ClickStartInsideSelection = false;
 			}
 		}
 
 
+		// Mouse Left
 		private void OnMouseLeftDown () {
 			int brushIndex = GetBrushIndex();
 			if (brushIndex < 0) {
 				// Select
-				bool clearFlag = true;
+				ClickStartInsideZone = false;
+				ClickStartInsideSelection = false;
 				var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 				var plane = new Plane(Vector3.back, zoneMin);
 				if (plane.Raycast(MouseRayDown.Value, out float enter)) {
 					Vector2 pos = MouseRayDown.Value.GetPoint(enter);
+					// Check Inside Zone
 					if (pos.x > zoneMin.x && pos.x < zoneMax.x && pos.y > zoneMin.y && pos.y < zoneMax.y) {
-						clearFlag = false;
+						ClickStartInsideZone = true;
 					}
-				}
-				if (clearFlag) {
-					MouseRayDown = null;
+					// Check Inside Selection
+					if (SelectingObjectsIndex.Count > 0) {
+						var map = GetBeatmap();
+						int count = Physics2D.OverlapPointNonAlloc(pos, CastCols, m_EditLayerMasks[(int)TheEditMode]);
+						for (int i = 0; i < count; i++) {
+							if (CheckSelecting(GetObjectIndexFromCollider(CastCols[i]), map)) {
+								ClickStartInsideSelection = true;
+								break;
+							}
+						}
+					}
 				}
 			} else {
 				// Paint
@@ -169,22 +181,29 @@
 
 
 		private void OnMouseLeftDrag () {
-			if (!MouseRayDown.HasValue) { return; }
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var mouseRay = GetMouseRay();
 			var plane = new Plane(Vector3.back, zoneMin);
 			int brushIndex = GetBrushIndex();
 			if (brushIndex < 0) {
-				// Select
-				if (plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
-					Vector2 a = MouseRayDown.Value.GetPoint(enterA);
-					Vector2 b = mouseRay.GetPoint(enterB);
-					Vector2 min = Vector2.Min(a, b);
-					Vector2 max = Vector2.Max(a, b);
-					SetSelectionRect(true,
-						new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, min.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, min.y)),
-						new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, max.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, max.y))
-					);
+				if (ClickStartInsideSelection) {
+					// Moving Selection
+
+
+
+
+				} else {
+					// Select Dragging Dotted Rect
+					if (ClickStartInsideZone && plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
+						Vector2 a = MouseRayDown.Value.GetPoint(enterA);
+						Vector2 b = mouseRay.GetPoint(enterB);
+						Vector2 min = Vector2.Min(a, b);
+						Vector2 max = Vector2.Max(a, b);
+						SetSelectionRectUI(true,
+							new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, min.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, min.y)),
+							new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, max.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, max.y))
+						);
+					}
 				}
 			} else {
 				// Paint
@@ -196,24 +215,25 @@
 
 
 		private void OnMouseLeftUp () {
-			if (!MouseRayDown.HasValue) { return; }
 			var (zoneMin, _, _, _) = GetZoneMinMax();
 			var mouseRay = GetMouseRay();
 			var plane = new Plane(Vector3.back, zoneMin);
 			int brushIndex = GetBrushIndex();
 			if (brushIndex < 0) {
 				// Select
-				SelectingObjectsIndex.Clear();
-				int layerMask = m_EditLayerMasks[(int)TheEditMode];
-				if (plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
-					Vector2 a = MouseRayDown.Value.GetPoint(enterA);
-					Vector2 b = mouseRay.GetPoint(enterB);
-					int count = Physics2D.OverlapBoxNonAlloc((a + b) / 2f, (a - b).Abs(), 0f, CastCols, layerMask);
-					if (count > 0) {
-						for (int i = 0; i < count; i++) {
-							SelectingObjectsIndex.Add(CastCols[i].transform.parent.GetSiblingIndex());
+				if (!ClickStartInsideSelection) {
+					ClearSelection();
+					if (ClickStartInsideZone && plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
+						Vector2 a = MouseRayDown.Value.GetPoint(enterA);
+						Vector2 b = mouseRay.GetPoint(enterB);
+						int count = Physics2D.OverlapBoxNonAlloc((a + b) / 2f, (a - b).Abs(), 0f, CastCols, m_EditLayerMasks[(int)TheEditMode]);
+						if (count > 0) {
+							var map = GetBeatmap();
+							for (int i = 0; i < count; i++) {
+								AddSelection(GetObjectIndexFromCollider(CastCols[i]), true, map);
+							}
+							OnSelectionChanged();
 						}
-						OnSelectionChanged();
 					}
 				}
 			} else {
@@ -234,23 +254,116 @@
 		#region --- API ---
 
 
-		// Set
+		// Edit Mode
 		public void UI_SetEditMode (int index) {
 			if (!UIReady) { return; }
-			SetEditMode(index);
 			ClearSelection();
+			SetEditMode(index);
+		}
+
+
+		// Selection
+		public bool CheckSelecting (int index, Beatmap map) {
+			switch (TheEditMode) {
+				case EditMode.Stage:
+					if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+						return map.Stages[index].Selecting;
+					}
+					break;
+				case EditMode.Track:
+					if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+						return map.Tracks[index].Selecting;
+					}
+					break;
+				case EditMode.Note:
+					if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+						return map.Notes[index].Selecting;
+					}
+					break;
+				case EditMode.Speed:
+					break;
+				case EditMode.Motion:
+					break;
+			}
+			return false;
+		}
+
+
+		public void AddSelection (int index, bool select, Beatmap map) {
+			// Selecting Index List
+			if (select) {
+				// Add
+				SelectingObjectsIndex.Add(index);
+			} else {
+				// Remove
+				for (int i = 0; i < SelectingObjectsIndex.Count; i++) {
+					if (SelectingObjectsIndex[i] == index) {
+						SelectingObjectsIndex.RemoveAt(i);
+						break;
+					}
+				}
+			}
+			// Set Cache
+			switch (TheEditMode) {
+				case EditMode.Stage:
+					if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+						map.Stages[index].Selecting = select;
+					}
+					break;
+				case EditMode.Track:
+					if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+						map.Tracks[index].Selecting = select;
+					}
+					break;
+				case EditMode.Note:
+					if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+						map.Notes[index].Selecting = select;
+					}
+					break;
+				case EditMode.Speed:
+					break;
+				case EditMode.Motion:
+					break;
+			}
 		}
 
 
 		public void ClearSelection () {
-			if (SelectingObjectsIndex.Count > 0) {
+			var map = GetBeatmap();
+			if (!(map is null) && SelectingObjectsIndex.Count > 0) {
+				// Clear Cache
+				foreach (var index in SelectingObjectsIndex) {
+					switch (TheEditMode) {
+						case EditMode.Stage:
+							if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+								map.Stages[index].Selecting = false;
+							}
+							break;
+						case EditMode.Track:
+							if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+								map.Tracks[index].Selecting = false;
+							}
+							break;
+						case EditMode.Note:
+							if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+								map.Notes[index].Selecting = false;
+							}
+							break;
+						case EditMode.Speed:
+							break;
+						case EditMode.Motion:
+							break;
+					}
+				}
+				// Clear List
 				SelectingObjectsIndex.Clear();
+				// Final
 				OnSelectionChanged();
 			}
 		}
 
 
-		// Container Active
+		// Container
 		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
 
 
@@ -324,10 +437,6 @@
 		}
 
 
-		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
-
-
-		// Set
 		private void SetEditMode (int index) {
 			var mode = (EditMode)index;
 			if (mode != TheEditMode) {
@@ -344,7 +453,13 @@
 		}
 
 
-		private void SetSelectionRect (bool active, Vector2 min01, Vector2 max01) {
+		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
+
+
+		private int GetObjectIndexFromCollider (Collider2D col) => col.transform.parent.GetSiblingIndex();
+
+
+		private void SetSelectionRectUI (bool active, Vector2 min01 = default, Vector2 max01 = default) {
 			if (m_SelectionRect.gameObject.activeSelf != active) {
 				m_SelectionRect.gameObject.SetActive(active);
 			}

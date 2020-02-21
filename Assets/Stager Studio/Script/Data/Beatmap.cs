@@ -128,6 +128,7 @@
 			public List<TimeFloatTween> Angles;
 			// Cache
 			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public bool Selecting = false;
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -170,6 +171,7 @@
 			public List<TimeByteTween> Colors;
 			// Cache
 			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public bool Selecting = false;
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -204,6 +206,7 @@
 
 			// Cache
 			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public float AppearTime = 0f;
 			[System.NonSerialized] public float SpeedMuti = float.MinValue;
 			[System.NonSerialized] public float NoteDropStart = float.MinValue;

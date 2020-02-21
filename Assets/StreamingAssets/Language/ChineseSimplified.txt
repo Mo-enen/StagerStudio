@@ -1,4 +1,10 @@
-﻿Author
+﻿UI.Setting.ShowIndexLabelIndexLabel
+显示舞台、轨道、音符的编号
+
+Tip.Setting.ShowIndexLabel
+是否显示编号标签
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject

@@ -29,7 +29,8 @@
 		#region --- MSG ---
 
 
-		private void Awake () {
+		protected override void Awake () {
+			base.Awake();
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
 			ColRot = null;
@@ -42,10 +43,13 @@
 			ColSize = null;
 
 			// Get TrackData
-			int index = transform.GetSiblingIndex();
-			var trackData = !(Beatmap is null) && index < Beatmap.Tracks.Count ? Beatmap.Tracks[index] : null;
+			int trackIndex = transform.GetSiblingIndex();
+			var trackData = !(Beatmap is null) && trackIndex < Beatmap.Tracks.Count ? Beatmap.Tracks[trackIndex] : null;
 			if (trackData is null) { return; }
 
+			bool oldSelecting = trackData.Selecting;
+			trackData.Active = false;
+			trackData.Selecting = false;
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
@@ -53,7 +57,11 @@
 			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData);
 			trackData.Active = active;
+
+			Update_Gizmos(trackData.Active, trackIndex);
+
 			if (!active) { return; }
+			trackData.Selecting = oldSelecting;
 
 			// Movement
 			Update_Movement(linkedStage, trackData);
@@ -90,6 +98,22 @@
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
 			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
+
+		}
+
+
+		private void Update_Gizmos (bool trackActive, int trackIndex) {
+			// ID
+			bool active = ShowIndexLabel && !MusicPlaying && trackActive;
+			Label.gameObject.SetActive(active);
+			if (active) {
+				Label.text = trackIndex.ToString();
+			}
+
+			// Selection Highlight
+
+
+
 
 		}
 

@@ -1,4 +1,10 @@
-﻿Author
+﻿UI.Setting.ShowIndexLabelIndexLabel
+Show Index Label for Stage,Track and Note
+
+Tip.Setting.ShowIndexLabel
+Show the index label or not
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

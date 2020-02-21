@@ -112,6 +112,7 @@
 			Note.LayerID_Pole = SortingLayer.NameToID("Pole");
 			Note.LayerID_Note = SortingLayer.NameToID("Note");
 			Note.LayerID_Arrow = SortingLayer.NameToID("Arrow");
+			StageObject.LayerID_UI = SortingLayer.NameToID("UI");
 			SpeedNote.LayerID_Speed = SortingLayer.NameToID("Speed");
 			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
 			Luminous.LayerID_Lum = SortingLayer.NameToID("Luminous");
@@ -209,7 +210,7 @@
 
 					} else {
 						// Seek
-						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f);
+						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f);
 						if (Input.GetKey(KeyCode.LeftAlt)) {
 							delta *= 0.1f;
 						} else if (Input.GetKey(KeyCode.LeftShift)) {

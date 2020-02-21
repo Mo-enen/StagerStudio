@@ -39,10 +39,13 @@
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
 		public static Beatmap Beatmap { get; set; } = null;
 		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
+		public static int LayerID_UI { get; set; } = -1;
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
+		public static bool ShowIndexLabel { get; set; } = true;
 		protected StageRenderer MainRenderer => m_MainRenderer;
+		protected TextMesh Label => m_Label;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
 		protected Vector2? ColSize { get; set; } = null;
@@ -51,12 +54,20 @@
 		// Ser
 		[SerializeField] private StageRenderer m_MainRenderer = null;
 		[SerializeField] private BoxCollider2D m_Col = null;
+		[SerializeField] private TextMesh m_Label = null;
 
 		// Data
 		private Quaternion PrevColRot = Quaternion.identity;
 
 
 		#endregion
+
+
+		protected virtual void Awake () {
+			if (m_Label != null) {
+				m_Label.GetComponent<MeshRenderer>().sortingLayerID = LayerID_UI;
+			}
+		}
 
 
 		protected virtual void LateUpdate () {

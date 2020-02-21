@@ -50,6 +50,7 @@
 		private SavingBool ShowWelcome = new SavingBool("SS.ShowWelcome", true);
 		private SavingBool SnapProgress = new SavingBool("SS.SnapProgress", true);
 		private SavingBool PositiveScroll = new SavingBool("StageGame.PositiveScroll", true);
+		private SavingBool ShowIndexLabel = new SavingBool("StageGame.ShowIndexLabel", false);
 
 
 		// UI
@@ -90,6 +91,8 @@
 			setting.SetSnapProgress = SetSnapProgress;
 			setting.GetPositiveScroll = () => Game.PositiveScroll;
 			setting.SetPositiveScroll = SetPositiveScroll;
+			setting.GetShowIndexLabel = () => Object.StageObject.ShowIndexLabel;
+			setting.SetShowIndexLabel = SetShowIndexLabel;
 
 			setting.Init();
 		}
@@ -236,6 +239,7 @@
 			SetShowWelcome(ShowWelcome);
 			SetSnapProgress(SnapProgress);
 			SetPositiveScroll(PositiveScroll);
+			SetShowIndexLabel(ShowIndexLabel);
 		}
 		private void ResetAllSettings () {
 			FrameRate.Reset();
@@ -249,6 +253,7 @@
 			ShowTip.Reset();
 			SnapProgress.Reset();
 			PositiveScroll.Reset();
+			ShowIndexLabel.Reset();
 		}
 		private void SetFramerate (int fRate) {
 			fRate = Mathf.Clamp(fRate, 12, 1200);
@@ -305,6 +310,10 @@
 		private void SetPositiveScroll (bool positive) {
 			PositiveScroll.Value = positive;
 			Game.PositiveScroll = positive;
+		}
+		private void SetShowIndexLabel (bool show) {
+			ShowIndexLabel.Value = show;
+			Object.StageObject.ShowIndexLabel = show;
 		}
 
 	}

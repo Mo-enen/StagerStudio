@@ -188,9 +188,7 @@
 		}
 
 
-		private void Awake_Setting () {
-			LoadAllSettings();
-		}
+		private void Awake_Setting () => LoadAllSettings();
 
 
 		private void Awake_Object () {

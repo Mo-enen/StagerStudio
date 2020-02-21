@@ -5,7 +5,7 @@
 	using UnityEngine.UI;
 	using Stage;
 	using Saving;
-	
+
 
 
 	public class SettingUI : MonoBehaviour {
@@ -49,6 +49,7 @@
 			// Editor
 			public Toggle SnapProgress;
 			public Toggle PositiveScroll;
+			public Toggle ShowIndexLabel;
 
 			// Language
 			public Text LanguageHint;
@@ -94,11 +95,12 @@
 		public BoolVoidHandler GetSnapProgress { get; set; } = null;
 		public VoidBoolHandler SetPositiveScroll { get; set; } = null;
 		public BoolVoidHandler GetPositiveScroll { get; set; } = null;
+		public VoidBoolHandler SetShowIndexLabel { get; set; } = null;
+		public BoolVoidHandler GetShowIndexLabel { get; set; } = null;
 
 		// Short
-		private StageLanguage Language => _Language ?? (_Language = FindObjectOfType<StageLanguage>());
-		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
-		private StageSkin Skin => _Skin ?? (_Skin = FindObjectOfType<StageSkin>());
+		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
+		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
 
 		// Ser
 		[SerializeField] private Grabber m_LanguageItemPrefab = null;
@@ -111,7 +113,6 @@
 
 		// Data
 		private StageLanguage _Language = null;
-		private StageMenu _Menu = null;
 		private StageSkin _Skin = null;
 		private bool UIReady = true;
 
@@ -216,6 +217,12 @@
 					RefreshLogic(false);
 				}
 			});
+			m_Component.ShowIndexLabel.onValueChanged.AddListener((value) => {
+				if (UIReady) {
+					SetShowIndexLabel(value);
+					RefreshLogic(false);
+				}
+			});
 			// Refresh
 			RefreshLogic();
 		}
@@ -282,7 +289,7 @@
 			m_Component.ShowWelcome.isOn = GetShowWelcome();
 			m_Component.SnapProgress.isOn = GetSnapProgress();
 			m_Component.PositiveScroll.isOn = GetPositiveScroll();
-
+			m_Component.ShowIndexLabel.isOn = GetShowIndexLabel();
 			UIReady = true;
 
 			if (refreshDynamic) {

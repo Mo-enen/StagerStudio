@@ -30,7 +30,8 @@
 		#region --- MSG ---
 
 
-		private void Awake () {
+		protected override void Awake () {
+			base.Awake();
 			MainRenderer.Pivot = new Vector3(0.5f, 0f);
 			MainRenderer.Tint = Color.white;
 			m_JudgelineRenderer.Tint = Color.white;
@@ -50,13 +51,20 @@
 			var stageData = !(Beatmap is null) && stageIndex < Beatmap.Stages.Count ? Beatmap.Stages[stageIndex] : null;
 			if (stageData is null) { return; }
 
+			bool oldSelecting = stageData.Selecting;
+			stageData.Active = false;
+			stageData.Selecting = false;
 			Time = stageData.Time;
 			Duration = stageData.Duration;
 
 			// Stage Active Check
 			bool active = GetStageActive(stageData, stageIndex);
 			stageData.Active = active;
+
+			Update_Gizmos(active, stageIndex);
+
 			if (!active) { return; }
+			stageData.Selecting = oldSelecting;
 
 			// Update
 			Update_Movement(stageData, stageIndex);
@@ -91,6 +99,23 @@
 			m_JudgelineRenderer.Scale = new Vector2(width, Note.NoteThickness);
 			m_JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 			MainRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
+
+		}
+
+
+		private void Update_Gizmos (bool stageActive, int stageIndex) {
+
+			// ID
+			bool active = ShowIndexLabel && !MusicPlaying && stageActive;
+			Label.gameObject.SetActive(active);
+			if (active) {
+				Label.text = stageIndex.ToString();
+			}
+
+			// Selection Highlight
+
+
+
 
 		}
 
