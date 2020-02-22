@@ -46,6 +46,7 @@
 		public static bool ShowIndexLabel { get; set; } = true;
 		protected StageRenderer MainRenderer => m_MainRenderer;
 		protected TextMesh Label => m_Label;
+		protected SpriteRenderer Highlight => m_Highlight;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
 		protected Vector2? ColSize { get; set; } = null;
@@ -53,11 +54,13 @@
 
 		// Ser
 		[SerializeField] private StageRenderer m_MainRenderer = null;
-		[SerializeField] private BoxCollider2D m_Col = null;
+		[SerializeField] private BoxCollider m_Col = null;
 		[SerializeField] private TextMesh m_Label = null;
+		[SerializeField] private SpriteRenderer m_Highlight = null;
 
 		// Data
 		private Quaternion PrevColRot = Quaternion.identity;
+		private Vector2 PrevColSize = Vector3.zero;
 
 
 		#endregion
@@ -75,11 +78,15 @@
 			if (m_Col.enabled != ColSize.HasValue) {
 				m_Col.enabled = ColSize.HasValue;
 			}
-			if (ColSize.HasValue && (m_Col.size != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
-				m_Col.size = ColSize.Value;
-				m_Col.offset = new Vector2(0f, ColSize.Value.y * 0.5f);
+			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
+				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.00001f);
+				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
+				PrevColSize = m_Col.size = size;
+				m_Col.center = offset;
+				m_Highlight.transform.localPosition = offset;
+				m_Highlight.transform.localScale = size * 42f;
 				if (ColRot.HasValue) {
-					m_Col.transform.rotation = PrevColRot = ColRot.Value;
+					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
 			}
 		}

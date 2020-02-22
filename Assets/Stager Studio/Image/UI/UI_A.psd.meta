@@ -215,6 +215,18 @@ TextureImporter:
   - first:
       213: 1098643313922838400
     second: Menu
+  - first:
+      213: -8080841097035478247
+    second: UI_A_0
+  - first:
+      213: -3374395645584494972
+    second: UI_A_1
+  - first:
+      213: -3692427623992186823
+    second: Pixel
+  - first:
+      213: 385058692180136484
+    second: Menu
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -254,7 +266,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -1226,27 +1238,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Menu
-      rect:
-        serializedVersion: 2
-        x: 41
-        y: 161
-        width: 27
-        height: 23
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 91b82dc16d51bdf80800000000000000
-      internalID: -8080841097035478247
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Save
       rect:
         serializedVersion: 2
@@ -1255,7 +1246,7 @@ TextureImporter:
         width: 39
         height: 40
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1263,6 +1254,27 @@ TextureImporter:
       bones: []
       spriteID: 08f8a3de54a2f3f00800000000000000
       internalID: 1098643313922838400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Menu
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 162
+        width: 24
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 422d21527d0085500800000000000000
+      internalID: 385058692180136484
       vertices: []
       indices: 
       edges: []

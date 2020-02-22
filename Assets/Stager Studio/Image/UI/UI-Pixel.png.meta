@@ -47,6 +47,9 @@ TextureImporter:
   - first:
       213: 37698321110086636
     second: Color Alpha
+  - first:
+      213: -263400405174186135
+    second: Pixel (Bottom)
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -402,6 +405,27 @@ TextureImporter:
       bones: []
       spriteID: 1468702aefd93f64398472b1213f099c
       internalID: -2120564557539517688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pixel (Bottom)
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 13
+        width: 1
+        height: 1
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96f06ef1ab6385cf0800000000000000
+      internalID: -263400405174186135
       vertices: []
       indices: 
       edges: []

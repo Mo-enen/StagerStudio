@@ -74,6 +74,14 @@
 		}
 
 
+		public static Vector3 Abs (this Vector3 v) {
+			v.x = Mathf.Abs(v.x);
+			v.y = Mathf.Abs(v.y);
+			v.z = Mathf.Abs(v.z);
+			return v;
+		}
+
+
 		public static void SetPivotWithoutChangePosition (this RectTransform rectTransform, Vector2 pivot) {
 			Vector3 deltaPosition = rectTransform.pivot - pivot;    // get change in pivot
 			deltaPosition.Scale(rectTransform.rect.size);           // apply sizing

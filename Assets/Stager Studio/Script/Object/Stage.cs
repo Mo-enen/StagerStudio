@@ -61,7 +61,7 @@
 			bool active = GetStageActive(stageData, stageIndex);
 			stageData.Active = active;
 
-			Update_Gizmos(active, stageIndex);
+			Update_Gizmos(active, oldSelecting, stageIndex);
 
 			if (!active) { return; }
 			stageData.Selecting = oldSelecting;
@@ -103,18 +103,21 @@
 		}
 
 
-		private void Update_Gizmos (bool stageActive, int stageIndex) {
+		private void Update_Gizmos (bool stageActive, bool selecting, int stageIndex) {
 
-			// ID
-			bool active = ShowIndexLabel && !MusicPlaying && stageActive;
-			Label.gameObject.SetActive(active);
-			if (active) {
-				Label.text = stageIndex.ToString();
+			// Label
+			if (Label != null) {
+				bool active = ShowIndexLabel && !MusicPlaying && stageActive;
+				Label.gameObject.SetActive(active);
+				if (active) {
+					Label.text = stageIndex.ToString();
+				}
 			}
 
-			// Selection Highlight
-
-
+			// Highlight
+			if (Highlight != null) {
+				Highlight.enabled = !MusicPlaying && stageActive && selecting;
+			}
 
 
 		}

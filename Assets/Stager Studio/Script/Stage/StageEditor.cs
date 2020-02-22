@@ -58,7 +58,6 @@
 		[SerializeField] private Transform[] m_Containers = null;
 		[SerializeField] private Transform[] m_AntiTargets = null;
 		[SerializeField] private RectTransform m_FocusCancel = null;
-		[SerializeField] private RectTransform m_SelectionRect = null;
 		[SerializeField] private Animator m_FocusAni = null;
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
@@ -73,9 +72,8 @@
 
 		// Mouse
 		private readonly List<int> SelectingObjectsIndex = new List<int>();
-		private readonly Collider2D[] CastCols = new Collider2D[64];
+		private readonly RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
-		private bool ClickStartInsideZone = false;
 		private Ray? MouseRayDown = null;
 
 
@@ -122,7 +120,6 @@
 			if (map is null || !AntiTargetCheck()) {
 				MouseRayDown = null;
 				ClickStartInsideSelection = false;
-				SetSelectionRectUI(false);
 				return;
 			}
 			// Mouse
@@ -135,7 +132,6 @@
 				}
 			} else {
 				if (MouseRayDown.HasValue) {
-					SetSelectionRectUI(false);
 					OnMouseLeftUp();
 					MouseRayDown = null;
 				}
@@ -148,31 +144,34 @@
 		private void OnMouseLeftDown () {
 			int brushIndex = GetBrushIndex();
 			if (brushIndex < 0) {
-				// Select
-				ClickStartInsideZone = false;
+				// Select or Move
+				var map = GetBeatmap();
+				bool ctrl = Input.GetKey(KeyCode.LeftControl);
+				bool alt = Input.GetKey(KeyCode.LeftAlt);
+				int count = Physics.RaycastNonAlloc(MouseRayDown.Value, CastHits, float.MaxValue, m_EditLayerMasks[(int)TheEditMode]);
+				int overlapIndex = -1;
 				ClickStartInsideSelection = false;
-				var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-				var plane = new Plane(Vector3.back, zoneMin);
-				if (plane.Raycast(MouseRayDown.Value, out float enter)) {
-					Vector2 pos = MouseRayDown.Value.GetPoint(enter);
-					// Check Inside Zone
-					if (pos.x > zoneMin.x && pos.x < zoneMax.x && pos.y > zoneMin.y && pos.y < zoneMax.y) {
-						ClickStartInsideZone = true;
+				for (int i = 0; i < count; i++) {
+					int itemIndex = GetObjectIndexFromCollider(CastHits[i]);
+					overlapIndex = Mathf.Max(itemIndex, overlapIndex);
+					if (SelectingObjectsIndex.Count > 0 && !alt && CheckSelecting(itemIndex, map)) {
+						ClickStartInsideSelection = true;
+						break;
 					}
-					// Check Inside Selection
-					if (SelectingObjectsIndex.Count > 0) {
-						var map = GetBeatmap();
-						int count = Physics2D.OverlapPointNonAlloc(pos, CastCols, m_EditLayerMasks[(int)TheEditMode]);
-						for (int i = 0; i < count; i++) {
-							if (CheckSelecting(GetObjectIndexFromCollider(CastCols[i]), map)) {
-								ClickStartInsideSelection = true;
-								break;
-							}
-						}
+				}
+				// Select
+				if (!ClickStartInsideSelection) {
+					if (!ctrl && !alt) { ClearSelection(); }
+					if (overlapIndex >= 0) {
+						AddSelection(overlapIndex, !alt, map);
+						OnSelectionChanged();
 					}
 				}
 			} else {
 				// Paint
+
+
+
 
 
 
@@ -185,28 +184,10 @@
 			var mouseRay = GetMouseRay();
 			var plane = new Plane(Vector3.back, zoneMin);
 			int brushIndex = GetBrushIndex();
-			if (brushIndex < 0) {
-				if (ClickStartInsideSelection) {
-					// Moving Selection
+			if (brushIndex < 0 && ClickStartInsideSelection) {
+				// Moving Selection
 
 
-
-
-				} else {
-					// Select Dragging Dotted Rect
-					if (ClickStartInsideZone && plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
-						Vector2 a = MouseRayDown.Value.GetPoint(enterA);
-						Vector2 b = mouseRay.GetPoint(enterB);
-						Vector2 min = Vector2.Min(a, b);
-						Vector2 max = Vector2.Max(a, b);
-						SetSelectionRectUI(true,
-							new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, min.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, min.y)),
-							new Vector2(Util.RemapUnclamped(zoneMin.x, zoneMax.x, 0f, 1f, max.x), Util.RemapUnclamped(zoneMin.y, zoneMax.y, 0f, 1f, max.y))
-						);
-					}
-				}
-			} else {
-				// Paint
 
 
 
@@ -215,34 +196,11 @@
 
 
 		private void OnMouseLeftUp () {
-			var (zoneMin, _, _, _) = GetZoneMinMax();
-			var mouseRay = GetMouseRay();
-			var plane = new Plane(Vector3.back, zoneMin);
-			int brushIndex = GetBrushIndex();
-			if (brushIndex < 0) {
-				// Select
-				if (!ClickStartInsideSelection) {
-					ClearSelection();
-					if (ClickStartInsideZone && plane.Raycast(MouseRayDown.Value, out float enterA) && plane.Raycast(mouseRay, out float enterB)) {
-						Vector2 a = MouseRayDown.Value.GetPoint(enterA);
-						Vector2 b = mouseRay.GetPoint(enterB);
-						int count = Physics2D.OverlapBoxNonAlloc((a + b) / 2f, (a - b).Abs(), 0f, CastCols, m_EditLayerMasks[(int)TheEditMode]);
-						if (count > 0) {
-							var map = GetBeatmap();
-							for (int i = 0; i < count; i++) {
-								AddSelection(GetObjectIndexFromCollider(CastCols[i]), true, map);
-							}
-							OnSelectionChanged();
-						}
-					}
-				}
-			} else {
-				// Paint
 
 
 
 
-			}
+
 		}
 
 
@@ -456,18 +414,7 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private int GetObjectIndexFromCollider (Collider2D col) => col.transform.parent.GetSiblingIndex();
-
-
-		private void SetSelectionRectUI (bool active, Vector2 min01 = default, Vector2 max01 = default) {
-			if (m_SelectionRect.gameObject.activeSelf != active) {
-				m_SelectionRect.gameObject.SetActive(active);
-			}
-			if (active) {
-				m_SelectionRect.anchorMin = min01;
-				m_SelectionRect.anchorMax = max01;
-			}
-		}
+		private int GetObjectIndexFromCollider (RaycastHit hit) => hit.transform.parent.GetSiblingIndex();
 
 
 		#endregion

@@ -58,7 +58,7 @@
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData);
 			trackData.Active = active;
 
-			Update_Gizmos(trackData.Active, trackIndex);
+			Update_Gizmos(trackData.Active, oldSelecting, trackIndex);
 
 			if (!active) { return; }
 			trackData.Selecting = oldSelecting;
@@ -102,16 +102,21 @@
 		}
 
 
-		private void Update_Gizmos (bool trackActive, int trackIndex) {
-			// ID
-			bool active = ShowIndexLabel && !MusicPlaying && trackActive;
-			Label.gameObject.SetActive(active);
-			if (active) {
-				Label.text = trackIndex.ToString();
+		private void Update_Gizmos (bool trackActive, bool selecting, int trackIndex) {
+
+			// Label
+			if (Label != null) {
+				bool active = ShowIndexLabel && !MusicPlaying && trackActive;
+				Label.gameObject.SetActive(active);
+				if (active) {
+					Label.text = trackIndex.ToString();
+				}
 			}
 
-			// Selection Highlight
-
+			// Highlight
+			if (Highlight != null) {
+				Highlight.enabled = !MusicPlaying && trackActive && selecting;
+			}
 
 
 

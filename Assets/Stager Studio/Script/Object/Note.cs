@@ -90,7 +90,7 @@
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
 			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
 			if (!Stage.GetStageActive(linkedStage, linkedTrack.StageIndex) || !Track.GetTrackActive(linkedTrack)) {
-				Update_Gizmos(null, noteIndex);
+				Update_Gizmos(null, false, noteIndex);
 				return;
 			}
 
@@ -103,7 +103,7 @@
 			// Active
 			bool active = GetNoteActive(noteData, linkedNote, noteData.AppearTime);
 			noteData.Active = active;
-			Update_Gizmos(noteData, noteIndex);
+			Update_Gizmos(noteData, oldSelecting, noteIndex);
 			if (!active) { return; }
 			noteData.Selecting = oldSelecting;
 
@@ -270,19 +270,25 @@
 		}
 
 
-		private void Update_Gizmos (Beatmap.Note noteData, int noteIndex) {
+		private void Update_Gizmos (Beatmap.Note noteData, bool selecting, int noteIndex) {
 
-			bool active = ShowIndexLabel && !MusicPlaying && !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
+			bool active = !MusicPlaying && !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
 
 			// ID
-			Label.gameObject.SetActive(active);
-			if (active) {
-				Label.text = noteIndex.ToString();
-				Label.transform.localRotation = MainRenderer.transform.localRotation;
+			if (Label != null) {
+				if (ShowIndexLabel && active) {
+					Label.gameObject.SetActive(true);
+					Label.text = noteIndex.ToString();
+					Label.transform.localRotation = MainRenderer.transform.localRotation;
+				} else {
+					Label.gameObject.SetActive(false);
+				}
 			}
 
-			// Selection Highlight
-
+			// Highlight
+			if (Highlight != null) {
+				Highlight.enabled = active && selecting;
+			}
 
 
 
