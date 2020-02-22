@@ -1,10 +1,4 @@
-﻿UI.Setting.ShowIndexLabelIndexLabel
-显示舞台、轨道、音符的编号
-
-Tip.Setting.ShowIndexLabel
-是否显示编号标签
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -478,6 +472,9 @@ Tip.Setting.Preview
 Tip.Setting.Reset
 重制所有设置
 
+Tip.Setting.ShowIndexLabel
+是否显示编号标签
+
 Tip.Setting.SmallUI
 较小的界面，适合物理尺寸较大的显示器
 
@@ -498,9 +495,6 @@ Tip.Setting.Welcome
 
 Tip.Setting.Zone
 是否显示活动范围边框
-
-Tip.Toolbar.Focus
-专注模式
 
 Tip.Toolbar.Home
 返回主页
@@ -534,6 +528,9 @@ Tip.ViewContainer.Track
 
 Tip.ViewContainer.TrackLock
 锁定轨道
+
+UI.AuthorLabel
+{0} | 谱面 {1} | 音乐 {2}
 
 UI.BeatmapInfo.BPM
 节拍/分钟
@@ -786,6 +783,9 @@ UI.Setting.Preview
 
 UI.Setting.SfxVolume
 音效音量
+
+UI.Setting.ShowIndexLabelIndexLabel
+显示舞台、轨道、音符的编号
 
 UI.Setting.ShowTip
 显示工具提示

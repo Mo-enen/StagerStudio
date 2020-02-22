@@ -37,7 +37,7 @@
 			m_Cover.color = cover ? Color.white : Color.clear;
 			m_Title.text = title;
 			m_Description.text = description;
-			m_Author.text = $"{backgourndAuthor} | {musicAuthor} | {beatmapAuthor}";
+			m_Author.text = $"{beatmapAuthor} | {musicAuthor} | {backgourndAuthor} | ";
 			if (cover && cover.rect.height > 0f) {
 				m_Cover.GetComponent<AspectRatioFitter>().aspectRatio = cover.rect.width / cover.rect.height;
 			}

@@ -18,7 +18,8 @@
 
 
 		public delegate string LanguageHandler (string key);
-		public delegate void VoidBeatmapHandler (Data.Beatmap map);
+		public delegate void VoidBeatmapHandler (Beatmap map);
+		public delegate void VoidHandler ();
 
 
 
@@ -133,6 +134,7 @@
 		// Handle
 		public static LanguageHandler GetLanguage { get; set; } = null;
 		public static VoidBeatmapHandler OnBeatmapInfoChanged { get; set; } = null;
+		public static VoidHandler OnProjectInfoChanged { get; set; } = null;
 
 		// Short
 		private BeatmapSortMode BeatmapSort {
@@ -193,26 +195,31 @@
 				if (!ReadyForUI) { return; }
 				Project.ProjectName = text;
 				Project.SetDirty();
+				OnProjectInfoChanged();
 			});
 			m_ProjectInfoComponentData.ProjectDescription.onEndEdit.AddListener((text) => {
 				if (!ReadyForUI) { return; }
 				Project.ProjectDescription = text;
 				Project.SetDirty();
+				OnProjectInfoChanged();
 			});
 			m_ProjectInfoComponentData.BeatmapAuthor.onEndEdit.AddListener((text) => {
 				if (!ReadyForUI) { return; }
 				Project.BeatmapAuthor = text;
 				Project.SetDirty();
+				OnProjectInfoChanged();
 			});
 			m_ProjectInfoComponentData.MusicAuthor.onEndEdit.AddListener((text) => {
 				if (!ReadyForUI) { return; }
 				Project.MusicAuthor = text;
 				Project.SetDirty();
+				OnProjectInfoChanged();
 			});
 			m_ProjectInfoComponentData.BackgroundAuthor.onEndEdit.AddListener((text) => {
 				if (!ReadyForUI) { return; }
 				Project.BackgroundAuthor = text;
 				Project.SetDirty();
+				OnProjectInfoChanged();
 			});
 			m_ProjectInfoComponentData.Browse_Background.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }

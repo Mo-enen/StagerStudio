@@ -1,10 +1,4 @@
-﻿UI.Setting.ShowIndexLabelIndexLabel
-Show Index Label for Stage,Track and Note
-
-Tip.Setting.ShowIndexLabel
-Show the index label or not
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -478,6 +472,9 @@ Show preview of the beatmap on the progress bar or not
 Tip.Setting.Reset
 Reset all settings
 
+Tip.Setting.ShowIndexLabel
+Show the index label or not
+
 Tip.Setting.SmallUI
 Small UI, for larger physical size display
 
@@ -498,9 +495,6 @@ Show a welcome panel on project open
 
 Tip.Setting.Zone
 Show scope of activities or not
-
-Tip.Toolbar.Focus
-Focus mode
 
 Tip.Toolbar.Home
 Back to home page
@@ -534,6 +528,9 @@ Show/Hide tracks
 
 Tip.ViewContainer.TrackLock
 Lock track
+
+UI.AuthorLabel
+{0} | map {1} | music {2}
 
 UI.BeatmapInfo.BPM
 BPM
@@ -786,6 +783,9 @@ Show Beatmap Preview
 
 UI.Setting.SfxVolume
 Sound Volume
+
+UI.Setting.ShowIndexLabelIndexLabel
+Show Index Label for Stage,Track and Note
 
 UI.Setting.ShowTip
 Show Tooltip

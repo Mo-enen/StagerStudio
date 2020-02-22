@@ -65,6 +65,7 @@
 		[SerializeField] private Toggle m_UseDynamicSpeed = null;
 		[SerializeField] private Toggle m_UseAbreastView = null;
 		[SerializeField] private Toggle m_GridTG = null;
+		[SerializeField] private Text m_AuthorLabel = null;
 		[Header("UI")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
@@ -214,11 +215,13 @@
 				Game.SetAbreastIndex(0);
 				Game.SetUseAbreastView(false);
 				Game.SetUseDynamicSpeed(true);
+				RefreshAuthorLabel();
 			};
 			StageProject.OnProjectLoaded = () => {
 				Game.SetSpeedCurveDirty();
 				UI_RemoveUI();
 				RefreshLoading(-1f);
+				RefreshAuthorLabel();
 				if (ShowWelcome) {
 					SpawnWelcome();
 				}
@@ -254,7 +257,6 @@
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
-				System.GC.Collect();
 				Resources.UnloadUnusedAssets();
 			};
 			StageProject.OnBeatmapRemoved = () => {
@@ -419,6 +421,11 @@
 					Game.Ratio = Project.Beatmap.Ratio;
 				}
 			};
+			ProjectInfoUI.OnProjectInfoChanged = () => {
+				RefreshAuthorLabel();
+
+
+			};
 		}
 
 
@@ -501,6 +508,13 @@
 			} else {
 				loading.SetProgress(progress01, hint);
 			}
+		}
+
+
+		private void RefreshAuthorLabel () {
+			try {
+				m_AuthorLabel.text = string.Format(Language.Get("UI.AuthorLabel"), Project.ProjectName, Project.BeatmapAuthor, Project.MusicAuthor);
+			} catch { }
 		}
 
 
