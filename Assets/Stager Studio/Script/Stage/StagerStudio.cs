@@ -215,6 +215,7 @@
 				Game.SetAbreastIndex(0);
 				Game.SetUseAbreastView(false);
 				Game.SetUseDynamicSpeed(true);
+				Game.SetGameDropSpeed(1f);
 				RefreshAuthorLabel();
 			};
 			StageProject.OnProjectLoaded = () => {
@@ -227,12 +228,12 @@
 				}
 			};
 			StageProject.OnProjectSavingStart = () => {
-
-
 				StartCoroutine(SaveProgressing());
 			};
 			StageProject.OnProjectClosed = () => {
 				Game.SetSpeedCurveDirty();
+				Game.SetUseAbreastView(false);
+				Game.SetGameDropSpeed(1f);
 				Music.SetClip(null);
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
@@ -349,9 +350,6 @@
 
 		private void Awake_Editor () {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
-			StageEditor.OnEditModeChanged = (mode) => {
-
-			};
 			StageEditor.OnSelectionChanged = () => {
 
 			};
@@ -362,6 +360,9 @@
 
 		private void Awake_Library () {
 			StageLibrary.OnSelectionChanged = (index) => {
+				if (index >= 0) {
+					Editor.ClearSelection();
+				}
 
 			};
 		}

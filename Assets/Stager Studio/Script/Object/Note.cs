@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using Data;
-
+	using Rendering;
 
 
 	public class Note : StageObject {
@@ -42,7 +42,7 @@
 		public static int LayerID_Arrow { get; set; } = -1;
 
 		// Ser
-		[SerializeField] private StageRenderer m_SubRenderer = null;
+		[SerializeField] private ObjectRenderer m_SubRenderer = null;
 
 		// Data
 		private static byte CacheDirtyID = 1;
@@ -61,11 +61,6 @@
 
 		#region --- MSG ---
 
-
-		protected override void Awake () {
-			base.Awake();
-			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-		}
 
 
 		private void Update () {

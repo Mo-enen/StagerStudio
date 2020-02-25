@@ -32,13 +32,6 @@
 		#region --- MSG ---
 
 
-		protected override void Awake () {
-			base.Awake();
-			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-
-		}
-
-
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;

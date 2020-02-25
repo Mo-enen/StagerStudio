@@ -94,7 +94,6 @@
 		public string BeatmapKey { get; private set; } = "";
 		public bool SavingProject { get; private set; } = false;
 		public float SavingProgress { get; private set; } = -1f;
-		public string TheWorkspace { get => Workspace; set => Workspace.Value = value; }
 		public bool IsDirty {
 			get => _IsDirty;
 			private set {
@@ -104,6 +103,7 @@
 				}
 			}
 		}
+		public string Workspace => Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Projects");
 
 		// Project Data
 		public string ProjectName { get; set; } = "";
@@ -128,9 +128,6 @@
 		private Coroutine LoadingCor = null;
 		private bool _IsDirty = false;
 
-		// Saving
-		private SavingString Workspace = new SavingString("StageProject.Workspace", "");
-
 
 		#endregion
 
@@ -141,12 +138,12 @@
 
 
 		private void Awake () {
+
 			// Workspace
 			try {
-				if (string.IsNullOrEmpty(Workspace)) {
-					Workspace.Value = Util.GetFullPath(Util.CombinePaths(Application.persistentDataPath, "Projects"));
+				if (!Util.DirectoryExists(Workspace)) {
+					Util.CreateFolder(Workspace);
 				}
-				Util.CreateFolder(Workspace);
 			} catch { }
 
 			// Create Default Chapter
@@ -231,7 +228,6 @@
 					}
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectFile, true, ex.Message);
-					Debug.LogWarning(ex);
 					LogLoadingProgress("", -1f);
 					OnProjectLoaded?.Invoke();
 					LoadingCor = null;
@@ -258,7 +254,6 @@
 					LastEditTime = Util.GetLongTime();
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectInfo, true, ex.Message);
-					Debug.LogWarning(ex);
 				}
 
 				// Cover
@@ -267,7 +262,6 @@
 					OnCoverLoaded.Invoke(FrontCover.sprite);
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectCover, true, ex.Message);
-					Debug.LogWarning(ex);
 				}
 
 				// Palette
@@ -304,7 +298,6 @@
 					ProjectGene = project.ProjectGene;
 				} catch (System.Exception ex) {
 					LogMessageLogic("", true, ex.Message);
-					Debug.LogWarning(ex);
 				}
 
 				// Background
@@ -340,7 +333,6 @@
 					}
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadBeatmap, true, ex.Message);
-					Debug.LogWarning(ex);
 				}
 
 				// Done
@@ -351,9 +343,6 @@
 				Resources.UnloadUnusedAssets();
 				LoadingCor = null;
 
-				// Save
-				//SaveProjectLogic(ProjectPath);
-
 			}
 
 		}
@@ -362,7 +351,7 @@
 		public void SaveProject () {
 			if (string.IsNullOrEmpty(ProjectPath)) {
 				string pName = "Project_" + Util.GetTimeString();
-				ProjectPath = Util.CombinePaths(TheWorkspace, pName + ".stager");
+				ProjectPath = Util.CombinePaths(Workspace, pName + ".stager");
 			}
 			SaveProjectLogic(ProjectPath);
 		}

@@ -197,6 +197,9 @@ TextureImporter:
   - first:
       213: -8057899562297894655
     second: Lanota Icon
+  - first:
+      213: -3307379733461050231
+    second: Highlight
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -363,6 +366,27 @@ TextureImporter:
       bones: []
       spriteID: 0ed7e169fddc257498776d2497705d39
       internalID: -1067799446711890061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Highlight
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 2
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 14, y: 14, z: 14, w: 14}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98c5ab9d7a3d912d0800000000000000
+      internalID: -3307379733461050231
       vertices: []
       indices: 
       edges: []

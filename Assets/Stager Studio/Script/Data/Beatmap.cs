@@ -273,9 +273,29 @@
 
 
 		// Beatmap
-		public static Beatmap NewBeatmap () => new Beatmap() {
-			CreatedTime = System.DateTime.Now.Ticks,
-		};
+		public static Beatmap NewBeatmap () {
+			var map = new Beatmap() {
+				CreatedTime = System.DateTime.Now.Ticks,
+			};
+			map.FixEmpty();
+			return map;
+		}
+
+
+		public void FixEmpty () {
+			if (Stages is null) {
+				Stages = new List<Stage>();
+			}
+			if (Tracks is null) {
+				Tracks = new List<Track>();
+			}
+			if (Notes is null) {
+				Notes = new List<Note>();
+			}
+			if (SpeedNotes is null) {
+				SpeedNotes = new List<SpeedNote>();
+			}
+		}
 
 
 		public void LoadFromBytes (byte[] bytes) {

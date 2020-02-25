@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using Data;
-
+	using Rendering;
 
 
 	public class Track : StageObject {
@@ -18,7 +18,7 @@
 		public static int LayerID_Tray { get; set; } = -1;
 
 		// Ser
-		[SerializeField] StageRenderer m_TrayRenderer = null;
+		[SerializeField] ObjectRenderer m_TrayRenderer = null;
 
 
 		#endregion
@@ -31,8 +31,6 @@
 
 		protected override void Awake () {
 			base.Awake();
-			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-			m_TrayRenderer.Pivot = new Vector3(0.5f, 0f);
 			ColRot = null;
 		}
 

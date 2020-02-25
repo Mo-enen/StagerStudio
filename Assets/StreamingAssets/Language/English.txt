@@ -46,9 +46,6 @@ New Chapter
 Menu.Home.NewProject
 New Project
 
-Menu.Home.PickWorkspace
-Change Workspace
-
 Menu.Home.ShowWorkspace
 Show Workspace
 
@@ -109,9 +106,6 @@ Double click to open the project
 P-Manager.NewChapterName
 New Chapter
 
-P-Manager.UI.CopyWorkspaceConfirm
-Copy all original projects to the new workspace?
-
 P-Manager.UI.DeleteProjectItemConfirm
 Delete project {0}? This will delete the file in disk.
 
@@ -120,9 +114,6 @@ Some folder didn't move because there already exists a folder with same name
 
 P-Manager.UI.OverlapProjectConfirm
 Already has a file named {0}, overwrite or not?
-
-P-Manager.UI.PickWrokspaceTitle
-Choose Workspace
 
 P-Manager.UI.TrashbinEmpty
 Trashbin is empty
@@ -379,29 +370,20 @@ Use dynamic drop speed
 Tip.Grid
 Show grid
 
-Tip.Lib.DefaultNote
-Note brush
-
-Tip.Lib.DefaultStage
-Stage brush
-
-Tip.Lib.DefaultTrack
-Track brush
-
 Tip.Lib.Motion
-Motion mode
+Motion brush
 
 Tip.Lib.Note
-Note mode
+Note brush
 
 Tip.Lib.Speed
-Speed note mode
+Speed brush
 
 Tip.Lib.Stage
-Stage mode
+Stage brush
 
 Tip.Lib.Track
-Track mode
+Track brush
 
 Tip.Music.Pause
 Pause music
@@ -530,7 +512,7 @@ Tip.ViewContainer.TrackLock
 Lock track
 
 UI.AuthorLabel
-{0} | map {1} | music {2}
+{0} | {1} | {2}
 
 UI.BeatmapInfo.BPM
 BPM

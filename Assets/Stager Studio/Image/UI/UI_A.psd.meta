@@ -217,7 +217,7 @@ TextureImporter:
     second: Menu
   - first:
       213: -8080841097035478247
-    second: UI_A_0
+    second: Grid Line
   - first:
       213: -3374395645584494972
     second: UI_A_1
@@ -1275,6 +1275,27 @@ TextureImporter:
       bones: []
       spriteID: 422d21527d0085500800000000000000
       internalID: 385058692180136484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grid Line
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 184
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91b82dc16d51bdf80800000000000000
+      internalID: -8080841097035478247
       vertices: []
       indices: 
       edges: []

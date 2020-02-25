@@ -146,7 +146,6 @@
 
 
 		public delegate void VoidIntHandler (int index);
-		public delegate string StringStringHandler (string key);
 
 
 		#endregion
@@ -170,6 +169,7 @@
 		// Ser
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
 		[SerializeField] private Grabber m_BrushPrefab = null;
+		[SerializeField] private RectTransform m_LibraryView = null;
 		[SerializeField] private RectTransform m_BrushContainer = null;
 		[SerializeField] private Color m_StagePrefabColor = Color.white;
 		[SerializeField] private Color m_TrackPrefabColor = Color.white;
@@ -207,6 +207,20 @@
 			// Final
 			LoadFromFile(PrefabJsonPath);
 			ReloadPrefabsUI();
+		}
+
+
+		private void OnEnable () {
+			SetSelectionLogic(-1);
+			m_LibraryView.gameObject.SetActive(true);
+		}
+
+
+		private void OnDisable () {
+			SetSelectionLogic(-1);
+			if (m_LibraryView != null) {
+				m_LibraryView.gameObject.SetActive(false);
+			}
 		}
 
 
@@ -281,6 +295,45 @@
 		#region --- LGC ---
 
 
+		// Brush Selection
+		private void SetSelectionLogic (int index) {
+			if (!enabled) { index = -1; }
+			UIReady = false;
+			try {
+				SelectingItemIndex = index;
+				int defaultCount = m_DefaultBrushTGs.Length;
+				for (int i = 0; i < defaultCount; i++) {
+					m_DefaultBrushTGs[i].isOn = i == index;
+				}
+				int prefabCount = m_BrushContainer.childCount;
+				for (int i = 0; i < prefabCount; i++) {
+					var tg = m_BrushContainer.GetChild(i).GetComponent<Toggle>();
+					if (tg is null) { continue; }
+					bool isOn = i + defaultCount == index;
+					if (tg.isOn != isOn) {
+						tg.isOn = isOn;
+					}
+				}
+				OnSelectionChanged(index);
+			} catch { }
+			UIReady = true;
+		}
+
+
+		// Prefab
+		private void MovePrefabLogic (int index, bool left) {
+			int newIndex = index + (left ? -1 : 1);
+			if (index < 0 || index >= PrefabDatas.Count ||
+				newIndex < 0 || newIndex >= PrefabDatas.Count
+			) { return; }
+			var temp = PrefabDatas[index];
+			PrefabDatas[index] = PrefabDatas[newIndex];
+			PrefabDatas[newIndex] = temp;
+			ReloadPrefabsUI();
+		}
+
+
+		// File
 		private void ReloadPrefabsUI () {
 			m_BrushContainer.DestroyAllChildImmediately();
 			int defaultCount = m_DefaultBrushTGs.Length;
@@ -327,41 +380,6 @@
 					Prefabs = PrefabDatas.ToArray(),
 				}, false), path);
 			} catch { }
-		}
-
-
-		private void SetSelectionLogic (int index) {
-			UIReady = false;
-			try {
-				SelectingItemIndex = index;
-				int defaultCount = m_DefaultBrushTGs.Length;
-				for (int i = 0; i < defaultCount; i++) {
-					m_DefaultBrushTGs[i].isOn = i == index;
-				}
-				int prefabCount = m_BrushContainer.childCount;
-				for (int i = 0; i < prefabCount; i++) {
-					var tg = m_BrushContainer.GetChild(i).GetComponent<Toggle>();
-					if (tg is null) { continue; }
-					bool isOn = i + defaultCount == index;
-					if (tg.isOn != isOn) {
-						tg.isOn = isOn;
-					}
-				}
-				OnSelectionChanged(index);
-			} catch { }
-			UIReady = true;
-		}
-
-
-		private void MovePrefabLogic (int index, bool left) {
-			int newIndex = index + (left ? -1 : 1);
-			if (index < 0 || index >= PrefabDatas.Count ||
-				newIndex < 0 || newIndex >= PrefabDatas.Count
-			) { return; }
-			var temp = PrefabDatas[index];
-			PrefabDatas[index] = PrefabDatas[newIndex];
-			PrefabDatas[newIndex] = temp;
-			ReloadPrefabsUI();
 		}
 
 

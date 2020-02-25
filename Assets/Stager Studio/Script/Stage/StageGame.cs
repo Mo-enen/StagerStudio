@@ -50,7 +50,7 @@
 		public float BPM { get; set; } = 120f;
 		public float Shift { get; set; } = 0f;
 		public float MapDropSpeed { get; set; } = 1f;
-		public float GameDropSpeed { get; private set; } = 1f;
+		public float GameDropSpeed => Mathf.Clamp(_GameDropSpeed, 0.1f, 10f);
 		public bool UseDynamicSpeed { get; private set; } = true;
 		public bool UseAbreast { get; private set; } = false;
 		public bool AllStageAbreast { get; private set; } = false;
@@ -82,6 +82,7 @@
 		private Transform[] Containers = null;
 		private float _Ratio = 1.5f;
 		private int _AbreastIndex = 0;
+		private float _GameDropSpeed = 1f;
 
 		// Saving
 		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
@@ -117,8 +118,9 @@
 			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
 			Luminous.LayerID_Lum = SortingLayer.NameToID("Luminous");
 			// Misc
-			Containers = new Transform[m_Level.childCount];
-			for (int i = 0; i < Containers.Length; i++) {
+			const int CONTAINER_COUNT = 6;
+			Containers = new Transform[CONTAINER_COUNT];
+			for (int i = 0; i < CONTAINER_COUNT; i++) {
 				Containers[i] = m_Level.GetChild(i);
 			}
 		}
@@ -130,13 +132,13 @@
 
 
 		private void Update () {
-			BeatmapUpdate();
-			CacheUpdate();
-			MouseUpdate();
+			Update_Beatmap();
+			Update_Cache();
+			Update_Mouse();
 		}
 
 
-		private void BeatmapUpdate () {
+		private void Update_Beatmap () {
 			if (Music.IsPlaying) { return; }
 			var map = Project.Beatmap;
 			if (!(map is null)) {
@@ -159,7 +161,7 @@
 		}
 
 
-		private void CacheUpdate () {
+		private void Update_Cache () {
 			if (Music.IsPlaying) { return; }
 			// Speed Curve
 			if (Project.Beatmap is null) {
@@ -199,18 +201,17 @@
 		}
 
 
-		private void MouseUpdate () {
+		private void Update_Mouse () {
 			if (Music.IsPlaying) { return; }
 			// Wheel
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
 				if (CheckAntiMouse()) {
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom
-
-
+						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
 					} else {
 						// Seek
-						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f);
+						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
 						if (Input.GetKey(KeyCode.LeftAlt)) {
 							delta *= 0.1f;
 						} else if (Input.GetKey(KeyCode.LeftShift)) {
@@ -259,6 +260,10 @@
 
 
 		public int GetItemCount (int index) => Containers[index].childCount;
+
+
+		// Speed
+		public void SetGameDropSpeed (float speed) => _GameDropSpeed = Mathf.Clamp(speed, 0.1f, 10f);
 
 
 		// Speed Curve
@@ -321,6 +326,9 @@
 			ShowGrid.Value = show;
 			OnShowGridChanged(ShowGrid);
 		}
+
+
+		public void SeekMusic_BPM (float muti) => Music.Seek(Music.Time + 60f / BPM * muti);
 
 
 		#endregion

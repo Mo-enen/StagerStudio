@@ -14,16 +14,7 @@
 		#region --- SUB ---
 
 
-		public enum EditMode {
-			Stage = 0,
-			Track = 1,
-			Note = 2,
-			Speed = 3,
-			Motion = 4,
-		}
-
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
-		public delegate void VoidEditModeHandler (EditMode mode);
 		public delegate void VoidHandler ();
 		public delegate Beatmap BeatmapHandler ();
 		public delegate int IntHandler ();
@@ -39,20 +30,16 @@
 
 		// Handle
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
-		public static VoidEditModeHandler OnEditModeChanged { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static IntHandler GetBrushIndex { get; set; } = null;
-
-		// Api
-		public EditMode TheEditMode { get; private set; } = EditMode.Stage;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private LayerMask[] m_EditLayerMasks = null;
-		[SerializeField] private Toggle[] m_EditModeTGs = null;
+		[SerializeField] private LayerMask m_AllObjectMask = default;
+		[SerializeField] private string[] m_ItemLayerNames = null;
 		[SerializeField] private Toggle[] m_EyeTGs = null;
 		[SerializeField] private Toggle[] m_LockTGs = null;
 		[SerializeField] private Transform[] m_Containers = null;
@@ -65,13 +52,13 @@
 
 		// Data
 		private readonly bool[] ItemLock = { false, false, false, false, false, false, };
+		private int[] ItemLayers = null;
 		private bool FocusMode = false;
-		private bool UIReady = true;
 		private Coroutine FocusAniCor = null;
 		private Camera _Camera = null;
 
 		// Mouse
-		private readonly List<int> SelectingObjectsIndex = new List<int>();
+		private readonly List<(int, int)> SelectingObjectsIndex = new List<(int, int)>();
 		private readonly RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
 		private Ray? MouseRayDown = null;
@@ -86,15 +73,10 @@
 
 
 		private void Awake () {
-			// Init Edit Mode TGs
-			for (int i = 0; i < m_EditModeTGs.Length; i++) {
-				int index = i;
-				m_EditModeTGs[index].onValueChanged.AddListener((isOn) => {
-					if (UIReady && isOn) {
-						ClearSelection();
-						SetEditMode(index);
-					}
-				});
+			// Init Layer
+			ItemLayers = new int[m_ItemLayerNames.Length];
+			for (int i = 0; i < m_ItemLayerNames.Length; i++) {
+				ItemLayers[i] = LayerMask.NameToLayer(m_ItemLayerNames[i]);
 			}
 			// Eye TGs
 			for (int i = 0; i < m_EyeTGs.Length; i++) {
@@ -119,7 +101,6 @@
 			var map = GetBeatmap();
 			if (map is null || !AntiTargetCheck()) {
 				MouseRayDown = null;
-				ClickStartInsideSelection = false;
 				return;
 			}
 			// Mouse
@@ -130,12 +111,8 @@
 				} else {
 					OnMouseLeftDrag();
 				}
-			} else {
-				if (MouseRayDown.HasValue) {
-					OnMouseLeftUp();
-					MouseRayDown = null;
-				}
-				ClickStartInsideSelection = false;
+			} else if (MouseRayDown.HasValue) {
+				MouseRayDown = null;
 			}
 		}
 
@@ -148,22 +125,29 @@
 				var map = GetBeatmap();
 				bool ctrl = Input.GetKey(KeyCode.LeftControl);
 				bool alt = Input.GetKey(KeyCode.LeftAlt);
-				int count = Physics.RaycastNonAlloc(MouseRayDown.Value, CastHits, float.MaxValue, m_EditLayerMasks[(int)TheEditMode]);
+				int count = Physics.RaycastNonAlloc(MouseRayDown.Value, CastHits, float.MaxValue, m_AllObjectMask);
+				int overlapLayer = -1;
 				int overlapIndex = -1;
-				ClickStartInsideSelection = false;
+				int maxSelectingLayer = -1;
+				foreach (var (layerIndex, _) in SelectingObjectsIndex) {
+					maxSelectingLayer = Mathf.Max(maxSelectingLayer, layerIndex);
+				}
 				for (int i = 0; i < count; i++) {
-					int itemIndex = GetObjectIndexFromCollider(CastHits[i]);
-					overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-					if (SelectingObjectsIndex.Count > 0 && !alt && CheckSelecting(itemIndex, map)) {
-						ClickStartInsideSelection = true;
-						break;
+					var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
+					if (layerIndex >= overlapLayer) {
+						if (layerIndex != overlapLayer) {
+							overlapIndex = -1;
+						}
+						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
+						overlapLayer = layerIndex;
 					}
 				}
+				ClickStartInsideSelection = SelectingObjectsIndex.Count > 0 && !alt && overlapLayer < maxSelectingLayer && CheckSelecting(overlapLayer, overlapIndex, map);
 				// Select
 				if (!ClickStartInsideSelection) {
 					if (!ctrl && !alt) { ClearSelection(); }
-					if (overlapIndex >= 0) {
-						AddSelection(overlapIndex, !alt, map);
+					if (overlapLayer >= 0 && overlapIndex >= 0) {
+						AddSelection(overlapLayer, overlapIndex, !alt, map);
 						OnSelectionChanged();
 					}
 				}
@@ -195,15 +179,6 @@
 		}
 
 
-		private void OnMouseLeftUp () {
-
-
-
-
-
-		}
-
-
 		#endregion
 
 
@@ -212,75 +187,67 @@
 		#region --- API ---
 
 
-		// Edit Mode
-		public void UI_SetEditMode (int index) {
-			if (!UIReady) { return; }
-			ClearSelection();
-			SetEditMode(index);
-		}
-
-
 		// Selection
-		public bool CheckSelecting (int index, Beatmap map) {
-			switch (TheEditMode) {
-				case EditMode.Stage:
-					if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+		public bool CheckSelecting (int layer, int index, Beatmap map) {
+			switch (layer) {
+				case int l when l == ItemLayers[0]:
+					if (index >= 0 && index < map.Stages.Count) {
 						return map.Stages[index].Selecting;
 					}
 					break;
-				case EditMode.Track:
-					if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+				case int l when l == ItemLayers[1]:
+					if (index >= 0 && index < map.Tracks.Count) {
 						return map.Tracks[index].Selecting;
 					}
 					break;
-				case EditMode.Note:
-					if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+				case int l when l == ItemLayers[2]:
+					if (index >= 0 && index < map.Notes.Count) {
 						return map.Notes[index].Selecting;
 					}
 					break;
-				case EditMode.Speed:
+				case int l when l == ItemLayers[3]:
 					break;
-				case EditMode.Motion:
+				case int l when l == ItemLayers[4]:
 					break;
 			}
 			return false;
 		}
 
 
-		public void AddSelection (int index, bool select, Beatmap map) {
+		public void AddSelection (int layer, int index, bool select, Beatmap map) {
 			// Selecting Index List
 			if (select) {
 				// Add
-				SelectingObjectsIndex.Add(index);
+				SelectingObjectsIndex.Add((layer, index));
 			} else {
 				// Remove
 				for (int i = 0; i < SelectingObjectsIndex.Count; i++) {
-					if (SelectingObjectsIndex[i] == index) {
+					if (SelectingObjectsIndex[i] == (layer, index)) {
 						SelectingObjectsIndex.RemoveAt(i);
 						break;
 					}
 				}
 			}
 			// Set Cache
-			switch (TheEditMode) {
-				case EditMode.Stage:
-					if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+			switch (layer) {
+				case int l when l == ItemLayers[0]:
+					if (index >= 0 && index < map.Stages.Count) {
 						map.Stages[index].Selecting = select;
 					}
 					break;
-				case EditMode.Track:
-					if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+				case int l when l == ItemLayers[1]:
+					if (index >= 0 && index < map.Tracks.Count) {
 						map.Tracks[index].Selecting = select;
 					}
 					break;
-				case EditMode.Note:
-					if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+				case int l when l == ItemLayers[2]:
+					if (index >= 0 && index < map.Notes.Count) {
 						map.Notes[index].Selecting = select;
 					}
 					break;
-				case EditMode.Speed:
+				case int l when l == ItemLayers[3]:
 					break;
-				case EditMode.Motion:
+				case int l when l == ItemLayers[4]:
 					break;
 			}
 		}
@@ -290,26 +257,26 @@
 			var map = GetBeatmap();
 			if (!(map is null) && SelectingObjectsIndex.Count > 0) {
 				// Clear Cache
-				foreach (var index in SelectingObjectsIndex) {
-					switch (TheEditMode) {
-						case EditMode.Stage:
+				foreach (var (layer, index) in SelectingObjectsIndex) {
+					switch (layer) {
+						case int l when l == ItemLayers[0]:
 							if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
 								map.Stages[index].Selecting = false;
 							}
 							break;
-						case EditMode.Track:
+						case int l when l == ItemLayers[1]:
 							if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
 								map.Tracks[index].Selecting = false;
 							}
 							break;
-						case EditMode.Note:
+						case int l when l == ItemLayers[2]:
 							if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
 								map.Notes[index].Selecting = false;
 							}
 							break;
-						case EditMode.Speed:
+						case int l when l == ItemLayers[3]:
 							break;
-						case EditMode.Motion:
+						case int l when l == ItemLayers[4]:
 							break;
 					}
 				}
@@ -395,26 +362,11 @@
 		}
 
 
-		private void SetEditMode (int index) {
-			var mode = (EditMode)index;
-			if (mode != TheEditMode) {
-				TheEditMode = mode;
-				OnEditModeChanged(mode);
-			}
-			UIReady = false;
-			try {
-				for (int j = 0; j < m_EditModeTGs.Length; j++) {
-					m_EditModeTGs[j].isOn = (int)TheEditMode == j;
-				}
-			} catch { }
-			UIReady = true;
-		}
-
-
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private int GetObjectIndexFromCollider (RaycastHit hit) => hit.transform.parent.GetSiblingIndex();
+		private (int, int) GetObjectIndexFromCollider (RaycastHit hit) =>
+			(hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
 
 
 		#endregion

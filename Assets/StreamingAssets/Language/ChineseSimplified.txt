@@ -46,9 +46,6 @@ Menu.Home.NewChapter
 Menu.Home.NewProject
 新建工程
 
-Menu.Home.PickWorkspace
-修改工作空间
-
 Menu.Home.ShowWorkspace
 查看工作空间
 
@@ -109,9 +106,6 @@ P-Manager.Hint.NeedDoubleClick
 P-Manager.NewChapterName
 新章节
 
-P-Manager.UI.CopyWorkspaceConfirm
-把原有的工程拷贝到新的工作空间？
-
 P-Manager.UI.DeleteProjectItemConfirm
 是否删除"{0}"？这将删除硬盘中的文件。
 
@@ -120,9 +114,6 @@ P-Manager.UI.FolderAlreadyExists
 
 P-Manager.UI.OverlapProjectConfirm
 已包含一个名为"{0}"的文件，是否覆盖文件？
-
-P-Manager.UI.PickWrokspaceTitle
-选择工作空间
 
 P-Manager.UI.TrashbinEmpty
 回收站是空的
@@ -379,29 +370,20 @@ Tip.DynamicDropSpeed
 Tip.Grid
 显示网格
 
-Tip.Lib.DefaultNote
-音符笔刷
-
-Tip.Lib.DefaultStage
-舞台笔刷
-
-Tip.Lib.DefaultTrack
-轨道笔刷
-
 Tip.Lib.Motion
-运动模式
+运动笔刷
 
 Tip.Lib.Note
-音符模式
+音符笔刷
 
 Tip.Lib.Speed
-速度模式
+速度笔刷
 
 Tip.Lib.Stage
-舞台模式
+舞台笔刷
 
 Tip.Lib.Track
-轨道模式
+轨道笔刷
 
 Tip.Music.Pause
 暂停音乐
@@ -530,7 +512,7 @@ Tip.ViewContainer.TrackLock
 锁定轨道
 
 UI.AuthorLabel
-{0} | 谱面 {1} | 音乐 {2}
+{0} | {1} | {2}
 
 UI.BeatmapInfo.BPM
 节拍/分钟

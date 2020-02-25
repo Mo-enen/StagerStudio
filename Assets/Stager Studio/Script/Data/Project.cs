@@ -354,6 +354,7 @@
 								if (BeatmapMap.ContainsKey(key)) { break; }
 								var map = JsonUtility.FromJson<Beatmap>(chunk.GetString("Data"));
 								if (map) {
+									map.FixEmpty();
 									BeatmapMap.Add(key, map);
 								}
 								break;

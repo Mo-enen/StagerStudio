@@ -13,11 +13,11 @@ Available Actions:
 	DynamicDrop
 	AbreastView
 	OpenCloud
-	EditModeStage
-	EditModeTrack
-	EditModeNote
-	EditModeSpeed
-	EditModeMotion
+	BrushStage
+	BrushTrack
+	BrushNote
+	BrushSpeed
+	BrushMotion
 	UndoStage
 	RedoStage
 	EyeStage
@@ -34,9 +34,8 @@ Available Actions:
 	LockMotion
 	LockLuminous
 	SwitchFocus
-	StageBrush
-	TrackBrush
-	NoteBrush
+	SeekBPM+1
+	SeekBPM-1
 
 Available Keys:
 

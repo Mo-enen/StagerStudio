@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using Data;
+	using Rendering;
 
 
 
@@ -19,7 +20,7 @@
 		public static int StageCount { get; set; } = 0;
 
 		// Ser
-		[SerializeField] private StageRenderer m_JudgelineRenderer = null;
+		[SerializeField] private ObjectRenderer m_JudgelineRenderer = null;
 
 
 		#endregion
@@ -32,10 +33,6 @@
 
 		protected override void Awake () {
 			base.Awake();
-			MainRenderer.Pivot = new Vector3(0.5f, 0f);
-			MainRenderer.Tint = Color.white;
-			m_JudgelineRenderer.Tint = Color.white;
-			m_JudgelineRenderer.Pivot = new Vector2(0.5f, 0f);
 			ColRot = null;
 		}
 
@@ -80,8 +77,9 @@
 			var stagePos = GetStagePosition(stageData, stageIndex);
 
 			// Movement
+			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData)) * Quaternion.Euler(GetStageAngle(stageData), 0f, 0f);
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
-			transform.localRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
+			transform.localRotation = stageRot;
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,

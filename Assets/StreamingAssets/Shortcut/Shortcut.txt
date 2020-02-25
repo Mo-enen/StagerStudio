@@ -7,11 +7,11 @@ OpenSetting,	S,	True,	True,	False#
 DynamicDrop,	M,	False,	False,	False#
 AbreastView,	Tab,	False,	False,	False#
 OpenCloud,	H,	True,	True,	False#
-EditModeStage,	Alpha1,	False,	False,	False#
-EditModeTrack,	Alpha2,	False,	False,	False#
-EditModeNote,	Alpha3,	False,	False,	False#
-EditModeSpeed,	Alpha4,	False,	False,	False#
-EditModeMotion,	Alpha5,	False,	False,	False#
+BrushStage,	Alpha1,	False,	False,	False#
+BrushTrack,	Alpha2,	False,	False,	False#
+BrushNote,	Alpha3,	False,	False,	False#
+BrushSpeed,	Alpha4,	False,	False,	False#
+BrushMotion,	Alpha5,	False,	False,	False#
 UndoStage,	Z,	True,	False,	False#
 RedoStage,	Y,	True,	False,	False#
 EyeStage,	Alpha1,	True,	False,	False#
@@ -28,6 +28,5 @@ LockSpeed,	Alpha4,	False,	False,	True#
 LockMotion,	Alpha5,	False,	False,	True#
 LockLuminous,	Alpha6,	False,	False,	True#
 SwitchFocus,	F,	False,	False,	False#
-StageBrush,	Q,	False,	False,	False#
-TrackBrush,	W,	False,	False,	False#
-NoteBrush,	E,	False,	False,	False#
+SeekBPM+1,	RightArrow,	False,	False,	False#
+SeekBPM-1,	LeftArrow,	False,	False,	False#
