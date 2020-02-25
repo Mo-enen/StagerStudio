@@ -4,6 +4,8 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Data;
+	using Rendering;
+
 
 
 	public class StageEditor : MonoBehaviour {
@@ -17,9 +19,8 @@
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
 		public delegate Beatmap BeatmapHandler ();
-		public delegate int IntHandler ();
-
-
+		public delegate (int type, int index) IntIntHandler ();
+		public delegate bool BoolHandler ();
 
 		#endregion
 
@@ -30,15 +31,16 @@
 
 		// Handle
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
-		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
-		public static IntHandler GetBrushIndex { get; set; } = null;
+		public static IntIntHandler GetBrushTypeIndex { get; set; } = null;
+		public static BoolHandler GetEditorActive { get; set; } = null;
+		public static VoidHandler OnSelectionChanged { get; set; } = null;
+		public static VoidHandler OnLockEyeChanged { get; set; } = null;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private LayerMask m_AllObjectMask = default;
 		[SerializeField] private string[] m_ItemLayerNames = null;
 		[SerializeField] private Toggle[] m_EyeTGs = null;
 		[SerializeField] private Toggle[] m_LockTGs = null;
@@ -46,16 +48,20 @@
 		[SerializeField] private Transform[] m_AntiTargets = null;
 		[SerializeField] private RectTransform m_FocusCancel = null;
 		[SerializeField] private Animator m_FocusAni = null;
+		[SerializeField] private GridRenderer m_Grid = null;
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
 		[SerializeField] private float m_Duration = 0.5f;
 
 		// Data
-		private readonly bool[] ItemLock = { false, false, false, false, false, false, };
+		private readonly bool[] ItemLock = { false, false, false, false, false, };
 		private int[] ItemLayers = null;
 		private bool FocusMode = false;
+		private bool UIReady = true;
 		private Coroutine FocusAniCor = null;
 		private Camera _Camera = null;
+		private LayerMask UnlockedMask = default;
+		private LayerMask[] ItemMasks = default;
 
 		// Mouse
 		private readonly List<(int, int)> SelectingObjectsIndex = new List<(int, int)>();
@@ -73,34 +79,56 @@
 
 
 		private void Awake () {
+
 			// Init Layer
 			ItemLayers = new int[m_ItemLayerNames.Length];
 			for (int i = 0; i < m_ItemLayerNames.Length; i++) {
 				ItemLayers[i] = LayerMask.NameToLayer(m_ItemLayerNames[i]);
 			}
+
+			// Unlock Mask
+			UnlockedMask = LayerMask.GetMask(
+				m_ItemLayerNames[0],
+				m_ItemLayerNames[1],
+				m_ItemLayerNames[2],
+				m_ItemLayerNames[3],
+				m_ItemLayerNames[4]
+			);
+
+			// ItemMasks
+			ItemMasks = new LayerMask[m_ItemLayerNames.Length];
+			for (int i = 0; i < m_ItemLayerNames.Length; i++) {
+				ItemMasks[i] = LayerMask.GetMask(m_ItemLayerNames[i]);
+			}
+
 			// Eye TGs
 			for (int i = 0; i < m_EyeTGs.Length; i++) {
 				int index = i;
 				var tg = m_EyeTGs[index];
 				tg.isOn = false;
-				tg.onValueChanged.AddListener((isOn) => SetContainerActive(index, !isOn));
+				tg.onValueChanged.AddListener((isOn) => {
+					if (!UIReady) { return; }
+					SetEye(index, !isOn);
+				});
 			}
+
 			// Lock TGs
 			for (int i = 0; i < m_LockTGs.Length; i++) {
 				int index = i;
 				var tg = m_LockTGs[index];
 				tg.isOn = ItemLock[index];
 				tg.onValueChanged.AddListener((locked) => {
-					ItemLock[index] = locked;
+					if (!UIReady) { return; }
+					SetLock(index, locked);
 				});
 			}
 		}
 
 
 		private void LateUpdate () {
-			var map = GetBeatmap();
-			if (map is null || !AntiTargetCheck()) {
+			if (!AntiTargetAllow()) {
 				MouseRayDown = null;
+				m_Grid.SetGridTransform(false);
 				return;
 			}
 			// Mouse
@@ -111,37 +139,25 @@
 				} else {
 					OnMouseLeftDrag();
 				}
-			} else if (MouseRayDown.HasValue) {
-				MouseRayDown = null;
+			} else {
+				if (MouseRayDown.HasValue) {
+					MouseRayDown = null;
+				}
+				OnMouseHover(GetBeatmap());
 			}
 		}
 
 
 		// Mouse Left
 		private void OnMouseLeftDown () {
-			int brushIndex = GetBrushIndex();
+			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0) {
 				// Select or Move
 				var map = GetBeatmap();
 				bool ctrl = Input.GetKey(KeyCode.LeftControl);
 				bool alt = Input.GetKey(KeyCode.LeftAlt);
-				int count = Physics.RaycastNonAlloc(MouseRayDown.Value, CastHits, float.MaxValue, m_AllObjectMask);
-				int overlapLayer = -1;
-				int overlapIndex = -1;
-				int maxSelectingLayer = -1;
-				foreach (var (layerIndex, _) in SelectingObjectsIndex) {
-					maxSelectingLayer = Mathf.Max(maxSelectingLayer, layerIndex);
-				}
-				for (int i = 0; i < count; i++) {
-					var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
-					if (layerIndex >= overlapLayer) {
-						if (layerIndex != overlapLayer) {
-							overlapIndex = -1;
-						}
-						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-						overlapLayer = layerIndex;
-					}
-				}
+				int maxSelectingLayer = GetMaxSelectingLayer();
+				var (overlapLayer, overlapIndex, _) = GetCastLayerIndex(UnlockedMask);
 				ClickStartInsideSelection = SelectingObjectsIndex.Count > 0 && !alt && overlapLayer < maxSelectingLayer && CheckSelecting(overlapLayer, overlapIndex, map);
 				// Select
 				if (!ClickStartInsideSelection) {
@@ -167,7 +183,7 @@
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var mouseRay = GetMouseRay();
 			var plane = new Plane(Vector3.back, zoneMin);
-			int brushIndex = GetBrushIndex();
+			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0 && ClickStartInsideSelection) {
 				// Moving Selection
 
@@ -175,6 +191,42 @@
 
 
 
+			}
+		}
+
+
+		private void OnMouseHover (Beatmap map) {
+			var (brushType, brushIndex) = GetBrushTypeIndex();
+			if (brushIndex >= 0) {
+				// Paint
+				bool gridEnable = false;
+				Vector3 pos = default;
+				Quaternion rot = default;
+				Vector3 scl = default;
+				float speed = 1f;
+				var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
+				if (brushType > 0) {
+					var (layerIndex, itemIndex, target) = GetCastLayerIndex(ItemMasks[brushType - 1]);
+					if (!(target is null)) {
+						gridEnable = true;
+						pos = target.position;
+						rot = target.rotation;
+						scl = target.GetChild(0).localScale;
+						speed = layerIndex == ItemLayers[2] ? GetNoteSpeedMuti(map, itemIndex) : 1f;
+					}
+					m_Grid.Mode = layerIndex == ItemLayers[0] ? 1 : 2;
+				} else {
+					gridEnable = true;
+					pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
+					rot = Quaternion.identity;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					m_Grid.Mode = 0;
+				}
+				m_Grid.ObjectSpeedMuti = speed;
+				m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
+			} else if (m_Grid.GridEnabled) {
+				// Select
+				m_Grid.SetGridTransform(false);
 			}
 		}
 
@@ -289,26 +341,20 @@
 
 
 		// Container
-		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
+		public void UI_SwitchContainerActive (int index) => SetEye(index, !GetContainerActive(index));
 
 
 		public bool GetContainerActive (int index) => m_Containers[index].gameObject.activeSelf;
 
 
-		public void SetContainerActive (int index, bool active) {
-			m_Containers[index].gameObject.SetActive(active);
-			m_EyeTGs[index].isOn = !active;
-		}
+		public void SetContainerActive (int index, bool active) => SetEye(index, active);
 
 
 		// Item Lock
 		public bool GetItemLock (int item) => item >= 0 ? ItemLock[item] : false;
 
 
-		public void UI_SwitchLock (int index) {
-			ItemLock[index] = !ItemLock[index];
-			m_LockTGs[index].isOn = ItemLock[index];
-		}
+		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
 
 
 		// Focus
@@ -352,7 +398,8 @@
 		#region --- LGC ---
 
 
-		private bool AntiTargetCheck () {
+		private bool AntiTargetAllow () {
+			if (!GetEditorActive()) { return false; }
 			foreach (var t in m_AntiTargets) {
 				if (t.gameObject.activeSelf) {
 					return false;
@@ -365,8 +412,86 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private (int, int) GetObjectIndexFromCollider (RaycastHit hit) =>
-			(hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
+		private (int, int) GetObjectIndexFromCollider (RaycastHit hit) => (hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
+
+
+		private void SetLock (int index, bool locked) {
+			// Set Logic
+			ItemLock[index] = locked;
+			// Refresh Unlock Mask
+			var list = new List<string>();
+			for (int i = 0; i < ItemLock.Length; i++) {
+				if (!ItemLock[i]) {
+					list.Add(m_ItemLayerNames[i]);
+				}
+			}
+			UnlockedMask = LayerMask.GetMask(list.ToArray());
+			// Refresh UI
+			UIReady = false;
+			try {
+				m_LockTGs[index].isOn = locked;
+			} catch { }
+			UIReady = true;
+			OnLockEyeChanged();
+		}
+
+
+		private void SetEye (int index, bool see) {
+			m_Containers[index].gameObject.SetActive(see);
+			// UI
+			UIReady = false;
+			try {
+				m_EyeTGs[index].isOn = !see;
+			} catch { }
+			UIReady = true;
+			// MSG
+			OnLockEyeChanged();
+		}
+
+
+		private (int, int, Transform) GetCastLayerIndex (LayerMask mask) {
+			int count = Physics.RaycastNonAlloc(GetMouseRay(), CastHits, float.MaxValue, mask);
+			int overlapLayer = -1;
+			int overlapIndex = -1;
+			Transform tf = null;
+			for (int i = 0; i < count; i++) {
+				var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
+				if (layerIndex >= overlapLayer) {
+					if (layerIndex != overlapLayer) {
+						overlapIndex = -1;
+					}
+					if (itemIndex >= overlapIndex) {
+						tf = CastHits[i].transform.parent;
+					}
+					overlapIndex = Mathf.Max(itemIndex, overlapIndex);
+					overlapLayer = layerIndex;
+				}
+			}
+			return (overlapLayer, overlapIndex, tf);
+		}
+
+
+		private int GetMaxSelectingLayer () {
+			int maxSelectingLayer = -1;
+			foreach (var (layerIndex, _) in SelectingObjectsIndex) {
+				maxSelectingLayer = Mathf.Max(maxSelectingLayer, layerIndex);
+			}
+			return maxSelectingLayer;
+		}
+
+
+		private float GetNoteSpeedMuti (Beatmap map, int index) {
+			if (index >= 0 && index < map.Notes.Count) {
+				int tIndex = map.Notes[index].TrackIndex;
+				if (tIndex >= 0 && tIndex < map.Tracks.Count) {
+					int sIndex = map.Tracks[tIndex].StageIndex;
+					if (sIndex >= 0 && sIndex < map.Stages.Count) {
+						return map.Stages[sIndex].Speed;
+					}
+				}
+			}
+			return 1f;
+		}
 
 
 		#endregion

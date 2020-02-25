@@ -5,7 +5,9 @@
 	using UI;
 	using UnityEngine.UI;
 	using Stage;
-	using global::StagerStudio.Object;
+	using Object;
+	using Rendering;
+
 
 	public partial class StagerStudio : MonoBehaviour {
 
@@ -66,6 +68,7 @@
 		[SerializeField] private Toggle m_UseAbreastView = null;
 		[SerializeField] private Toggle m_GridTG = null;
 		[SerializeField] private Text m_AuthorLabel = null;
+		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[Header("UI")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
@@ -259,6 +262,7 @@
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
 				Resources.UnloadUnusedAssets();
+				RefreshGridRenderer();
 			};
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();
@@ -315,13 +319,16 @@
 				m_Wave.gameObject.SetActive(useAbreast && !Game.UseDynamicSpeed);
 				m_AbreastSwitcherUI.RefreshUI();
 			};
-			StageGame.OnUserDynamicSpeedChanged = (use) => {
-				m_UseDynamicSpeed.isOn = use;
-				m_Wave.gameObject.SetActive(Game.AbreastIndex >= 0 && !use);
+			StageGame.OnSpeedChanged = () => {
+				m_UseDynamicSpeed.isOn = Game.UseDynamicSpeed;
+				m_Wave.gameObject.SetActive(Game.AbreastIndex >= 0 && !Game.UseDynamicSpeed);
 				Note.SetCacheDirty();
+				RefreshGridRenderer();
 			};
-			StageGame.OnShowGridChanged = (show) => {
+			StageGame.OnGridChanged = (show, x, y) => {
 				m_GridTG.isOn = show;
+				m_GridRenderer.SetShow(show);
+				RefreshGridRenderer();
 			};
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
@@ -335,10 +342,12 @@
 				m_Progress.RefreshControlUI();
 				SetNavigationInteractable(!playing);
 				StageObject.MusicPlaying = playing;
+
 			};
 			StageMusic.OnMusicTimeChanged = (time, duration) => {
 				m_Progress.SetProgress(time, Game.BPM);
 				m_Wave.Time01 = time / duration;
+				m_GridRenderer.MusicTime = time;
 				StageObject.MusicTime = time;
 				StageObject.MusicDuration = duration;
 			};
@@ -353,8 +362,12 @@
 			StageEditor.OnSelectionChanged = () => {
 
 			};
-			StageEditor.GetBrushIndex = () => Library.SelectingItemIndex;
+			StageEditor.OnLockEyeChanged = () => {
+				Editor.ClearSelection();
+			};
+			StageEditor.GetBrushTypeIndex = () => Library.SelectingItemTypeIndex;
 			StageEditor.GetBeatmap = () => Project.Beatmap;
+			StageEditor.GetEditorActive = () => Project.Beatmap && !Music.IsPlaying;
 		}
 
 
@@ -421,6 +434,7 @@
 					Game.MapDropSpeed = Project.Beatmap.DropSpeed;
 					Game.Ratio = Project.Beatmap.Ratio;
 				}
+				RefreshGridRenderer();
 			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
 				RefreshAuthorLabel();
@@ -442,6 +456,8 @@
 				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
 			);
 			ProgressUI.GetSnapTime = (time, step) => Game.SnapTime(time, step);
+			GridRenderer.GetAreaBetween = Game.AreaBetween;
+			GridRenderer.GetSnapedTime = Game.SnapTime;
 			SetNavigationInteractable(true);
 		}
 
@@ -516,6 +532,14 @@
 			try {
 				m_AuthorLabel.text = string.Format(Language.Get("UI.AuthorLabel"), Project.ProjectName, Project.BeatmapAuthor, Project.MusicAuthor);
 			} catch { }
+		}
+
+
+		private void RefreshGridRenderer () {
+			m_GridRenderer.CountX = Game.GridX;
+			m_GridRenderer.TimeGap = 60f / Game.BPM / Game.GridY;
+			m_GridRenderer.TimeOffset = Game.Shift;
+			m_GridRenderer.SpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
 		}
 
 

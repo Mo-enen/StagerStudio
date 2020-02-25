@@ -37,6 +37,30 @@ Menu.ChapterItem.Rename
 Menu.ChapterItem.ShowInExplorer
 查看
 
+Menu.Grid.x0
+空间网格×1
+
+Menu.Grid.x1
+空间网格×3
+
+Menu.Grid.x2
+空间网格×7
+
+Menu.Grid.x3
+空间网格×15
+
+Menu.Grid.y0
+时间网格×1
+
+Menu.Grid.y1
+时间网格×3
+
+Menu.Grid.y2
+时间网格×5
+
+Menu.Grid.y3
+时间网格×7
+
 Menu.Home.ImportProject
 导入工程
 
@@ -368,7 +392,7 @@ Tip.DynamicDropSpeed
 使用动态下落速度
 
 Tip.Grid
-显示网格
+显示网格（右键点击可打开菜单）
 
 Tip.Lib.Motion
 运动笔刷

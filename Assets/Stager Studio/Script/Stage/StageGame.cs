@@ -18,7 +18,7 @@
 
 		public delegate void VoidHandler ();
 		public delegate void VoidFloatHandler (float ratio);
-		public delegate void VoidBoolHandler (bool value);
+		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
 		public delegate void VoidIntBoolBoolHandler (int a, bool b, bool c);
 		public delegate string StringStringHandler (string str);
 
@@ -34,9 +34,9 @@
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
-		public static VoidBoolHandler OnUserDynamicSpeedChanged { get; set; } = null;
+		public static VoidHandler OnSpeedChanged { get; set; } = null;
 		public static VoidIntBoolBoolHandler OnAbreastChanged { get; set; } = null;
-		public static VoidBoolHandler OnShowGridChanged { get; set; } = null;
+		public static VoidBoolIntIntHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 
 		// API
@@ -55,7 +55,8 @@
 		public bool UseAbreast { get; private set; } = false;
 		public bool AllStageAbreast { get; private set; } = false;
 		public int AbreastIndex => Mathf.Max(_AbreastIndex, 0);
-		public bool UseGrid => ShowGrid;
+		public int GridX => GridCountX;
+		public int GridY => GridCountY;
 		public bool PositiveScroll { get; set; } = true;
 
 		// Short
@@ -86,6 +87,8 @@
 
 		// Saving
 		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
+		private SavingInt GridCountX = new SavingInt("StageGame.GridCountX", 3);
+		private SavingInt GridCountY = new SavingInt("StageGame.GridCountY", 1);
 
 
 		#endregion
@@ -128,6 +131,8 @@
 
 		private void Start () {
 			SetShowGrid(ShowGrid);
+			SetGridCountX(GridCountX);
+			SetGridCountY(GridCountY);
 		}
 
 
@@ -203,6 +208,10 @@
 
 		private void Update_Mouse () {
 			if (Music.IsPlaying) { return; }
+			// Reset Zoom
+			if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) && CheckAntiMouse()) {
+				SetGameDropSpeed(1f);
+			}
 			// Wheel
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
 				if (CheckAntiMouse()) {
@@ -263,7 +272,10 @@
 
 
 		// Speed
-		public void SetGameDropSpeed (float speed) => _GameDropSpeed = Mathf.Clamp(speed, 0.1f, 10f);
+		public void SetGameDropSpeed (float speed) {
+			_GameDropSpeed = Mathf.Clamp(speed, 0.1f, 10f);
+			OnSpeedChanged();
+		}
 
 
 		// Speed Curve
@@ -273,15 +285,17 @@
 		public float FillDropTime (float time, float fill, float muti) => UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
 
 
-		public float AreaBetweenDrop (float time, float muti) => UseDynamicSpeed ? SpeedCurve.GetAreaBetween(0, time, muti) : time * muti;
+		public float AreaBetweenDrop (float time, float muti) => AreaBetween(0f, time, muti);
+
+
+		public float AreaBetween (float timeA, float timeB, float muti) => UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : timeB * muti;
 
 
 		// Grid
-		public float SnapTime (float time, int step) {
-			float gap = 60f / BPM / step;
-			float offset = Mathf.Repeat(Shift, 60f / BPM);
-			return Mathf.Round((time - offset) / gap) * gap + offset;
-		}
+		public float SnapTime (float time, int step) => SnapTime(time, 60f / BPM / step, Mathf.Repeat(Shift, 60f / BPM));
+
+
+		public float SnapTime (float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
 
 
 		// UI
@@ -296,7 +310,7 @@
 
 		public void SetUseDynamicSpeed (bool use) {
 			UseDynamicSpeed = use;
-			OnUserDynamicSpeedChanged(use);
+			OnSpeedChanged();
 		}
 
 
@@ -324,7 +338,19 @@
 
 		public void SetShowGrid (bool show) {
 			ShowGrid.Value = show;
-			OnShowGridChanged(ShowGrid);
+			OnGridChanged(ShowGrid, GridCountX, GridCountY);
+		}
+
+
+		public void SetGridCountX (int x) {
+			GridCountX.Value = Mathf.Clamp(x, 1, 32);
+			OnGridChanged(ShowGrid, GridCountX, GridCountY);
+		}
+
+
+		public void SetGridCountY (int y) {
+			GridCountY.Value = Mathf.Clamp(y, 1, 8);
+			OnGridChanged(ShowGrid, GridCountX, GridCountY);
 		}
 
 

@@ -160,7 +160,7 @@
 		public static VoidIntHandler OnSelectionChanged { get; set; } = null;
 
 		// API
-		public int SelectingItemIndex { get; private set; } = -1;
+		public (int type, int index) SelectingItemTypeIndex { get; private set; } = (-1, -1);
 
 		// Short
 		private string PrefabJsonPath => Util.CombinePaths(Application.streamingAssetsPath, "Library", "Prefabs.json");
@@ -300,11 +300,27 @@
 			if (!enabled) { index = -1; }
 			UIReady = false;
 			try {
-				SelectingItemIndex = index;
+				// Logic
+				int defaultCount = m_DefaultBrushTGs.Length;
+				int type = -1;
+				int pIndex = index - defaultCount;
+				if (pIndex >= 0 && pIndex < PrefabDatas.Count) {
+					type = (int)PrefabDatas[pIndex].Type;
+				} else if (index >= 0 && index < defaultCount) {
+					type = index;
+				}
+				SelectingItemTypeIndex = (type, index);
+			} catch { }
+			try {
+				// Default Brush TG
 				int defaultCount = m_DefaultBrushTGs.Length;
 				for (int i = 0; i < defaultCount; i++) {
 					m_DefaultBrushTGs[i].isOn = i == index;
 				}
+			} catch { }
+			try {
+				// Brush TG
+				int defaultCount = m_DefaultBrushTGs.Length;
 				int prefabCount = m_BrushContainer.childCount;
 				for (int i = 0; i < prefabCount; i++) {
 					var tg = m_BrushContainer.GetChild(i).GetComponent<Toggle>();
@@ -357,7 +373,7 @@
 				// Thumbnail
 				prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"), m_StagePrefabColor, m_TrackPrefabColor, m_NotePrefabColor);
 			}
-			SetSelectionLogic(SelectingItemIndex);
+			SetSelectionLogic(SelectingItemTypeIndex.index);
 		}
 
 

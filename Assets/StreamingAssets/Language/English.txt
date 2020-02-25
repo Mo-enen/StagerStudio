@@ -37,6 +37,30 @@ Rename
 Menu.ChapterItem.ShowInExplorer
 Show in Explorer
 
+Menu.Grid.x0
+Position Grid ×1
+
+Menu.Grid.x1
+Position Grid ×3
+
+Menu.Grid.x2
+Position Grid ×7
+
+Menu.Grid.x3
+Position Grid ×15
+
+Menu.Grid.y0
+Time Grid ×1
+
+Menu.Grid.y1
+Time Grid ×3
+
+Menu.Grid.y2
+Time Grid ×5
+
+Menu.Grid.y3
+Time Grid ×7
+
 Menu.Home.ImportProject
 Import Project
 
@@ -368,7 +392,7 @@ Tip.DynamicDropSpeed
 Use dynamic drop speed
 
 Tip.Grid
-Show grid
+Show grid (right click to show menu)
 
 Tip.Lib.Motion
 Motion brush

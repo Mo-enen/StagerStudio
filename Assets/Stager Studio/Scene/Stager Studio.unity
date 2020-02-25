@@ -5294,6 +5294,7 @@ GameObject:
   - component: {fileID: 761078176}
   - component: {fileID: 761078175}
   - component: {fileID: 761078179}
+  - component: {fileID: 761078180}
   m_Layer: 0
   m_Name: Grid
   m_TagString: Untagged
@@ -5444,6 +5445,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &761078180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761078173}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1526a234b264d4f983705361dd81fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CallbackLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CallbackRight:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826612610}
+        m_MethodName: OpenMenu
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Menu.Grid
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_CallbackDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &772606998
 GameObject:
   m_ObjectHideFlags: 0
@@ -6743,6 +6776,17 @@ MonoBehaviour:
     - 
     - Menu.Library.ImportPrefabs
     - Menu.Library.ExportPrefabs
+  - Key: Menu.Grid
+    CallbackKeys:
+    - Menu.Grid.x0
+    - Menu.Grid.x1
+    - Menu.Grid.x2
+    - Menu.Grid.x3
+    - 
+    - Menu.Grid.y0
+    - Menu.Grid.y1
+    - Menu.Grid.y2
+    - Menu.Grid.y3
   m_Callbacks:
   - Key: Stager.About
     Icon: {fileID: 0}
@@ -7124,6 +7168,134 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.x0
+    Icon: {fileID: 183125243865815663, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.x1
+    Icon: {fileID: -7519833676518121747, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.x2
+    Icon: {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 7
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.x3
+    Icon: {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountX
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 15
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.y0
+    Icon: {fileID: 183125243865815663, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 1
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.y1
+    Icon: {fileID: -7519833676518121747, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.y2
+    Icon: {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 5
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.y3
+    Icon: {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetGridCountY
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 7
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -11015,6 +11187,7 @@ MonoBehaviour:
   m_UseAbreastView: {fileID: 338648234}
   m_GridTG: {fileID: 761078176}
   m_AuthorLabel: {fileID: 495282314}
+  m_GridRenderer: {fileID: 1637691684}
   m_LanguageTexts:
   - {fileID: 1796458040}
   - {fileID: 1149638195}
@@ -12338,7 +12511,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1637691683
 Transform:
   m_ObjectHideFlags: 0
@@ -12360,20 +12533,24 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637691682}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b11de0fc60c461940b1cc97fffec480e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Tint:
     serializedVersion: 2
-    rgba: 4289253925
+    rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0}
   m_Scale: {x: 1, y: 1}
-  m_Sprite: {fileID: -8080841097035478247, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+  m_SpriteV: {fileID: 4824580782819576835, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_CountX: 0
-  m_TimeGap: 0
+  m_SpriteH: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
+    type: 3}
+  m_Tints:
+  - {r: 1, g: 1, b: 1, a: 0.14117648}
+  - {r: 0.654902, g: 0.63955575, b: 0.113725506, a: 0.32156864}
+  - {r: 0.11536932, g: 0.655, b: 0.52474433, a: 0.36078432}
 --- !u!33 &1637691685
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -12389,7 +12566,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1637691682}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -12400,7 +12577,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a72f58669eeda3d408fe0168f20c043f, type: 2}
+  - {fileID: 2100000, guid: b89893aedb642414ea0d894761b8e6e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -12464,9 +12641,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cadb43c1f44ea534c8e657425f640cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllObjectMask:
-    serializedVersion: 2
-    m_Bits: 7936
   m_ItemLayerNames:
   - Stage
   - Track
@@ -12496,6 +12670,7 @@ MonoBehaviour:
   - {fileID: 213184611}
   m_FocusCancel: {fileID: 2017125844}
   m_FocusAni: {fileID: 703012816}
+  m_Grid: {fileID: 1637691684}
   m_FocusKey: Focus
   m_UnfocusKey: Unfocus
   m_Duration: 0.5
@@ -15162,14 +15337,28 @@ MonoBehaviour:
   - Rename
   - Menu.ChapterItem.ShowInExplorer
   - Show in Explorer
+  - Menu.Grid.x0
+  - "Position Grid \xD71"
+  - Menu.Grid.x1
+  - "Position Grid \xD73"
+  - Menu.Grid.x2
+  - "Position Grid \xD77"
+  - Menu.Grid.x3
+  - "Position Grid \xD715"
+  - Menu.Grid.y0
+  - "Time Grid \xD71"
+  - Menu.Grid.y1
+  - "Time Grid \xD73"
+  - Menu.Grid.y2
+  - "Time Grid \xD75"
+  - Menu.Grid.y3
+  - "Time Grid \xD77"
   - Menu.Home.ImportProject
   - Import Project
   - Menu.Home.NewChapter
   - New Chapter
   - Menu.Home.NewProject
   - New Project
-  - 
-  - Change Workspace
   - Menu.Home.ShowWorkspace
   - Show Workspace
   - Menu.Home.SortByName
@@ -15389,7 +15578,7 @@ MonoBehaviour:
   - Tip.DynamicDropSpeed
   - Use dynamic drop speed
   - Tip.Grid
-  - Show grid
+  - Show grid (right click to show menu)
   - Tip.Lib.Motion
   - Motion brush
   - Tip.Lib.Note

@@ -49,7 +49,8 @@ Shader "Object/Normal" {
 					fixed4 frag(v2f i) : SV_Target
 					{
 						fixed4 col = tex2D(_MainTex, i.texcoord);
-						col.a *= i.color.a;
+						col *= i.color;
+						//col.a *= i.color.a;
 						return col;
 					}
 				ENDCG
