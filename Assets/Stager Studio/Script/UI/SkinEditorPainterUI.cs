@@ -446,8 +446,8 @@
 		public void ResetRootPositionSize () {
 			m_Root.pivot = Vector2.one * 0.5f;
 			m_Root.anchoredPosition = new Vector2(ContainerZeroPosSize.x, ContainerZeroPosSize.y);
-			m_Root.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ContainerZeroPosSize.z);
 			m_Root.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ContainerZeroPosSize.w);
+			m_Root.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ContainerZeroPosSize.w * Ratio);
 		}
 
 

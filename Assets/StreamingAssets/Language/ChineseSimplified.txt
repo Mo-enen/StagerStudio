@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.NoteShadowDistance
+阴影距离
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -823,6 +826,9 @@ UI.Setting.Zone
 UI.SkinEditor.ApplyAllSprite
 应用到所有图块
 
+UI.SkinEditor.ArrowThickness
+箭头厚度
+
 UI.SkinEditor.DarkBG
 深色
 
@@ -894,6 +900,9 @@ X
 
 UI.SkinEditor.SubY
 Y
+
+UI.SkinEditor.View
+预览（长按）
 
 UI.Tab.BeatmapInfo
 谱面

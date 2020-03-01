@@ -46,9 +46,25 @@
 			get => NoteThickness * 100f;
 			set => NoteThickness = Mathf.Clamp01(value / 100f);
 		}
+		public float NoteShadowDistance_UI {
+			get => NoteShadowDistance * 100f;
+			set => NoteShadowDistance = Mathf.Clamp01(value / 100f);
+		}
 		public float PoleThickness_UI {
 			get => PoleThickness * 100f;
 			set => PoleThickness = Mathf.Clamp01(value / 100f);
+		}
+		public float ArrowThickness_UI {
+			get => ArrowThickness * 100f;
+			set => ArrowThickness = Mathf.Clamp01(value / 100f);
+		}
+		public float LuminousAppendX_UI {
+			get => LuminousAppendX * 100f;
+			set => LuminousAppendX = Mathf.Clamp01(value / 100f);
+		}
+		public float LuminousAppendY_UI {
+			get => LuminousAppendY * 100f;
+			set => LuminousAppendY = Mathf.Clamp01(value / 100f);
 		}
 		public float ScaleMuti_UI {
 			get => ScaleMuti;
@@ -57,9 +73,11 @@
 
 		// Ser
 		public string Author = "";
-		public float ScaleMuti = 4f;
+		public float ScaleMuti = 2000f;
 		public float NoteThickness = 0.015f;
+		public float NoteShadowDistance = 0f;
 		public float PoleThickness = 0.007f;
+		public float ArrowThickness = 0.007f;
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
@@ -208,7 +226,6 @@
 		public SkinLoopType Loop = SkinLoopType.Forward;
 		public List<RectData> Rects = new List<RectData>();
 		public int FrameDuration = 200;
-
 
 
 		// API

@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.NoteShadowDistance
+Shadow
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -823,6 +826,9 @@ Show Stage Range
 UI.SkinEditor.ApplyAllSprite
 Apply to All Sprites
 
+UI.SkinEditor.ArrowThickness
+Arrow Thick
+
 UI.SkinEditor.DarkBG
 Dark
 
@@ -894,6 +900,9 @@ X
 
 UI.SkinEditor.SubY
 Y
+
+UI.SkinEditor.View
+View (Hold)
 
 UI.Tab.BeatmapInfo
 Beatmap

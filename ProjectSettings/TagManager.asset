@@ -50,6 +50,9 @@ TagManager:
   - name: Track
     uniqueID: 1207560611
     locked: 0
+  - name: Shadow
+    uniqueID: 3211497979
+    locked: 0
   - name: Tray
     uniqueID: 296525073
     locked: 0

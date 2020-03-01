@@ -112,6 +112,7 @@
 			// Layer ID
 			Stage.LayerID_Stage = SortingLayer.NameToID("Stage");
 			Track.LayerID_Track = SortingLayer.NameToID("Track");
+			Note.LayerID_Shadow = SortingLayer.NameToID("Shadow");
 			Track.LayerID_Tray = SortingLayer.NameToID("Tray");
 			Note.LayerID_Pole = SortingLayer.NameToID("Pole");
 			Note.LayerID_Note = SortingLayer.NameToID("Note");

@@ -412,7 +412,7 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private (int, int) GetObjectIndexFromCollider (RaycastHit hit) => (hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
+		private (int layer, int ItemIndex) GetObjectIndexFromCollider (RaycastHit hit) => (hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
 
 
 		private void SetLock (int index, bool locked) {

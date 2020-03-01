@@ -109,7 +109,6 @@
 		}
 
 
-
 		protected override void OnMeshFill () {
 
 			if (m_SpriteV is null || m_SpriteH is null) { return; }
@@ -165,7 +164,6 @@
 			}
 
 		}
-
 
 
 		// API
