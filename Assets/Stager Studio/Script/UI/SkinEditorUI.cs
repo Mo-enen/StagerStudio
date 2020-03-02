@@ -51,6 +51,7 @@
 		[SerializeField] private InputField m_PoleThicknessIF = null;
 		[SerializeField] private InputField m_ArrowThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
 		[SerializeField] private Button[] m_LoopTypeBtns = null;
@@ -62,6 +63,7 @@
 		private StageMusic Music = null;
 		private StageLanguage Language = null;
 		private HintBarUI Hint = null;
+		private bool UIReady = true;
 
 
 		#endregion
@@ -120,6 +122,7 @@
 
 			// Duration
 			m_DurationIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				var ani = GetEditingAniData();
 				if (ani is null || EditingFrame < 0 || EditingFrame >= ani.Rects.Count) { return; }
 				if (int.TryParse(str, out int durationMS)) {
@@ -130,6 +133,7 @@
 
 			// Scale Muti
 			m_ScaleMutiIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float scaleMT)) {
 					Data.ScaleMuti_UI = scaleMT;
 					m_ScaleMutiIF.text = Data.ScaleMuti_UI.ToString();
@@ -138,12 +142,14 @@
 
 			// Luminous Append
 			m_LuminWidthAppendIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float lwa)) {
 					Data.LuminousAppendX_UI = Mathf.Clamp(lwa, -100f, 100f);
 					m_LuminWidthAppendIF.text = Data.LuminousAppendX_UI.ToString();
 				}
 			});
 			m_LuminHeightAppendIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float lwa)) {
 					Data.LuminousAppendY_UI = Mathf.Clamp(lwa, -100f, 100f);
 					m_LuminHeightAppendIF.text = Data.LuminousAppendY_UI.ToString();
@@ -152,6 +158,7 @@
 
 			// Note Thickness
 			m_NoteThicknessIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float thick)) {
 					Data.NoteThickness_UI = thick;
 					m_NoteThicknessIF.text = Data.NoteThickness_UI.ToString();
@@ -160,6 +167,7 @@
 
 			// Note Shadow Dis
 			m_NoteShadowDistanceIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float size)) {
 					Data.NoteShadowDistance_UI = size;
 					m_NoteShadowDistanceIF.text = Data.NoteShadowDistance_UI.ToString();
@@ -168,6 +176,7 @@
 
 			// Pole Thickness
 			m_PoleThicknessIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float thick)) {
 					Data.PoleThickness_UI = thick;
 					m_PoleThicknessIF.text = Data.PoleThickness_UI.ToString();
@@ -176,10 +185,17 @@
 
 			// Arrow Thickness
 			m_ArrowThicknessIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
 				if (float.TryParse(str, out float thick)) {
 					Data.ArrowThickness_UI = thick;
 					m_ArrowThicknessIF.text = Data.ArrowThickness_UI.ToString();
 				}
+			});
+
+			// Fixed Note Width
+			m_FixedNoteWidthTG.onValueChanged.AddListener((isOn) => {
+				if (!UIReady) { return; }
+				Data.FixedNoteWidth = isOn;
 			});
 
 			// Type TGs
@@ -188,7 +204,7 @@
 				var tg = m_TypeTgContainer.GetChild(i).GetComponent<Toggle>();
 				int index = i;
 				tg.onValueChanged.AddListener((isOn) => {
-					if (!isOn) { return; }
+					if (!UIReady || !isOn) { return; }
 					EditingType = (SkinType)index;
 					Painter.SetItemsDirty();
 					Painter.ResetRootPositionSize();
@@ -231,12 +247,16 @@
 			var data = Data;
 			var ani = GetEditingAniData();
 			if (data is null || ani is null) { return; }
+			UIReady = false;
 			try {
 				// Active
-				m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous);
-				m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous);
-				m_NoteThicknessIF.transform.parent.gameObject.SetActive(EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote);
-				m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote);
+				bool noteActive = EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote;
+				bool lumActive = EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous;
+				m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(lumActive);
+				m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(lumActive);
+				m_NoteThicknessIF.transform.parent.gameObject.SetActive(noteActive);
+				m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(noteActive);
+				m_FixedNoteWidthTG.transform.parent.gameObject.SetActive(noteActive);
 				m_PoleThicknessIF.transform.parent.gameObject.SetActive(EditingType == SkinType.LinkPole);
 				m_ArrowThicknessIF.transform.parent.gameObject.SetActive(EditingType == SkinType.SwipeArrow);
 				// Data
@@ -246,12 +266,14 @@
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
 				m_NoteShadowDistanceIF.text = data.NoteShadowDistance_UI.ToString();
+				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
 				m_PoleThicknessIF.text = data.PoleThickness_UI.ToString();
 				m_ArrowThicknessIF.text = data.ArrowThickness_UI.ToString();
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
 				}
 			} catch { }
+			UIReady = true;
 		}
 
 

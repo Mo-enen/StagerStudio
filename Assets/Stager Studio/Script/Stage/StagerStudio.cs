@@ -314,14 +314,14 @@
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
 			};
-			StageGame.OnAbreastChanged = (abreastIndex, useAbreast, allAbreast) => {
-				m_UseAbreastView.isOn = useAbreast;
-				m_Wave.gameObject.SetActive(useAbreast && !Game.UseDynamicSpeed);
+			StageGame.OnAbreastChanged = () => {
+				m_UseAbreastView.isOn = Game.UseAbreast;
+				m_Wave.gameObject.SetActive(Game.UseAbreast && !Game.UseDynamicSpeed);
 				m_AbreastSwitcherUI.RefreshUI();
 			};
 			StageGame.OnSpeedChanged = () => {
 				m_UseDynamicSpeed.isOn = Game.UseDynamicSpeed;
-				m_Wave.gameObject.SetActive(Game.AbreastIndex >= 0 && !Game.UseDynamicSpeed);
+				m_Wave.gameObject.SetActive(Game.UseAbreast && !Game.UseDynamicSpeed);
 				Note.SetCacheDirty();
 				RefreshGridRenderer();
 			};

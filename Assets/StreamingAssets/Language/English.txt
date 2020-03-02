@@ -1,5 +1,5 @@
-﻿UI.SkinEditor.NoteShadowDistance
-Shadow
+﻿UI.SkinEditor.FixedNoteWidth
+Fixed Width
 
 Author
 Stager Official
@@ -852,6 +852,9 @@ Lum Height
 
 UI.SkinEditor.LuminousWidth
 Lum Width
+
+UI.SkinEditor.NoteShadowDistance
+Shadow
 
 UI.SkinEditor.NoteThickness
 Note Thick

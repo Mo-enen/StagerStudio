@@ -11994,6 +11994,7 @@ MonoBehaviour:
     ArrowThickness: 0.007
     LuminousAppendX: 0
     LuminousAppendY: 0
+    FixedNoteWidth: 0
     Items:
     - Loop: 1
       Rects: []
@@ -15392,8 +15393,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.NoteShadowDistance
-  - Shadow
+  - UI.SkinEditor.FixedNoteWidth
+  - Fixed Width
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -15967,6 +15968,8 @@ MonoBehaviour:
   - Lum Height
   - UI.SkinEditor.LuminousWidth
   - Lum Width
+  - UI.SkinEditor.NoteShadowDistance
+  - Shadow
   - UI.SkinEditor.NoteThickness
   - Note Thick
   - UI.SkinEditor.PingPong

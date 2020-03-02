@@ -19,7 +19,6 @@
 		public delegate void VoidHandler ();
 		public delegate void VoidFloatHandler (float ratio);
 		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
-		public delegate void VoidIntBoolBoolHandler (int a, bool b, bool c);
 		public delegate string StringStringHandler (string str);
 
 
@@ -35,7 +34,7 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
 		public static VoidHandler OnSpeedChanged { get; set; } = null;
-		public static VoidIntBoolBoolHandler OnAbreastChanged { get; set; } = null;
+		public static VoidHandler OnAbreastChanged { get; set; } = null;
 		public static VoidBoolIntIntHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 
@@ -317,7 +316,7 @@
 
 		public void SetUseAbreastView (bool abreast) {
 			UseAbreast = abreast;
-			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
+			OnAbreastChanged();
 		}
 
 
@@ -326,14 +325,14 @@
 
 		public void SetAllStageAbreast (bool abreast) {
 			AllStageAbreast = abreast;
-			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
+			OnAbreastChanged();
 
 		}
 
 
 		public void SetAbreastIndex (int newIndex) {
 			_AbreastIndex = Mathf.Max(newIndex, 0);
-			OnAbreastChanged(AbreastIndex, UseAbreast, AllStageAbreast);
+			OnAbreastChanged();
 		}
 
 

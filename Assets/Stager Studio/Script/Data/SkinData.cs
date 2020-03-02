@@ -80,6 +80,7 @@
 		public float ArrowThickness = 0.007f;
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
+		public bool FixedNoteWidth = false;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
 		// API

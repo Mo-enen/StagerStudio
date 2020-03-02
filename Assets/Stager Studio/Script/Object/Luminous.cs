@@ -20,6 +20,7 @@
 		// Data
 		private static float LuminousDuration_Tap = 0f;
 		private static float LuminousDuration_Hold = 0f;
+		private static float FixedNoteWidth = -1f;
 		private static Vector2 LuminousAppend = Vector2.zero;
 		private bool MovementDirty = true;
 
@@ -90,7 +91,7 @@
 			);
 
 			// Movement
-			float scaleX = stageWidth * trackWidth * noteData.Width + LuminousAppend.x;
+			float scaleX = (FixedNoteWidth < 0f ? stageWidth * trackWidth * noteData.Width : FixedNoteWidth) + LuminousAppend.x;
 			float scaleY = Note.NoteThickness + LuminousAppend.y;
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
@@ -126,6 +127,9 @@
 			var lumAni1 = skin?.Items[(int)SkinType.HoldLuminous];
 			LuminousDuration_Tap = lumAni0 is null ? 0f : lumAni0.TotalDuration;
 			LuminousDuration_Hold = lumAni1 is null ? 0f : lumAni1.TotalDuration;
+			// Fixed Note Width
+			var nRects = skin.Items[(int)SkinType.TapNote].Rects;
+			FixedNoteWidth = skin.FixedNoteWidth && !(nRects is null) && nRects.Count != 0 ? skin.NoteThickness / nRects[0].Width * nRects[0].Height : -1f;
 		}
 
 

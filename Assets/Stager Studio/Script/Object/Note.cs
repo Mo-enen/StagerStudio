@@ -50,6 +50,7 @@
 		// Data
 		private static byte CacheDirtyID = 1;
 		private static float ArrowSize = 0.1f;
+		private static float FixedNoteWidth = -1f;
 		private static float ShadowDistance = 0f;
 		private byte LocalCacheDirtyID = 0;
 		private Beatmap.Stage LateStage = null;
@@ -182,14 +183,12 @@
 			var notePos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			notePos.z += noteZonePos.z * zoneSize;
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-			var noteScale = new Vector3(
-				zoneSize * Mathf.Max(stageWidth * trackWidth * noteData.Width, NoteThickness),
-				zoneSize * Mathf.Max(noteSizeY * stageHeight, NoteThickness),
-				1f
-			);
+			float noteScaleX = FixedNoteWidth < 0f ? stageWidth * trackWidth * noteData.Width : FixedNoteWidth;
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteThickness);
+			var zoneNoteScale = new Vector3(zoneSize * noteScaleX, zoneSize * noteScaleY, 1f);
 			transform.position = notePos;
 			ColRot = MainRenderer.transform.rotation = noteRot;
-			ColSize = MainRenderer.transform.localScale = noteScale;
+			ColSize = MainRenderer.transform.localScale = zoneNoteScale;
 
 			// Sub Update
 			if (isLink) {
@@ -202,7 +201,7 @@
 			MainRenderer.RendererEnable = !isLink || GetNoteActive(noteData, null, noteData.AppearTime);
 			MainRenderer.LifeTime = m_SubRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = alpha;
-			MainRenderer.Scale = new Vector2(stageWidth * trackWidth * noteData.Width, Mathf.Max(noteSizeY * stageHeight, NoteThickness));
+			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			m_SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
 			MainRenderer.SetSortingLayer(LayerID_Note, GetSortingOrder());
@@ -212,7 +211,7 @@
 				// Movement
 				m_ShadowRenderer.transform.localPosition = Vector3.down * ShadowDistance;
 				m_ShadowRenderer.transform.rotation = noteRot;
-				m_ShadowRenderer.transform.localScale = noteScale;
+				m_ShadowRenderer.transform.localScale = zoneNoteScale;
 				// Render
 				m_ShadowRenderer.RendererEnable = MainRenderer.RendererEnable;
 				m_ShadowRenderer.Type = MainRenderer.Type;
@@ -337,13 +336,12 @@
 			PoleThickness = skin.PoleThickness;
 			// Shadow
 			ShadowDistance = skin.NoteShadowDistance;
-			// Arrow
-			ArrowSize = 0.1f;
+			// Arrow Size
 			var aRects = skin.Items[(int)SkinType.SwipeArrow].Rects;
-			if (!(aRects is null) && aRects.Count != 0) {
-				var aRect = aRects[0];
-				ArrowSize = skin.ArrowThickness / aRect.Width * aRect.Height;
-			}
+			ArrowSize = !(aRects is null) && aRects.Count != 0 ? skin.ArrowThickness / aRects[0].Width * aRects[0].Height : 0.1f;
+			// Fixed Note Width
+			var nRects = skin.Items[(int)SkinType.TapNote].Rects;
+			FixedNoteWidth = skin.FixedNoteWidth && !(nRects is null) && nRects.Count != 0 ? skin.NoteThickness / nRects[0].Width * nRects[0].Height : -1f;
 		}
 
 
