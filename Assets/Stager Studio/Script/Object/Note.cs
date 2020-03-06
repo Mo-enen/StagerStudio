@@ -35,8 +35,8 @@
 		public static FilledTimeHandler GetFilledTime { get; set; } = null;
 
 		// API
-		public static float NoteThickness { get; private set; } = 0.015f;
-		public static float ArrowThickness { get; private set; } = 0.015f;
+		public static Vector2 NoteSize { get; private set; } = new Vector2(0.015f, 0.015f);
+		public static Vector2 ArrowSize { get; private set; } = new Vector2(0.015f, 0.015f);
 		public static float PoleThickness { get; private set; } = 0.007f;
 		public static int LayerID_Note { get; set; } = -1;
 		public static int LayerID_Shadow { get; set; } = -1;
@@ -49,8 +49,6 @@
 
 		// Data
 		private static byte CacheDirtyID = 1;
-		private static float ArrowSize = 0.1f;
-		private static float FixedNoteWidth = -1f;
 		private static float ShadowDistance = 0f;
 		private byte LocalCacheDirtyID = 0;
 		private Beatmap.Stage LateStage = null;
@@ -183,8 +181,8 @@
 			var notePos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			notePos.z += noteZonePos.z * zoneSize;
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-			float noteScaleX = FixedNoteWidth < 0f ? stageWidth * trackWidth * noteData.Width : FixedNoteWidth;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteThickness);
+			float noteScaleX = NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : NoteSize.x;
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteSize.y);
 			var zoneNoteScale = new Vector3(zoneSize * noteScaleX, zoneSize * noteScaleY, 1f);
 			transform.position = notePos;
 			ColRot = MainRenderer.transform.rotation = noteRot;
@@ -275,12 +273,12 @@
 
 		private void Update_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha) {
 			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
-			m_SubRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * NoteThickness * 0.5f, 0f);
+			m_SubRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * NoteSize.y * 0.5f, 0f);
 			m_SubRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
-			m_SubRenderer.transform.localScale = new Vector3(zoneSize * ArrowThickness, zoneSize * ArrowSize, 1f);
+			m_SubRenderer.transform.localScale = new Vector3(zoneSize * ArrowSize.x, zoneSize * ArrowSize.y, 1f);
 			m_SubRenderer.RendererEnable = true;
 			m_SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
-			m_SubRenderer.Scale = new Vector2(ArrowThickness, ArrowSize);
+			m_SubRenderer.Scale = ArrowSize;
 			m_SubRenderer.Alpha = alpha;
 			m_SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
 		}
@@ -330,18 +328,18 @@
 
 
 		public static void SetNoteSkin (SkinData skin) {
+
 			// Thickness
-			NoteThickness = skin.NoteThickness;
-			ArrowThickness = skin.ArrowThickness;
-			PoleThickness = skin.PoleThickness;
+			var noteSize = skin.TryGetItemSize((int)SkinType.TapNote) / skin.ScaleMuti;
+			if (!skin.FixedNoteWidth) {
+				noteSize.x = -1f;
+			}
+			NoteSize = noteSize;
+			var arrowSize = skin.TryGetItemSize((int)SkinType.SwipeArrow) / skin.ScaleMuti;
+			ArrowSize = new Vector2(arrowSize.y, arrowSize.x);
+			PoleThickness = skin.TryGetItemSize((int)SkinType.LinkPole).x / skin.ScaleMuti;
 			// Shadow
 			ShadowDistance = skin.NoteShadowDistance;
-			// Arrow Size
-			var aRects = skin.Items[(int)SkinType.SwipeArrow].Rects;
-			ArrowSize = !(aRects is null) && aRects.Count != 0 ? skin.ArrowThickness / aRects[0].Width * aRects[0].Height : 0.1f;
-			// Fixed Note Width
-			var nRects = skin.Items[(int)SkinType.TapNote].Rects;
-			FixedNoteWidth = skin.FixedNoteWidth && !(nRects is null) && nRects.Count != 0 ? skin.NoteThickness / nRects[0].Width * nRects[0].Height : -1f;
 		}
 
 

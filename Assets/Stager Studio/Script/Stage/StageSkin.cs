@@ -124,6 +124,9 @@
 		}
 
 
+		public string GetPath (string name) => Util.CombinePaths(SkinFolderPath, name + SKIN_EX);
+
+
 		public void ReloadSkin () => LoadSkin(SkinName);
 
 
@@ -143,17 +146,20 @@
 		}
 
 
-		public void SaveSkin (SkinData skin, string name) {
-			if (skin == null || string.IsNullOrEmpty(name)) { return; }
+		public string SaveSkin (SkinData skin, string name) {
+			if (skin == null || string.IsNullOrEmpty(name)) { return ""; }
+			string path = "";
 			try {
 				var bytes = SkinData.SkinToByte(skin);
 				if (!(bytes is null) && bytes.Length > 0) {
-					Util.ByteToFile(bytes, Util.CombinePaths(SkinFolderPath, name + SKIN_EX));
+					path = Util.CombinePaths(SkinFolderPath, name + SKIN_EX);
+					Util.ByteToFile(bytes, path);
 				}
 			} catch {
 				LogMessage(LanguageData.ERROR_FailToSaveSkin, true);
 			}
 			RefreshAllSkinNames();
+			return path;
 		}
 
 

@@ -31,13 +31,15 @@
 
 		// API
 		public static LanguageHandler GetLanguage { get; set; } = null;
-		public SkinEditorPainterUI Painter => m_Painter;
 		public SkinData Data { get; private set; } = new SkinData();
-		public SkinType EditingType { get; private set; } = SkinType.Stage;
-		public int EditingFrame { get; private set; } = 0;
-		public string SkinName { get => m_SkinNameIF.text; set => m_SkinNameIF.text = value; }
-		public string SkinAuthor { get => m_SkinAuthorIF.text; set => m_SkinAuthorIF.text = value; }
 		public bool ApplyToAllSprite { get; private set; } = false;
+
+		// Short
+		private SkinEditorPainterUI Painter => m_Painter;
+		private SkinType EditingType { get; set; } = SkinType.Stage;
+		private int EditingFrame { get; set; } = 0;
+		private string SkinName { get => m_SkinNameIF.text; set => m_SkinNameIF.text = value; }
+		private string SkinAuthor { get => m_SkinAuthorIF.text; set => m_SkinAuthorIF.text = value; }
 
 		// Ser
 		[SerializeField] private SkinEditorPainterUI m_Painter = null;
@@ -46,10 +48,7 @@
 		[SerializeField] private InputField m_ScaleMutiIF = null;
 		[SerializeField] private InputField m_LuminWidthAppendIF = null;
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
-		[SerializeField] private InputField m_NoteThicknessIF = null;
 		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
-		[SerializeField] private InputField m_PoleThicknessIF = null;
-		[SerializeField] private InputField m_ArrowThicknessIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -64,6 +63,7 @@
 		private StageLanguage Language = null;
 		private HintBarUI Hint = null;
 		private bool UIReady = true;
+		private string SavedName = "";
 
 
 		#endregion
@@ -119,6 +119,7 @@
 			Data = skinData;
 			SkinAuthor = skinData.Author;
 			SkinName = skinName;
+			SavedName = skinName;
 
 			// Duration
 			m_DurationIF.onEndEdit.AddListener((str) => {
@@ -156,39 +157,12 @@
 				}
 			});
 
-			// Note Thickness
-			m_NoteThicknessIF.onEndEdit.AddListener((str) => {
-				if (!UIReady) { return; }
-				if (float.TryParse(str, out float thick)) {
-					Data.NoteThickness_UI = thick;
-					m_NoteThicknessIF.text = Data.NoteThickness_UI.ToString();
-				}
-			});
-
 			// Note Shadow Dis
 			m_NoteShadowDistanceIF.onEndEdit.AddListener((str) => {
 				if (!UIReady) { return; }
 				if (float.TryParse(str, out float size)) {
 					Data.NoteShadowDistance_UI = size;
 					m_NoteShadowDistanceIF.text = Data.NoteShadowDistance_UI.ToString();
-				}
-			});
-
-			// Pole Thickness
-			m_PoleThicknessIF.onEndEdit.AddListener((str) => {
-				if (!UIReady) { return; }
-				if (float.TryParse(str, out float thick)) {
-					Data.PoleThickness_UI = thick;
-					m_PoleThicknessIF.text = Data.PoleThickness_UI.ToString();
-				}
-			});
-
-			// Arrow Thickness
-			m_ArrowThicknessIF.onEndEdit.AddListener((str) => {
-				if (!UIReady) { return; }
-				if (float.TryParse(str, out float thick)) {
-					Data.ArrowThickness_UI = thick;
-					m_ArrowThicknessIF.text = Data.ArrowThickness_UI.ToString();
 				}
 			});
 
@@ -226,18 +200,23 @@
 		public void Save () {
 			if (Data is null) { return; }
 			Data.Author = SkinAuthor;
-			Skin.SaveSkin(Data, SkinName);
+			var newPath = Skin.SaveSkin(Data, SkinName);
 			Skin.ReloadSkin();
 			Hint?.SetHint(Language.Get(HINT_Saved));
 			Resources.UnloadUnusedAssets();
+			// Delete Old when Rename
+			if (SkinName != SavedName) {
+				if (Util.FileExists(newPath)) {
+					Util.DeleteFile(Skin.GetPath(SavedName));
+				}
+				SavedName = SkinName;
+			}
 		}
 
 
 		public void Close () {
 			DialogUtil.Dialog_OK_Cancel(DIALOG_CloseConfirm, DialogUtil.MarkType.Warning, () => {
-				Skin.SaveSkin(Data, SkinName);
-				Skin.ReloadSkin();
-				Resources.UnloadUnusedAssets();
+				Save();
 				StagerStudio.Main.UI_SpawnSetting();
 			});
 		}
@@ -254,21 +233,15 @@
 				bool lumActive = EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous;
 				m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(lumActive);
 				m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(lumActive);
-				m_NoteThicknessIF.transform.parent.gameObject.SetActive(noteActive);
 				m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(noteActive);
 				m_FixedNoteWidthTG.transform.parent.gameObject.SetActive(noteActive);
-				m_PoleThicknessIF.transform.parent.gameObject.SetActive(EditingType == SkinType.LinkPole);
-				m_ArrowThicknessIF.transform.parent.gameObject.SetActive(EditingType == SkinType.SwipeArrow);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
-				m_NoteThicknessIF.text = data.NoteThickness_UI.ToString();
 				m_NoteShadowDistanceIF.text = data.NoteShadowDistance_UI.ToString();
 				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
-				m_PoleThicknessIF.text = data.PoleThickness_UI.ToString();
-				m_ArrowThicknessIF.text = data.ArrowThickness_UI.ToString();
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
 				}

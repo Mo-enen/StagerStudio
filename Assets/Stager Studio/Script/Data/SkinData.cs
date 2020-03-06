@@ -42,21 +42,9 @@
 
 		// API
 		public Texture2D Texture { get; set; } = null;
-		public float NoteThickness_UI {
-			get => NoteThickness * 100f;
-			set => NoteThickness = Mathf.Clamp01(value / 100f);
-		}
 		public float NoteShadowDistance_UI {
 			get => NoteShadowDistance * 100f;
 			set => NoteShadowDistance = Mathf.Clamp01(value / 100f);
-		}
-		public float PoleThickness_UI {
-			get => PoleThickness * 100f;
-			set => PoleThickness = Mathf.Clamp01(value / 100f);
-		}
-		public float ArrowThickness_UI {
-			get => ArrowThickness * 100f;
-			set => ArrowThickness = Mathf.Clamp01(value / 100f);
 		}
 		public float LuminousAppendX_UI {
 			get => LuminousAppendX * 100f;
@@ -74,10 +62,7 @@
 		// Ser
 		public string Author = "";
 		public float ScaleMuti = 2000f;
-		public float NoteThickness = 0.015f;
 		public float NoteShadowDistance = 0f;
-		public float PoleThickness = 0.007f;
-		public float ArrowThickness = 0.007f;
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
 		public bool FixedNoteWidth = false;
@@ -175,6 +160,15 @@
 				}
 				Items[i] = item;
 			}
+		}
+
+
+		public Vector2 TryGetItemSize (int index) {
+			if (Items is null || index < 0 || index >= Items.Count) { return default; }
+			var item = Items[index];
+			if (item.Rects is null || item.Rects.Count == 0) { return default; }
+			var rect = item.Rects[0];
+			return new Vector2(rect.Width, rect.Height);
 		}
 
 

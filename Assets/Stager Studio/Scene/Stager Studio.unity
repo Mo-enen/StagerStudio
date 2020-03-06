@@ -11988,10 +11988,7 @@ MonoBehaviour:
   m_DefaultSkin:
     Author: Stager
     ScaleMuti: 4096
-    NoteThickness: 0.024
     NoteShadowDistance: 0
-    PoleThickness: 0.002
-    ArrowThickness: 0.007
     LuminousAppendX: 0
     LuminousAppendY: 0
     FixedNoteWidth: 0
@@ -15393,8 +15390,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.FixedNoteWidth
-  - Fixed Width
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -15950,7 +15945,7 @@ MonoBehaviour:
   - Show Stage Range
   - UI.SkinEditor.ApplyAllSprite
   - Apply to All Sprites
-  - UI.SkinEditor.ArrowThickness
+  - 
   - Arrow Thick
   - UI.SkinEditor.DarkBG
   - Dark
@@ -15958,6 +15953,8 @@ MonoBehaviour:
   - Duration
   - UI.SkinEditor.ExportImage
   - Export Image
+  - UI.SkinEditor.FixedNoteWidth
+  - Fixed Note Width
   - UI.SkinEditor.Forward
   - Forward
   - UI.SkinEditor.ImportImage
@@ -15970,11 +15967,11 @@ MonoBehaviour:
   - Lum Width
   - UI.SkinEditor.NoteShadowDistance
   - Shadow
-  - UI.SkinEditor.NoteThickness
+  - 
   - Note Thick
   - UI.SkinEditor.PingPong
   - PingPong
-  - UI.SkinEditor.PoleThickness
+  - 
   - Pole Thick
   - UI.SkinEditor.Scale
   - Scale

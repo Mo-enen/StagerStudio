@@ -83,7 +83,7 @@
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
-				Mathf.Max(zoneSize * Note.NoteThickness, 0.00001f),
+				Mathf.Max(zoneSize * Note.NoteSize.y, 0.00001f),
 				1f
 			);
 
@@ -94,7 +94,7 @@
 			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
-			m_JudgelineRenderer.Scale = new Vector2(width, Note.NoteThickness);
+			m_JudgelineRenderer.Scale = new Vector2(width, Note.NoteSize.y);
 			m_JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 			MainRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 

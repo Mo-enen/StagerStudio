@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.FixedNoteWidth
-固定宽度
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -826,9 +823,6 @@ UI.Setting.Zone
 UI.SkinEditor.ApplyAllSprite
 应用到所有图块
 
-UI.SkinEditor.ArrowThickness
-箭头厚度
-
 UI.SkinEditor.DarkBG
 深色
 
@@ -837,6 +831,9 @@ UI.SkinEditor.Duration
 
 UI.SkinEditor.ExportImage
 导出图片
+
+UI.SkinEditor.FixedNoteWidth
+固定音符宽度
 
 UI.SkinEditor.Forward
 顺序播放
@@ -856,14 +853,8 @@ UI.SkinEditor.LuminousWidth
 UI.SkinEditor.NoteShadowDistance
 阴影距离
 
-UI.SkinEditor.NoteThickness
-音符厚度
-
 UI.SkinEditor.PingPong
 折返播放
-
-UI.SkinEditor.PoleThickness
-连杆尺寸
 
 UI.SkinEditor.Scale
 尺寸
