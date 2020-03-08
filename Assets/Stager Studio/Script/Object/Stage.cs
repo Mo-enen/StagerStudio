@@ -18,6 +18,7 @@
 		// Api
 		public static int LayerID_Stage { get; set; } = -1;
 		public static int StageCount { get; set; } = 0;
+		public static float JudgeLineHeight { get; set; } = 0f;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_JudgelineRenderer = null;
@@ -83,7 +84,7 @@
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
-				Mathf.Max(zoneSize * Note.NoteSize.y, 0.00001f),
+				Mathf.Max(zoneSize * JudgeLineHeight, 0.00001f),
 				1f
 			);
 
@@ -94,7 +95,7 @@
 			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
-			m_JudgelineRenderer.Scale = new Vector2(width, Note.NoteSize.y);
+			m_JudgelineRenderer.Scale = new Vector2(width, JudgeLineHeight);
 			m_JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 			MainRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
 
@@ -132,6 +133,7 @@
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
 			m_JudgelineRenderer.SkinData = skin;
+			JudgeLineHeight = skin.TryGetItemSize((int)SkinType.JudgeLine).y / skin.ScaleMuti;
 		}
 
 

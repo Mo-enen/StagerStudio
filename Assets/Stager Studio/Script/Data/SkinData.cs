@@ -56,7 +56,7 @@
 		}
 		public float ScaleMuti_UI {
 			get => ScaleMuti;
-			set => ScaleMuti = Mathf.Max(value, 0f);
+			set => ScaleMuti = Mathf.Max(value, 1f);
 		}
 
 		// Ser

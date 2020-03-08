@@ -48,7 +48,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
   m_Scale: {x: 1, y: 1}
 --- !u!23 &4790948411696993935
 MeshRenderer:

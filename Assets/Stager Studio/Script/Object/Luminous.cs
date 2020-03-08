@@ -21,6 +21,8 @@
 		private static float LuminousDuration_Tap = 0f;
 		private static float LuminousDuration_Hold = 0f;
 		private static Vector2 LuminousAppend = Vector2.zero;
+		private static float LumHeight_Tap = 0f;
+		private static float LumHeight_Hold = 0f;
 		private bool MovementDirty = true;
 
 
@@ -43,25 +45,30 @@
 
 			if (!MusicPlaying) {
 				MovementDirty = true;
-				SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+				SkinType type = noteData.Duration > DURATION_GAP ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 				Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 				MainRenderer.Type = type;
 				return;
 			}
 
 			// === Playing Only ===
-			Update_Movement(noteData, noteEndTime);
+			Update_Movement(noteData, noteEndTime, noteData.Duration <= DURATION_GAP);
 
 		}
 
 
-		private void Update_Movement (Beatmap.Note noteData, float noteEndTime) {
+		private void Update_Movement (Beatmap.Note noteData, float noteEndTime, bool tap) {
 
 			// Active Check
-			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
+			if (MusicTime < noteData.Time || Duration <= DURATION_GAP) { return; }
+			if (tap) {
+				if (MusicTime > noteEndTime + Duration) { return; }
+			} else {
+				if (MusicTime > noteEndTime) { return; }
+			}
 
 			// Life Time
-			MainRenderer.LifeTime = MusicTime > noteEndTime ? MusicTime - noteEndTime : MusicTime - noteData.Time;
+			MainRenderer.LifeTime = tap ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 
 			// Movement Dirty Check
@@ -84,14 +91,14 @@
 			float trackRotX = Stage.GetStageAngle(linkedStage);
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var (pos, _, rotZ) = Track.Inside(
-				noteData.X, 0f,
+				noteData.X, stageHeight > 0f ? Stage.JudgeLineHeight / 2f / stageHeight : 0f,
 				stagePos, stageWidth, stageHeight, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
 
 			// Movement
 			float scaleX = (Note.NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : Note.NoteSize.x) + LuminousAppend.x;
-			float scaleY = Note.NoteSize.y + LuminousAppend.y;
+			float scaleY = (tap ? LumHeight_Tap : LumHeight_Hold) + LuminousAppend.y;
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 			MainRenderer.transform.localScale = new Vector3(
@@ -126,6 +133,8 @@
 			var lumAni1 = skin?.Items[(int)SkinType.HoldLuminous];
 			LuminousDuration_Tap = lumAni0 is null ? 0f : lumAni0.TotalDuration;
 			LuminousDuration_Hold = lumAni1 is null ? 0f : lumAni1.TotalDuration;
+			LumHeight_Tap = skin.TryGetItemSize((int)SkinType.NoteLuminous).y / skin.ScaleMuti;
+			LumHeight_Hold = skin.TryGetItemSize((int)SkinType.HoldLuminous).y / skin.ScaleMuti;
 		}
 
 
