@@ -528,11 +528,7 @@
 		}
 
 
-		private void RefreshAuthorLabel () {
-			try {
-				m_AuthorLabel.text = string.Format(Language.Get("UI.AuthorLabel"), Project.ProjectName, Project.BeatmapAuthor, Project.MusicAuthor);
-			} catch { }
-		}
+		private void RefreshAuthorLabel () => m_AuthorLabel.text = $"{Project.ProjectName} | {Project.BeatmapAuthor} & {Project.MusicAuthor}, {(Project.Beatmap ? Project.Beatmap.Tag : "")} Lv{(Project.Beatmap ? Project.Beatmap.Level : 0)}";
 
 
 		private void RefreshGridRenderer () {

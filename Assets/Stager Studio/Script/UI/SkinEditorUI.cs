@@ -229,12 +229,12 @@
 			UIReady = false;
 			try {
 				// Active
-				bool noteActive = EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote;
-				bool lumActive = EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous;
-				m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(lumActive);
-				m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(lumActive);
-				m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(noteActive);
-				m_FixedNoteWidthTG.transform.parent.gameObject.SetActive(noteActive);
+				//bool noteActive = EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote;
+				//bool lumActive = EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous;
+				//m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(lumActive);
+				//m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(lumActive);
+				//m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(noteActive);
+				//m_FixedNoteWidthTG.transform.parent.gameObject.SetActive(noteActive);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();

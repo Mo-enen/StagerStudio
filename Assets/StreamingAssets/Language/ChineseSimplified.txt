@@ -535,9 +535,6 @@ Tip.ViewContainer.Track
 Tip.ViewContainer.TrackLock
 锁定轨道
 
-UI.AuthorLabel
-{0} | {1} | {2}
-
 UI.BeatmapInfo.BPM
 节拍/分钟
 

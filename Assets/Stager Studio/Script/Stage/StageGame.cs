@@ -207,7 +207,6 @@
 
 
 		private void Update_Mouse () {
-			if (Music.IsPlaying) { return; }
 			// Reset Zoom
 			if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) && CheckAntiMouse()) {
 				SetGameDropSpeed(1f);
@@ -218,7 +217,7 @@
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom
 						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
-					} else {
+					} else if (!Music.IsPlaying) {
 						// Seek
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
 						if (Input.GetKey(KeyCode.LeftAlt)) {

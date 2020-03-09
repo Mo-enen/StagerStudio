@@ -535,9 +535,6 @@ Show/Hide tracks
 Tip.ViewContainer.TrackLock
 Lock track
 
-UI.AuthorLabel
-{0} | {1} | {2}
-
 UI.BeatmapInfo.BPM
 BPM
 

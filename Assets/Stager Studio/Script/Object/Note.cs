@@ -168,9 +168,7 @@
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			bool isLink = !(linkedNote is null);
 			bool isSwipe = noteData.SwipeX != 1 || noteData.SwipeY != 1;
-			float alpha = Stage.GetStageAlpha(linkedStage) *
-				Track.GetTrackAlpha(linkedTrack) *
-				Mathf.Clamp01(16f - noteY01 * 16f);
+			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
 
 			// Movement
 			var (noteZonePos, rotX, rotZ) = Track.Inside(

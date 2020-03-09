@@ -18,9 +18,9 @@
 		public static int LayerID_Lum { get; set; } = -1;
 
 		// Data
+		private static Vector2 LuminousAppend = Vector2.zero;
 		private static float LuminousDuration_Tap = 0f;
 		private static float LuminousDuration_Hold = 0f;
-		private static Vector2 LuminousAppend = Vector2.zero;
 		private static float LumHeight_Tap = 0f;
 		private static float LumHeight_Hold = 0f;
 		private bool MovementDirty = true;
