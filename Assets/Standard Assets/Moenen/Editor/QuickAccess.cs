@@ -29,13 +29,14 @@
 
 #if UNITY_EDITOR
 namespace QuickAccess {
-	using System.Collections;
 	using System.Collections.Generic;
-	using UnityEngine;
-	using UnityEditor;
 	using System.IO;
 	using System.Text;
+	using UnityEditor;
 	using UnityEditor.Experimental.SceneManagement;
+	using UnityEngine;
+	using UnityEngine.SceneManagement;
+	using UnityEditor.SceneManagement;
 
 
 	public static class QuickAccess {
@@ -47,30 +48,195 @@ namespace QuickAccess {
 
 
 		// SUB
-		private class ObjectComparer : IComparer<Object> {
-			public int Compare (Object x, Object y) {
-				if (x is GameObject gX && y is GameObject gY) {
-					bool xIsPrefab = PrefabUtility.GetPrefabAssetType(x) == PrefabAssetType.Regular;
-					bool yIsPrefab = PrefabUtility.GetPrefabAssetType(y) == PrefabAssetType.Regular;
+		private class ObjectComparer : IComparer<(Object obj, int)> {
+			public int Compare ((Object obj, int) x, (Object obj, int) y) {
+				var xObj = x.obj;
+				var yObj = y.obj;
+				if (xObj is GameObject gX && yObj is GameObject gY) {
+					bool xIsPrefab = PrefabUtility.GetPrefabAssetType(xObj) == PrefabAssetType.Regular;
+					bool yIsPrefab = PrefabUtility.GetPrefabAssetType(yObj) == PrefabAssetType.Regular;
 					if (!xIsPrefab && !yIsPrefab) {
 						int gapX = 0, gapY = 0;
 						for (Transform tf = gX.transform; tf != null; tf = tf.parent) { gapX++; }
 						for (Transform tf = gY.transform; tf != null; tf = tf.parent) { gapY++; }
-						return gapX == gapY ? x.name.CompareTo(y.name) : gapX > gapY ? 1 : -1;
+						return gapX == gapY ? xObj.name.CompareTo(yObj.name) : gapX > gapY ? 1 : -1;
 					} else {
-						return xIsPrefab == yIsPrefab ? x.name.CompareTo(y.name) : xIsPrefab ? 1 : -1;
+						return xIsPrefab == yIsPrefab ? xObj.name.CompareTo(yObj.name) : xIsPrefab ? 1 : -1;
 					}
 				} else {
-					int index = x.GetType().ToString().CompareTo(y.GetType().ToString());
-					return index == 0 ? x.name.CompareTo(y.name) : index;
+					int index = xObj.GetType().ToString().CompareTo(yObj.GetType().ToString());
+					return index == 0 ? xObj.name.CompareTo(yObj.name) : index;
 				}
 			}
 		}
 
 
+		[System.Serializable]
+		public class ItemsJsonData {
+
+
+			//SUB
+			[System.Serializable]
+			public class ItemData {
+				public bool IsAsset => string.IsNullOrEmpty(ScenePath);
+				public string GUID = ""; // Asset or Scene
+				public string ScenePath = ""; // Scene Object Path eg: rootGameobject/TestObject/Test
+				public string ComponentType = ""; // Component Only
+				public string ComponentAssembly = ""; // Component Only
+			}
+
+
+			// VAR
+			public List<ItemData> Items = new List<ItemData>();
+
+
+			// API
+			public static List<(Object, int)> DataToList (ItemsJsonData data) {
+				var list = new List<(Object, int)>();
+				if (data != null) {
+					for (int i = 0; i < data.Items.Count; i++) {
+						var item = data.Items[i];
+						if (item is null) { continue; }
+						try {
+							var obj = DataToObject(item);
+							if (obj != null) {
+								list.Add((obj, i));
+							}
+						} catch { }
+					}
+				}
+				return list;
+			}
+
+
+			public static ItemData ObjectToData (Object obj) {
+				if (obj == null) { return null; }
+				string path = AssetDatabase.GetAssetPath(obj);
+				if (string.IsNullOrEmpty(path)) {
+					try {
+						string type = "";
+						string assembly = "";
+						string guid = "";
+						string scenePath = "";
+						// Scene
+						switch (obj) {
+							case Component cItem:
+								type = obj.GetType().ToString();
+								assembly = obj.GetType().Assembly.ToString();
+								scenePath = GetScenePath(cItem.gameObject);
+								guid = AssetDatabase.AssetPathToGUID(SceneManager.GetSceneByName(cItem.gameObject.scene.name).path);
+								break;
+							case GameObject gItem:
+								scenePath = GetScenePath(gItem);
+								guid = AssetDatabase.AssetPathToGUID(SceneManager.GetSceneByName(gItem.scene.name).path);
+								break;
+						}
+						// Add
+						if (!string.IsNullOrEmpty(guid) && !string.IsNullOrEmpty(scenePath)) {
+							return new ItemData() {
+								GUID = guid,
+								ComponentType = type,
+								ComponentAssembly = assembly,
+								ScenePath = scenePath,
+							};
+						}
+					} catch { }
+				} else {
+					// Asset
+					return new ItemData() {
+						GUID = AssetDatabase.AssetPathToGUID(path),
+						ComponentType = "",
+						ScenePath = "",
+					};
+				}
+				return null;
+				// Func
+				string GetScenePath (GameObject g) {
+					var builder = new StringBuilder();
+					for (Transform tf = g.transform; tf != null; tf = tf.parent) {
+						builder.Insert(0, tf.parent != null ? $"/{tf.GetSiblingIndex()}" : tf.GetSiblingIndex().ToString());
+					}
+					return builder.ToString();
+				}
+			}
+
+
+			private static Object DataToObject (ItemData item) {
+				var path = AssetDatabase.GUIDToAssetPath(item.GUID);
+				if (!string.IsNullOrEmpty(path)) {
+					var obj = AssetDatabase.LoadAssetAtPath<Object>(path);
+					if (obj != null) {
+						if (item.IsAsset) {
+							return obj;
+						} else if (obj is SceneAsset) {
+							var scene = SceneManager.GetSceneByPath(path);
+							var g = GetGameObject(scene, item.ScenePath);
+							if (g != null) {
+								if (string.IsNullOrEmpty(item.ComponentType)) {
+									// GameObject
+									return g;
+								} else {
+									// Component
+									var type = System.Type.GetType($"{item.ComponentType},{item.ComponentAssembly}");
+									var com = g.GetComponent(type);
+									if (com != null) {
+										return com;
+									}
+								}
+							}
+						}
+					}
+				}
+				return null;
+				// Func
+				GameObject GetGameObject (Scene scene, string scenePath) {
+					if (!scene.IsValid()) { return null; }
+					var gs = scene.GetRootGameObjects();
+					var paths = scenePath.Split('/');
+					Transform tf = null;
+					for (int i = 0; paths != null && i < paths.Length; i++) {
+						var indexStr = paths[i];
+						if (string.IsNullOrEmpty(indexStr) || !int.TryParse(indexStr, out int index)) { continue; }
+						if (i == 0) {
+							if (index >= 0 && index < gs.Length) {
+								tf = gs[index].transform;
+							} else {
+								return null;
+							}
+						} else if (tf != null) {
+							if (index >= 0 && index < tf.childCount) {
+								tf = tf.GetChild(index);
+							} else {
+								return null;
+							}
+						} else {
+							return null;
+						}
+					}
+					return tf.gameObject;
+				}
+			}
+
+
+			public void RemoveEmpty () {
+				for (int i = 0; i < Items.Count; i++) {
+					var item = Items[i];
+					if (item == null || AssetDatabase.LoadAssetAtPath<Object>(AssetDatabase.GUIDToAssetPath(item.GUID)) == null) {
+						Items.RemoveAt(i);
+						i--;
+						continue;
+					}
+				}
+			}
+
+
+		}
+
+
 		// Data
-		private readonly static List<Object> ItemList = new List<Object>();
-		private static string ConfigPath => Path.Combine(Directory.GetParent(Application.dataPath).FullName, "QuickAccess Config.txt");
+		private readonly static ItemsJsonData ItemData = new ItemsJsonData();
+		private readonly static List<(Object obj, int index)> ItemList = new List<(Object, int)>();
+		private static string ConfigPath => Path.Combine(Directory.GetParent(Application.dataPath).FullName, "QuickAccess Config.json");
 		private static bool Folded = false;
 
 
@@ -85,31 +251,20 @@ namespace QuickAccess {
 		[InitializeOnLoadMethod]
 		public static void Init () {
 			SceneView.duringSceneGui += OnSceneGUI;
+			EditorSceneManager.activeSceneChangedInEditMode += (sceneA, sceneB) => {
+				RefreshList();
+				SaveToDisk();
+			};
+			EditorSceneManager.sceneSaved += (scene) => SaveToDisk();
 			EditorApplication.playModeStateChanged += (state) => {
 				if (state == PlayModeStateChange.EnteredEditMode || state == PlayModeStateChange.EnteredPlayMode) {
 					LoadFromDisk();
+					RefreshList();
 				}
 			};
 			Folded = EditorPrefs.GetBool("QuickAccess.QuickAccess.Folded", Folded);
 			LoadFromDisk();
-			// Func
-			void LoadFromDisk () {
-				ItemList.Clear();
-				if (File.Exists(ConfigPath)) {
-					StreamReader sr = File.OpenText(ConfigPath);
-					string[] configs = sr.ReadToEnd().Split('\n');
-					sr.Close();
-					foreach (var con in configs) {
-						if (int.TryParse(con, out int id)) {
-							var obj = EditorUtility.InstanceIDToObject(id);
-							if (!(obj is null)) {
-								ItemList.Add(obj);
-							}
-						}
-					}
-				}
-				SortItems();
-			}
+			RefreshList();
 		}
 
 
@@ -138,7 +293,7 @@ namespace QuickAccess {
 				AREA_WIDTH,
 				ITEM_HEIGHT
 			));
-			if (GUI.Button(GUIRect(0, 0), Folded ? "▲  Quick Access  (A)  " : "▼  Quick Access  (A)  ", EditorStyles.miniButton)) {
+			if (GUI.Button(GUIRect(0, 0), Folded ? "▲  Quick Access (A)  " : "▼  Quick Access (A)  ", EditorStyles.miniButton)) {
 				SetFolded(!Folded);
 			}
 			GUILayout.EndArea();
@@ -153,15 +308,6 @@ namespace QuickAccess {
 				AreaHeight
 			));
 			var areaRect = new Rect(0, 0, AREA_WIDTH, AreaHeight);
-
-			// Null Check
-			for (int i = 0; i < ItemList.Count; i++) {
-				var item = ItemList[i];
-				if (item == null) {
-					ItemList.RemoveAt(i);
-					i--;
-				}
-			}
 
 			// System
 			bool mouseDown = Event.current.type == EventType.MouseDown;
@@ -183,10 +329,13 @@ namespace QuickAccess {
 					if (mouseInArea && DragAndDrop.objectReferences.Length > 0) {
 						foreach (var obj in DragAndDrop.objectReferences) {
 							if (obj is null) { continue; }
-							ItemList.Add(obj);
+							var itemData = ItemsJsonData.ObjectToData(obj);
+							if (itemData != null) {
+								ItemData.Items.Add(itemData);
+							}
 						}
-						SortItems();
-						Save();
+						RefreshList();
+						SaveToDisk();
 						DragAndDrop.AcceptDrag();
 						Event.current.Use();
 					}
@@ -205,8 +354,8 @@ namespace QuickAccess {
 			Space(2);
 			for (int i = 0; i < ItemList.Count; i++) {
 				int index = i;
-				var item = ItemList[index];
-				if (item is null) { continue; }
+				var item = ItemList[index].obj;
+				if (item == null) { continue; }
 				var rect = GUIRect(0, ITEM_HEIGHT);
 				rect.width += 18;
 				if (mouseDown && !mouseDownInItem && mouseInArea && rect.Contains(Event.current.mousePosition)) {
@@ -264,9 +413,14 @@ namespace QuickAccess {
 		private static void SpawnMenu (int index) {
 			GenericMenu menu = new GenericMenu();
 			menu.AddItem(new GUIContent("Delete"), false, () => {
-				if (EditorUtility.DisplayDialog("", "Remove \"" + ItemList[index].name + "\" from Quick Access?", "Delete", "Cancel")) {
-					ItemList.RemoveAt(index);
-					Save();
+				var item = ItemList[index];
+				if (item.obj == null) { return; }
+				if (EditorUtility.DisplayDialog("", "Remove \"" + item.obj.name + "\" from Quick Access?", "Delete", "Cancel")) {
+					if (item.index >= 0 && item.index < ItemData.Items.Count) {
+						ItemData.Items.RemoveAt(item.index);
+					}
+					RefreshList();
+					SaveToDisk();
 				}
 			});
 			menu.ShowAsContext();
@@ -276,7 +430,12 @@ namespace QuickAccess {
 		private static void InvokeItem (Object item) {
 			switch (item) {
 				case MonoBehaviour mItem: {
-						AssetDatabase.OpenAsset(MonoScript.FromMonoBehaviour(mItem).GetInstanceID());
+						var script = MonoScript.FromMonoBehaviour(mItem);
+						if (AssetDatabase.GetAssetPath(script).StartsWith("Assets")) {
+							AssetDatabase.OpenAsset(script.GetInstanceID());
+						} else {
+							Selection.activeObject = mItem.gameObject;
+						}
 					}
 					break;
 				case MonoScript sItem: {
@@ -298,22 +457,35 @@ namespace QuickAccess {
 		}
 
 
-		private static void Save () {
-			StringBuilder config = new StringBuilder();
-			foreach (var item in ItemList) {
-				if (item is null) { continue; }
-				config.AppendLine(item.GetInstanceID().ToString());
-			}
-			// Save to Disk
-			FileStream fs = new FileStream(ConfigPath, FileMode.Create);
-			StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
-			sw.Write(config);
-			sw.Close();
-			fs.Close();
+		private static void LoadFromDisk () {
+			try {
+				ItemList.Clear();
+				if (File.Exists(ConfigPath)) {
+					StreamReader sr = File.OpenText(ConfigPath);
+					JsonUtility.FromJsonOverwrite(sr.ReadToEnd(), ItemData);
+					sr.Close();
+				}
+			} catch { }
 		}
 
 
-		private static void SortItems () => ItemList.Sort(new ObjectComparer());
+		private static void SaveToDisk () {
+			try {
+				FileStream fs = new FileStream(ConfigPath, FileMode.Create);
+				StreamWriter sw = new StreamWriter(fs, Encoding.UTF8);
+				ItemData.RemoveEmpty();
+				sw.Write(JsonUtility.ToJson(ItemData, true));
+				sw.Close();
+				fs.Close();
+			} catch { }
+		}
+
+
+		private static void RefreshList () {
+			ItemList.Clear();
+			ItemList.AddRange(ItemsJsonData.DataToList(ItemData));
+			ItemList.Sort(new ObjectComparer());
+		}
 
 
 		private static void SetFolded (bool folded) {
