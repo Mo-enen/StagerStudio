@@ -157,7 +157,7 @@
 				bool ctrl = Input.GetKey(KeyCode.LeftControl);
 				bool alt = Input.GetKey(KeyCode.LeftAlt);
 				int maxSelectingLayer = GetMaxSelectingLayer();
-				var (overlapLayer, overlapIndex, _) = GetCastLayerIndex(UnlockedMask);
+				var (overlapLayer, overlapIndex, _) = GetCastLayerIndex(UnlockedMask, true);
 				ClickStartInsideSelection = SelectingObjectsIndex.Count > 0 && !alt && overlapLayer < maxSelectingLayer && CheckSelecting(overlapLayer, overlapIndex, map);
 				// Select
 				if (!ClickStartInsideSelection) {
@@ -182,7 +182,7 @@
 		private void OnMouseLeftDrag () {
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var mouseRay = GetMouseRay();
-			var plane = new Plane(Vector3.back, zoneMin);
+			//var plane = new Plane(Vector3.back, zoneMin);
 			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0 && ClickStartInsideSelection) {
 				// Moving Selection
@@ -206,7 +206,7 @@
 				float speed = 1f;
 				var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
 				if (brushType > 0) {
-					var (layerIndex, itemIndex, target) = GetCastLayerIndex(ItemMasks[brushType - 1]);
+					var (layerIndex, itemIndex, target) = GetCastLayerIndex(ItemMasks[brushType - 1], true);
 					if (!(target is null)) {
 						gridEnable = true;
 						pos = target.position;
@@ -449,22 +449,25 @@
 		}
 
 
-		private (int, int, Transform) GetCastLayerIndex (LayerMask mask) {
-			int count = Physics.RaycastNonAlloc(GetMouseRay(), CastHits, float.MaxValue, mask);
+		private (int, int, Transform) GetCastLayerIndex (LayerMask mask, bool insideZone) {
+			var ray = GetMouseRay();
+			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
 			int overlapLayer = -1;
 			int overlapIndex = -1;
 			Transform tf = null;
-			for (int i = 0; i < count; i++) {
-				var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
-				if (layerIndex >= overlapLayer) {
-					if (layerIndex != overlapLayer) {
-						overlapIndex = -1;
+			if (!insideZone || RayInsideZone(ray)) {
+				for (int i = 0; i < count; i++) {
+					var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
+					if (layerIndex >= overlapLayer) {
+						if (layerIndex != overlapLayer) {
+							overlapIndex = -1;
+						}
+						if (itemIndex >= overlapIndex) {
+							tf = CastHits[i].transform.parent;
+						}
+						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
+						overlapLayer = layerIndex;
 					}
-					if (itemIndex >= overlapIndex) {
-						tf = CastHits[i].transform.parent;
-					}
-					overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-					overlapLayer = layerIndex;
 				}
 			}
 			return (overlapLayer, overlapIndex, tf);
@@ -491,6 +494,16 @@
 				}
 			}
 			return 1f;
+		}
+
+
+		private bool RayInsideZone (Ray ray) {
+			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
+				var point = ray.GetPoint(enter);
+				return point.x > zoneMin.x && point.x < zoneMax.x && point.y > zoneMin.y && point.y < zoneMax.y;
+			}
+			return false;
 		}
 
 

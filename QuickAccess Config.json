@@ -56,12 +56,6 @@
         },
         {
             "GUID": "4911db2fb69d0944eaf89b659bea5b89",
-            "ScenePath": "0",
-            "ComponentType": "",
-            "ComponentAssembly": ""
-        },
-        {
-            "GUID": "4911db2fb69d0944eaf89b659bea5b89",
             "ScenePath": "0/5",
             "ComponentType": "",
             "ComponentAssembly": ""
@@ -86,6 +80,18 @@
         },
         {
             "GUID": "615f25b61905c10468115a7444d8f7b6",
+            "ScenePath": "",
+            "ComponentType": "",
+            "ComponentAssembly": ""
+        },
+        {
+            "GUID": "da7f946bf2fc8f84f95134f233c99156",
+            "ScenePath": "",
+            "ComponentType": "",
+            "ComponentAssembly": ""
+        },
+        {
+            "GUID": "9a3b8855d593a514b8e1932a95c47b8f",
             "ScenePath": "",
             "ComponentType": "",
             "ComponentAssembly": ""

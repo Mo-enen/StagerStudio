@@ -224,6 +224,9 @@ TextureImporter:
   - first:
       213: -4182881303555017736
     second: Music Note 5
+  - first:
+      213: -7089468405191809942
+    second: Palette
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -579,6 +582,27 @@ TextureImporter:
       bones: []
       spriteID: 8f3faf3cd9b63f5c0800000000000000
       internalID: -4182881303555017736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Palette
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 42
+        width: 51
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a64ef2e0c062d9d90800000000000000
+      internalID: -7089468405191809942
       vertices: []
       indices: 
       edges: []

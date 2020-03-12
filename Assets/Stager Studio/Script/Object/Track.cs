@@ -15,9 +15,11 @@
 
 		// API
 		public static int LayerID_Track { get; set; } = -1;
+		public static int LayerID_TrackTint { get; set; } = -1;
 		public static int LayerID_Tray { get; set; } = -1;
 
 		// Ser
+		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
 		[SerializeField] ObjectRenderer m_TrayRenderer = null;
 
 
@@ -32,12 +34,17 @@
 		protected override void Awake () {
 			base.Awake();
 			ColRot = null;
+			MainRenderer.Type = SkinType.Track;
+			MainRenderer.Tint = Color.white;
+			m_TrackTintRenderer.Type = SkinType.TrackTint;
 		}
 
 
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
+			m_TrackTintRenderer.RendererEnable = false;
+			m_TrayRenderer.RendererEnable = false;
 			ColSize = null;
 
 			// Get TrackData
@@ -53,7 +60,7 @@
 
 			// Get/Check Track/Stage
 			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
-			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) || !GetTrackActive(trackData);
+			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
 
 			Update_Gizmos(trackData.Active, oldSelecting, trackIndex);
@@ -80,7 +87,7 @@
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
-			ColSize = MainRenderer.transform.localScale = new Vector3(
+			ColSize = MainRenderer.transform.localScale = m_TrackTintRenderer.transform.localScale = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
 				1f
@@ -88,13 +95,14 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
+			m_TrackTintRenderer.RendererEnable = true;
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
-			MainRenderer.Type = SkinType.Track;
-			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
-			MainRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
-			MainRenderer.Tint = GetTrackColor(trackData);
-			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
+			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
+			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
+			m_TrackTintRenderer.Tint = GetTrackColor(trackData);
+			MainRenderer.Alpha = m_TrayRenderer.Alpha = m_TrackTintRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
+			m_TrackTintRenderer.SetSortingLayer(LayerID_TrackTint, GetSortingOrder());
 			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
 
 		}
@@ -129,19 +137,21 @@
 		#region --- API ---
 
 
-		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
+		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time && MusicTime < data.Time + data.Duration;
 
 
-		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f, 2f);
+		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f, 2f);
 
 
-		public static float GetTrackX (Beatmap.Track data) => Mathf.Repeat(data.X + Evaluate(data.Xs, MusicTime - data.Time), 1f);
+		public static float GetTrackX (Beatmap.Track data) => Mathf.Clamp01(data.X + Evaluate(data.Xs, MusicTime - data.Time));
 
 
 		public static Color GetTrackColor (Beatmap.Track data) => PaletteColor(data.Color) * EvaluateColor(data.Colors, MusicTime - data.Time);
 
 
-		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
+		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(
+			VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration
+		);
 
 
 		public static (Vector3 pos, float rotX, float rotZ) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float trackX, float trackWidth, float trackRotX) {
@@ -160,7 +170,16 @@
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
 			m_TrayRenderer.SkinData = skin;
+			m_TrackTintRenderer.SkinData = skin;
 		}
+
+
+		protected override void RefreshRendererZone () {
+			base.RefreshRendererZone();
+			RefreshRendererZoneFor(m_TrackTintRenderer);
+			RefreshRendererZoneFor(m_TrayRenderer);
+		}
+
 
 
 		#endregion

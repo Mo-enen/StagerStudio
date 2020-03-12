@@ -8,21 +8,6 @@
 	public class ZoneUI : MonoBehaviour {
 
 
-		// SUB
-		public delegate string StringStringHandler (string str);
-
-		public class LanguageData {
-
-
-		}
-
-
-
-
-		// Handler
-		public static StringStringHandler GetLanguage { get; set; } = null;
-
-
 		// API
 		public bool IsShowing => m_ZoneGraphics[0].enabled;
 
@@ -31,6 +16,7 @@
 		private Vector3 ZoneMaxPos { get; set; } = default;
 		private Vector3 ZoneMaxPos_Real { get; set; } = default;
 		private float Ratio { get; set; } = 1f;
+		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
 		[SerializeField] private Transform m_ZoneMin = null;
@@ -40,7 +26,7 @@
 
 		// Data
 		private Coroutine ZoneCor = null;
-
+		private Camera _Camera = null;
 
 
 		// MSG
@@ -89,6 +75,10 @@
 		public (Vector3, Vector3, float, float) GetZoneMinMax (bool real = false) => (ZoneMinPos, real ? ZoneMaxPos_Real : ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x, Ratio);
 
 
+		public (Vector2, Vector2) GetScreenZoneMinMax () => (
+			Camera.WorldToScreenPoint(ZoneMinPos),
+			Camera.WorldToScreenPoint(ZoneMaxPos_Real)
+		);
 
 
 	}

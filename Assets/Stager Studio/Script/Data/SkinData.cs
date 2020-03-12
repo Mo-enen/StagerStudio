@@ -13,16 +13,17 @@
 		JudgeLine = 1,
 
 		Track = 2,
-		Tray = 3,
+		TrackTint = 3,
+		Tray = 4,
 
-		TapNote = 4,
-		HoldNote = 5,
-		SwipeArrow = 6,
-		SlideNote = 7,
-		LinkPole = 8,
+		TapNote = 5,
+		HoldNote = 6,
+		SwipeArrow = 7,
+		SlideNote = 8,
+		LinkPole = 9,
 
-		NoteLuminous = 9,
-		HoldLuminous = 10,
+		NoteLuminous = 10,
+		HoldLuminous = 11,
 
 	}
 
@@ -58,6 +59,10 @@
 			get => ScaleMuti;
 			set => ScaleMuti = Mathf.Max(value, 1f);
 		}
+		public int VanishDuration_UI {
+			get => (int)(VanishDuration * 1000f);
+			set => VanishDuration = Mathf.Max(value / 1000f, 0f);
+		}
 
 		// Ser
 		public string Author = "";
@@ -65,6 +70,7 @@
 		public float NoteShadowDistance = 0f;
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
+		public float VanishDuration = 0.1f;
 		public bool FixedNoteWidth = false;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
@@ -169,6 +175,15 @@
 			if (item.Rects is null || item.Rects.Count == 0) { return default; }
 			var rect = item.Rects[0];
 			return new Vector2(rect.Width, rect.Height);
+		}
+
+
+		public Vector4 TryGetItemBorder (int index) {
+			if (Items is null || index < 0 || index >= Items.Count) { return default; }
+			var item = Items[index];
+			if (item.Rects is null || item.Rects.Count == 0) { return default; }
+			var rect = item.Rects[0];
+			return new Vector4(rect.BorderL, rect.BorderR, rect.BorderD, rect.BorderU);
 		}
 
 

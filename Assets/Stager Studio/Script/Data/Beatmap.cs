@@ -10,6 +10,21 @@
 
 
 
+		// Comparer
+		public class StageComparer : IComparer<Stage> {
+			public int Compare (Stage x, Stage y) => x.Time.CompareTo(y.Time);
+		}
+		public class TrackComparer : IComparer<Track> {
+			public int Compare (Track x, Track y) => x.Time.CompareTo(y.Time);
+		}
+		public class NoteComparer : IComparer<Note> {
+			public int Compare (Note x, Note y) => x.Time.CompareTo(y.Time);
+		}
+		public class SpeedNoteComparer : IComparer<SpeedNote> {
+			public int Compare (SpeedNote x, SpeedNote y) => x.Time.CompareTo(y.Time);
+		}
+
+
 		// SUB
 		[System.Serializable]
 		public struct TimeFloatTween {
@@ -333,6 +348,19 @@
 
 
 		public static implicit operator bool (Beatmap map) => map != null;
+
+
+		public void SortByTime () {
+			SortStagesByTime();
+			SortTracksByTime();
+			SortNotesByTime();
+			SortSpeedNotesByTime();
+		}
+		public void SortStagesByTime () => Stages.Sort(new StageComparer());
+		public void SortTracksByTime () => Tracks.Sort(new TrackComparer());
+		public void SortNotesByTime () => Notes.Sort(new NoteComparer());
+		public void SortSpeedNotesByTime () => SpeedNotes.Sort(new SpeedNoteComparer());
+
 
 
 	}

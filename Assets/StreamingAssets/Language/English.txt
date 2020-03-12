@@ -22,6 +22,9 @@ Prefabs exported
 Dialog.TweenEditor.CancelConfirm
 Close tween editor? Changes will not be save.
 
+Game.Hint.GameDropSpeed
+Drop Speed × {0}
+
 Menu.BeatmapItem.DeleteBeatmap
 Delete Beatmap
 
@@ -361,6 +364,9 @@ Tap
 SkinEditor.Item.Track
 Track
 
+SkinEditor.Item.TrackTint
+Track (Tint)
+
 SkinEditor.Item.Tray
 Tray
 
@@ -504,6 +510,9 @@ Show scope of activities or not
 
 Tip.Toolbar.Home
 Back to home page
+
+Tip.Toolbar.Skin
+Switch skin
 
 Tip.ViewContainer.Motion
 Show/Hide motion notes
@@ -891,6 +900,9 @@ X
 
 UI.SkinEditor.SubY
 Y
+
+UI.SkinEditor.VanishDuration
+Vanish
 
 UI.SkinEditor.View
 View (Hold)

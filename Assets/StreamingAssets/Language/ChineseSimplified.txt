@@ -22,6 +22,9 @@ Dialog.Library.PrefabExported
 Dialog.TweenEditor.CancelConfirm
 关闭补间编辑器吗？修改将不会被保存
 
+Game.Hint.GameDropSpeed
+下落速度 × {0}
+
 Menu.BeatmapItem.DeleteBeatmap
 删除谱面
 
@@ -361,6 +364,9 @@ SkinEditor.Item.Tap
 SkinEditor.Item.Track
 轨道
 
+SkinEditor.Item.TrackTint
+轨道（变色）
+
 SkinEditor.Item.Tray
 托盘
 
@@ -504,6 +510,9 @@ Tip.Setting.Zone
 
 Tip.Toolbar.Home
 返回主页
+
+Tip.Toolbar.Skin
+快速切换皮肤
 
 Tip.ViewContainer.Motion
 显示/隐藏运动音符
@@ -891,6 +900,9 @@ X
 
 UI.SkinEditor.SubY
 Y
+
+UI.SkinEditor.VanishDuration
+消失时长
 
 UI.SkinEditor.View
 预览（长按）

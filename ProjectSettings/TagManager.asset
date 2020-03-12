@@ -47,6 +47,9 @@ TagManager:
   - name: Stage
     uniqueID: 778191249
     locked: 0
+  - name: TrackTint
+    uniqueID: 1502956509
+    locked: 0
   - name: Track
     uniqueID: 1207560611
     locked: 0

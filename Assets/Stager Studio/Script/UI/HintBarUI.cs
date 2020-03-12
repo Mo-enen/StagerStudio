@@ -20,10 +20,10 @@
 
 
 		// API
-		public void SetHint (string hint = "") {
+		public void SetHint (string hint = "", bool flash = true) {
 			m_Text.text = hint;
 			// Flash
-			if (!string.IsNullOrEmpty(hint)) {
+			if (flash && !string.IsNullOrEmpty(hint)) {
 				CancelInvoke();
 				Invoke("FlashLogic", 0f);
 				Invoke("FlashEndLogic", m_FlashDuration);

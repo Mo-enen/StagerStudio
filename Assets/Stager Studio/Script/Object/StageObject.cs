@@ -28,9 +28,7 @@
 
 
 		// Const
-		protected const float DISC_GAP = 0.001f;
 		protected const float DURATION_GAP = 0.0001f;
-		protected const float TRANSATION_DURATION = 0.264f;
 
 		// Handler
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
@@ -38,6 +36,7 @@
 
 		// API
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
+		public static (Vector2 min, Vector3 max) ScreenZoneMinMax { get; set; } = (default, default);
 		public static Beatmap Beatmap { get; set; } = null;
 		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
 		public static int LayerID_UI { get; set; } = -1;
@@ -45,6 +44,8 @@
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
+		public static int MaterialZoneID { get; set; } = 0;
+		protected static float VanishDuration { get; private set; } = 0f;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
 		protected TextMesh Label => m_Label;
 		protected SpriteRenderer Highlight => m_Highlight;
@@ -77,6 +78,12 @@
 
 
 		protected virtual void LateUpdate () {
+			LateUpdate_Col();
+			LateUpdate_Renderer();
+		}
+
+
+		private void LateUpdate_Col () {
 			if (m_Col == null) { return; }
 			if (m_Col.enabled != ColSize.HasValue) {
 				m_Col.enabled = ColSize.HasValue;
@@ -97,12 +104,17 @@
 		}
 
 
+		private void LateUpdate_Renderer () {
+			RefreshRendererZone();
+		}
+
+
 		#region --- API ---
 
 
-		protected static float Evaluate (List<Beatmap.TimeFloatTween> data, float lifeTime) {
+		protected static float Evaluate (List<Beatmap.TimeFloatTween> data, float lifeTime, float defaultValue = 0f) {
 			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
-				return 0f;
+				return defaultValue;
 			} else if (data.Count == 1) {
 				return data[0].Value;
 			} else {
@@ -177,10 +189,25 @@
 		}
 
 
+		protected static void RefreshRendererZoneFor (ObjectRenderer renderer) =>
+			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
+			ScreenZoneMinMax.min.x,
+			ScreenZoneMinMax.min.y,
+			ScreenZoneMinMax.max.x,
+			ScreenZoneMinMax.max.y
+		));
+
+
 		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);
 
 
-		public virtual void SetSkinData (SkinData skin) => MainRenderer.SkinData = skin;
+		public virtual void SetSkinData (SkinData skin) {
+			MainRenderer.SkinData = skin;
+			VanishDuration = skin != null ? skin.VanishDuration : 0f;
+		}
+
+
+		protected virtual void RefreshRendererZone () => RefreshRendererZoneFor(m_MainRenderer);
 
 
 		#endregion

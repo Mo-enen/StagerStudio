@@ -6,8 +6,8 @@
 	using Stage;
 
 
-	public class BeatmapSwiperUI : MonoBehaviour {
-		
+	public class SkinSwiperUI : MonoBehaviour {
+
 
 		// SUB
 		private class TransformComparer : IComparer<Transform> {
@@ -22,27 +22,27 @@
 
 		// Ser
 		[SerializeField] private RectTransform m_Content = null;
-		[SerializeField] private Grabber m_BeatmapItemPrefab = null;
+		[SerializeField] private Grabber m_SkinItemPrefab = null;
 
 
 		// API
-		public void Init (StageProject project) {
-			foreach (var pair in project.BeatmapMap) {
-				if (pair.Value == null) { continue; }
-				var graber = Instantiate(m_BeatmapItemPrefab, m_Content);
+		public void Init (StageSkin stageSkin) {
+			foreach (var skinName in stageSkin.AllSkinNames) {
+				var sName = skinName;
+				if (string.IsNullOrEmpty(sName)) { continue; }
+				var graber = Instantiate(m_SkinItemPrefab, m_Content);
 				var rt = graber.transform as RectTransform;
-				rt.name = pair.Value.Level.ToString();
+				rt.name = sName;
 				rt.anchoredPosition3D = rt.anchoredPosition;
 				rt.localRotation = Quaternion.identity;
 				rt.localScale = Vector3.one;
 				rt.SetAsLastSibling();
-				rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (m_BeatmapItemPrefab.transform as RectTransform).rect.height);
-				graber.Grab<Text>("Text").text = pair.Value.Tag;
+				rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (m_SkinItemPrefab.transform as RectTransform).rect.height);
+				graber.Grab<Text>("Text").text = sName;
 				graber.Grab<Button>().onClick.AddListener(OnClick);
 				void OnClick () {
 					Close();
-					project.SaveProject();
-					project.OpenBeatmap(pair.Key);
+					stageSkin.LoadSkin(sName);
 				}
 			}
 			SortContent();

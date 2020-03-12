@@ -64,6 +64,7 @@
 		[SerializeField] private RectTransform m_DirtyMark = null;
 		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private Text m_BeatmapSwiperLabel = null;
+		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Toggle m_UseDynamicSpeed = null;
 		[SerializeField] private Toggle m_UseAbreastView = null;
 		[SerializeField] private Toggle m_GridTG = null;
@@ -134,6 +135,7 @@
 			StageUndo.GlobalUpdate();
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (Game.AbreastIndex, Game.UseAbreast, Game.AllStageAbreast);
+			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			Object.Stage.StageCount = Game.GetItemCount(0);
 		}
 
@@ -146,7 +148,6 @@
 			StageState.GetLanguage = Language.Get;
 			StageSkin.GetLanguage = Language.Get;
 			DialogUtil.GetLanguage = Language.Get;
-			ZoneUI.GetLanguage = Language.Get;
 			HomeUI.GetLanguage = Language.Get;
 			ProjectInfoUI.GetLanguage = Language.Get;
 			TooltipUI.GetLanguage = Language.Get;
@@ -159,6 +160,7 @@
 			TooltipUI.TipLabel = m_TipLabel;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
+			StageGame.LogHint = m_Hint.SetHint;
 			StageLanguage.OnLanguageLoaded = () => {
 				TryRefreshSetting();
 				ReloadSSLanguageTexts();
@@ -198,6 +200,7 @@
 		private void Awake_Object () {
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => Project.Palette[Mathf.Clamp(index, 0, Project.Palette.Count - 1)];
+			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
 			Note.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
@@ -388,11 +391,11 @@
 				Note.SetNoteSkin(data);
 				Luminous.SetLuminousSkin(data);
 				Resources.UnloadUnusedAssets();
+				m_SkinSwiperLabel.text = StageSkin.Data.Name;
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();
 				Game.ClearAllContainers();
-
 			};
 		}
 
@@ -433,6 +436,7 @@
 					Game.Shift = Project.Beatmap.Shift;
 					Game.MapDropSpeed = Project.Beatmap.DropSpeed;
 					Game.Ratio = Project.Beatmap.Ratio;
+					m_BeatmapSwiperLabel.text = Project.Beatmap.Tag;
 				}
 				RefreshGridRenderer();
 			};

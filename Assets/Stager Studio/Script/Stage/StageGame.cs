@@ -20,6 +20,7 @@
 		public delegate void VoidFloatHandler (float ratio);
 		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
 		public delegate string StringStringHandler (string str);
+		public delegate void VoidStringBoolHandler (string s, bool b);
 
 
 		#endregion
@@ -30,6 +31,9 @@
 		#region --- VAR ---
 
 
+		// Const
+		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
+
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
@@ -37,6 +41,7 @@
 		public static VoidHandler OnAbreastChanged { get; set; } = null;
 		public static VoidBoolIntIntHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
+		public static VoidStringBoolHandler LogHint { get; set; } = null;
 
 		// API
 		public float Ratio {
@@ -110,6 +115,7 @@
 		private void Awake () {
 			// Layer ID
 			Stage.LayerID_Stage = SortingLayer.NameToID("Stage");
+			Track.LayerID_TrackTint = SortingLayer.NameToID("TrackTint");
 			Track.LayerID_Track = SortingLayer.NameToID("Track");
 			Note.LayerID_Shadow = SortingLayer.NameToID("Shadow");
 			Track.LayerID_Tray = SortingLayer.NameToID("Tray");
@@ -210,6 +216,7 @@
 			// Reset Zoom
 			if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) && CheckAntiMouse()) {
 				SetGameDropSpeed(1f);
+				LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.0"), false);
 			}
 			// Wheel
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
@@ -217,6 +224,7 @@
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom
 						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
+						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.0"), false);
 					} else if (!Music.IsPlaying) {
 						// Seek
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
@@ -272,7 +280,9 @@
 
 		// Speed
 		public void SetGameDropSpeed (float speed) {
-			_GameDropSpeed = Mathf.Clamp(speed, 0.1f, 10f);
+			speed = Mathf.Clamp(speed, 0.1f, 10f);
+			speed = Mathf.Round(speed * 10f) / 10f;
+			_GameDropSpeed = speed;
 			OnSpeedChanged();
 		}
 
@@ -425,6 +435,20 @@
 			}
 			return changed;
 		}
+
+
+		// Misc
+		//private void LogGameHint_Key (string key, bool flash) => LogGameHint_Message(GetLanguage(key), flash);
+
+
+		private void LogGameHint_Key (string key, string arg, bool flash) {
+			try {
+				LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
+			} catch { }
+		}
+
+
+		private void LogGameHint_Message (string msg, bool flash) => LogHint(msg, flash);
 
 
 		#endregion

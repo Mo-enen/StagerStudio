@@ -49,6 +49,7 @@
 		[SerializeField] private InputField m_LuminWidthAppendIF = null;
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
+		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -166,6 +167,15 @@
 				}
 			});
 
+			// Vanish Duration 
+			m_VanishDurationIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
+				if (int.TryParse(str, out int value)) {
+					Data.VanishDuration_UI = value;
+					m_VanishDurationIF.text = Data.VanishDuration_UI.ToString();
+				}
+			});
+
 			// Fixed Note Width
 			m_FixedNoteWidthTG.onValueChanged.AddListener((isOn) => {
 				if (!UIReady) { return; }
@@ -228,19 +238,13 @@
 			if (data is null || ani is null) { return; }
 			UIReady = false;
 			try {
-				// Active
-				//bool noteActive = EditingType == SkinType.TapNote || EditingType == SkinType.HoldNote || EditingType == SkinType.SlideNote;
-				//bool lumActive = EditingType == SkinType.NoteLuminous || EditingType == SkinType.HoldLuminous;
-				//m_LuminWidthAppendIF.transform.parent.gameObject.SetActive(lumActive);
-				//m_LuminHeightAppendIF.transform.parent.gameObject.SetActive(lumActive);
-				//m_NoteShadowDistanceIF.transform.parent.gameObject.SetActive(noteActive);
-				//m_FixedNoteWidthTG.transform.parent.gameObject.SetActive(noteActive);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_NoteShadowDistanceIF.text = data.NoteShadowDistance_UI.ToString();
+				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
 				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);

@@ -21,6 +21,7 @@
 		[SerializeField] private TweenEditorUI m_TweenEditorPrefab = null;
 		[SerializeField] private WelcomeUI m_WelcomePrefab = null;
 		[SerializeField] private BeatmapSwiperUI m_BeatmapSwiperPrefab = null;
+		[SerializeField] private SkinSwiperUI m_SkinSwiperPrefab = null;
 		[SerializeField] private LoadingUI m_LoadingPrefab = null;
 		[SerializeField] private ProjectCreatorUI m_ProjectCreatorPrefab = null;
 
@@ -34,6 +35,7 @@
 		[SerializeField] private RectTransform m_TweenEditorRoot = null;
 		[SerializeField] private RectTransform m_WelcomeRoot = null;
 		[SerializeField] private RectTransform m_BeatmapSwiperRoot = null;
+		[SerializeField] private RectTransform m_SkinSwiperRoot = null;
 		[SerializeField] private RectTransform m_LoadingRoot = null;
 		[SerializeField] private RectTransform m_ProjectCreatorRoot = null;
 
@@ -113,6 +115,12 @@
 		public void UI_SpawnBeatmapSwiper () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init(Project);
+		}
+
+
+		public void UI_SpawnSkinSwiper () {
+			UI_RemoveUI();
+			Util.SpawnUI(m_SkinSwiperPrefab, m_SkinSwiperRoot, "Skin Swiper").Init(Skin);
 		}
 
 

@@ -17,7 +17,7 @@
 
 
 
-		public delegate void LogHandler (string key);
+		public delegate void LogHintHandler (string key, bool flash);
 		public delegate string LanguageHandler (string key);
 
 
@@ -84,7 +84,7 @@
 
 
 		// Handler
-		public static LogHandler LogHint { get; set; } = null;
+		public static LogHintHandler LogHint { get; set; } = null;
 		public static LanguageHandler GetLanguage { get; set; } = null;
 
 		// Short
@@ -263,7 +263,7 @@
 		public void OpenTrashbin () => OpenTrashbinLogic();
 
 
-		public void Invoke_ShowDoubleClickHint () => LogHint(GetLanguage(LanguageData.Hint_DoubleClick));
+		public void Invoke_ShowDoubleClickHint () => LogHint(GetLanguage(LanguageData.Hint_DoubleClick), true);
 
 
 		public void Invoke_ExistDialog () => DialogUtil.Dialog_OK(LanguageData.UI_FolderAlreadyExists, DialogUtil.MarkType.Warning);

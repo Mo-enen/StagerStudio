@@ -57,9 +57,9 @@
 				}
 			}
 		}
+		public MeshRenderer Renderer => _Renderer != null ? _Renderer : (_Renderer = GetComponent<MeshRenderer>());
 
 		// Short
-		protected MeshRenderer Renderer => _Renderer != null ? _Renderer : (_Renderer = GetComponent<MeshRenderer>());
 		private MeshFilter Filter => _Filter != null ? _Filter : (_Filter = GetComponent<MeshFilter>());
 		private Mesh Mesh {
 			get {

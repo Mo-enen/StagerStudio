@@ -123,7 +123,7 @@
 
 
 		private void Update_Cache (Beatmap.Note noteData, float speedMuti) {
-			if (MusicPlaying) { return; }
+			//if (MusicPlaying) { return; }
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
@@ -181,7 +181,11 @@
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
 			float noteScaleX = NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : NoteSize.x;
 			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteSize.y);
-			var zoneNoteScale = new Vector3(zoneSize * noteScaleX, zoneSize * noteScaleY, 1f);
+			var zoneNoteScale = new Vector3(
+				zoneSize * noteScaleX,
+				zoneSize * noteScaleY,
+				1f
+			);
 			transform.position = notePos;
 			ColRot = MainRenderer.transform.rotation = noteRot;
 			ColSize = MainRenderer.transform.localScale = zoneNoteScale;
@@ -242,14 +246,15 @@
 				Track.GetTrackWidth(linkedTrack),
 				stageAngle
 			);
-			//linkedZonePos += noteRot * Vector3.up * (zoneSize);
 			m_SubRenderer.transform.localPosition = noteRot * new Vector3(
 				MusicTime < noteData.Time + noteData.Duration ? 0f : zoneSize * (
 					linkedNoteY01 * (noteZoneX - linkedZonePos.x) / (linkedNoteY01 - noteData.NoteDropEnd + gameOffset) - noteZoneX + linkedZonePos.x
 				),
 				zoneSize * Mathf.Max(
-					(MusicTime < noteData.Time ? noteData.NoteDropEnd - noteData.NoteDropStart : noteData.NoteDropEnd - gameOffset) * stageHeight,
-					0f
+					(MusicTime < noteData.Time ?
+						noteData.NoteDropEnd - noteData.NoteDropStart :
+						noteData.NoteDropEnd - gameOffset
+					) * stageHeight, 0f
 				)
 			);
 			var poleWorldPos = m_SubRenderer.transform.position;
@@ -326,18 +331,28 @@
 
 
 		public static void SetNoteSkin (SkinData skin) {
-
 			// Thickness
 			var noteSize = skin.TryGetItemSize((int)SkinType.TapNote) / skin.ScaleMuti;
+			noteSize.x = Mathf.Max(noteSize.x, 0f);
+			noteSize.y = Mathf.Max(noteSize.y, 0.001f);
 			if (!skin.FixedNoteWidth) {
 				noteSize.x = -1f;
 			}
 			NoteSize = noteSize;
 			var arrowSize = skin.TryGetItemSize((int)SkinType.SwipeArrow) / skin.ScaleMuti;
-			ArrowSize = new Vector2(arrowSize.y, arrowSize.x);
+			arrowSize.x = Mathf.Max(arrowSize.x, 0f);
+			arrowSize.y = Mathf.Max(arrowSize.y, 0.001f);
+			ArrowSize = new Vector2(arrowSize.x, arrowSize.y);
 			PoleThickness = skin.TryGetItemSize((int)SkinType.LinkPole).x / skin.ScaleMuti;
 			// Shadow
 			ShadowDistance = skin.NoteShadowDistance;
+		}
+
+
+		protected override void RefreshRendererZone () {
+			base.RefreshRendererZone();
+			RefreshRendererZoneFor(m_SubRenderer);
+			RefreshRendererZoneFor(m_ShadowRenderer);
 		}
 
 

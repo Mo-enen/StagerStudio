@@ -26,7 +26,7 @@
 		public delegate void VoidBeatmapStringHandler (Beatmap map, string key);
 		public delegate void VoidBeatmapHandler (Beatmap map);
 		public delegate void VoidHandler ();
-		public delegate void VoidStringHandler (string str);
+		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate void VoidBoolHandler (bool value);
 
 
@@ -74,7 +74,7 @@
 
 		// Handler
 		public static VoidFloatStringHandler OnLoadProgress { get; set; } = null;
-		public static VoidStringHandler LogHint { get; set; } = null;
+		public static VoidStringBoolHandler LogHint { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidAudioClipHandler OnMusicLoaded { get; set; } = null;
 		public static VoidAudioClipsHandler OnClickSoundsLoaded { get; set; } = null;
@@ -958,7 +958,7 @@
 			BeatmapKey = key;
 			var map = BeatmapMap[key];
 			if (!map) { return; }
-			LogHint(string.Format(GetLanguage(LanguageData.UI_BeatmapLoadedMSG), map.Tag));
+			LogHint(string.Format(GetLanguage(LanguageData.UI_BeatmapLoadedMSG), map.Tag), true);
 			OnBeatmapOpened(map, key);
 		}
 

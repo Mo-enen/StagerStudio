@@ -92,7 +92,7 @@
 			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
 			MainRenderer.Type = SkinType.Stage;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time + TRANSATION_DURATION;
+			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
 			m_JudgelineRenderer.Scale = new Vector2(width, JudgeLineHeight);
@@ -137,19 +137,27 @@
 		}
 
 
+		protected override void RefreshRendererZone () {
+			base.RefreshRendererZone();
+			RefreshRendererZoneFor(m_JudgelineRenderer);
+		}
+
+
 		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Abreast.active ? 0f : -Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f);
 
 
 		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ? Abreast.all && StageCount > 0 ? 1f / StageCount : 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
 
 
-		public static float GetStageHeight (Beatmap.Stage data) => Abreast.active ? 1f / ZoneMinMax.ratio : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
+		public static float GetStageHeight (Beatmap.Stage data) => Abreast.active ? Mathf.Clamp(1f / ZoneMinMax.ratio, 0f, 256f) : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
 
 
-		public static float GetStageAlpha (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Clamp01(MusicTime < data.Time ? (MusicTime - data.Time + TRANSATION_DURATION) / TRANSATION_DURATION : MusicTime > data.Time + data.Duration ? (data.Time + data.Duration - MusicTime + TRANSATION_DURATION) / TRANSATION_DURATION : 1f);
+		public static float GetStageAlpha (Beatmap.Stage data) => Abreast.active ? 1f : Mathf.Clamp01(
+			VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration
+		);
 
 
-		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime > data.Time - TRANSATION_DURATION && MusicTime < data.Time + data.Duration + TRANSATION_DURATION;
+		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime > data.Time && MusicTime < data.Time + data.Duration;
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ? new Vector2(Abreast.all && StageCount > 0 ? ((2 * stageIndex + 1) / (2f * StageCount)) : 0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));

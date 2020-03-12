@@ -142,7 +142,7 @@
 				Data = (m_DefaultSkin, name);
 			}
 			SkinName.Value = name;
-			OnSkinLoaded?.Invoke(Data.Data);
+			OnSkinLoaded(Data.Data);
 		}
 
 
