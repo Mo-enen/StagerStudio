@@ -18,6 +18,7 @@
 		public delegate float DropOffsetHandler (float time, float muti);
 		public delegate float FilledTimeHandler (float time, float fill, float muti);
 		public delegate float SpeedMutiHandler ();
+		public delegate void VoidIntFloatHandler (int i, float f);
 
 
 		#endregion
@@ -33,6 +34,7 @@
 		public static DropOffsetHandler GetDropOffset { get; set; } = null;
 		public static SpeedMutiHandler GetGameSpeedMuti { get; set; } = null;
 		public static FilledTimeHandler GetFilledTime { get; set; } = null;
+		public static VoidIntFloatHandler PlayClickSound { get; set; } = null;
 
 		// API
 		public static Vector2 NoteSize { get; private set; } = new Vector2(0.015f, 0.015f);
@@ -51,6 +53,8 @@
 		private static byte CacheDirtyID = 1;
 		private static float ShadowDistance = 0f;
 		private byte LocalCacheDirtyID = 0;
+		private bool PrevClicked = false;
+		private bool PrevClickedAlt = false;
 		private Beatmap.Stage LateStage = null;
 		private Beatmap.Track LateTrack = null;
 		private Beatmap.Note LateNote = null;
@@ -84,6 +88,24 @@
 			bool oldSelecting = noteData.Selecting;
 			noteData.Active = false;
 			noteData.Selecting = false;
+
+			// Click Sound
+			bool clicked = MusicPlaying && MusicTime > noteData.Time;
+			if (clicked && !PrevClicked) {
+				PlayClickSound(noteData.ClickSoundIndex, 1f);
+			}
+			PrevClicked = clicked;
+
+			// Alt Click Sound
+			if (noteData.Duration > DURATION_GAP) {
+				bool altClicked = MusicPlaying && MusicTime > noteData.Time + noteData.Duration;
+				if (altClicked && !PrevClickedAlt) {
+					PlayClickSound(noteData.ClickSoundIndex, 0.618f);
+				}
+				PrevClickedAlt = altClicked;
+			}
+
+
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
@@ -366,9 +388,9 @@
 
 		private static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) {
 			if (linkedNote is null) {
-				return MusicTime > appearTime && MusicTime < data.Time + data.Duration;
+				return MusicTime >= appearTime && MusicTime <= data.Time + data.Duration;
 			} else {
-				return MusicTime > appearTime && (MusicTime < data.Time + data.Duration || MusicTime < linkedNote.Time);
+				return MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || MusicTime <= linkedNote.Time);
 			}
 		}
 

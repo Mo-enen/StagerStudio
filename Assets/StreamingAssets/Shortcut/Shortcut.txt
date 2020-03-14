@@ -30,3 +30,5 @@ LockLuminous,	Alpha6,	False,	False,	True#
 SwitchFocus,	F,	False,	False,	False#
 SeekBPM+1,	RightArrow,	False,	False,	False#
 SeekBPM-1,	LeftArrow,	False,	False,	False#
+PitchUp,	UpArrow,	True,	False,	False#
+PitchDown,	DownArrow,	True,	False,	False#

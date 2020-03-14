@@ -25,6 +25,24 @@ Dialog.TweenEditor.CancelConfirm
 Game.Hint.GameDropSpeed
 下落速度 × {0}
 
+Game.Hint.Pitch
+播放速度 {0}
+
+Menu.AutoSave.0
+每30秒自动保存
+
+Menu.AutoSave.1
+每2分钟自动保存
+
+Menu.AutoSave.2
+每5分钟自动保存
+
+Menu.AutoSave.3
+每10分钟自动保存
+
+Menu.AutoSave.Off
+关闭自动保存
+
 Menu.BeatmapItem.DeleteBeatmap
 删除谱面
 
@@ -41,28 +59,28 @@ Menu.ChapterItem.ShowInExplorer
 查看
 
 Menu.Grid.x0
-空间网格×1
+X轴网格×1
 
 Menu.Grid.x1
-空间网格×3
+X轴网格×3
 
 Menu.Grid.x2
-空间网格×7
+X轴网格×7
 
 Menu.Grid.x3
-空间网格×15
+X轴网格×15
 
 Menu.Grid.y0
-时间网格×1
+Y轴网格×1
 
 Menu.Grid.y1
-时间网格×3
+Y轴网格×3
 
 Menu.Grid.y2
-时间网格×5
+Y轴网格×5
 
 Menu.Grid.y3
-时间网格×7
+Y轴网格×7
 
 Menu.Home.ImportProject
 导入工程
@@ -196,6 +214,9 @@ Project.Loading.File
 Project.Loading.Image
 正在加载图片
 
+Project.UI.AutoSaveMSG
+每{0}秒自动保存
+
 Project.UI.BeatmapLoadedMSG
 已加载谱面 {0}
 
@@ -219,6 +240,12 @@ Project.UI.ImportCoverTitle
 
 Project.UI.ImportMusicTitle
 导入音乐
+
+Project.UI.NoAutoSaveMSG
+已取消自动保存
+
+Project.UI.ProjectSaveMSG
+已保存工程
 
 Project.UI.RemoveBackgroundMSG
 确认清除背景吗？
@@ -418,6 +445,12 @@ Tip.Lib.Track
 Tip.Music.Pause
 暂停音乐
 
+Tip.Music.PitchDown
+音乐播放速度减慢
+
+Tip.Music.PitchUp
+音乐播放速度加快
+
 Tip.Music.Play
 播放音乐
 
@@ -452,7 +485,7 @@ Tip.ProjectInfo
 工程信息：工程的标题、简介、音乐、背景等资源，谱面的难度、BPM等信息。
 
 Tip.Save
-保存工程
+保存工程 (右键点击可以设置自动保存时间)
 
 Tip.Setting
 设置：本地设置
@@ -507,6 +540,9 @@ Tip.Setting.Welcome
 
 Tip.Setting.Zone
 是否显示活动范围边框
+
+Tip.Toolbar.EditSkin
+编辑当前皮肤
 
 Tip.Toolbar.Home
 返回主页

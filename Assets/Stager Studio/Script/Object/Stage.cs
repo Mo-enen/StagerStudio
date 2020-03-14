@@ -157,7 +157,7 @@
 		);
 
 
-		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime > data.Time && MusicTime < data.Time + data.Duration;
+		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ? new Vector2(Abreast.all && StageCount > 0 ? ((2 * stageIndex + 1) / (2f * StageCount)) : 0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));

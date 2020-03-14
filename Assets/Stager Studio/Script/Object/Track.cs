@@ -137,7 +137,7 @@
 		#region --- API ---
 
 
-		public static bool GetTrackActive (Beatmap.Track data) => MusicTime > data.Time && MusicTime < data.Time + data.Duration;
+		public static bool GetTrackActive (Beatmap.Track data) => MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
 		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f, 2f);

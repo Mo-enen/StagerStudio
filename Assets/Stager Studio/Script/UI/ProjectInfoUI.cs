@@ -745,7 +745,7 @@
 					item.Grab<Text>("Index").text = rtIndex.ToString();
 					item.Grab<Text>("Name").text = sClip.name;
 					item.Grab<Button>().onClick.AddListener(() => {
-						Music.PlayClickSound(rtIndex);
+						Music.PlayClickSound(rtIndex, 1f);
 					});
 					item.Grab<TriggerUI>().CallbackRight.AddListener(() => {
 						Menu.OpenMenu(MENU_SOUND_KEY, rt);

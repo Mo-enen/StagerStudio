@@ -64,6 +64,7 @@
 		private StageLanguage Language = null;
 		private HintBarUI Hint = null;
 		private bool UIReady = true;
+		private bool OpenSettingAfterClose = false;
 		private string SavedName = "";
 
 
@@ -96,7 +97,7 @@
 		#region --- API ---
 
 
-		public void Init (SkinData skinData, string skinName) {
+		public void Init (SkinData skinData, string skinName, bool openSettingAfterClose) {
 
 			if (skinData == null || string.IsNullOrEmpty(skinName)) {
 				Skin.ReloadSkin();
@@ -199,6 +200,7 @@
 			}
 
 			// UI
+			OpenSettingAfterClose = openSettingAfterClose;
 			RefreshInfoUI();
 			Painter.SetItemsDirty();
 			Painter.SetTexture(Data.Texture);
@@ -227,7 +229,9 @@
 		public void Close () {
 			DialogUtil.Dialog_OK_Cancel(DIALOG_CloseConfirm, DialogUtil.MarkType.Warning, () => {
 				Save();
-				StagerStudio.Main.UI_SpawnSetting();
+				if (OpenSettingAfterClose) {
+					StagerStudio.Main.UI_SpawnSetting();
+				}
 			});
 		}
 

@@ -182,10 +182,14 @@
 
 
 		// Skin Editor
-		public void SpawnSkinEditor (string skinName) {
+		public void UI_SpawnSkinEditor () => SpawnSkinEditor(StageSkin.Data.Name, false);
+
+
+		public void SpawnSkinEditor (string skinName, bool openSettingAfterClose) {
+			if (string.IsNullOrEmpty(skinName)) { return; }
 			UI_RemoveUI();
 			Util.SpawnUI(Main.m_SkinEditorPrefab, Main.m_SkinEditorRoot, "Skin Editor").Init(
-				Main.Skin.GetSkinFromDisk(skinName), skinName
+				Main.Skin.GetSkinFromDisk(skinName), skinName, openSettingAfterClose
 			);
 		}
 

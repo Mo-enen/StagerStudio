@@ -36,6 +36,8 @@ Available Actions:
 	SwitchFocus
 	SeekBPM+1
 	SeekBPM-1
+	PitchUp
+	PitchDown
 
 Available Keys:
 

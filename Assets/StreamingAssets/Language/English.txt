@@ -25,6 +25,24 @@ Close tween editor? Changes will not be save.
 Game.Hint.GameDropSpeed
 Drop Speed × {0}
 
+Game.Hint.Pitch
+Music speed {0}
+
+Menu.AutoSave.0
+Auto save every 30 sec
+
+Menu.AutoSave.1
+Auto save every 2 min
+
+Menu.AutoSave.2
+Auto save every 5 min
+
+Menu.AutoSave.3
+Auto save every 10 min
+
+Menu.AutoSave.Off
+Do not auto save
+
 Menu.BeatmapItem.DeleteBeatmap
 Delete Beatmap
 
@@ -41,28 +59,28 @@ Menu.ChapterItem.ShowInExplorer
 Show in Explorer
 
 Menu.Grid.x0
-Position Grid ×1
+Grid X ×1
 
 Menu.Grid.x1
-Position Grid ×3
+Grid X ×3
 
 Menu.Grid.x2
-Position Grid ×7
+Grid X ×7
 
 Menu.Grid.x3
-Position Grid ×15
+Grid X ×15
 
 Menu.Grid.y0
-Time Grid ×1
+Grid Y ×1
 
 Menu.Grid.y1
-Time Grid ×3
+Grid Y ×3
 
 Menu.Grid.y2
-Time Grid ×5
+Grid Y ×5
 
 Menu.Grid.y3
-Time Grid ×7
+Grid Y ×7
 
 Menu.Home.ImportProject
 Import Project
@@ -196,6 +214,9 @@ Loading Project File
 Project.Loading.Image
 Loading Image
 
+Project.UI.AutoSaveMSG
+Auto save every {0} sec
+
 Project.UI.BeatmapLoadedMSG
 Beatmap {0} Loaded
 
@@ -219,6 +240,12 @@ Import Cover
 
 Project.UI.ImportMusicTitle
 Import Music
+
+Project.UI.NoAutoSaveMSG
+Auto save canceled
+
+Project.UI.ProjectSaveMSG
+Project saved
 
 Project.UI.RemoveBackgroundMSG
 Clear the background?
@@ -418,6 +445,12 @@ Track brush
 Tip.Music.Pause
 Pause music
 
+Tip.Music.PitchDown
+Music speed down
+
+Tip.Music.PitchUp
+Music speed up
+
 Tip.Music.Play
 Play music
 
@@ -452,7 +485,7 @@ Tip.ProjectInfo
 Project info: The title, description, music, background... of the project. The difficulty, bpm... of the beatmap.
 
 Tip.Save
-Save project
+Save project (Right click to set auto save)
 
 Tip.Setting
 Setting: Your own setting for this application.
@@ -507,6 +540,9 @@ Show a welcome panel on project open
 
 Tip.Setting.Zone
 Show scope of activities or not
+
+Tip.Toolbar.EditSkin
+Edit current skin
 
 Tip.Toolbar.Home
 Back to home page

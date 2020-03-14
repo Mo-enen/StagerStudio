@@ -28,10 +28,9 @@
 
 		// Handler
 		public static VoidBoolHandler OnMusicPlayPause { get; set; } = null;
-
 		public static VoidFloatFloatHandler OnMusicTimeChanged { get; set; } = null;
-
 		public static VoidHandler OnMusicClipLoaded { get; set; } = null;
+		public static VoidHandler OnPitchChanged { get; set; } = null;
 
 		// API
 		public bool IsReady {
@@ -47,7 +46,12 @@
 
 		public float Pitch {
 			get => Source.pitch;
-			set => Source.pitch = value;
+			set {
+				if (value != Source.pitch) {
+					Source.pitch = value;
+					OnPitchChanged();
+				}
+			}
 		}
 
 		public float Duration {
@@ -223,12 +227,14 @@
 		}
 
 
-		public void PlayClickSound (int index) {
+		public void PlayClickSound (int index, float volume) {
 			if (ClickSoundSources is null) { return; }
 			int len = ClickSoundSources.Length;
 			if (len == 0) { return; }
 			index = Mathf.Clamp(index, 0, len - 1);
-			ClickSoundSources[index].PlayDelayed(0);
+			var source = ClickSoundSources[index];
+			source.volume = volume;
+			source.PlayDelayed(0);
 		}
 
 

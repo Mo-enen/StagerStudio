@@ -331,7 +331,7 @@
 					graber.Grab<RectTransform>("Mark").gameObject.SetActive(skinName == StageSkin.Data.Name);
 					// Func
 					void OnClick () => Skin.LoadSkin(skinName);
-					void OnEdit () => StagerStudio.Main.SpawnSkinEditor(skinName);
+					void OnEdit () => StagerStudio.Main.SpawnSkinEditor(skinName, true);
 					void OnDelete () => Skin.UI_DeleteSkin(rt);
 				}
 			}

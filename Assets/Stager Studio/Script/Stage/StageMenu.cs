@@ -52,13 +52,14 @@
 		[SerializeField] private Grabber m_ItemPrefab = null;
 		[SerializeField] private RectTransform m_LinePrefab = null;
 		[SerializeField] private Camera m_EventCamera = null;
+		[SerializeField] private Sprite m_Checker = null;
 		[SerializeField] private MenuData[] m_Datas = null;
 		[SerializeField] public CallbackData[] m_Callbacks = null;
 
 		// Data
-		private Camera _MainCamera { get; set; } = null;
 		private Dictionary<string, (MenuEvent callback, Sprite icon)> CallbackMap { get; } = new Dictionary<string, (MenuEvent, Sprite)>();
 		private Dictionary<string, string[]> MenuDataMap { get; } = new Dictionary<string, string[]>();
+		private Dictionary<string, System.Func<bool>> CheckerMap = new Dictionary<string, System.Func<bool>>();
 
 
 		#endregion
@@ -100,6 +101,13 @@
 
 
 		public void CloseMenu () => CloseMenuLogic();
+
+
+		public void AddCheckerFunc (string key, System.Func<bool> func) {
+			if (!CheckerMap.ContainsKey(key)) {
+				CheckerMap.Add(key, func);
+			}
+		}
 
 
 		#endregion
@@ -145,8 +153,15 @@
 					text.text = GetLanguage.Invoke(cKey);
 					// Icon
 					var icon = graber.Grab<Image>("Icon");
-					icon.enabled = callback.icon;
-					icon.sprite = callback.icon;
+
+					// Checker
+					if (CheckerMap.ContainsKey(cKey) && CheckerMap[cKey]()) {
+						icon.enabled = true;
+						icon.sprite = m_Checker;
+					} else {
+						icon.enabled = callback.icon;
+						icon.sprite = callback.icon;
+					}
 					// Func
 					void InvokeCallback () {
 						callback.callback.Invoke(param);
@@ -162,7 +177,7 @@
 			}
 
 			// Clamp Position
-			Invoke("ClampWindow", 0.1f);
+			Invoke("Invoke_ClampWindow", 0.1f);
 		}
 
 
@@ -173,7 +188,8 @@
 		}
 
 
-		private void ClampWindow () {
+
+		public void Invoke_ClampWindow () {
 			if (m_MenuRoot.childCount > 0) {
 				Util.ClampRectTransform(m_MenuRoot.GetChild(0) as RectTransform);
 			}

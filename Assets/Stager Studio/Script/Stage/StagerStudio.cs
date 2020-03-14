@@ -58,6 +58,7 @@
 		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
 		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
 		private StageShortcut Short => _Short != null ? _Short : (_Short = FindObjectOfType<StageShortcut>());
+		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
 
 		// Ser
 		[SerializeField] private Transform m_CanvasRoot = null;
@@ -70,6 +71,7 @@
 		[SerializeField] private Toggle m_GridTG = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
+		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[Header("UI")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
@@ -93,6 +95,7 @@
 		private StageLanguage _Language = null;
 		private StageSkin _Skin = null;
 		private StageShortcut _Short = null;
+		private StageMenu _Menu = null;
 		private bool WillQuit = false;
 
 
@@ -106,6 +109,7 @@
 
 		private void Awake () {
 			Awake_Message();
+			Awake_Menu();
 			Awake_Object();
 			Awake_Setting();
 			Awake_Project();
@@ -194,6 +198,27 @@
 		}
 
 
+		private void Awake_Menu () {
+			// Grid
+			Menu.AddCheckerFunc("Menu.Grid.x0", () => Game.GridX == 1);
+			Menu.AddCheckerFunc("Menu.Grid.x1", () => Game.GridX == 3);
+			Menu.AddCheckerFunc("Menu.Grid.x2", () => Game.GridX == 7);
+			Menu.AddCheckerFunc("Menu.Grid.x3", () => Game.GridX == 15);
+			Menu.AddCheckerFunc("Menu.Grid.y0", () => Game.GridY == 1);
+			Menu.AddCheckerFunc("Menu.Grid.y1", () => Game.GridY == 3);
+			Menu.AddCheckerFunc("Menu.Grid.y2", () => Game.GridY == 5);
+			Menu.AddCheckerFunc("Menu.Grid.y3", () => Game.GridY == 7);
+			// Auto Save
+			Menu.AddCheckerFunc("Menu.AutoSave.0", () => Mathf.Abs(Project.UI_AutoSaveTime - 30f) < 1f);
+			Menu.AddCheckerFunc("Menu.AutoSave.1", () => Mathf.Abs(Project.UI_AutoSaveTime - 120f) < 1f);
+			Menu.AddCheckerFunc("Menu.AutoSave.2", () => Mathf.Abs(Project.UI_AutoSaveTime - 300f) < 1f);
+			Menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(Project.UI_AutoSaveTime - 600f) < 1f);
+			Menu.AddCheckerFunc("Menu.AutoSave.Off", () => Project.UI_AutoSaveTime < 0f);
+
+
+		}
+
+
 		private void Awake_Setting () => LoadAllSettings();
 
 
@@ -205,6 +230,7 @@
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
 			Note.GetDropOffset = Game.AreaBetweenDrop;
+			Note.PlayClickSound = Music.PlayClickSound;
 		}
 
 
@@ -226,6 +252,7 @@
 			};
 			StageProject.OnProjectLoaded = () => {
 				Game.SetSpeedCurveDirty();
+				Music.Pitch = 1f;
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 				RefreshAuthorLabel();
@@ -240,6 +267,7 @@
 				Game.SetSpeedCurveDirty();
 				Game.SetUseAbreastView(false);
 				Game.SetGameDropSpeed(1f);
+				Music.Pitch = 1f;
 				Music.SetClip(null);
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
@@ -261,6 +289,7 @@
 				RefreshLoading(-1f);
 				Editor.ClearSelection();
 				Game.SetSpeedCurveDirty();
+				Music.Pitch = 1f;
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
@@ -276,6 +305,7 @@
 				Music.SetClip(clip);
 				TryRefreshProjectInfo();
 				m_Wave.LoadWave(clip);
+				Music.Pitch = 1f;
 			};
 			StageProject.OnBackgroundLoaded = (sprite) => {
 				try {
@@ -356,6 +386,9 @@
 			};
 			StageMusic.OnMusicClipLoaded = () => {
 				m_Progress.RefreshControlUI();
+			};
+			StageMusic.OnPitchChanged = () => {
+				m_PitchWarningBlock.gameObject.SetActive(Music.Pitch < 0.05f);
 			};
 		}
 

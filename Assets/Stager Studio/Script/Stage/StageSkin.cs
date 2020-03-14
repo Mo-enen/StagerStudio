@@ -132,12 +132,24 @@
 
 		public void LoadSkin (string name) {
 			if (!string.IsNullOrEmpty(name)) {
-				Data = (GetSkinFromDisk(name), name);
-				if (Data.Data == null) {
-					LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
-					Data = (m_DefaultSkin, "Default");
-					name = "";
-				}
+				try {
+					Data = (GetSkinFromDisk(name), name);
+				} catch { }
+				// Load First in Disk
+				try {
+					if (Data.Data == null) {
+						LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
+						Data = (GetSkinFromDisk(SkinNames[0]), SkinNames[0]);
+					}
+				} catch { }
+				// Load Built-in Default
+				try {
+					if (Data.Data == null) {
+						LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
+						Data = (m_DefaultSkin, "Default");
+						name = "";
+					}
+				} catch { }
 			} else {
 				Data = (m_DefaultSkin, name);
 			}

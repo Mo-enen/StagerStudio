@@ -33,6 +33,7 @@
 
 		// Const
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
+		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -364,6 +365,18 @@
 
 
 		public void SeekMusic_BPM (float muti) => Music.Seek(Music.Time + 60f / BPM * muti);
+
+
+		public void SetMusicPitch (float delta) {
+			if (Mathf.Abs(delta) < 0.05f) {
+				Music.Pitch = 1f;
+			} else {
+				float pitch = Music.Pitch + Mathf.Round(delta * 10f) / 10f;
+				pitch = Mathf.Clamp(pitch, -5f, 5f);
+				Music.Pitch = Mathf.Round(pitch * 10f) / 10f;
+			}
+			LogGameHint_Key(MUSIC_PITCH_HINT, Music.Pitch.ToString("0.0"), false);
+		}
 
 
 		#endregion

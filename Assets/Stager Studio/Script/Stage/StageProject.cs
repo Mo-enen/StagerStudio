@@ -61,6 +61,10 @@
 			public const string UI_RemoveBeatmapMSG = "Project.UI.RemoveBeatmapMSG";
 			public const string UI_BeatmapLoadedMSG = "Project.UI.BeatmapLoadedMSG";
 			public const string UI_SaveProjectConfirmMSG = "Project.UI.SaveProjectConfirmMSG";
+			public const string UI_AutoSaveMSG = "Project.UI.AutoSaveMSG";
+			public const string UI_NoAutoSaveMSG = "Project.UI.NoAutoSaveMSG";
+			public const string UI_ProjectSaveMSG = "Project.UI.ProjectSaveMSG";
+
 		}
 
 
@@ -104,6 +108,7 @@
 			}
 		}
 		public string Workspace => Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Projects");
+		public float UI_AutoSaveTime => AutoSaveTime.Value;
 
 		// Project Data
 		public string ProjectName { get; set; } = "";
@@ -127,6 +132,10 @@
 		// Data
 		private Coroutine LoadingCor = null;
 		private bool _IsDirty = false;
+		private float NextAutoSaveTime = float.MaxValue;
+
+		// Saving
+		private SavingFloat AutoSaveTime = new SavingFloat("StageProject.AutoSaveTime", -1f);
 
 
 		#endregion
@@ -177,6 +186,14 @@
 		}
 
 
+		private void Update () {
+			if (AutoSaveTime.Value > 1f && Time.time > NextAutoSaveTime) {
+				RefreshAutoSaveTime();
+				SaveProject();
+			}
+		}
+
+
 		#endregion
 
 
@@ -213,6 +230,7 @@
 				LastEditTime = 0;
 				ProjectGene = null;
 				OnProjectLoadingStart();
+				RefreshAutoSaveTime();
 
 				// File >> Project Data
 				LogLoadingProgress(LanguageData.Loading_ProjectFile, 0.01f);
@@ -340,6 +358,7 @@
 				FixIndexRangesForProjectData();
 				yield return new WaitForSeconds(RENDERER_WAIT);
 				OnProjectLoaded();
+				RefreshAutoSaveTime();
 				Resources.UnloadUnusedAssets();
 				LoadingCor = null;
 
@@ -354,6 +373,7 @@
 				ProjectPath = Util.CombinePaths(Workspace, pName + ".stager");
 			}
 			SaveProjectLogic(ProjectPath);
+			LogHint(GetLanguage(LanguageData.UI_ProjectSaveMSG), false);
 		}
 
 
@@ -381,6 +401,18 @@
 
 
 		public void SetDirty () => IsDirty = true;
+
+
+		public void SetAutoSaveTime (float time) {
+			if (time > 0f) {
+				AutoSaveTime.Value = Mathf.Clamp(time, 30f, 600f);
+				LogHint(string.Format(GetLanguage(LanguageData.UI_AutoSaveMSG), AutoSaveTime.Value.ToString("0")), true);
+			} else {
+				AutoSaveTime.Value = -1f;
+				LogHint(GetLanguage(LanguageData.UI_NoAutoSaveMSG), true);
+			}
+			RefreshAutoSaveTime();
+		}
 
 
 		// Beatmap
@@ -934,6 +966,9 @@
 			}
 
 		}
+
+
+		private void RefreshAutoSaveTime () => NextAutoSaveTime = AutoSaveTime > 0f ? Time.time + AutoSaveTime : float.MaxValue;
 
 
 		// Asset
