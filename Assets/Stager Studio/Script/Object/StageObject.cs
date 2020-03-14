@@ -89,7 +89,7 @@
 				m_Col.enabled = ColSize.HasValue;
 			}
 			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
-				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.00001f);
+				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.01f);
 				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
 				PrevColSize = m_Col.size = size;
 				m_Col.center = offset;

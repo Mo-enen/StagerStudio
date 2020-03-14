@@ -23,7 +23,7 @@
 		private static float LuminousDuration_Hold = 0f;
 		private static float LumHeight_Tap = 0f;
 		private static float LumHeight_Hold = 0f;
-		private bool MovementDirty = true;
+		private float MovementDirtyTime = -1f;
 
 
 		#endregion
@@ -44,7 +44,7 @@
 			float noteEndTime = noteData.Time + noteData.Duration;
 
 			if (!MusicPlaying) {
-				MovementDirty = true;
+				MovementDirtyTime = float.MaxValue / 2f;
 				SkinType type = noteData.Duration > DURATION_GAP ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 				Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 				MainRenderer.Type = type;
@@ -72,7 +72,7 @@
 			MainRenderer.RendererEnable = true;
 
 			// Movement Dirty Check
-			if (!MovementDirty) { return; }
+			if (MovementDirtyTime < 0f || Mathf.Abs(MovementDirtyTime - MusicTime) < 0.01f) { return; }
 
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
@@ -114,7 +114,7 @@
 			MainRenderer.SetSortingLayer(LayerID_Lum, GetSortingOrder());
 
 			// Final
-			MovementDirty = false;
+			MovementDirtyTime = MusicTime;
 		}
 
 
