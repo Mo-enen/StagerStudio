@@ -115,6 +115,7 @@
 		private float _SfxVolume = 1f;
 		private float LastUpdateTime = 0f;
 		private float LastPlayTime = 0f;
+		private float LastClickSoundTime = float.MinValue;
 		private bool PrevPlaying = false;
 
 
@@ -228,7 +229,8 @@
 
 
 		public void PlayClickSound (int index, float volume) {
-			if (ClickSoundSources is null) { return; }
+			if (ClickSoundSources is null || UnityEngine.Time.time <= LastClickSoundTime + 0.001f) { return; }
+			LastClickSoundTime = UnityEngine.Time.time;
 			int len = ClickSoundSources.Length;
 			if (len == 0) { return; }
 			index = Mathf.Clamp(index, 0, len - 1);

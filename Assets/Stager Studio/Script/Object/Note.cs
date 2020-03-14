@@ -90,22 +90,20 @@
 			noteData.Selecting = false;
 
 			// Click Sound
-			bool clicked = MusicPlaying && MusicTime > noteData.Time;
-			if (clicked && !PrevClicked) {
+			bool clicked = MusicTime > noteData.Time;
+			if (MusicPlaying && clicked && !PrevClicked && noteData.ClickSoundIndex >= 0) {
 				PlayClickSound(noteData.ClickSoundIndex, 1f);
 			}
 			PrevClicked = clicked;
 
 			// Alt Click Sound
 			if (noteData.Duration > DURATION_GAP) {
-				bool altClicked = MusicPlaying && MusicTime > noteData.Time + noteData.Duration;
-				if (altClicked && !PrevClickedAlt) {
+				bool altClicked = MusicTime > noteData.Time + noteData.Duration;
+				if (MusicPlaying && altClicked && !PrevClickedAlt) {
 					PlayClickSound(noteData.ClickSoundIndex, 0.618f);
 				}
 				PrevClickedAlt = altClicked;
 			}
-
-
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);

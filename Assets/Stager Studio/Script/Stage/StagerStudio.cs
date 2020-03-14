@@ -289,6 +289,7 @@
 				RefreshLoading(-1f);
 				Editor.ClearSelection();
 				Game.SetSpeedCurveDirty();
+				Game.ClearAllContainers();
 				Music.Pitch = 1f;
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();

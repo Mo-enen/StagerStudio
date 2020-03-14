@@ -100,7 +100,8 @@
 			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
 			m_TrackTintRenderer.Tint = GetTrackColor(trackData);
-			MainRenderer.Alpha = m_TrayRenderer.Alpha = m_TrackTintRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
+			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
+			m_TrackTintRenderer.Alpha *= MainRenderer.Alpha;
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
 			m_TrackTintRenderer.SetSortingLayer(LayerID_TrackTint, GetSortingOrder());
 			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());

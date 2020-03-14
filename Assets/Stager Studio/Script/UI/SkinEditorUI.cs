@@ -231,6 +231,8 @@
 				Save();
 				if (OpenSettingAfterClose) {
 					StagerStudio.Main.UI_SpawnSetting();
+				} else {
+					StagerStudio.Main.UI_RemoveUI();
 				}
 			});
 		}
