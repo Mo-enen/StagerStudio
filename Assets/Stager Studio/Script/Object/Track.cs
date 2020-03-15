@@ -25,6 +25,7 @@
 		// Data
 		private static Vector2 TraySize = default;
 		private Beatmap.Track LateTrackData = null;
+		private float AimTrayX = 0.5f;
 		private float TrayX = 0.5f;
 
 
@@ -158,7 +159,12 @@
 
 		private void LateUpdate_Tray (Beatmap.Track trackData) {
 			if (trackData.HasTray) {
-				TrayX = Mathf.Lerp(TrayX, trackData.TrayX, UnityEngine.Time.deltaTime * 20f);
+				if (AimTrayX < trackData.TrayX.min) {
+					AimTrayX = Mathf.Lerp(trackData.TrayX.min, trackData.TrayX.max, trackData.TrayTime - MusicTime > 0.5f ? 0.5f : 0.3f);
+				} else if (AimTrayX > trackData.TrayX.max) {
+					AimTrayX = Mathf.Lerp(trackData.TrayX.min, trackData.TrayX.max, trackData.TrayTime - MusicTime > 0.5f ? 0.5f : 0.7f);
+				}
+				TrayX = Mathf.Lerp(TrayX, AimTrayX, UnityEngine.Time.deltaTime * 20f);
 			}
 			trackData.TrayTime = float.MaxValue;
 		}
@@ -210,7 +216,7 @@
 
 
 		public static void SetTrackSkinData (SkinData skin) {
-			TraySize = skin.TraySizeMuti * skin.TryGetItemSize((int)SkinType.Tray) / skin.ScaleMuti;
+			TraySize = skin.TryGetItemSize((int)SkinType.Tray) / skin.ScaleMuti;
 		}
 
 

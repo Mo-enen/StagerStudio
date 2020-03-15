@@ -39,10 +39,6 @@
 			public const string UI_TweenFull = "ProjectInfo.Dialog.TweenFull";
 			public const string UI_TweenExported = "ProjectInfo.Dialog.TweenExported";
 
-			public const string UI_ImportGene = "ProjectInfo.Dialog.ImportGene";
-			public const string UI_ImportGeneTitle = "ProjectInfo.Dialog.ImportGeneTitle";
-			public const string UI_ExportGeneTitle = "ProjectInfo.Dialog.ExportGeneTitle";
-			public const string UI_GeneExported = "ProjectInfo.Dialog.GeneExported";
 		}
 
 
@@ -67,14 +63,6 @@
 			public Button Clear_Background;
 			public Button Clear_Cover;
 			public Button Clear_Music;
-		}
-
-
-		[System.Serializable]
-		public struct ProjectInfoGeneData {
-			public Grabber[] Permissions;
-			public Grabber[] Ranges;
-			public Grabber[] Limitations;
 		}
 
 
@@ -155,7 +143,6 @@
 		[SerializeField] private RectTransform m_TweenContent = null;
 		[SerializeField] private RectTransform m_SoundContent = null;
 		[SerializeField] private ProjectInfoComponentData m_ProjectInfoComponentData = default;
-		[SerializeField] private ProjectInfoGeneData m_ProjectInfoGeneData = default;
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
 		// Saving
@@ -181,7 +168,6 @@
 				tx.text = GetLanguage(tx.name);
 			}
 			Awake_ProjectInfo();
-			Awake_Gene();
 		}
 
 
@@ -251,76 +237,6 @@
 				Project.RemoveMusic();
 				Project.SaveProject();
 			});
-		}
-
-
-		private void Awake_Gene () {
-			// Permission
-			for (int i = 0; i < m_ProjectInfoGeneData.Permissions.Length; i++) {
-				int index = i;
-				var grab = m_ProjectInfoGeneData.Permissions[index];
-				grab.Grab<Toggle>("Toggle").onValueChanged.AddListener((isOn) => {
-					if (!ReadyForUI) { return; }
-					Project.ProjectGene.SetPermisstion(grab.name, isOn);
-					Project.SetDirty();
-				});
-			}
-			// Range
-			for (int i = 0; i < m_ProjectInfoGeneData.Ranges.Length; i++) {
-				int index = i;
-				var grab = m_ProjectInfoGeneData.Ranges[index];
-				// CallBack
-				grab.Grab<InputField>("Min").onEndEdit.AddListener((txt) => {
-					if (!ReadyForUI) { return; }
-					if (float.TryParse(txt, out float value)) {
-						var range = Project.ProjectGene.GetRange(grab.name);
-						range.Min = Mathf.Min(value, range.Max);
-						Project.ProjectGene.SetRange(grab.name, range);
-						Project.SetDirty();
-					}
-					RefreshGeneUI();
-				});
-				grab.Grab<InputField>("Max").onEndEdit.AddListener((txt) => {
-					if (!ReadyForUI) { return; }
-					if (float.TryParse(txt, out float value)) {
-						var range = Project.ProjectGene.GetRange(grab.name);
-						range.Max = Mathf.Max(value, range.Min);
-						Project.ProjectGene.SetRange(grab.name, range);
-						Project.SetDirty();
-					}
-					RefreshGeneUI();
-				});
-				grab.Grab<Toggle>("MinUse").onValueChanged.AddListener((isOn) => {
-					if (!ReadyForUI) { return; }
-					var range = Project.ProjectGene.GetRange(grab.name);
-					range.HasMin = isOn;
-					Project.ProjectGene.SetRange(grab.name, range);
-					Project.SetDirty();
-					RefreshGeneUI();
-				});
-				grab.Grab<Toggle>("MaxUse").onValueChanged.AddListener((isOn) => {
-					if (!ReadyForUI) { return; }
-					var range = Project.ProjectGene.GetRange(grab.name);
-					range.HasMax = isOn;
-					Project.ProjectGene.SetRange(grab.name, range);
-					Project.SetDirty();
-					RefreshGeneUI();
-				});
-			}
-			// Limit
-			for (int i = 0; i < m_ProjectInfoGeneData.Limitations.Length; i++) {
-				int index = i;
-				var grab = m_ProjectInfoGeneData.Limitations[index];
-				var input = grab.Grab<InputField>("InputField");
-				input.onEndEdit.AddListener((txt) => {
-					if (!ReadyForUI) { return; }
-					int value = -1;
-					int.TryParse(txt, out value);
-					Project.ProjectGene.SetLimitation(grab.name, value >= 0 ? value : -1);
-					Project.SetDirty();
-					RefreshGeneUI();
-				});
-			}
 		}
 
 
@@ -459,32 +375,6 @@
 		}
 
 
-		// Gene
-		public void ImportGene () {
-			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportGene, DialogUtil.MarkType.Warning, () => {
-				try {
-					var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportGeneTitle, "json", "json");
-					if (!Util.FileExists(path)) { return; }
-					var gene = Data.Gene.JsonToGene(Util.FileToText(path));
-					if (gene is null) { return; }
-					Project.ProjectGene = gene;
-					Project.SetDirty();
-					RefreshGeneUI();
-				} catch { }
-			});
-		}
-
-
-		public void ExportGene () {
-			try {
-				var path = DialogUtil.CreateFileDialog(LanguageData.UI_ExportGeneTitle, "Gene", "json");
-				if (string.IsNullOrEmpty(path)) { return; }
-				Util.TextToFile(Data.Gene.GeneToJson(Project.ProjectGene), path);
-				DialogUtil.Dialog_OK(LanguageData.UI_GeneExported, DialogUtil.MarkType.Success);
-			} catch { }
-		}
-
-
 		#endregion
 
 
@@ -495,7 +385,6 @@
 
 		private void RefreshLogic () {
 			RefreshProjectUI();
-			RefreshGeneUI();
 			RefreshBeatmapUI();
 			RefreshPaletteUI();
 			RefreshTweenUI();
@@ -633,42 +522,6 @@
 					item.transform.SetAsLastSibling();
 					item.Grab<Text>("Index Text").text = _index.ToString();
 					_index++;
-				}
-			} catch { }
-			ReadyForUI = true;
-		}
-
-
-		private void RefreshGeneUI () {
-			ReadyForUI = false;
-			try {
-				// P
-				for (int i = 0; i < m_ProjectInfoGeneData.Permissions.Length; i++) {
-					var grab = m_ProjectInfoGeneData.Permissions[i];
-					grab.Grab<Toggle>("Toggle").isOn = Project.ProjectGene.GetPermission(grab.name);
-				}
-				// R
-				for (int i = 0; i < m_ProjectInfoGeneData.Ranges.Length; i++) {
-					var grab = m_ProjectInfoGeneData.Ranges[i];
-					var pr = Project.ProjectGene.GetRange(grab.name);
-					var min = grab.Grab<InputField>("Min");
-					var max = grab.Grab<InputField>("Max");
-					min.interactable = pr.HasMin;
-					max.interactable = pr.HasMax;
-					min.text = pr.HasMin ? pr.Min.ToString() : "";
-					max.text = pr.HasMax ? pr.Max.ToString() : "";
-					grab.Grab<Toggle>("MinUse").isOn = pr.HasMin;
-					grab.Grab<Toggle>("MaxUse").isOn = pr.HasMax;
-					grab.Grab<RectTransform>("MinHint").gameObject.SetActive(!pr.HasMin);
-					grab.Grab<RectTransform>("MaxHint").gameObject.SetActive(!pr.HasMax);
-				}
-				// L
-				for (int i = 0; i < m_ProjectInfoGeneData.Limitations.Length; i++) {
-					var grab = m_ProjectInfoGeneData.Limitations[i];
-					var input = grab.Grab<InputField>("InputField");
-					var limit = Project.ProjectGene.GetLimitation(grab.name);
-					input.contentType = limit >= 0 ? InputField.ContentType.IntegerNumber : InputField.ContentType.Standard;
-					input.text = limit >= 0 ? limit.ToString() : "∞";
 				}
 			} catch { }
 			ReadyForUI = true;

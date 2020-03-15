@@ -1950,12 +1950,79 @@ MonoBehaviour:
   m_Dots:
   - {fileID: 6298244789872679947}
   - {fileID: 2009533416767619747}
-  m_GeneDatas:
-  - {fileID: 4900000, guid: 5424e964dfb20de4a87750e264cde700, type: 3}
-  - {fileID: 4900000, guid: f4d787b6fe0e51b4393a06ecfb7cd8f2, type: 3}
-  - {fileID: 4900000, guid: 8fe8545758408784cadd3efd7647ab52, type: 3}
-  - {fileID: 4900000, guid: 4011b0cb5ddd6f34eb4d95fd68e5c7cd, type: 3}
-  - {fileID: 4900000, guid: 2576e0b6ff8f9344fbe9cabf82395fa4, type: 3}
+  m_Assets:
+  - Type: 0
+    Palette:
+    - serializedVersion: 2
+      rgba: 4294967295
+    - serializedVersion: 2
+      rgba: 4278190080
+    - serializedVersion: 2
+      rgba: 4286611584
+    - serializedVersion: 2
+      rgba: 4280624594
+    - serializedVersion: 2
+      rgba: 4280651218
+    - serializedVersion: 2
+      rgba: 4280665810
+    - serializedVersion: 2
+      rgba: 4280668709
+    - serializedVersion: 2
+      rgba: 4292006437
+    - serializedVersion: 2
+      rgba: 4291984933
+    - serializedVersion: 2
+      rgba: 4291962244
+    - serializedVersion: 2
+      rgba: 4288357842
+    - serializedVersion: 2
+      rgba: 16777215
+    Gene: {fileID: 4900000, guid: 3a834b5134a9cb4429f346a9bd8bba37, type: 3}
+    Tween: {fileID: 4900000, guid: e1b0634f6cf2ac547834c659bb3b14f5, type: 3}
+    Beatmap: {fileID: 0}
+  - Type: 1
+    Palette:
+    - serializedVersion: 2
+      rgba: 4287991801
+    - serializedVersion: 2
+      rgba: 4288800249
+    - serializedVersion: 2
+      rgba: 4292072403
+    - serializedVersion: 2
+      rgba: 4292792695
+    - serializedVersion: 2
+      rgba: 4286894999
+    - serializedVersion: 2
+      rgba: 4286494451
+    - serializedVersion: 2
+      rgba: 4291535074
+    - serializedVersion: 2
+      rgba: 4293377164
+    - serializedVersion: 2
+      rgba: 4291550070
+    - serializedVersion: 2
+      rgba: 4293961390
+    Gene: {fileID: 4900000, guid: 9f97fc12b703c2f498fc1147af97fb23, type: 3}
+    Tween: {fileID: 4900000, guid: 26808e66a372ba24fb462a0becef9c0b, type: 3}
+    Beatmap: {fileID: 0}
+  - Type: 2
+    Palette:
+    - serializedVersion: 2
+      rgba: 4294967295
+    - serializedVersion: 2
+      rgba: 16777215
+    Gene: {fileID: 4900000, guid: 2b018e3bed33a43408aaa00535f7a3e1, type: 3}
+    Tween: {fileID: 4900000, guid: 42a05c5d4cd57054e83d95fac72a1a0b, type: 3}
+    Beatmap: {fileID: 0}
+  - Type: 3
+    Palette:
+    - serializedVersion: 2
+      rgba: 4294967295
+    - serializedVersion: 2
+      rgba: 16777215
+    Gene: {fileID: 4900000, guid: 1f4c345102be8474aaf70170aa1d7edf, type: 3}
+    Tween: {fileID: 4900000, guid: 4e2c32bf974f305479792013a50d8097, type: 3}
+    Beatmap: {fileID: 0}
   m_ContentRoot: {fileID: 6188474199923220270}
   m_ContentPivot: {fileID: 8735111449506750999}
   m_Lerp: {fileID: 6955376485275984957}

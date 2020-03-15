@@ -178,7 +178,7 @@
 		private void Update_Tray (Beatmap.Track linkedTrack, Beatmap.Note noteData) {
 			if (linkedTrack.HasTray && noteData.Time < linkedTrack.TrayTime && (noteData.Time + noteData.Duration) > MusicTime) {
 				linkedTrack.TrayTime = noteData.Time;
-				linkedTrack.TrayX = noteData.X;
+				linkedTrack.TrayX = (noteData.X - noteData.Width * 0.5f, noteData.X + noteData.Width * 0.5f);
 			}
 		}
 

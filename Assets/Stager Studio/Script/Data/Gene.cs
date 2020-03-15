@@ -57,21 +57,29 @@
 		public enum PermissionType {
 
 			Allow_Stage_Edit,
-			Allow_Stage_Color,
+			Allow_Stage_Xs,
+			Allow_Stage_Ys,
+			Allow_Stage_Widths,
+			Allow_Stage_Heights,
+			Allow_Stage_Angles,
+			Allow_Stage_Rotations,
 
 			Allow_Track_Edit,
 			Allow_Track_Stageless,
-			Allow_Track_Color,
 			Allow_Track_Tray,
+			Allow_Track_Color,
+			Allow_Track_Xs,
+			Allow_Track_Ys,
+			Allow_Track_Widths,
+			Allow_Track_Colors,
 
-			Allow_Note_Edit,
 			Allow_Note_Trackless,
-			Allow_Note_Link,
 			Allow_Note_Duration,
+			Allow_Note_ClickSound,
+			Allow_Note_Tapless,
+			Allow_Note_Link,
 			Allow_Note_SwipeX,
 			Allow_Note_SwipeY,
-			Allow_Note_Tapless,
-			Allow_Note_ClickSound,
 
 			Allow_MotionNote_Edit,
 
@@ -85,18 +93,19 @@
 			Range_Map_Ratio,
 			Range_Map_Speed,
 
-			Range_Stage_PositionX,
-			Range_Stage_PositionY,
+			Range_Stage_X,
+			Range_Stage_Y,
+			Range_Stage_Width,
+			Range_Stage_Height,
+			Range_Stage_Angle,
 			Range_Stage_Rotation,
-			Range_Stage_Size,
 			Range_Stage_Speed,
 
-			Range_Track_Position,
-			Range_Track_Rotation,
+			Range_Track_X,
+			Range_Track_Y,
 			Range_Track_Width,
-			Range_Track_TrayPosition,
 
-			Range_Note_Position,
+			Range_Note_X,
 			Range_Note_Width,
 		}
 
@@ -106,6 +115,7 @@
 			Limit_Stage,
 			Limit_Track,
 			Limit_Note,
+			Limit_Speed,
 		}
 
 

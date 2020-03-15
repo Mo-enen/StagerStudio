@@ -11,6 +11,16 @@
 
 
 		// SUB
+		[System.Serializable]
+		public class ProjectAsset {
+			public ProjectType Type = ProjectType.StagerStudio;
+			public Color32[] Palette = null;
+			public TextAsset Gene = null;
+			public TextAsset Tween = null;
+			public TextAsset Beatmap = null;
+		}
+
+
 		public enum ProjectType {
 			StagerStudio = 0,
 			Voez = 1,
@@ -27,7 +37,7 @@
 		// Ser
 		[SerializeField] private RectTransform[] m_Containers = null;
 		[SerializeField] private RectTransform[] m_Dots = null;
-		[SerializeField] private TextAsset[] m_GeneDatas = null;
+		[SerializeField] private ProjectAsset[] m_Assets = null;
 		[SerializeField] private RectTransform m_ContentRoot = null;
 		[SerializeField] private RectTransform m_ContentPivot = null;
 		[SerializeField] private RectTransform m_Lerp = null;
@@ -59,7 +69,6 @@
 
 		// Project
 		private Project.FileData MusicData = null;
-		private Beatmap BeatmapData = null;
 		private string RootPath = "";
 
 		// MSG
@@ -139,7 +148,6 @@
 				return;
 			}
 			// Create
-			//var project = FindObjectOfType<StageProject>();
 			var state = FindObjectOfType<StageState>();
 			// Create Project
 			var result = new Project() {
@@ -153,35 +161,36 @@
 				FrontCover = null,
 				MusicData = MusicData,
 			};
-			// Gene
-			try {
-				result.ProjectGene = Gene.JsonToGene(m_GeneDatas[(int)CurrentProjectType].text);
-			} catch { }
 			// Asset
-			switch (CurrentProjectType) {
-				default:
-				case ProjectType.StagerStudio:
-
-
-
+			ProjectAsset asset = null;
+			foreach (var _asset in m_Assets) {
+				if (_asset.Type == CurrentProjectType) {
+					asset = _asset;
 					break;
-				case ProjectType.Voez:
-
-
-
-					break;
-				case ProjectType.Dynamix:
-					result.Palette.Add(Color.white);
-					result.Tweens.Add((AnimationCurve.Linear(0, 0, 1, 1), Color.white));
-
-
-
-					break;
+				}
 			}
-			// Beatmap
-			var key = System.Guid.NewGuid().ToString();
-			result.BeatmapMap.Add(key, BeatmapData);
-			result.OpeningBeatmap = key;
+			if (asset != null) {
+				// Data
+				try {
+					result.ProjectGene = Gene.JsonToGene(asset.Gene.text);
+					result.Palette.AddRange(asset.Palette);
+					result.Tweens.AddRange(JsonUtility.FromJson<Project.TweenArray>(asset.Tween.text).GetAnimationTweens());
+				} catch {
+					Debug.LogError("Failed to add data");
+				}
+				// Beatmap
+				try {
+					var key = System.Guid.NewGuid().ToString();
+					result.OpeningBeatmap = key;
+					if (asset.Beatmap != null) {
+						result.BeatmapMap.Add(key, JsonUtility.FromJson<Beatmap>(asset.Beatmap.text));
+					} else {
+						result.BeatmapMap.Add(key, Beatmap.NewBeatmap());
+					}
+				} catch {
+					Debug.LogError("Failed to create beatmap");
+				}
+			}
 			// Create File
 			string path = Util.CombinePaths(RootPath, $"{Util.GetTimeString()}_{m_ProjectName.text}.stager");
 			try {

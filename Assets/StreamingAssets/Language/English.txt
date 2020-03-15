@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.TrayMuti
-Tray Size
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -292,23 +289,11 @@ Delete click sound {0}? This can not be undo.
 ProjectInfo.Dialog.DeleteTween
 Delete tween {0}? This will not be undo.
 
-ProjectInfo.Dialog.ExportGeneTitle
-Export Gene
-
 ProjectInfo.Dialog.ExportPaletteTitle
 Export Palette
 
 ProjectInfo.Dialog.ExportTweenTitle
 Export Tween
-
-ProjectInfo.Dialog.GeneExported
-Gene Exported
-
-ProjectInfo.Dialog.ImportGene
-Import gene now? This will overlap current data.
-
-ProjectInfo.Dialog.ImportGeneTitle
-Import Gene
 
 ProjectInfo.Dialog.ImportPalette
 Import a new palette? This will replace the current palette.
@@ -628,105 +613,6 @@ Yes
 UI.Done
 Done
 
-UI.Gene.AllowMotionNoteEdit
-Edit Motion
-
-UI.Gene.AllowNoteClickSound
-Multiple Click Sound
-
-UI.Gene.AllowNoteDuration
-Holding Note
-
-UI.Gene.AllowNoteEdit
-Edit Note
-
-UI.Gene.AllowNoteLink
-Link Note
-
-UI.Gene.AllowNoteSwipeX
-Swipe Note Horizontal
-
-UI.Gene.AllowNoteSwipeY
-Swipe Note Vertical
-
-UI.Gene.AllowNoteTapless
-Tapless Note
-
-UI.Gene.AllowNoteTrackless
-Trackless Note
-
-UI.Gene.AllowSpeedNoteEdit
-Edit Drop Speed
-
-UI.Gene.AllowStageColor
-Stage Color
-
-UI.Gene.AllowStageEdit
-Edit Stage
-
-UI.Gene.AllowTrackColor
-Track Color
-
-UI.Gene.AllowTrackEdit
-Edit Track
-
-UI.Gene.AllowTrackStageless
-Stageless Track
-
-UI.Gene.AllowTrackTray
-Track Tray
-
-UI.Gene.MapRatio
-Map Ratio
-
-UI.Gene.MapSpeed
-Map Speed
-
-UI.Gene.NoteLimit
-Max Note Count
-
-UI.Gene.NotePosition
-Note Position
-
-UI.Gene.NoteWidth
-Note Width
-
-UI.Gene.StageDisc
-Stage Disc
-
-UI.Gene.StageLimit
-Max Stage Count
-
-UI.Gene.StagePositionX
-Stage Position X
-
-UI.Gene.StagePositionY
-Stage Position Y
-
-UI.Gene.StageRotation
-Stage Rotation
-
-UI.Gene.StageSize
-Stage Size
-
-UI.Gene.StageSpeed
-Stage Drop Speed
-
-UI.Gene.TrackLimit
-Max Track Count
-
-UI.Gene.TrackPosition
-Track Position
-
-UI.Gene.TrackRotation
-Track Rotation
-
-UI.Gene.TrackWidth
-Track Width
-
-UI.Gene.TrayPosition
-Tray Position
-
 UI.GoHomeConfirmMsg
 Back to home page?
 
@@ -954,9 +840,6 @@ Sound
 
 UI.Tab.Editor
 Editor
-
-UI.Tab.Gene
-Gene
 
 UI.Tab.General
 General
