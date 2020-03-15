@@ -72,7 +72,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -322,7 +322,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
   m_Scale: {x: 1, y: 1}
 --- !u!23 &961103936686430936
 MeshRenderer:

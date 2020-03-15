@@ -424,6 +424,7 @@
 				Game.ClearAllContainers();
 				Note.SetNoteSkin(data);
 				Luminous.SetLuminousSkin(data);
+				Track.SetTrackSkinData(data);
 				Resources.UnloadUnusedAssets();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
 			};

@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.TrayMuti
+托盘尺寸
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject

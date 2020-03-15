@@ -71,6 +71,7 @@
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
 		public float VanishDuration = 0.1f;
+		public float TraySizeMuti = 1f;
 		public bool FixedNoteWidth = false;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 

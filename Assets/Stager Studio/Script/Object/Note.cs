@@ -126,6 +126,9 @@
 			if (!active) { return; }
 			noteData.Selecting = oldSelecting;
 
+			// Tray
+			Update_Tray(linkedTrack, noteData);
+
 			// Final
 			LateStage = linkedStage;
 			LateTrack = linkedTrack;
@@ -143,7 +146,6 @@
 
 
 		private void Update_Cache (Beatmap.Note noteData, float speedMuti) {
-			//if (MusicPlaying) { return; }
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
@@ -169,6 +171,14 @@
 			if (noteData.NoteDropStart < 0f) {
 				noteData.NoteDropStart = GetDropOffset(noteData.Time, speedMuti);
 				noteData.NoteDropEnd = GetDropOffset(noteData.Time + noteData.Duration, speedMuti);
+			}
+		}
+
+
+		private void Update_Tray (Beatmap.Track linkedTrack, Beatmap.Note noteData) {
+			if (linkedTrack.HasTray && noteData.Time < linkedTrack.TrayTime && (noteData.Time + noteData.Duration) > MusicTime) {
+				linkedTrack.TrayTime = noteData.Time;
+				linkedTrack.TrayX = noteData.X;
 			}
 		}
 

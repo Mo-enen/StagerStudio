@@ -412,11 +412,11 @@ TextureImporter:
         serializedVersion: 2
         x: 243
         y: 2
-        width: 32
-        height: 32
+        width: 35
+        height: 35
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
-      border: {x: 14, y: 14, z: 14, w: 14}
+      border: {x: 17, y: 17, z: 17, w: 17}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -431,7 +431,7 @@ TextureImporter:
       name: Gridline V
       rect:
         serializedVersion: 2
-        x: 277
+        x: 283
         y: 2
         width: 14
         height: 27
@@ -452,8 +452,8 @@ TextureImporter:
       name: Gridline H
       rect:
         serializedVersion: 2
-        x: 293
-        y: 2
+        x: 299
+        y: 1
         width: 27
         height: 14
       alignment: 0
@@ -473,8 +473,8 @@ TextureImporter:
       name: Palette
       rect:
         serializedVersion: 2
-        x: 245
-        y: 42
+        x: 452
+        y: 4
         width: 51
         height: 51
       alignment: 0
@@ -494,8 +494,8 @@ TextureImporter:
       name: Arrow Up
       rect:
         serializedVersion: 2
-        x: 300
-        y: 22
+        x: 404
+        y: 4
         width: 37
         height: 21
       alignment: 0
@@ -515,8 +515,8 @@ TextureImporter:
       name: Arrow Down
       rect:
         serializedVersion: 2
-        x: 300
-        y: 45
+        x: 404
+        y: 27
         width: 37
         height: 21
       alignment: 0
@@ -536,8 +536,8 @@ TextureImporter:
       name: Check Small
       rect:
         serializedVersion: 2
-        x: 458
-        y: 0
+        x: 337
+        y: 5
         width: 52
         height: 52
       alignment: 0

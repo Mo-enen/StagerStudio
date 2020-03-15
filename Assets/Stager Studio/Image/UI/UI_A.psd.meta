@@ -227,6 +227,9 @@ TextureImporter:
   - first:
       213: 385058692180136484
     second: Menu
+  - first:
+      213: -8080841097035478247
+    second: Treble Clef
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -1275,6 +1278,27 @@ TextureImporter:
       bones: []
       spriteID: 422d21527d0085500800000000000000
       internalID: 385058692180136484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Treble Clef
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 216
+        width: 12
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 91b82dc16d51bdf80800000000000000
+      internalID: -8080841097035478247
       vertices: []
       indices: 
       edges: []

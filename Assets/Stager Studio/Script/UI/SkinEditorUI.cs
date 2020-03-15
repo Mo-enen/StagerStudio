@@ -50,6 +50,7 @@
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
+		[SerializeField] private InputField m_TrayMutiIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -177,6 +178,15 @@
 				}
 			});
 
+			// Tray MutiI
+			m_TrayMutiIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
+				if (int.TryParse(str, out int value)) {
+					Data.TraySizeMuti = value;
+					m_TrayMutiIF.text = Data.TraySizeMuti.ToString();
+				}
+			});
+
 			// Fixed Note Width
 			m_FixedNoteWidthTG.onValueChanged.AddListener((isOn) => {
 				if (!UIReady) { return; }
@@ -251,6 +261,7 @@
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_NoteShadowDistanceIF.text = data.NoteShadowDistance_UI.ToString();
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
+				m_TrayMutiIF.text = data.TraySizeMuti.ToString();
 				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);

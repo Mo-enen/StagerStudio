@@ -22,6 +22,10 @@
 				{ KeyCode.Alpha7, "7" },
 				{ KeyCode.Alpha8, "8" },
 				{ KeyCode.Alpha9, "9" },
+				{ KeyCode.UpArrow, "↑" },
+				{ KeyCode.DownArrow, "↓" },
+				{ KeyCode.LeftArrow, "←" },
+				{ KeyCode.RightArrow, "→" },
 			};
 			public string Name = "";
 			public KeyCode Key = KeyCode.None;
@@ -32,6 +36,7 @@
 			public UnityEvent Action = null;
 			public override string ToString () {
 				var builder = new System.Text.StringBuilder();
+				builder.Append(' ');
 				if (Ctrl) {
 					builder.Append("<color=#25D2A8ff>Ctrl</color>+");
 				}
@@ -42,6 +47,7 @@
 					builder.Append("<color=#25D2A8ff>Alt</color>+");
 				}
 				builder.Append($"<color=#25D2A8ff>{(SpecialKeyNames.ContainsKey(Key) ? SpecialKeyNames[Key] : Key.ToString())}</color>");
+				builder.Append(' ');
 				return builder.ToString();
 			}
 		}

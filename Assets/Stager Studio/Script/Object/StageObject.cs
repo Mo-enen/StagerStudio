@@ -94,12 +94,13 @@
 				PrevColSize = m_Col.size = size;
 				m_Col.center = offset;
 				m_Highlight.transform.localPosition = offset;
-				size.x = size.x * HighlightScaleMuti + 0.1f;
-				size.y = size.y * HighlightScaleMuti + 0.1f;
-				m_Highlight.size = size;
+
 				if (ColRot.HasValue) {
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
+			}
+			if (m_Highlight.enabled) {
+				m_Highlight.size = ColSize.Value * HighlightScaleMuti + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 		}
 

@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.TrayMuti
+Tray Size
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

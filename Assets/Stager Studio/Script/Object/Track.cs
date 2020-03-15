@@ -22,6 +22,11 @@
 		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
 		[SerializeField] ObjectRenderer m_TrayRenderer = null;
 
+		// Data
+		private static Vector2 TraySize = default;
+		private Beatmap.Track LateTrackData = null;
+		private float TrayX = 0.5f;
+
 
 		#endregion
 
@@ -37,6 +42,7 @@
 			MainRenderer.Type = SkinType.Track;
 			MainRenderer.Tint = Color.white;
 			m_TrackTintRenderer.Type = SkinType.TrackTint;
+			m_TrayRenderer.Type = SkinType.Tray;
 		}
 
 
@@ -46,6 +52,7 @@
 			m_TrackTintRenderer.RendererEnable = false;
 			m_TrayRenderer.RendererEnable = false;
 			ColSize = null;
+			LateTrackData = null;
 
 			// Get TrackData
 			int trackIndex = transform.GetSiblingIndex();
@@ -68,9 +75,19 @@
 			if (!active) { return; }
 			trackData.Selecting = oldSelecting;
 
+			LateTrackData = trackData;
+
 			// Movement
 			Update_Movement(linkedStage, trackData);
 
+		}
+
+
+		protected override void LateUpdate () {
+			base.LateUpdate();
+			if (LateTrackData != null) {
+				LateUpdate_Tray(LateTrackData);
+			}
 		}
 
 
@@ -82,16 +99,26 @@
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			var stagePos = Stage.GetStagePosition(linkedStage, trackData.StageIndex);
-			var (pos, _, rotZ) = Stage.Inside(GetTrackX(trackData), 0f, stagePos, stageWidth, stageHeight, stageRotZ);
+			float rotX = Stage.GetStageAngle(linkedStage);
+			float trackX = GetTrackX(trackData);
+			var (pos, _, rotZ) = Stage.Inside(trackX, 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(Stage.GetStageAngle(linkedStage), 0, 0);
+			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0, 0);
 			ColSize = MainRenderer.transform.localScale = m_TrackTintRenderer.transform.localScale = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
 				1f
 			);
+
+			// Tray
+			if (trackData.HasTray) {
+				var (trayPos, _, _) = Inside(TrayX, Stage.JudgeLineHeight / 2f / stageHeight, stagePos, stageWidth, stageHeight, stageRotZ, trackX, trackWidth, rotX);
+				m_TrayRenderer.transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, trayPos.x, trayPos.y);
+				m_TrayRenderer.transform.localScale = TraySize;
+				m_TrayRenderer.Scale = TraySize;
+			}
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
@@ -105,7 +132,6 @@
 			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
 			m_TrackTintRenderer.SetSortingLayer(LayerID_TrackTint, GetSortingOrder());
 			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
-
 		}
 
 
@@ -127,6 +153,14 @@
 
 
 
+		}
+
+
+		private void LateUpdate_Tray (Beatmap.Track trackData) {
+			if (trackData.HasTray) {
+				TrayX = Mathf.Lerp(TrayX, trackData.TrayX, UnityEngine.Time.deltaTime * 20f);
+			}
+			trackData.TrayTime = float.MaxValue;
 		}
 
 
@@ -172,6 +206,11 @@
 			base.SetSkinData(skin);
 			m_TrayRenderer.SkinData = skin;
 			m_TrackTintRenderer.SkinData = skin;
+		}
+
+
+		public static void SetTrackSkinData (SkinData skin) {
+			TraySize = skin.TraySizeMuti * skin.TryGetItemSize((int)SkinType.Tray) / skin.ScaleMuti;
 		}
 
 

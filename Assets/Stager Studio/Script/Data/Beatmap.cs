@@ -187,6 +187,8 @@
 			// Cache
 			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public bool Selecting = false;
+			[System.NonSerialized] public float TrayX = 0.5f;
+			[System.NonSerialized] public float TrayTime = float.MaxValue;
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
