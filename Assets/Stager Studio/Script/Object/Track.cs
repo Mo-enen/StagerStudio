@@ -14,9 +14,9 @@
 
 
 		// API
-		public static int LayerID_Track { get; set; } = -1;
-		public static int LayerID_TrackTint { get; set; } = -1;
-		public static int LayerID_Tray { get; set; } = -1;
+		public static int SortingLayerID_Track { get; set; } = -1;
+		public static int SortingLayerID_TrackTint { get; set; } = -1;
+		public static int SortingLayerID_Tray { get; set; } = -1;
 
 		// Ser
 		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
@@ -125,14 +125,14 @@
 			MainRenderer.RendererEnable = true;
 			m_TrackTintRenderer.RendererEnable = true;
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
-			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
+			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicPlaying ? MusicTime - Time : float.MaxValue;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
 			m_TrackTintRenderer.Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			m_TrackTintRenderer.Alpha *= MainRenderer.Alpha;
-			MainRenderer.SetSortingLayer(LayerID_Track, GetSortingOrder());
-			m_TrackTintRenderer.SetSortingLayer(LayerID_TrackTint, GetSortingOrder());
-			m_TrayRenderer.SetSortingLayer(LayerID_Tray, GetSortingOrder());
+			MainRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder());
+			m_TrackTintRenderer.SetSortingLayer(SortingLayerID_TrackTint, GetSortingOrder());
+			m_TrayRenderer.SetSortingLayer(SortingLayerID_Tray, GetSortingOrder());
 		}
 
 

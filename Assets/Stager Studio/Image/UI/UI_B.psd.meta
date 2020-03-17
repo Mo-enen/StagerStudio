@@ -236,6 +236,9 @@ TextureImporter:
   - first:
       213: -3777163983591246636
     second: Check Small
+  - first:
+      213: 183125243865815663
+    second: Osu Icon
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -347,10 +350,10 @@ TextureImporter:
       name: Voez Icon
       rect:
         serializedVersion: 2
-        x: 1
-        y: 1
-        width: 118
-        height: 118
+        x: 2
+        y: 2
+        width: 64
+        height: 61
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -368,10 +371,10 @@ TextureImporter:
       name: Dynamix Icon
       rect:
         serializedVersion: 2
-        x: 126
-        y: 1
-        width: 113
-        height: 120
+        x: 70
+        y: 2
+        width: 64
+        height: 48
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -389,10 +392,10 @@ TextureImporter:
       name: Deemo Icon
       rect:
         serializedVersion: 2
-        x: 4
-        y: 124
-        width: 88
-        height: 107
+        x: 137
+        y: 2
+        width: 64
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -549,6 +552,27 @@ TextureImporter:
       bones: []
       spriteID: 4d4f4a38e51d49bc0800000000000000
       internalID: -3777163983591246636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Osu Icon
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 2
+        width: 37
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f6a570660779a8200800000000000000
+      internalID: 183125243865815663
       vertices: []
       indices: 
       edges: []

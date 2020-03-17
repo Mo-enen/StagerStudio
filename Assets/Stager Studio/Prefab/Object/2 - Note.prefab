@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1398407539520907666}
   - component: {fileID: 8770252391903835940}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: 2 - Note
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +66,7 @@ GameObject:
   - component: {fileID: 1003450515815821461}
   - component: {fileID: 4684264123384370232}
   - component: {fileID: 1022092578367118400}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -161,7 +161,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2398828997515498831}
   - component: {fileID: 2601294090916561398}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Highlight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -219,7 +219,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
-  m_SortingLayer: 12
+  m_SortingLayer: 13
   m_SortingOrder: 0
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 7348305921613517308}
   - component: {fileID: 8362370393259773930}
   - component: {fileID: 1502125216621858363}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: Index
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -338,7 +338,7 @@ GameObject:
   - component: {fileID: 4102185042040288686}
   - component: {fileID: 493894359614527098}
   - component: {fileID: 2905921706872185958}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Sub
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -433,7 +433,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8579531368441506786}
   - component: {fileID: 5037661303140350772}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Col
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -480,7 +480,7 @@ GameObject:
   - component: {fileID: 4389317426254786846}
   - component: {fileID: 2453153224627605258}
   - component: {fileID: 3924109990878722863}
-  m_Layer: 10
+  m_Layer: 11
   m_Name: Note
   m_TagString: Untagged
   m_Icon: {fileID: 0}

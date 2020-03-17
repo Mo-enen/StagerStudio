@@ -63,7 +63,7 @@
 		// Data
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
-		private float HighlightScaleMuti = 1f;
+		private float HighlightScaleMuti = 0f;
 
 
 		#endregion
@@ -73,17 +73,17 @@
 			if (m_Label != null) {
 				m_Label.GetComponent<MeshRenderer>().sortingLayerID = LayerID_UI;
 			}
-			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 1f;
+			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 0f;
 		}
 
 
 		protected virtual void LateUpdate () {
-			LateUpdate_Col();
+			LateUpdate_Col_Highlight();
 			LateUpdate_Renderer();
 		}
 
 
-		private void LateUpdate_Col () {
+		private void LateUpdate_Col_Highlight () {
 			if (m_Col == null) { return; }
 			if (m_Col.enabled != ColSize.HasValue) {
 				m_Col.enabled = ColSize.HasValue;
@@ -100,7 +100,7 @@
 				}
 			}
 			if (m_Highlight.enabled) {
-				m_Highlight.size = ColSize.Value * HighlightScaleMuti + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
+				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 		}
 
@@ -192,11 +192,11 @@
 
 		protected static void RefreshRendererZoneFor (ObjectRenderer renderer) =>
 			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
-			ScreenZoneMinMax.min.x,
-			ScreenZoneMinMax.min.y,
-			ScreenZoneMinMax.max.x,
-			ScreenZoneMinMax.max.y
-		));
+				ScreenZoneMinMax.min.x,
+				ScreenZoneMinMax.min.y,
+				ScreenZoneMinMax.max.x,
+				ScreenZoneMinMax.max.y
+			));
 
 
 		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);
@@ -209,6 +209,14 @@
 
 
 		protected virtual void RefreshRendererZone () => RefreshRendererZoneFor(m_MainRenderer);
+
+
+		protected void TrySetColliderLayer (int layer) {
+			if (m_Col.gameObject.layer != layer) {
+				m_Col.gameObject.layer = layer;
+			}
+		}
+
 
 
 		#endregion

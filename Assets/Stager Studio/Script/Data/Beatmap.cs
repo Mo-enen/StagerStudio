@@ -216,7 +216,7 @@
 			public float Duration = 0f;
 			public float X = 0f;
 			public float Width = 1f;
-			public byte ClickSoundIndex = 0;
+			public short ClickSoundIndex = -1;
 			public bool Tap = true;
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up

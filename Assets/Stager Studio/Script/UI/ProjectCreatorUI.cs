@@ -26,6 +26,7 @@
 			Voez = 1,
 			Dynamix = 2,
 			Deemo = 3,
+			Osu = 4,
 
 		}
 
@@ -59,6 +60,7 @@
 			"ProjectCreator.Hint.Voez",
 			"ProjectCreator.Hint.Dynamix",
 			"ProjectCreator.Hint.Deemo",
+			"ProjectCreator.Hint.Osu",
 		};
 		private const string DIALOG_ErrorOnCreateProject = "Dialog.Error.FailCreateProject";
 		private const string DIALOG_NoTitle = "ProjectCreator.Error.NoTitle";

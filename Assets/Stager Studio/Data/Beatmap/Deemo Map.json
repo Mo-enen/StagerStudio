@@ -1,0 +1,62 @@
+﻿{
+    "Tag": "Deemo Map",
+    "Level": 1,
+    "DropSpeed": 1.0,
+    "BPM": 120.0,
+    "Shift": 0.0,
+    "Ratio": 1.5,
+    "CreatedTime": 0,
+    "Stages": [
+        {
+            "Time": 0.0,
+            "Duration": 1.0000000150474662e30,
+            "Speed": 1.0,
+            "X": 0.5,
+            "Y": 0.0,
+            "Width": 1.0,
+            "Height": 1.0,
+            "Rotation": 0.0,
+            "Angle": 30.0,
+            "Positions": [],
+            "Rotations": [],
+            "Widths": [],
+            "Heights": [],
+            "Angles": []
+        }
+    ],
+    "Tracks": [
+        {
+            "StageIndex": 0,
+            "Time": 0.0,
+            "Duration": 1.0000000150474662e30,
+            "HasTray": false,
+            "X": 0.5,
+            "Width": 1.0,
+            "Color": 0,
+            "Xs": [],
+            "Widths": [],
+            "Colors": []
+        }
+    ],
+    "Notes": [
+        {
+            "TrackIndex": 0,
+            "LinkedNoteIndex": -1,
+            "Time": 0.20000000298023225,
+            "Duration": 0.0,
+            "X": 0.5,
+            "Width": 0.20000000298023225,
+            "ClickSoundIndex": 0,
+            "Tap": true,
+            "SwipeX": 1,
+            "SwipeY": 1
+        }
+    ],
+    "SpeedNotes": [
+        {
+            "Time": 0.0,
+            "Duration": 0.0,
+            "Speed": 1.0
+        }
+    ]
+}

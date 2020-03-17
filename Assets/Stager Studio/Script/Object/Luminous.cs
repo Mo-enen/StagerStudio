@@ -138,6 +138,14 @@
 		}
 
 
+		protected override void RefreshRendererZone () {
+			MainRenderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
+				float.MinValue, float.MinValue,
+				float.MaxValue, float.MaxValue
+			));
+		}
+
+
 		#endregion
 
 

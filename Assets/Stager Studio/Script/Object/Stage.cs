@@ -16,9 +16,9 @@
 
 
 		// Api
-		public static int LayerID_Stage { get; set; } = -1;
 		public static int StageCount { get; set; } = 0;
 		public static float JudgeLineHeight { get; set; } = 0f;
+		public static int SortingLayerID_Stage { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_JudgelineRenderer = null;
@@ -92,12 +92,12 @@
 			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
 			MainRenderer.Type = SkinType.Stage;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
+			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicPlaying ? MusicTime - Time : float.MaxValue;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
 			m_JudgelineRenderer.Scale = new Vector2(width, JudgeLineHeight);
-			m_JudgelineRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
-			MainRenderer.SetSortingLayer(LayerID_Stage, GetSortingOrder());
+			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
+			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
 
 		}
 

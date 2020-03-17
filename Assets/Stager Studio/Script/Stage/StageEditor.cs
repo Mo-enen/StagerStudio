@@ -42,6 +42,7 @@
 
 		// Ser
 		[SerializeField] private string[] m_ItemLayerNames = null;
+		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private Toggle[] m_EyeTGs = null;
 		[SerializeField] private Toggle[] m_LockTGs = null;
 		[SerializeField] private Transform[] m_Containers = null;
@@ -67,8 +68,8 @@
 		private readonly List<(int, int)> SelectingObjectsIndex = new List<(int, int)>();
 		private readonly RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
+		private int HoldNoteLayer = -1;
 		private Ray? MouseRayDown = null;
-
 
 		#endregion
 
@@ -85,15 +86,10 @@
 			for (int i = 0; i < m_ItemLayerNames.Length; i++) {
 				ItemLayers[i] = LayerMask.NameToLayer(m_ItemLayerNames[i]);
 			}
+			HoldNoteLayer = LayerMask.NameToLayer(m_NoteHoldLayerName);
 
 			// Unlock Mask
-			UnlockedMask = LayerMask.GetMask(
-				m_ItemLayerNames[0],
-				m_ItemLayerNames[1],
-				m_ItemLayerNames[2],
-				m_ItemLayerNames[3],
-				m_ItemLayerNames[4]
-			);
+			RefreshUnlockedMask();
 
 			// ItemMasks
 			ItemMasks = new LayerMask[m_ItemLayerNames.Length];
@@ -253,6 +249,7 @@
 					}
 					break;
 				case int l when l == ItemLayers[2]:
+				case int hl when hl == HoldNoteLayer:
 					if (index >= 0 && index < map.Notes.Count) {
 						return map.Notes[index].Selecting;
 					}
@@ -293,6 +290,7 @@
 					}
 					break;
 				case int l when l == ItemLayers[2]:
+				case int hl when hl == HoldNoteLayer:
 					if (index >= 0 && index < map.Notes.Count) {
 						map.Notes[index].Selecting = select;
 					}
@@ -322,6 +320,7 @@
 							}
 							break;
 						case int l when l == ItemLayers[2]:
+						case int hl when hl == HoldNoteLayer:
 							if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
 								map.Notes[index].Selecting = false;
 							}
@@ -419,13 +418,7 @@
 			// Set Logic
 			ItemLock[index] = locked;
 			// Refresh Unlock Mask
-			var list = new List<string>();
-			for (int i = 0; i < ItemLock.Length; i++) {
-				if (!ItemLock[i]) {
-					list.Add(m_ItemLayerNames[i]);
-				}
-			}
-			UnlockedMask = LayerMask.GetMask(list.ToArray());
+			RefreshUnlockedMask();
 			// Refresh UI
 			UIReady = false;
 			try {
@@ -504,6 +497,21 @@
 				return point.x > zoneMin.x && point.x < zoneMax.x && point.y > zoneMin.y && point.y < zoneMax.y;
 			}
 			return false;
+		}
+
+
+		private void RefreshUnlockedMask () {
+			var list = new List<string>();
+			for (int i = 0; i < ItemLock.Length; i++) {
+				if (!ItemLock[i]) {
+					list.Add(m_ItemLayerNames[i]);
+				}
+			}
+			// Hold Note Layer
+			if (!ItemLock[2]) {
+				list.Add(m_NoteHoldLayerName);
+			}
+			UnlockedMask = LayerMask.GetMask(list.ToArray());
 		}
 
 

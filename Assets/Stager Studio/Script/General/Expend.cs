@@ -59,6 +59,20 @@
 		}
 
 
+		public static Vector2 Clamp (this Vector2 v, Vector2 min, Vector2 max) {
+			v.x = Mathf.Clamp(v.x, min.x, max.x);
+			v.y = Mathf.Clamp(v.y, min.y, max.y);
+			return v;
+		}
+
+
+		public static Vector2 Clamp (this Vector2 v, float min, float max) {
+			v.x = Mathf.Clamp(v.x, min, max);
+			v.y = Mathf.Clamp(v.y, min, max);
+			return v;
+		}
+
+
 		public static Vector3 Clamp01 (this Vector3 v) {
 			v.x = Mathf.Clamp01(v.x);
 			v.y = Mathf.Clamp01(v.y);

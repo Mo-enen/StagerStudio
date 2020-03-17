@@ -253,6 +253,7 @@
 			StageProject.OnProjectLoaded = () => {
 				Game.SetSpeedCurveDirty();
 				Music.Pitch = 1f;
+				Music.Seek(0f);
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 				RefreshAuthorLabel();
@@ -291,6 +292,7 @@
 				Game.SetSpeedCurveDirty();
 				Game.ClearAllContainers();
 				Music.Pitch = 1f;
+				Music.Seek(0f);
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
@@ -307,6 +309,7 @@
 				TryRefreshProjectInfo();
 				m_Wave.LoadWave(clip);
 				Music.Pitch = 1f;
+				Music.Seek(0f);
 			};
 			StageProject.OnBackgroundLoaded = (sprite) => {
 				try {

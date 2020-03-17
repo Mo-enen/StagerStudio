@@ -41,9 +41,12 @@
 		public static Vector2 ArrowSize { get; private set; } = new Vector2(0.015f, 0.015f);
 		public static float PoleThickness { get; private set; } = 0.007f;
 		public static int LayerID_Note { get; set; } = -1;
-		public static int LayerID_Shadow { get; set; } = -1;
-		public static int LayerID_Pole { get; set; } = -1;
-		public static int LayerID_Arrow { get; set; } = -1;
+		public static int LayerID_Note_Hold { get; set; } = -1;
+		public static int SortingLayerID_Note { get; set; } = -1;
+		public static int SortingLayerID_Note_Hold { get; set; } = -1;
+		public static int SortingLayerID_Shadow { get; set; } = -1;
+		public static int SortingLayerID_Pole { get; set; } = -1;
+		public static int SortingLayerID_Arrow { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_SubRenderer = null;
@@ -229,12 +232,12 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || GetNoteActive(noteData, null, noteData.AppearTime);
-			MainRenderer.LifeTime = m_SubRenderer.LifeTime = MusicTime - Time;
+			MainRenderer.LifeTime = m_SubRenderer.LifeTime = MusicPlaying ? MusicTime - Time : float.MaxValue;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.Type = !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			m_SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
-			MainRenderer.SetSortingLayer(LayerID_Note, GetSortingOrder());
+			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
 
 			// Shadow
 			if (ShadowDistance > 0.0001f) {
@@ -249,7 +252,7 @@
 				m_ShadowRenderer.Tint = Color.black;
 				m_ShadowRenderer.Scale = MainRenderer.Scale;
 				m_ShadowRenderer.Alpha = alpha * 0.309f;
-				m_ShadowRenderer.SetSortingLayer(LayerID_Shadow, GetSortingOrder());
+				m_ShadowRenderer.SetSortingLayer(SortingLayerID_Shadow, GetSortingOrder());
 			}
 		}
 
@@ -300,7 +303,7 @@
 			m_SubRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_SubRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
 			m_SubRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
-			m_SubRenderer.SetSortingLayer(LayerID_Pole, GetSortingOrder());
+			m_SubRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
 		}
 
 
@@ -313,7 +316,7 @@
 			m_SubRenderer.Pivot = new Vector3(0.5f, 0.5f);
 			m_SubRenderer.Scale = ArrowSize;
 			m_SubRenderer.Alpha = alpha;
-			m_SubRenderer.SetSortingLayer(LayerID_Arrow, GetSortingOrder());
+			m_SubRenderer.SetSortingLayer(SortingLayerID_Arrow, GetSortingOrder());
 		}
 
 
@@ -337,7 +340,8 @@
 				Highlight.enabled = active && selecting;
 			}
 
-
+			// Col
+			TrySetColliderLayer(Duration <= DURATION_GAP ? LayerID_Note : LayerID_Note_Hold);
 
 		}
 

@@ -89,6 +89,7 @@
 		private float _Ratio = 1.5f;
 		private int _AbreastIndex = 0;
 		private float _GameDropSpeed = 1f;
+		private bool SpeedCurveDirty = true;
 
 		// Saving
 		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
@@ -115,14 +116,17 @@
 
 		private void Awake () {
 			// Layer ID
-			Stage.LayerID_Stage = SortingLayer.NameToID("Stage");
-			Track.LayerID_TrackTint = SortingLayer.NameToID("TrackTint");
-			Track.LayerID_Track = SortingLayer.NameToID("Track");
-			Note.LayerID_Shadow = SortingLayer.NameToID("Shadow");
-			Track.LayerID_Tray = SortingLayer.NameToID("Tray");
-			Note.LayerID_Pole = SortingLayer.NameToID("Pole");
-			Note.LayerID_Note = SortingLayer.NameToID("Note");
-			Note.LayerID_Arrow = SortingLayer.NameToID("Arrow");
+			Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
+			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
+			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
+			Note.SortingLayerID_Shadow = SortingLayer.NameToID("Shadow");
+			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
+			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
+			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");
+			Note.SortingLayerID_Note = SortingLayer.NameToID("Note");
+			Note.LayerID_Note = LayerMask.NameToLayer("Note");
+			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
+			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
 			StageObject.LayerID_UI = SortingLayer.NameToID("UI");
 			SpeedNote.LayerID_Speed = SortingLayer.NameToID("Speed");
 			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
@@ -145,7 +149,7 @@
 
 		private void Update () {
 			Update_Beatmap();
-			Update_Cache();
+			Update_SpeedCurve();
 			Update_Mouse();
 		}
 
@@ -173,15 +177,17 @@
 		}
 
 
-		private void Update_Cache () {
+		private void Update_SpeedCurve () {
 			if (Music.IsPlaying) { return; }
 			// Speed Curve
 			if (Project.Beatmap is null) {
 				// No Map
 				if (SpeedCurve.Count > 0) {
 					SpeedCurve.Clear();
+					SpeedCurveDirty = true;
 				}
 			} else {
+				// Has Beatmap
 				var speedNotes = Project.Beatmap.SpeedNotes;
 				if (speedNotes is null || speedNotes.Count == 0) {
 					// No SpeedNote
@@ -194,21 +200,27 @@
 					} else {
 						speedNotes.Add(new Beatmap.SpeedNote(0, 0, 1));
 					}
-				} else if (SpeedCurve.Count != speedNotes.Count * 2) {
+					SpeedCurveDirty = true;
+				} else if (SpeedCurve.Count != speedNotes.Count * 2 || SpeedCurveDirty) {
 					// Reset Speed Curve
 					SpeedCurve.Clear();
 					float value = 1f;
 					foreach (var note in speedNotes) {
 						float time = note.Time;
-						while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
+						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
 						SpeedCurve.Add(time, value);
 						value = note.Speed;
 						time += note.Duration;
-						while (SpeedCurve.ContainsKey(time)) { time += float.Epsilon; }
+						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
 						SpeedCurve.Add(time, value);
 					}
-
+					SpeedCurveDirty = true;
 				}
+			}
+			// Dirty
+			if (SpeedCurveDirty) {
+				OnSpeedChanged();
+				SpeedCurveDirty = false;
 			}
 		}
 
@@ -289,7 +301,7 @@
 
 
 		// Speed Curve
-		public void SetSpeedCurveDirty () => SpeedCurve.Clear();
+		public void SetSpeedCurveDirty () => SpeedCurveDirty = true;
 
 
 		public float FillDropTime (float time, float fill, float muti) => UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
@@ -490,6 +502,7 @@ namespace StagerStudio.Editor {
 			if (EditorApplication.isPlaying) {
 				base.OnInspectorGUI();
 				if (GUI.changed) {
+					(target as StageGame).SetSpeedCurveDirty();
 					StageGame.OnStageObjectChanged();
 				}
 			} else {

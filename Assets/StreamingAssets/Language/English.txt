@@ -274,6 +274,9 @@ Created as invisible stage / track project, unlimited position and width for not
 ProjectCreator.Hint.Dynamix
 Create as traditional triple-line project, stages and tracks will be create automatically, you only need to edit the notes.
 
+ProjectCreator.Hint.Osu
+Create as a project with fixed number of tracks and only supports tap/hold notes. The notes fill the entire track horizontally, and the tracks are side by side on the stage.
+
 ProjectCreator.Hint.StagerStudio
 Create as standard StageStudio project, all features will be allowed to use.
 

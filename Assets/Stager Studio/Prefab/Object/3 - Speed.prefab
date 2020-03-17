@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3602578854534436131}
   - component: {fileID: 9113884130340688989}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: Col
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -67,7 +67,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1398407539520907666}
   - component: {fileID: 368720427764027685}
-  m_Layer: 11
+  m_Layer: 12
   m_Name: 3 - Speed
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -269,10 +269,13 @@ ProjectCreator.Error.NoTitle
 标题不能为空
 
 ProjectCreator.Hint.Deemo
-创建为简单的隐舞隐轨工程，不限制音符横向位置，不限制音符宽度，无长按音符。
+创建为简单的隐藏舞台轨道工程，不限制音符横向位置，不限制音符宽度，无长按音符。
 
 ProjectCreator.Hint.Dynamix
 创建为传统的三线落点式工程，系统会自动创建舞台和轨道，您只需编辑音符即可。
+
+ProjectCreator.Hint.Osu
+创建为固定数量轨道、仅支持普通与长按音符的工程，音符横向占满整个轨道，轨道横向并排在舞台中。
 
 ProjectCreator.Hint.StagerStudio
 创建为标准的StagerStudio工程，允许使用所有功能。
