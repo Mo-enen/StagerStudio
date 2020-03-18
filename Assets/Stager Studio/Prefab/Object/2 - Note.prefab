@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
 --- !u!23 &4684264123384370232
 MeshRenderer:
@@ -374,7 +374,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
 --- !u!23 &493894359614527098
 MeshRenderer:
@@ -516,7 +516,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
 --- !u!23 &2453153224627605258
 MeshRenderer:

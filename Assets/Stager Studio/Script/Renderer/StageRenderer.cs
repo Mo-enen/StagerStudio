@@ -21,7 +21,7 @@
 				}
 			}
 		}
-		public Vector2 Pivot {
+		public Vector3 Pivot {
 			get => m_Pivot;
 			set {
 				if (Mathf.Abs(value.x - m_Pivot.x) > 0.0001f || Mathf.Abs(value.y - m_Pivot.y) > 0.0001f) {
@@ -73,7 +73,7 @@
 
 		// Ser
 		[SerializeField] private Color32 m_Tint = Color.white;
-		[SerializeField] private Vector2 m_Pivot = new Vector2(0.5f, 0f);
+		[SerializeField] private Vector3 m_Pivot = new Vector3(0.5f, 0f, 0f);
 		[SerializeField] private Vector2 m_Scale = Vector2.one;
 
 		// Data
@@ -120,13 +120,50 @@
 		public void SetDirty () => MeshDirty = true;
 
 
-		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU) {
+		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU) => AddQuad01(l, r, d, u, uvL, uvR, uvD, uvU, 0, 1, Vector3.zero);
+		
+		
+		protected void AddQuad01_3D (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, Vector3 offset, float thickness3D, bool l3D, bool r3D, bool d3D, bool u3D) {
+			AddQuad01(a0, a1, b0, b1, uvL, uvR, uvD, uvU, 0, 1, offset);
+			if (d3D) {
+				AddQuad01(a1, a0, 0f, thickness3D, uvL, uvR, uvD, uvU, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D));
+			}
+			if (u3D) {
+				AddQuad01(a0, a1, 0f, thickness3D, uvL, uvR, uvD, uvU, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D));
+			}
+			if (l3D) {
+				AddQuad01(b0, b1, 0f, thickness3D, uvL, uvR, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D));
+			}
+			if (r3D) {
+				AddQuad01(b1, b0, 0f, thickness3D, uvL, uvR, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D));
+			}
+		}
+
+
+		protected void ClearMeshCache () {
+			Mesh.Clear();
+			Vertices.Clear();
+			Colors.Clear();
+			UVs.Clear();
+			Triangles.Clear();
+		}
+
+
+
+		// LGC
+		private void AddQuad01 (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, int axisA, int axisB, Vector3 offset) {
 			int vIndex = Vertices.Count;
 			// Rect
-			Vertices.Add(new Vector3(l - Pivot.x, d - Pivot.y, 0f));
-			Vertices.Add(new Vector3(l - Pivot.x, u - Pivot.y, 0f));
-			Vertices.Add(new Vector3(r - Pivot.x, u - Pivot.y, 0f));
-			Vertices.Add(new Vector3(r - Pivot.x, d - Pivot.y, 0f));
+			Vector3 v = Vector3.zero;
+			v[axisA] = a0 - Pivot[axisA];
+			v[axisB] = b0 - Pivot[axisB];
+			Vertices.Add(v + offset);
+			v[axisB] = b1 - Pivot[axisB];
+			Vertices.Add(v + offset);
+			v[axisA] = a1 - Pivot[axisA];
+			Vertices.Add(v + offset);
+			v[axisB] = b0 - Pivot[axisB];
+			Vertices.Add(v + offset);
 			// UV
 			UVs.Add(new Vector2(uvL, uvD));
 			UVs.Add(new Vector2(uvL, uvU));
@@ -146,14 +183,6 @@
 			Colors.Add(Tint);
 		}
 
-
-		protected void ClearMeshCache () {
-			Mesh.Clear();
-			Vertices.Clear();
-			Colors.Clear();
-			UVs.Clear();
-			Triangles.Clear();
-		}
 
 
 	}

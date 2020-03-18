@@ -166,8 +166,10 @@
 				);
 				noteData.NoteDropStart = -1f;
 			}
-			if (Duration != noteData.Duration) {
-				Duration = noteData.Duration;
+
+			float duration = Mathf.Max(noteData.Duration, 0f);
+			if (Duration != duration) {
+				Duration = duration;
 				noteData.NoteDropStart = -1f;
 			}
 			// Note Drop

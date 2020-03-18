@@ -2,7 +2,7 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
-	using LinerCurve;
+	using Curve;
 	using Saving;
 	using Data;
 	using Object;
@@ -67,7 +67,7 @@
 		// Short
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
-		private LinerFloat SpeedCurve { get; } = new LinerFloat();
+		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
@@ -196,23 +196,18 @@
 					}
 					// Init Speed Note
 					if (speedNotes is null) {
-						Project.Beatmap.SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 0, 1), };
+						Project.Beatmap.SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 1), };
 					} else {
-						speedNotes.Add(new Beatmap.SpeedNote(0, 0, 1));
+						speedNotes.Add(new Beatmap.SpeedNote(0, 1));
 					}
 					SpeedCurveDirty = true;
-				} else if (SpeedCurve.Count != speedNotes.Count * 2 || SpeedCurveDirty) {
+				} else if (SpeedCurve.Count != speedNotes.Count || SpeedCurveDirty) {
 					// Reset Speed Curve
 					SpeedCurve.Clear();
-					float value = 1f;
 					foreach (var note in speedNotes) {
 						float time = note.Time;
 						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
-						SpeedCurve.Add(time, value);
-						value = note.Speed;
-						time += note.Duration;
-						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
-						SpeedCurve.Add(time, value);
+						SpeedCurve.Add(time, note.Speed);
 					}
 					SpeedCurveDirty = true;
 				}

@@ -236,11 +236,9 @@
 		[System.Serializable]
 		public class SpeedNote {
 			public float Time;
-			public float Duration;
 			public float Speed;
-			public SpeedNote (float time, float duration, float speed) {
+			public SpeedNote (float time, float speed) {
 				Time = time;
-				Duration = duration;
 				Speed = speed;
 			}
 		}

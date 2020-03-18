@@ -51,6 +51,7 @@
 		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private InputField m_Thick3DIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
@@ -133,6 +134,18 @@
 					m_DurationIF.text = ani.FrameDuration.ToString();
 				}
 			});
+
+			// Thick 3D
+			m_Thick3DIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
+				var ani = GetEditingAniData();
+				if (ani is null) { return; }
+				if (int.TryParse(str, out int thick3D)) {
+					ani.Thickness3D_UI = thick3D;
+					m_Thick3DIF.text = ani.Thickness3D_UI.ToString();
+				}
+			});
+
 
 			// Scale Muti
 			m_ScaleMutiIF.onEndEdit.AddListener((str) => {
@@ -246,6 +259,7 @@
 			try {
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
+				m_Thick3DIF.text = ani.Thickness3D_UI.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();

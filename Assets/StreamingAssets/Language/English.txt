@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.Thick3D
+Thick 3D
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

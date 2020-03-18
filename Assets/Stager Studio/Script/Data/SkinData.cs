@@ -230,12 +230,16 @@
 
 		// API
 		public float TotalDuration => FrameDuration / 1000f * Rects.Count;
-
+		public int Thickness3D_UI {
+			get => Mathf.RoundToInt(Thickness3D * 1000f);
+			set => Thickness3D = value / 1000f;
+		}
 
 		// Ser
 		public SkinLoopType Loop = SkinLoopType.Forward;
 		public List<RectData> Rects = new List<RectData>();
 		public int FrameDuration = 200;
+		public float Thickness3D = 0f;
 
 
 		// API

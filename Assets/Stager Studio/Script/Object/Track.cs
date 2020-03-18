@@ -117,7 +117,7 @@
 			if (trackData.HasTray) {
 				var (trayPos, _, _) = Inside(TrayX, Stage.JudgeLineHeight / 2f / stageHeight, stagePos, stageWidth, stageHeight, stageRotZ, trackX, trackWidth, rotX);
 				m_TrayRenderer.transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, trayPos.x, trayPos.y);
-				m_TrayRenderer.transform.localScale = TraySize;
+				m_TrayRenderer.transform.localScale = new Vector3(TraySize.x, TraySize.y, 1f);
 				m_TrayRenderer.Scale = TraySize;
 			}
 

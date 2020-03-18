@@ -8,14 +8,14 @@ Shader "Object/Normal" {
 			Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 
 			ZWrite Off
-			Cull Off
+			Cull Back
 			Blend SrcAlpha OneMinusSrcAlpha
 
 			Pass {
 				CGPROGRAM
 					#pragma vertex vert
 					#pragma fragment frag
-				//#pragma target 2.0
+				#pragma target 2.0
 
 				#include "UnityCG.cginc"
 
