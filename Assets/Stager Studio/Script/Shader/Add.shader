@@ -8,7 +8,7 @@ Shader "Object/Normal" {
 			Tags {"Queue" = "Transparent" "IgnoreProjector" = "True" "RenderType" = "Transparent"}
 
 			ZWrite Off
-			Cull Off
+			Cull Back
 			Blend SrcColor One, One Zero
 
 			Pass {

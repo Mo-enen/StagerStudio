@@ -12818,6 +12818,7 @@ MonoBehaviour:
         BorderL: 27
         BorderR: 27
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12830,6 +12831,7 @@ MonoBehaviour:
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12842,6 +12844,7 @@ MonoBehaviour:
         BorderL: 12
         BorderR: 12
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12854,6 +12857,7 @@ MonoBehaviour:
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12866,6 +12870,7 @@ MonoBehaviour:
         BorderL: 16
         BorderR: 16
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12873,11 +12878,12 @@ MonoBehaviour:
         Y: 335
         Width: 92
         Height: 92
-        BorderU: 8
-        BorderD: 8
-        BorderL: 8
-        BorderR: 8
+        BorderU: 0
+        BorderD: 0
+        BorderL: 0
+        BorderR: 0
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12890,6 +12896,7 @@ MonoBehaviour:
         BorderL: 8
         BorderR: 8
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12902,6 +12909,7 @@ MonoBehaviour:
         BorderL: 0
         BorderR: 0
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12914,6 +12922,7 @@ MonoBehaviour:
         BorderL: 8
         BorderR: 8
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12926,6 +12935,7 @@ MonoBehaviour:
         BorderL: 12
         BorderR: 12
       FrameDuration: 24
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12962,6 +12972,7 @@ MonoBehaviour:
         BorderL: 0
         BorderR: 0
       FrameDuration: 24
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects:
@@ -12982,14 +12993,17 @@ MonoBehaviour:
         BorderL: 0
         BorderR: 0
       FrameDuration: 40
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects: []
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
     - Loop: 1
       Rects: []
       FrameDuration: 120
+      Is3D: 0
       Thickness3D: 0
   m_DefaultTexture: {fileID: 2800000, guid: 9d90311eb76e9cd4d8b2620aa302c098, type: 3}
 --- !u!1 &1580449698
@@ -13449,7 +13463,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
   m_SpriteV: {fileID: 4824580782819576835, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
@@ -13555,7 +13569,6 @@ MonoBehaviour:
   - Note
   - Speed
   - Motion
-  m_NoteHoldLayerName: HoldNote
   m_EyeTGs:
   - {fileID: 378928407}
   - {fileID: 1257152339}
@@ -13580,6 +13593,7 @@ MonoBehaviour:
   m_FocusCancel: {fileID: 2017125844}
   m_FocusAni: {fileID: 703012816}
   m_Grid: {fileID: 1637691684}
+  m_NoteHoldLayerName: HoldNote
   m_FocusKey: Focus
   m_UnfocusKey: Unfocus
   m_Duration: 0.5
@@ -16477,8 +16491,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.Thick3D
-  - Thick 3D
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -16990,7 +17002,7 @@ MonoBehaviour:
   - Show Sound Wave
   - UI.Setting.Zone
   - Show Stage Range
-  - UI.SkinEditor.ApplyAllSprite
+  - 
   - Apply to All Sprites
   - UI.SkinEditor.DarkBG
   - Dark

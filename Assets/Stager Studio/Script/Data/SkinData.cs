@@ -231,16 +231,16 @@
 		// API
 		public float TotalDuration => FrameDuration / 1000f * Rects.Count;
 		public int Thickness3D_UI {
-			get => Mathf.RoundToInt(Thickness3D * 1000f);
-			set => Thickness3D = value / 1000f;
+			get => Mathf.Max(Thickness3D, 0);
+			set => Thickness3D = Mathf.Max(value, 0);
 		}
 
 		// Ser
 		public SkinLoopType Loop = SkinLoopType.Forward;
 		public List<RectData> Rects = new List<RectData>();
 		public int FrameDuration = 200;
-		public float Thickness3D = 0f;
-
+		public bool Is3D = false;
+		public int Thickness3D = 0;
 
 		// API
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);

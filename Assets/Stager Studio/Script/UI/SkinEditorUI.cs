@@ -32,7 +32,6 @@
 		// API
 		public static LanguageHandler GetLanguage { get; set; } = null;
 		public SkinData Data { get; private set; } = new SkinData();
-		public bool ApplyToAllSprite { get; private set; } = false;
 
 		// Short
 		private SkinEditorPainterUI Painter => m_Painter;
@@ -51,7 +50,6 @@
 		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
-		[SerializeField] private InputField m_Thick3DIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
@@ -134,18 +132,6 @@
 					m_DurationIF.text = ani.FrameDuration.ToString();
 				}
 			});
-
-			// Thick 3D
-			m_Thick3DIF.onEndEdit.AddListener((str) => {
-				if (!UIReady) { return; }
-				var ani = GetEditingAniData();
-				if (ani is null) { return; }
-				if (int.TryParse(str, out int thick3D)) {
-					ani.Thickness3D_UI = thick3D;
-					m_Thick3DIF.text = ani.Thickness3D_UI.ToString();
-				}
-			});
-
 
 			// Scale Muti
 			m_ScaleMutiIF.onEndEdit.AddListener((str) => {
@@ -259,7 +245,6 @@
 			try {
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
-				m_Thick3DIF.text = ani.Thickness3D_UI.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
@@ -335,11 +320,6 @@
 
 
 		public void UI_SetDarkBackground (bool dark) => m_Background.color = dark ? new Color(0.055f, 0.055f, 0.055f, 1f) : Color.white;
-
-
-		public void UI_SetApplyAllSprite (bool apply) {
-			ApplyToAllSprite = apply;
-		}
 
 
 		public void UI_HideSkinEditorUI () => transform.localScale = Vector3.zero;

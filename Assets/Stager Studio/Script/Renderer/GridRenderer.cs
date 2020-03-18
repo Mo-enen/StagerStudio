@@ -128,7 +128,8 @@
 						(float)i / countX + THICK / Scale.x,
 						0f, 1f,
 						uvMin0.x, uvMax0.x,
-						uvMin0.y, uvMax0.y
+						uvMin0.y, uvMax0.y,
+						Vector3.zero
 					);
 				}
 			}
@@ -138,7 +139,7 @@
 				case GridMode.XX: {
 						int countY = Mathf.Clamp(CountX + 1, 1, 32);
 						for (int i = 0; i <= countY; i++) {
-							AddQuad01(0f, 1f, (float)i / countY - THICK / Scale.y, (float)i / countY + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y);
+							AddQuad01(0f, 1f, (float)i / countY - THICK / Scale.y, (float)i / countY + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
 						}
 					}
 					break;
@@ -154,7 +155,7 @@
 						);
 						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
 							if (y01 > 0f) {
-								AddQuad01(0f, 1f, y01 - THICK / Scale.y, y01 + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y);
+								AddQuad01(0f, 1f, y01 - THICK / Scale.y, y01 + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
 							}
 							y01 += GetAreaBetween(time, time + TimeGap, speedMuti);
 							time += TimeGap;

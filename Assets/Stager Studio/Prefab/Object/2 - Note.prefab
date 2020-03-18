@@ -104,6 +104,7 @@ MonoBehaviour:
     rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
+  m_Allow3D: 0
 --- !u!23 &4684264123384370232
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -376,6 +377,7 @@ MonoBehaviour:
     rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
+  m_Allow3D: 1
 --- !u!23 &493894359614527098
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -518,6 +520,7 @@ MonoBehaviour:
     rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
+  m_Allow3D: 1
 --- !u!23 &2453153224627605258
 MeshRenderer:
   m_ObjectHideFlags: 0

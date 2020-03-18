@@ -50,6 +50,9 @@
 		// Short
 		private AnimatedItemData AniData => SkinData?.Items[(int)Type];
 
+		// Ser
+		[SerializeField] private bool m_Allow3D = true;
+
 		// Data
 		private SkinData _Data = null;
 		private SkinType _TypeIndex = SkinType.Stage;
@@ -75,13 +78,17 @@
 			if (rData.Width <= 0 || rData.Height <= 0) { return; }
 			float tWidth = SkinData.Texture.width;
 			float tHeight = SkinData.Texture.height;
-			float thickness3D = Mathf.Abs(ani.Thickness3D);
-			bool is3D = ani.Thickness3D > 0.0001f;
-			Vector3 offset3D = Vector3.back * thickness3D;
+			bool is3D = m_Allow3D && ani.Is3D;
+			float thickness3D = m_Allow3D ? ani.Thickness3D / SkinData.ScaleMuti : 0f;
+			Vector3 offset = new Vector3(0f, 0f, -thickness3D);
 			// Add Rect Mesh Cache
+			float uvL = rData.L / tWidth;
+			float uvR = rData.R / tWidth;
+			float uvD = rData.D / tHeight;
+			float uvU = rData.U / tHeight;
 			if (rData.BorderL <= 0 && rData.BorderR <= 0 && rData.BorderD <= 0 && rData.BorderU <= 0) {
 				// No Border
-				AddQuad01_3D(0f, 1f, 0f, 1f, rData.L / tWidth, rData.R / tWidth, rData.D / tHeight, rData.U / tHeight, offset3D, thickness3D, is3D, is3D, is3D, is3D);
+				AddQuad01(0f, 1f, 0f, 1f, uvL, uvR, uvD, uvU, offset);
 			} else {
 				// Nine-Slice
 				bool hasBorderL = rData.BorderL > 0;
@@ -134,37 +141,50 @@
 				if (hasBorderL) {
 					if (hasBorderD) {
 						// DL
-						AddQuad01_3D(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset3D, thickness3D, is3D, false, is3D, false);
+						AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset);
 					}
 					if (hasBorderU) {
 						// UL
-						AddQuad01_3D(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset3D, thickness3D, is3D, false, false, is3D);
+						AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset);
 					}
 					// L Scale
-					AddQuad01_3D(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset3D, thickness3D, is3D, false, is3D && !hasBorderD, is3D && !hasBorderU);
+					AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset);
 				}
 				if (hasBorderD) {
 					// DM
-					AddQuad01_3D(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset3D, thickness3D, false, false, is3D, is3D && !hasBorderU);
+					AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset);
 				}
 				if (hasBorderU) {
 					// UM
-					AddQuad01_3D(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset3D, thickness3D, false, false, is3D && !hasBorderD, is3D);
+					AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset);
 				}
 				// MM
-				AddQuad01_3D(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset3D, thickness3D, is3D && !hasBorderL, is3D && !hasBorderR, is3D && !hasBorderD, is3D && !hasBorderU);
+				AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset);
 				if (hasBorderR) {
 					if (hasBorderD) {
 						// DR
-						AddQuad01_3D(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset3D, thickness3D, false, is3D, is3D, false);
+						AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset);
 					}
 					if (hasBorderU) {
 						// UR
-						AddQuad01_3D(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset3D, thickness3D, false, is3D, false, is3D);
+						AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset);
 					}
 					// R
-					AddQuad01_3D(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset3D, thickness3D, false, is3D, is3D && !hasBorderD, is3D && !hasBorderU);
+					AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset);
 				}
+			}
+			// 3D
+			if (is3D) {
+				float uvL3d = uvL - ani.Thickness3D / tWidth;
+				float uvD3d = uvD - ani.Thickness3D / tHeight;
+				// L
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D));
+				// R
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D));
+				// D
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D));
+				// U
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D));
 			}
 		}
 

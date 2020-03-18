@@ -41,6 +41,9 @@
 		[SerializeField] private RectTransform m_RectContainer = null;
 		[SerializeField] private RectTransform m_Selection = null;
 		[SerializeField] private RectTransform m_DragRect = null;
+		[SerializeField] private RectTransform m_3DRectD = null;
+		[SerializeField] private RectTransform m_3DRectL = null;
+		[SerializeField] private Toggle m_3dTG = null;
 		[SerializeField] private Grabber m_RectPrefab = null;
 		[SerializeField] private RectTransform[] m_SelectionBorders = null; // UDLR
 		[Header("Sub"), SerializeField] private RectTransform m_SubPanelRoot = null;
@@ -52,11 +55,12 @@
 		[SerializeField] private InputField m_SubR = null;
 		[SerializeField] private InputField m_SubB = null;
 		[SerializeField] private InputField m_SubT = null;
+		[SerializeField] private InputField m_Sub3D = null;
 
 		// Data
 		private const string DIALOG_DeleteConfirm = "SkinEditor.Dialog.DeleteConfirm";
 		private bool ItemDirty = true;
-		private bool SubUIReady = true;
+		private bool UIReady = true;
 		private float Ratio = 1f;
 		private Camera _Camera = null;
 		private Vector4 ContainerZeroPosSize = default;
@@ -80,6 +84,15 @@
 			var size = m_Root.rect.size;
 			ContainerZeroPosSize = new Vector4(pos.x, pos.y, size.x, size.y);
 			SetSelection(-1);
+			m_3dTG.onValueChanged.AddListener((isOn) => {
+				if (UIReady) {
+					var data = m_Editor.Data;
+					var ani = m_Editor.GetEditingAniData();
+					if (ani is null || data is null || data.Texture is null) { return; }
+					ani.Is3D = isOn;
+					Refresh3DUI();
+				}
+			});
 		}
 
 
@@ -128,7 +141,6 @@
 			float delta = Input.mouseScrollDelta.y;
 			if (Mathf.Abs(delta) > 0.001f && MouseInPainter()) {
 				m_Root.SetPivotWithoutChangePosition(m_Root.Get01Position(Input.mousePosition, Camera));
-				//delta *= 24f;
 				m_Root.SetSizeWithCurrentAnchors(
 					RectTransform.Axis.Vertical,
 					Mathf.Clamp(m_Root.rect.height * (delta > 0f ? 1.1f : 0.9f), ContainerZeroPosSize.w, ContainerZeroPosSize.w * 20f)
@@ -137,6 +149,7 @@
 					RectTransform.Axis.Horizontal,
 					m_Root.rect.height * Ratio
 				);
+				Refresh3DUI();
 			}
 			// Move View
 			if (Input.GetMouseButton(2) || Input.GetMouseButton(1)) {
@@ -252,6 +265,77 @@
 		public void Selection_Border_Drag_D (BaseEventData bData) => Selection_Drag(bData as PointerEventData, null, false, true);
 		public void Selection_Border_Drag_L (BaseEventData bData) => Selection_Drag(bData as PointerEventData, false, null, true);
 		public void Selection_Border_Drag_R (BaseEventData bData) => Selection_Drag(bData as PointerEventData, true, null, true);
+		public void Selection_3D_Drag_D (BaseEventData bData) => Selection_3D_Drag(bData as PointerEventData, true);
+		public void Selection_3D_Drag_L (BaseEventData bData) => Selection_3D_Drag(bData as PointerEventData, false);
+
+		public void UI_SubPositionX (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(value, -1, -1, -1, -1, -1, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubPositionY (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, value, -1, -1, -1, -1, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubPositionW (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, value, -1, -1, -1, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubPositionH (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, value, -1, -1, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubBorderL (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, value, -1, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubBorderR (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, value, -1, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubBorderB (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, -1, value, -1);
+				SetSelection();
+			}
+		}
+		public void UI_SubBorderT (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				SetSelectingRect(-1, -1, -1, -1, -1, -1, -1, value);
+				SetSelection();
+			}
+		}
+		public void UI_Sub3D (string str) {
+			if (!UIReady || SelectingRectIndex < 0) { return; }
+			if (int.TryParse(str, out int value)) {
+				var ani = m_Editor.GetEditingAniData();
+				if (ani != null) {
+					ani.Thickness3D_UI = value;
+				}
+				Refresh3DUI();
+			}
+		}
+
+		// MSG Logic
 		private void Selection_Drag (PointerEventData e, bool? right, bool? up, bool border = false) {
 			if (e.button == PointerEventData.InputButton.Left) {
 				if (border) {
@@ -315,7 +399,7 @@
 			}
 			// Final
 			RefreshRectPosition(SelectingRectIndex, rData, tWidth, tHeight);
-			SetSelection(SelectingRectIndex);
+			SetSelection();
 		}
 		private void Selection_Drag_Border (PointerEventData e, bool? right, bool? up) {
 			if (right is null && up is null) { return; }
@@ -356,64 +440,26 @@
 			}
 			// Apply
 			ApplyData(ani, rData);
-			SetSelection(SelectingRectIndex);
+			SetSelection();
 		}
-
-		public void UI_SubPositionX (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(value, -1, -1, -1, -1, -1, -1, -1);
-				SetSelection(SelectingRectIndex);
+		private void Selection_3D_Drag (PointerEventData e, bool down) {
+			var (rData, ani, data) = GetSelectingRect();
+			if (ani is null || !ani.Is3D) { return; }
+			SelectingRectIndex = Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1);
+			int tWidth = data.Texture.width;
+			int tHeight = data.Texture.height;
+			// Get Drag Pos
+			Vector2 aimPos01 = m_Root.Get01Position(e.position, Camera);
+			if (down) {
+				aimPos01.y = Snap01(aimPos01.y, tHeight);
+				int y = Mathf.Clamp(Mathf.RoundToInt(aimPos01.y * tHeight), 0, tHeight - 1);
+				ani.Thickness3D_UI = Mathf.Clamp(rData.Y - y, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
+			} else {
+				aimPos01.x = Snap01(aimPos01.x, tWidth);
+				int x = Mathf.Clamp(Mathf.RoundToInt(aimPos01.x * tWidth), 0, tWidth - 1);
+				ani.Thickness3D_UI = Mathf.Clamp(rData.X - x, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
 			}
-		}
-		public void UI_SubPositionY (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, value, -1, -1, -1, -1, -1, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubPositionW (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, value, -1, -1, -1, -1, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubPositionH (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, -1, value, -1, -1, -1, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubBorderL (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, -1, -1, value, -1, -1, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubBorderR (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, -1, -1, -1, value, -1, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubBorderB (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, -1, -1, -1, -1, value, -1);
-				SetSelection(SelectingRectIndex);
-			}
-		}
-		public void UI_SubBorderT (string str) {
-			if (!SubUIReady || SelectingRectIndex < 0) { return; }
-			if (int.TryParse(str, out int value)) {
-				SetSelectingRect(-1, -1, -1, -1, -1, -1, -1, value);
-				SetSelection(SelectingRectIndex);
-			}
+			SetSelection();
 		}
 
 
@@ -448,7 +494,11 @@
 			m_Root.anchoredPosition = new Vector2(ContainerZeroPosSize.x, ContainerZeroPosSize.y);
 			m_Root.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, ContainerZeroPosSize.w);
 			m_Root.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, ContainerZeroPosSize.w * Ratio);
+			Refresh3DUI();
 		}
+
+
+		public void SetSelection () => SetSelection(SelectingRectIndex);
 
 
 		public void SetSelection (int index) {
@@ -477,7 +527,7 @@
 				m_SelectionBorders[3].anchorMin = new Vector2(r01, 0);
 				m_SelectionBorders[3].anchorMax = new Vector2(r01, 1);
 				// Sub
-				SubUIReady = false;
+				UIReady = false;
 				try {
 					m_SubX.text = rData.X.ToString();
 					m_SubY.text = rData.Y.ToString();
@@ -487,12 +537,43 @@
 					m_SubR.text = rData.BorderR.ToString();
 					m_SubB.text = rData.BorderD.ToString();
 					m_SubT.text = rData.BorderU.ToString();
+					m_Sub3D.text = ani.Thickness3D_UI.ToString();
 				} catch { }
-				SubUIReady = true;
+				UIReady = true;
 				// Pos
 				SetPositionRect(m_Selection, rData, data.Texture.width, data.Texture.height);
 				RefreshRectPosition(SelectingRectIndex, rData, data.Texture.width, data.Texture.height);
+				Refresh3DUI();
 			}
+
+		}
+
+
+		public void Refresh3DUI () {
+			var data = m_Editor.Data;
+			var ani = m_Editor.GetEditingAniData();
+			if (ani is null || ani.Rects is null || data is null || data.Texture is null) {
+				return;
+			}
+			if (SelectingRectIndex >= 0) {
+				var rData = ani.Rects[SelectingRectIndex];
+				// 3D Pos
+				ani.Is3D = ani.Is3D && rData.Width > 0 && rData.Height > 0;
+				m_3DRectD.gameObject.SetActive(ani.Is3D);
+				m_3DRectL.gameObject.SetActive(ani.Is3D);
+				if (ani.Is3D) {
+					float uiSize3D = (float)ani.Thickness3D_UI / data.Texture.height * m_Root.rect.height;
+					m_3DRectL.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, uiSize3D);
+					m_3DRectD.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, uiSize3D);
+				}
+			}
+			// 3D Toggle
+			UIReady = false;
+			try {
+				m_3dTG.isOn = ani.Is3D;
+				m_Sub3D.text = ani.Thickness3D_UI.ToString();
+			} catch { }
+			UIReady = true;
 		}
 
 
@@ -648,16 +729,6 @@
 
 		private void ApplyData (AnimatedItemData ani, AnimatedItemData.RectData rData) {
 			ani.Rects[SelectingRectIndex] = rData;
-			if (m_Editor.ApplyToAllSprite) {
-				for (int i = 0; i < ani.Rects.Count; i++) {
-					var r = ani.Rects[i];
-					r.BorderU = Mathf.Clamp(rData.BorderU, 0, rData.Height);
-					r.BorderD = Mathf.Clamp(rData.BorderD, 0, rData.Height);
-					r.BorderL = Mathf.Clamp(rData.BorderL, 0, rData.Width);
-					r.BorderR = Mathf.Clamp(rData.BorderR, 0, rData.Width);
-					ani.Rects[i] = r;
-				}
-			}
 		}
 
 

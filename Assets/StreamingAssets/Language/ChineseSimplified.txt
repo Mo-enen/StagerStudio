@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.Thick3D
-3D厚度
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -756,9 +753,6 @@ UI.Setting.Wave
 
 UI.Setting.Zone
 显示舞台范围
-
-UI.SkinEditor.ApplyAllSprite
-应用到所有图块
 
 UI.SkinEditor.DarkBG
 深色

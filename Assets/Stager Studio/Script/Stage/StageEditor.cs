@@ -42,7 +42,6 @@
 
 		// Ser
 		[SerializeField] private string[] m_ItemLayerNames = null;
-		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private Toggle[] m_EyeTGs = null;
 		[SerializeField] private Toggle[] m_LockTGs = null;
 		[SerializeField] private Transform[] m_Containers = null;
@@ -50,6 +49,7 @@
 		[SerializeField] private RectTransform m_FocusCancel = null;
 		[SerializeField] private Animator m_FocusAni = null;
 		[SerializeField] private GridRenderer m_Grid = null;
+		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
 		[SerializeField] private float m_Duration = 0.5f;

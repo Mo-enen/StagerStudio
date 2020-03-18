@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.Thick3D
-Thick 3D
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -756,9 +753,6 @@ Show Sound Wave
 
 UI.Setting.Zone
 Show Stage Range
-
-UI.SkinEditor.ApplyAllSprite
-Apply to All Sprites
 
 UI.SkinEditor.DarkBG
 Dark
