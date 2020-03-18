@@ -1,110 +1,115 @@
 ﻿{
-    "Tag": "Normal",
-    "Level": 1,
-    "DropSpeed": 1.0,
-    "BPM": 120.0,
-    "Shift": 0.0,
-    "Ratio": 0.33329999446868899,
-    "CreatedTime": 637199988842215789,
-    "Stages": [
-        {
-            "Time": 0.0,
-            "Duration": 2.999999894026671e30,
-            "Speed": 1.0,
-            "X": 0.5,
-            "Y": 0.0,
-            "Width": 1.0,
-            "Height": 3.0,
-            "Rotation": 0.0,
-            "Angle": 0.0,
-            "Positions": [],
-            "Rotations": [],
-            "Widths": [],
-            "Heights": [],
-            "Angles": []
-        }
-    ],
-    "Tracks": [
-        {
-            "StageIndex": 0,
-            "Time": 0.0,
-            "Duration": 2.999999894026671e30,
-            "HasTray": false,
-            "X": 0.125,
-            "Width": 0.25,
-            "Color": 1,
-            "Xs": [],
-            "Widths": [],
-            "Colors": []
-        },
-        {
-            "StageIndex": 0,
-            "Time": 0.0,
-            "Duration": 2.999999894026671e30,
-            "HasTray": false,
-            "X": 0.375,
-            "Width": 0.25,
-            "Color": 1,
-            "Xs": [],
-            "Widths": [],
-            "Colors": []
-        },
-        {
-            "StageIndex": 0,
-            "Time": 0.0,
-            "Duration": 2.999999894026671e30,
-            "HasTray": false,
-            "X": 0.625,
-            "Width": 0.25,
-            "Color": 1,
-            "Xs": [],
-            "Widths": [],
-            "Colors": []
-        },
-        {
-            "StageIndex": 0,
-            "Time": 0.0,
-            "Duration": 2.999999894026671e30,
-            "HasTray": false,
-            "X": 0.875,
-            "Width": 0.25,
-            "Color": 1,
-            "Xs": [],
-            "Widths": [],
-            "Colors": []
-        }
-    ],
-    "Notes": [
-        {
-            "TrackIndex": 1,
-            "LinkedNoteIndex": -1,
-            "Time": 0.20000000298023225,
-            "Duration": 0.0,
-            "X": 0.5,
-            "Width": 1.0,
-            "ClickSoundIndex": 0,
-            "Tap": true,
-            "SwipeX": 1,
-            "SwipeY": 1
-        },
-        {
-            "TrackIndex": 2,
-            "LinkedNoteIndex": -1,
-            "Time": 0.20000000298023225,
-            "Duration": 0.0,
-            "X": 0.5,
-            "Width": 1.0,
-            "ClickSoundIndex": 0,
-            "Tap": true,
-            "SwipeX": 1,
-            "SwipeY": 1
-        }
-    ],
-    "SpeedNotes": [
-        {
-            "Time": 0.0,
-            "Duration": 0.0,
-            "Speed": 1.0
-        }
-    ]
+  "Tag": "Normal",
+  "Level": 1,
+  "DropSpeed": 1.0,
+  "BPM": 120.0,
+  "Shift": 0.0,
+  "Ratio": 1.5,
+  "CreatedTime": 0,
+  "Stages": [
+    {
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "Speed": 1.0,
+      "X": 0.5,
+      "Y": 0.0,
+      "Width": 1.0,
+      "Height": 0.6665999889373779,
+      "Rotation": 0.0,
+      "Angle": 0.0,
+      "Positions": [],
+      "Rotations": [],
+      "Widths": [],
+      "Heights": [],
+      "Angles": []
+    }
+  ],
+  "Tracks": [
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.3125,
+      "Width": 0.0625,
+      "Color": 2,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.375,
+      "Width": 0.0625,
+      "Color": 1,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.4375,
+      "Width": 0.0625,
+      "Color": 2,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.5,
+      "Width": 0.0625,
+      "Color": 3,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.5625,
+      "Width": 0.0625,
+      "Color": 2,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.625,
+      "Width": 0.0625,
+      "Color": 1,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    },
+    {
+      "StageIndex": 0,
+      "Time": 0.0,
+      "Duration": 3.4028234663852887e38,
+      "HasTray": false,
+      "X": 0.6875,
+      "Width": 0.0625,
+      "Color": 2,
+      "Xs": [],
+      "Widths": [],
+      "Colors": []
+    }
+  ],
+  "Notes": [],
+  "SpeedNotes": []
 }

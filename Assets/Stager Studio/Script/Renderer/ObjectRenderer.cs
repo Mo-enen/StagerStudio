@@ -178,13 +178,13 @@
 				float uvL3d = uvL - ani.Thickness3D / tWidth;
 				float uvD3d = uvD - ani.Thickness3D / tHeight;
 				// L
-				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D));
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D), false);
 				// R
-				AddQuad01(1f, 0f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D));
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D), false);
 				// D
-				AddQuad01(1f, 0f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D));
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D), true);
 				// U
-				AddQuad01(0f, 1f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D));
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D), true);
 			}
 		}
 

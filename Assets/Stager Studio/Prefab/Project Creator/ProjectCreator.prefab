@@ -2101,7 +2101,11 @@ MonoBehaviour:
     - serializedVersion: 2
       rgba: 4294967295
     - serializedVersion: 2
-      rgba: 16777215
+      rgba: 268418560
+    - serializedVersion: 2
+      rgba: 268435455
+    - serializedVersion: 2
+      rgba: 251699967
     Gene: {fileID: 4900000, guid: 42ddce54f0c79114b97d4ff43d6aedd3, type: 3}
     Tween: {fileID: 4900000, guid: b5407d18ed38e7c4eb443be5512dfd9c, type: 3}
     Beatmap: {fileID: 4900000, guid: 183ee389bae0a494a8d72479e9a862ae, type: 3}

@@ -244,7 +244,7 @@
 			// Shadow
 			if (ShadowDistance > 0.0001f) {
 				// Movement
-				m_ShadowRenderer.transform.localPosition = Vector3.down * ShadowDistance;
+				m_ShadowRenderer.transform.localPosition = noteRot * (Vector3.down * ShadowDistance);
 				m_ShadowRenderer.transform.rotation = noteRot;
 				m_ShadowRenderer.transform.localScale = zoneNoteScale;
 				// Render

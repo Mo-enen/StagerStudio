@@ -228,7 +228,10 @@
 		}
 
 
-		public void Refresh () => RefreshLogic();
+		public void Refresh () {
+			Skin.RefreshAllSkinNames();
+			RefreshLogic();
+		}
 
 
 		public void ResetSettings () => DialogUtil.Dialog_OK_Cancel(RESET_CONFIRM_KEY, DialogUtil.MarkType.Warning, () => {
