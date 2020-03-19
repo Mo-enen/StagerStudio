@@ -1,4 +1,10 @@
-﻿Author
+﻿Menu.Grid.bps0
+每小节3拍
+
+Menu.Grid.bps1
+每小节4拍
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -45,6 +51,9 @@ Menu.AutoSave.Off
 
 Menu.BeatmapItem.DeleteBeatmap
 删除谱面
+
+Menu.BeatmapItem.DuplicateBeatmap
+复制
 
 Menu.BeatmapItem.ExportBeatmap
 导出谱面
@@ -216,6 +225,9 @@ Project.Loading.Image
 
 Project.UI.AutoSaveMSG
 每{0}秒自动保存
+
+Project.UI.BeatmapDuplicateTag
+（复制）
 
 Project.UI.BeatmapLoadedMSG
 已加载谱面 {0}
@@ -786,6 +798,9 @@ UI.SkinEditor.NoteShadowDistance
 
 UI.SkinEditor.PingPong
 折返播放
+
+UI.SkinEditor.PingPongStay
+折返（滞留）
 
 UI.SkinEditor.Scale
 尺寸

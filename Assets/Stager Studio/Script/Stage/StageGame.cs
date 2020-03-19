@@ -40,7 +40,7 @@
 		public static VoidHandler OnStageObjectChanged { get; set; } = null;
 		public static VoidHandler OnSpeedChanged { get; set; } = null;
 		public static VoidHandler OnAbreastChanged { get; set; } = null;
-		public static VoidBoolIntIntHandler OnGridChanged { get; set; } = null;
+		public static VoidHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
 
@@ -60,8 +60,10 @@
 		public bool UseAbreast { get; private set; } = false;
 		public bool AllStageAbreast { get; private set; } = false;
 		public int AbreastIndex => Mathf.Max(_AbreastIndex, 0);
+		public bool TheShowGrid => ShowGrid;
 		public int GridX => GridCountX;
 		public int GridY => GridCountY;
+		public int TheBeatPerSection => BeatPerSection;
 		public bool PositiveScroll { get; set; } = true;
 
 		// Short
@@ -90,11 +92,13 @@
 		private int _AbreastIndex = 0;
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
+		private float MouseDownMusicTime = -1f;
 
 		// Saving
 		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
 		private SavingInt GridCountX = new SavingInt("StageGame.GridCountX", 3);
 		private SavingInt GridCountY = new SavingInt("StageGame.GridCountY", 1);
+		private SavingInt BeatPerSection = new SavingInt("StageGame.BeatPerSection", 4);
 
 
 		#endregion
@@ -144,6 +148,7 @@
 			SetShowGrid(ShowGrid);
 			SetGridCountX(GridCountX);
 			SetGridCountY(GridCountY);
+			SetBeatPerSection(BeatPerSection);
 		}
 
 
@@ -245,6 +250,26 @@
 					}
 				}
 			}
+			// Right
+			if (Input.GetMouseButton(1)) {
+				if (MouseDownMusicTime < 0.5f) {
+					// Right Down
+					if (MouseDownMusicTime > -1.5f) {
+						MouseDownMusicTime = CheckAntiMouse() ? GetMusicTimeAt(Input.mousePosition) : -2f;
+					}
+				} else {
+					// Right Drag
+					float mouseTime = GetMusicTimeAt(Input.mousePosition);
+					float aimTime = FillDropTime(
+						MouseDownMusicTime,
+						Mathf.Sign(Music.Time - mouseTime) * AreaBetween(mouseTime, Music.Time, GameDropSpeed * MapDropSpeed),
+						GameDropSpeed * MapDropSpeed
+					);
+					Music.Seek(aimTime);
+				}
+			} else {
+				MouseDownMusicTime = -1f;
+			}
 			// Func
 			bool CheckAntiMouse () {
 				// Transform
@@ -259,6 +284,7 @@
 				// Final
 				return true;
 			}
+			float GetMusicTimeAt (Vector2 screenPos) => FillDropTime(Music.Time, m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed * MapDropSpeed);
 		}
 
 
@@ -355,19 +381,19 @@
 
 		public void SetShowGrid (bool show) {
 			ShowGrid.Value = show;
-			OnGridChanged(ShowGrid, GridCountX, GridCountY);
+			OnGridChanged();
 		}
 
 
 		public void SetGridCountX (int x) {
 			GridCountX.Value = Mathf.Clamp(x, 1, 32);
-			OnGridChanged(ShowGrid, GridCountX, GridCountY);
+			OnGridChanged();
 		}
 
 
 		public void SetGridCountY (int y) {
 			GridCountY.Value = Mathf.Clamp(y, 1, 8);
-			OnGridChanged(ShowGrid, GridCountX, GridCountY);
+			OnGridChanged();
 		}
 
 
@@ -383,6 +409,12 @@
 				Music.Pitch = Mathf.Round(pitch * 10f) / 10f;
 			}
 			LogGameHint_Key(MUSIC_PITCH_HINT, Music.Pitch.ToString("0.0"), false);
+		}
+
+
+		public void SetBeatPerSection (int bps) {
+			BeatPerSection.Value = Mathf.Clamp(bps, 1, 16);
+			OnGridChanged();
 		}
 
 

@@ -5053,8 +5053,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 7a27da5dc56b4574ba3d0d5a3102e617, type: 3}
-  m_Type: 1
+  m_Sprite: {fileID: 1077981945261990108, guid: 7a27da5dc56b4574ba3d0d5a3102e617,
+    type: 3}
+  m_Type: 2
   m_PreserveAspect: 0
   m_FillCenter: 0
   m_FillMethod: 4
@@ -5062,7 +5063,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 0.618
 --- !u!222 &690629582
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7218,6 +7219,7 @@ MonoBehaviour:
     CallbackKeys:
     - Menu.BeatmapItem.OpenBeatmap
     - Menu.BeatmapItem.ExportBeatmap
+    - Menu.BeatmapItem.DuplicateBeatmap
     - Menu.BeatmapItem.DeleteBeatmap
   - Key: Menu.ProjectInfo.Palette
     CallbackKeys:
@@ -7251,6 +7253,9 @@ MonoBehaviour:
     - Menu.Grid.y1
     - Menu.Grid.y2
     - Menu.Grid.y3
+    - 
+    - Menu.Grid.bps0
+    - Menu.Grid.bps1
   - Key: Menu.AutoSave
     CallbackKeys:
     - Menu.AutoSave.0
@@ -7491,6 +7496,22 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 244822436}
           m_MethodName: ExportBeatmap
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.BeatmapItem.DuplicateBeatmap
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 244822436}
+          m_MethodName: DuplicateBeatmap
           m_Mode: 0
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -7768,6 +7789,38 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 7
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.bps0
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetBeatPerSection
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Grid.bps1
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: SetBeatPerSection
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 4
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -12809,8 +12862,8 @@ MonoBehaviour:
     Items:
     - Loop: 1
       Rects:
-      - X: 136
-        Y: 483
+      - X: 53
+        Y: 204
         Width: 56
         Height: 26
         BorderU: 25
@@ -12822,9 +12875,9 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 348
-        Y: 320
-        Width: 31
+      - X: 95
+        Y: 189
+        Width: 14
         Height: 8
         BorderU: 0
         BorderD: 0
@@ -12835,8 +12888,8 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 161
-        Y: 335
+      - X: 16
+        Y: 138
         Width: 30
         Height: 92
         BorderU: 58
@@ -12848,8 +12901,8 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 149
-        Y: 335
+      - X: 4
+        Y: 138
         Width: 8
         Height: 92
         BorderU: 75
@@ -12874,30 +12927,30 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 289
-        Y: 335
+      - X: 291
+        Y: 177
         Width: 92
         Height: 92
-        BorderU: 0
-        BorderD: 0
-        BorderL: 0
-        BorderR: 0
+        BorderU: 8
+        BorderD: 8
+        BorderL: 8
+        BorderR: 8
       FrameDuration: 120
-      Is3D: 0
-      Thickness3D: 0
+      Is3D: 1
+      Thickness3D: 46
     - Loop: 1
       Rects:
-      - X: 289
-        Y: 335
+      - X: 291
+        Y: 177
         Width: 92
-        Height: 176
+        Height: 100
         BorderU: 0
         BorderD: 92
         BorderL: 8
         BorderR: 8
       FrameDuration: 120
-      Is3D: 0
-      Thickness3D: 0
+      Is3D: 1
+      Thickness3D: 46
     - Loop: 1
       Rects:
       - X: 9
@@ -12910,28 +12963,28 @@ MonoBehaviour:
         BorderR: 0
       FrameDuration: 120
       Is3D: 0
-      Thickness3D: 0
+      Thickness3D: 46
     - Loop: 1
       Rects:
-      - X: 195
-        Y: 335
+      - X: 291
+        Y: 324
         Width: 92
-        Height: 176
+        Height: 100
         BorderU: 0
         BorderD: 92
         BorderL: 8
         BorderR: 8
       FrameDuration: 120
-      Is3D: 0
-      Thickness3D: 0
+      Is3D: 1
+      Thickness3D: 46
     - Loop: 1
       Rects:
-      - X: 117
-        Y: 320
+      - X: 53
+        Y: 137
         Width: 29
-        Height: 163
-        BorderU: 46
-        BorderD: 46
+        Height: 57
+        BorderU: 20
+        BorderD: 20
         BorderL: 12
         BorderR: 12
       FrameDuration: 24
@@ -12939,34 +12992,34 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 383
-        Y: 447
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 448
+        Width: 127
+        Height: 63
         BorderU: 0
         BorderD: 0
         BorderL: 0
         BorderR: 0
-      - X: 383
-        Y: 381
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 385
+        Width: 127
+        Height: 62
         BorderU: 0
         BorderD: 0
         BorderL: 0
         BorderR: 0
-      - X: 383
-        Y: 315
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 321
+        Width: 127
+        Height: 63
         BorderU: 0
         BorderD: 0
         BorderL: 0
         BorderR: 0
-      - X: 383
-        Y: 249
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 257
+        Width: 127
+        Height: 63
         BorderU: 0
         BorderD: 0
         BorderL: 0
@@ -12976,18 +13029,18 @@ MonoBehaviour:
       Thickness3D: 0
     - Loop: 1
       Rects:
-      - X: 253
-        Y: 249
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 194
+        Width: 127
+        Height: 62
         BorderU: 0
         BorderD: 0
         BorderL: 0
         BorderR: 0
-      - X: 123
-        Y: 249
-        Width: 128
-        Height: 64
+      - X: 384
+        Y: 131
+        Width: 127
+        Height: 62
         BorderU: 0
         BorderD: 0
         BorderL: 0
@@ -16491,6 +16544,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - Menu.Grid.bps0
+  - 3 Beat per Section
+  - Menu.Grid.bps1
+  - 4 Beat per Section
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -16523,6 +16580,8 @@ MonoBehaviour:
   - Do not auto save
   - Menu.BeatmapItem.DeleteBeatmap
   - Delete Beatmap
+  - Menu.BeatmapItem.DuplicateBeatmap
+  - Duplicate
   - Menu.BeatmapItem.ExportBeatmap
   - Export Beatmap
   - Menu.BeatmapItem.OpenBeatmap
@@ -16637,6 +16696,8 @@ MonoBehaviour:
   - Loading Image
   - Project.UI.AutoSaveMSG
   - Auto save every {0} sec
+  - Project.UI.BeatmapDuplicateTag
+  - (Duplicate)
   - Project.UI.BeatmapLoadedMSG
   - Beatmap {0} Loaded
   - Project.UI.ExportBeatmapDone
@@ -17002,8 +17063,6 @@ MonoBehaviour:
   - Show Sound Wave
   - UI.Setting.Zone
   - Show Stage Range
-  - 
-  - Apply to All Sprites
   - UI.SkinEditor.DarkBG
   - Dark
   - UI.SkinEditor.Duration
@@ -17026,6 +17085,8 @@ MonoBehaviour:
   - Shadow
   - UI.SkinEditor.PingPong
   - PingPong
+  - UI.SkinEditor.PingPongStay
+  - PingPong(stay)
   - UI.SkinEditor.Scale
   - Scale
   - UI.SkinEditor.SkinAuthorLabel

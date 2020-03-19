@@ -1,4 +1,10 @@
-﻿Author
+﻿Menu.Grid.bps0
+3 Beat per Section
+
+Menu.Grid.bps1
+4 Beat per Section
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -45,6 +51,9 @@ Do not auto save
 
 Menu.BeatmapItem.DeleteBeatmap
 Delete Beatmap
+
+Menu.BeatmapItem.DuplicateBeatmap
+Duplicate
 
 Menu.BeatmapItem.ExportBeatmap
 Export Beatmap
@@ -216,6 +225,9 @@ Loading Image
 
 Project.UI.AutoSaveMSG
 Auto save every {0} sec
+
+Project.UI.BeatmapDuplicateTag
+(Duplicate)
 
 Project.UI.BeatmapLoadedMSG
 Beatmap {0} Loaded
@@ -786,6 +798,9 @@ Shadow
 
 UI.SkinEditor.PingPong
 PingPong
+
+UI.SkinEditor.PingPongStay
+PingPong(stay)
 
 UI.SkinEditor.Scale
 Scale

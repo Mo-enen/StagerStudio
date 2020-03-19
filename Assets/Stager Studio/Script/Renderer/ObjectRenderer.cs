@@ -46,6 +46,14 @@
 				}
 			}
 		}
+		public float Duration {
+			get => _Duration;
+			set {
+				if (Mathf.Abs(value - _Duration) > 0.0001f) {
+					_Duration = value;
+				}
+			}
+		}
 
 		// Short
 		private AnimatedItemData AniData => SkinData?.Items[(int)Type];
@@ -57,6 +65,7 @@
 		private SkinData _Data = null;
 		private SkinType _TypeIndex = SkinType.Stage;
 		private float _LifeTime = 0f;
+		private float _Duration = 0f;
 
 		// Cache
 		private int Frame = 0;
@@ -192,7 +201,7 @@
 		// LGC
 		private void ReCalculateFrame () {
 			var ani = AniData;
-			int frame = ani is null ? 0 : ani.GetFrame(_LifeTime);
+			int frame = ani is null ? 0 : ani.GetFrame(_LifeTime, Duration);
 			if (frame != Frame) {
 				Frame = frame;
 				SetDirty();

@@ -214,8 +214,9 @@
 			Menu.AddCheckerFunc("Menu.AutoSave.2", () => Mathf.Abs(Project.UI_AutoSaveTime - 300f) < 1f);
 			Menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(Project.UI_AutoSaveTime - 600f) < 1f);
 			Menu.AddCheckerFunc("Menu.AutoSave.Off", () => Project.UI_AutoSaveTime < 0f);
-
-
+			// Beat per Section
+			Menu.AddCheckerFunc("Menu.Grid.bps0", () => Game.TheBeatPerSection == 3);
+			Menu.AddCheckerFunc("Menu.Grid.bps1", () => Game.TheBeatPerSection == 4);
 		}
 
 
@@ -226,7 +227,7 @@
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => Project.Palette[Mathf.Clamp(index, 0, Project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
-			Note.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
+			StageObject.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
 			Note.GetDropOffset = Game.AreaBetweenDrop;
@@ -302,6 +303,9 @@
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();
 			};
+			StageProject.OnBeatmapCreated = () => {
+				TryRefreshProjectInfo();
+			};
 
 			// Assets
 			StageProject.OnMusicLoaded = (clip) => {
@@ -362,9 +366,11 @@
 				Note.SetCacheDirty();
 				RefreshGridRenderer();
 			};
-			StageGame.OnGridChanged = (show, x, y) => {
-				m_GridTG.isOn = show;
-				m_GridRenderer.SetShow(show);
+			StageGame.OnGridChanged = () => {
+				m_GridTG.isOn = Game.TheShowGrid;
+				m_GridRenderer.SetShow(Game.TheShowGrid);
+				Track.BeatPerSection = Game.TheBeatPerSection;
+				Track.ShowGrid = Game.TheShowGrid;
 				RefreshGridRenderer();
 			};
 			StageGame.OnRatioChanged = (ratio) => {

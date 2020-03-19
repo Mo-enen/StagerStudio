@@ -92,7 +92,8 @@
 			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
 			MainRenderer.Type = SkinType.Stage;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicPlaying ? MusicTime - Time : float.MaxValue;
+			MainRenderer.Duration = m_JudgelineRenderer.Duration = Duration;
+			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
 			m_JudgelineRenderer.Scale = new Vector2(width, JudgeLineHeight);

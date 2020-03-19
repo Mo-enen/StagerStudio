@@ -68,6 +68,7 @@
 			}
 
 			// Life Time
+			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = tap ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 
@@ -108,7 +109,6 @@
 			);
 
 			// Renderer
-			MainRenderer.LifeTime = MusicTime > noteEndTime ? MusicTime - noteEndTime : MusicTime - noteData.Time;
 			MainRenderer.RendererEnable = true;
 			MainRenderer.Scale = new Vector2(scaleX, scaleY);
 			MainRenderer.SetSortingLayer(LayerID_Lum, GetSortingOrder());

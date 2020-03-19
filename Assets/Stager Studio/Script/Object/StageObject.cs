@@ -17,6 +17,7 @@
 
 		public delegate float FloatFloatIntHandler (float time, int index);
 		public delegate Color ColorByteHandler (byte index);
+		public delegate float SpeedMutiHandler ();
 
 
 		#endregion
@@ -31,6 +32,7 @@
 		protected const float DURATION_GAP = 0.0001f;
 
 		// Handler
+		public static SpeedMutiHandler GetGameSpeedMuti { get; set; } = null;
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorByteHandler PaletteColor { get; set; } = null;
 
@@ -190,7 +192,7 @@
 		}
 
 
-		protected static void RefreshRendererZoneFor (ObjectRenderer renderer) =>
+		protected static void RefreshRendererZoneFor (StageRenderer renderer) =>
 			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
 				ScreenZoneMinMax.min.x,
 				ScreenZoneMinMax.min.y,

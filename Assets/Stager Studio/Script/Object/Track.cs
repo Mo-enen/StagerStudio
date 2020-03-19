@@ -17,10 +17,13 @@
 		public static int SortingLayerID_Track { get; set; } = -1;
 		public static int SortingLayerID_TrackTint { get; set; } = -1;
 		public static int SortingLayerID_Tray { get; set; } = -1;
+		public static int BeatPerSection { get; set; } = 1;
+		public static bool ShowGrid { get; set; } = true;
 
 		// Ser
 		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
 		[SerializeField] ObjectRenderer m_TrayRenderer = null;
+		[SerializeField] GridRenderer m_SectionLineRenderer = null;
 
 		// Data
 		private static Vector2 TraySize = default;
@@ -71,7 +74,7 @@
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
 
-			Update_Gizmos(trackData.Active, oldSelecting, trackIndex);
+			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GetGameSpeedMuti() * linkedStage.Speed);
 
 			if (!active) { return; }
 			trackData.Selecting = oldSelecting;
@@ -125,7 +128,8 @@
 			MainRenderer.RendererEnable = true;
 			m_TrackTintRenderer.RendererEnable = true;
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
-			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicPlaying ? MusicTime - Time : float.MaxValue;
+			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
+			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
 			m_TrackTintRenderer.Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
@@ -136,7 +140,7 @@
 		}
 
 
-		private void Update_Gizmos (bool trackActive, bool selecting, int trackIndex) {
+		private void Update_Gizmos (bool trackActive, bool selecting, int trackIndex, float speed) {
 
 			// Label
 			if (Label != null) {
@@ -152,7 +156,17 @@
 				Highlight.enabled = !MusicPlaying && trackActive && selecting;
 			}
 
-
+			// Section
+			m_SectionLineRenderer.RendererEnable = ShowGrid && trackActive;
+			if (ShowGrid && trackActive) {
+				m_SectionLineRenderer.MusicTime = MusicTime;
+				m_SectionLineRenderer.ObjectSpeedMuti = 1f;
+				m_SectionLineRenderer.SpeedMuti = speed;
+				m_SectionLineRenderer.Scale = Vector3.one;
+				m_SectionLineRenderer.TimeGap = 60f * BeatPerSection / Beatmap.BPM;
+				m_SectionLineRenderer.TimeOffset = Beatmap.Shift;
+				m_SectionLineRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder() + 1);
+			}
 
 		}
 
@@ -224,6 +238,7 @@
 			base.RefreshRendererZone();
 			RefreshRendererZoneFor(m_TrackTintRenderer);
 			RefreshRendererZoneFor(m_TrayRenderer);
+			RefreshRendererZoneFor(m_SectionLineRenderer);
 		}
 
 

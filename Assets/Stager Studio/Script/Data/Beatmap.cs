@@ -314,24 +314,26 @@
 
 
 		public void LoadFromBytes (byte[] bytes) {
-
 			if (bytes is null) { return; }
+			LoadFromOtherMap(Util.BytesToObject(bytes) as Beatmap);
+		}
 
-			var map = Util.BytesToObject(bytes) as Beatmap;
-			if (map is null) { return; }
 
+		public void LoadFromOtherMap (Beatmap map, bool loadCreatedTime = true) {
+			if (map == null) { return; }
 			Tag = map.Tag;
 			Level = map.Level;
 			DropSpeed = map.DropSpeed;
 			BPM = map.BPM;
 			Shift = map.Shift;
 			Ratio = map.Ratio;
-			CreatedTime = map.CreatedTime;
+			if (loadCreatedTime) {
+				CreatedTime = map.CreatedTime;
+			}
 			Stages = map.Stages;
 			Tracks = map.Tracks;
 			Notes = map.Notes;
 			SpeedNotes = map.SpeedNotes;
-
 		}
 
 

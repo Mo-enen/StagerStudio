@@ -33,7 +33,7 @@
 		Forward = 0,
 		Loop = 1,
 		PingPong = 2,
-
+		PingPong_Stay = 3,
 	}
 
 
@@ -246,7 +246,7 @@
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);
 
 
-		public int GetFrame (float lifeTime) {
+		public int GetFrame (float lifeTime, float lifeLength) {
 			int count = Rects.Count;
 			float spf = FrameDuration / 1000f;
 			if (count <= 1 || FrameDuration == 0) { return 0; }
@@ -263,6 +263,10 @@
 				case SkinLoopType.PingPong:
 					return Mathf.Clamp(Mathf.FloorToInt(
 						Mathf.PingPong(lifeTime, TotalDuration) / spf
+					), 0, count - 1);
+				case SkinLoopType.PingPong_Stay:
+					return Mathf.Clamp(Mathf.FloorToInt(
+						Mathf.Clamp(lifeTime < lifeLength / 2f ? lifeTime : lifeLength - lifeTime, 0f, TotalDuration) / spf
 					), 0, count - 1);
 			}
 		}

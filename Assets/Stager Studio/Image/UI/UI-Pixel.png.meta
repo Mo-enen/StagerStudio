@@ -50,6 +50,9 @@ TextureImporter:
   - first:
       213: -263400405174186135
     second: Pixel (Bottom)
+  - first:
+      213: 1077981945261990108
+    second: Dotted Ring
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -426,6 +429,27 @@ TextureImporter:
       bones: []
       spriteID: 96f06ef1ab6385cf0800000000000000
       internalID: -263400405174186135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dotted Ring
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 15
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd020a92ed2c5fe00800000000000000
+      internalID: 1077981945261990108
       vertices: []
       indices: 
       edges: []

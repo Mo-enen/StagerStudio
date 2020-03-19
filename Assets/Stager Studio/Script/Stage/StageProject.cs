@@ -64,6 +64,7 @@
 			public const string UI_AutoSaveMSG = "Project.UI.AutoSaveMSG";
 			public const string UI_NoAutoSaveMSG = "Project.UI.NoAutoSaveMSG";
 			public const string UI_ProjectSaveMSG = "Project.UI.ProjectSaveMSG";
+			public const string UI_BeatmapDuplicateTag = "Project.UI.BeatmapDuplicateTag";
 
 		}
 
@@ -80,16 +81,17 @@
 		public static VoidFloatStringHandler OnLoadProgress { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static VoidHandler OnProjectLoadingStart { get; set; } = null;
+		public static VoidHandler OnProjectSavingStart { get; set; } = null;
+		public static VoidHandler OnProjectLoaded { get; set; } = null;
+		public static VoidHandler OnProjectClosed { get; set; } = null;
 		public static VoidAudioClipHandler OnMusicLoaded { get; set; } = null;
 		public static VoidAudioClipsHandler OnClickSoundsLoaded { get; set; } = null;
 		public static VoidSpriteHandler OnBackgroundLoaded { get; set; } = null;
 		public static VoidSpriteHandler OnCoverLoaded { get; set; } = null;
 		public static VoidBeatmapStringHandler OnBeatmapOpened { get; set; } = null;
 		public static VoidHandler OnBeatmapRemoved { get; set; } = null;
-		public static VoidHandler OnProjectLoadingStart { get; set; } = null;
-		public static VoidHandler OnProjectSavingStart { get; set; } = null;
-		public static VoidHandler OnProjectLoaded { get; set; } = null;
-		public static VoidHandler OnProjectClosed { get; set; } = null;
+		public static VoidHandler OnBeatmapCreated { get; set; } = null;
 		public static VoidBoolHandler OnDirtyChanged { get; set; } = null;
 
 		// API
@@ -421,6 +423,7 @@
 			var map = Beatmap.NewBeatmap();
 			BeatmapMap.Add(key, map);
 			SetDirty();
+			OnBeatmapCreated();
 			return key;
 		}
 
@@ -458,6 +461,7 @@
 					var key = System.Guid.NewGuid().ToString();
 					BeatmapMap.Add(key, map);
 					SetDirty();
+					OnBeatmapCreated();
 				}
 			} catch (System.Exception ex) {
 				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
@@ -494,6 +498,21 @@
 				DialogUtil.MarkType.Warning,
 				() => RemoveBeatmapLogic(key), null, null, null, () => { }
 			);
+		}
+
+
+		public void DuplicateBeatmap (object itemRT) {
+			if (!(itemRT is RectTransform) || !BeatmapMap.ContainsKey((itemRT as RectTransform).name)) { return; }
+			var key = (itemRT as RectTransform).name;
+			if (!BeatmapMap.ContainsKey(key)) { return; }
+			var map = BeatmapMap[key];
+			var newMap = Beatmap.NewBeatmap();
+			newMap.LoadFromOtherMap(map, false);
+			newMap.Tag += GetLanguage(LanguageData.UI_BeatmapDuplicateTag);
+			var newkey = System.Guid.NewGuid().ToString();
+			BeatmapMap.Add(newkey, newMap);
+			SetDirty();
+			OnBeatmapCreated();
 		}
 
 
