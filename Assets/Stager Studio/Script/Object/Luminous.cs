@@ -45,7 +45,7 @@
 
 			if (!MusicPlaying) {
 				MovementDirtyTime = float.MaxValue / 2f;
-				SkinType type = noteData.Duration > DURATION_GAP ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+				SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 				Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 				MainRenderer.Type = type;
 				return;
@@ -60,16 +60,11 @@
 		private void Update_Movement (Beatmap.Note noteData, float noteEndTime, bool tap) {
 
 			// Active Check
-			if (MusicTime < noteData.Time || Duration <= DURATION_GAP) { return; }
-			if (tap) {
-				if (MusicTime > noteEndTime + Duration) { return; }
-			} else {
-				if (MusicTime > noteEndTime) { return; }
-			}
+			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
 
 			// Life Time
 			MainRenderer.Duration = Duration;
-			MainRenderer.LifeTime = tap ? MusicTime - noteEndTime : MusicTime - noteData.Time;
+			MainRenderer.LifeTime = MusicTime < noteEndTime ? MusicTime - noteData.Time : MusicTime - noteEndTime;
 			MainRenderer.RendererEnable = true;
 
 			// Movement Dirty Check

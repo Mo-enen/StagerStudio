@@ -90,7 +90,7 @@
 
 
 		// MSG
-		private void LateUpdate () {
+		protected virtual void LateUpdate () {
 			if (!MeshDirty) { return; }
 			MeshDirty = false;
 			ClearMeshCache();
@@ -102,6 +102,7 @@
 			Mesh.SetTriangles(Triangles, 0);
 			Mesh.UploadMeshData(false);
 		}
+
 
 		protected abstract void OnMeshFill ();
 

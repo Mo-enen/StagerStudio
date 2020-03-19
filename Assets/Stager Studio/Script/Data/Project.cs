@@ -219,14 +219,12 @@
 		public enum ChunkType {
 			Info = 0,
 			Cover = 1,
-			Preview = 2,
 			Music = 3,
 			Background = 4,
 			Beatmap = 5,
 			Palette = 6,
 			Tween = 7,
 			ClickSound = 8,
-			Gene = 9,
 		}
 
 
@@ -251,8 +249,6 @@
 		public string OpeningBeatmap { get; set; } = "";
 		public long LastEditTime { get; set; } = 0;
 		public ImageData FrontCover { get; set; } = null;
-		public PreviewAudioData PreviewAudio { get; set; } = null;
-		public Gene ProjectGene { get; set; } = new Gene();
 
 		// Asset
 		public Dictionary<string, Beatmap> BeatmapMap { get; } = new Dictionary<string, Beatmap>();
@@ -322,15 +318,6 @@
 								};
 								break;
 							}
-						case ChunkType.Preview: {
-								PreviewAudio = new PreviewAudioData() {
-									StartTime = chunk.GetFloat("StartTime"),
-									Duration = chunk.GetFloat("Duration"),
-									FadeIn = chunk.GetBool("FadeIn"),
-									FadeOut = chunk.GetBool("FadeOut"),
-								};
-								break;
-							}
 						case ChunkType.Music: {
 								var clipData = new FileData() {
 									Format = chunk.GetString("Format"),
@@ -377,10 +364,6 @@
 								ClickSounds.AddRange(((FileDataArray)Util.BytesToObject(chunk.GetBytes("Data"))).Array);
 								break;
 							}
-						case ChunkType.Gene: {
-								ProjectGene = Gene.JsonToGene(chunk.GetString("Gene"));
-								break;
-							}
 					}
 				} catch (System.Exception ex) {
 					messageCallback?.Invoke("Error on read chunk.\n" + ex.Message);
@@ -420,17 +403,6 @@
 				}));
 			} catch (System.Exception ex) {
 				messageCallback?.Invoke("Error on get cover.\n" + ex.Message);
-			}
-			// Preview
-			try {
-				chunks.Add(new Chunk((byte)ChunkType.Preview, new Dictionary<string, object>() {
-					{ "StartTime", PreviewAudio.StartTime },
-					{ "Duration", PreviewAudio.Duration },
-					{ "FadeIn", PreviewAudio.FadeIn },
-					{ "FadeOut", PreviewAudio.FadeOut },
-				}));
-			} catch (System.Exception ex) {
-				messageCallback?.Invoke("Error on get preview.\n" + ex.Message);
 			}
 			// Music
 			progressCallback?.Invoke(0.1f);
@@ -506,16 +478,6 @@
 			} catch (System.Exception ex) {
 				messageCallback?.Invoke("Error on get click sound.\n" + ex.Message);
 			}
-
-			// Gene
-			try {
-				chunks.Add(new Chunk((byte)ChunkType.Gene, new Dictionary<string, object>() {
-					{ "Gene", Gene.GeneToJson(ProjectGene) },
-				}));
-			} catch (System.Exception ex) {
-				messageCallback?.Invoke("Error on write gene.\n" + ex.Message);
-			}
-
 			// Write Chunks
 			progressCallback?.Invoke(0.5f);
 			try {
@@ -565,14 +527,8 @@
 			if (string.IsNullOrEmpty(Description)) {
 				Description = "";
 			}
-			if (ProjectGene is null) {
-				ProjectGene = new Gene();
-			}
 			if (FrontCover is null) {
 				FrontCover = new ImageData();
-			}
-			if (PreviewAudio is null) {
-				PreviewAudio = new PreviewAudioData();
 			}
 			if (Palette.Count == 0) {
 				Palette.Add(Color.white);

@@ -67,6 +67,7 @@
 				}
 			}
 		}
+		public float TimeGap_Main { get; set; } = 1f;
 		public float TimeOffset {
 			get => _TimeOffset;
 			set {
@@ -95,6 +96,7 @@
 		[SerializeField] private GridMode m_Mode = GridMode.XX;
 		[SerializeField] private bool m_UseX = true;
 		[SerializeField] private bool m_UseY = true;
+		[SerializeField] private ushort m_Thickness = 1;
 
 		// Data
 		private int _CountX = 0;
@@ -103,11 +105,19 @@
 		private float _MusicTime = -1f;
 		private float _SpeedMuti = 1f;
 		private float _ObjectSpeedMuti = 1f;
+		private (Vector3 pos, Quaternion rot, Vector3 scale)? TransformDirty = null;
 
 
-		// MSG
-		private void Awake () {
-			SetSortingLayer(SortingLayer.NameToID("UI"), 0);
+
+		protected override void LateUpdate () {
+			if (TransformDirty.HasValue) {
+				transform.position = TransformDirty.Value.pos;
+				transform.rotation = TransformDirty.Value.rot;
+				transform.localScale = TransformDirty.Value.scale;
+				Scale = TransformDirty.Value.scale;
+				TransformDirty = null;
+			}
+			base.LateUpdate();
 		}
 
 
@@ -115,7 +125,7 @@
 
 			if (m_SpriteV is null || m_SpriteH is null || (!m_UseX && !m_UseY)) { return; }
 
-			const float THICK = 0.001f;
+			float thick = m_Thickness / 1000f;
 			var uvMin0 = m_SpriteV.uv[2];
 			var uvMax0 = m_SpriteV.uv[1];
 			var uvMin1 = m_SpriteH.uv[2];
@@ -127,8 +137,8 @@
 				int countX = Mathf.Clamp(CountX + 1, 1, 32);
 				for (int i = 0; i <= countX; i++) {
 					AddQuad01(
-						(float)i / countX - THICK / Scale.x,
-						(float)i / countX + THICK / Scale.x,
+						(float)i / countX - thick / Scale.x,
+						(float)i / countX + thick / Scale.x,
 						0f, 1f,
 						uvMin0.x, uvMax0.x,
 						uvMin0.y, uvMax0.y,
@@ -143,7 +153,7 @@
 					case GridMode.XX: {
 							int countY = Mathf.Clamp(CountX + 1, 1, 32);
 							for (int i = 0; i <= countY; i++) {
-								AddQuad01(0f, 1f, (float)i / countY - THICK / Scale.y, (float)i / countY + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
+								AddQuad01(0f, 1f, (float)i / countY - thick / Scale.y, (float)i / countY + thick / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
 							}
 						}
 						break;
@@ -159,7 +169,10 @@
 							);
 							for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
 								if (y01 > 0f) {
-									AddQuad01(0f, 1f, y01 - THICK / Scale.y, y01 + THICK / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
+									AddQuad01(
+										0f, 1f, y01 - thick / Scale.y, y01 + thick / Scale.y,
+										uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
+									);
 								}
 								y01 += GetAreaBetween(time, time + TimeGap, speedMuti);
 								time += TimeGap;
@@ -177,10 +190,7 @@
 			GridEnabled = enable;
 			enabled = RendererEnable = GridShowed && GridEnabled;
 			if (enable) {
-				transform.position = pos;
-				transform.rotation = rot;
-				transform.localScale = scale;
-				Scale = scale;
+				TransformDirty = (pos, rot, scale);
 			}
 		}
 

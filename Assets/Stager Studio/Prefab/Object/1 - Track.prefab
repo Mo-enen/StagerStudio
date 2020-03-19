@@ -188,6 +188,7 @@ MonoBehaviour:
   m_Mode: 2
   m_UseX: 0
   m_UseY: 1
+  m_Thickness: 1
 --- !u!23 &2583071056248043206
 MeshRenderer:
   m_ObjectHideFlags: 0

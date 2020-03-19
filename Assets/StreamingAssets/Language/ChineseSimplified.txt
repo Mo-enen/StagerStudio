@@ -1,10 +1,4 @@
-﻿Menu.Grid.bps0
-每小节3拍
-
-Menu.Grid.bps1
-每小节4拍
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -67,6 +61,12 @@ Menu.ChapterItem.Rename
 Menu.ChapterItem.ShowInExplorer
 查看
 
+Menu.Grid.bps0
+每小节3拍
+
+Menu.Grid.bps1
+每小节4拍
+
 Menu.Grid.x0
 X轴网格×1
 
@@ -83,13 +83,13 @@ Menu.Grid.y0
 Y轴网格×1
 
 Menu.Grid.y1
-Y轴网格×3
+Y轴网格×2
 
 Menu.Grid.y2
-Y轴网格×5
+Y轴网格×4
 
 Menu.Grid.y3
-Y轴网格×7
+Y轴网格×8
 
 Menu.Home.ImportProject
 导入工程

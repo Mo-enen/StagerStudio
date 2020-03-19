@@ -205,9 +205,9 @@
 			Menu.AddCheckerFunc("Menu.Grid.x2", () => Game.GridX == 7);
 			Menu.AddCheckerFunc("Menu.Grid.x3", () => Game.GridX == 15);
 			Menu.AddCheckerFunc("Menu.Grid.y0", () => Game.GridY == 1);
-			Menu.AddCheckerFunc("Menu.Grid.y1", () => Game.GridY == 3);
-			Menu.AddCheckerFunc("Menu.Grid.y2", () => Game.GridY == 5);
-			Menu.AddCheckerFunc("Menu.Grid.y3", () => Game.GridY == 7);
+			Menu.AddCheckerFunc("Menu.Grid.y1", () => Game.GridY == 2);
+			Menu.AddCheckerFunc("Menu.Grid.y2", () => Game.GridY == 4);
+			Menu.AddCheckerFunc("Menu.Grid.y3", () => Game.GridY == 8);
 			// Auto Save
 			Menu.AddCheckerFunc("Menu.AutoSave.0", () => Mathf.Abs(Project.UI_AutoSaveTime - 30f) < 1f);
 			Menu.AddCheckerFunc("Menu.AutoSave.1", () => Mathf.Abs(Project.UI_AutoSaveTime - 120f) < 1f);
@@ -506,6 +506,7 @@
 			ProgressUI.GetSnapTime = (time, step) => Game.SnapTime(time, step);
 			GridRenderer.GetAreaBetween = Game.AreaBetween;
 			GridRenderer.GetSnapedTime = Game.SnapTime;
+			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
 			SetNavigationInteractable(true);
 		}
 
@@ -582,6 +583,7 @@
 		private void RefreshGridRenderer () {
 			m_GridRenderer.CountX = Game.GridX;
 			m_GridRenderer.TimeGap = 60f / Game.BPM / Game.GridY;
+			m_GridRenderer.TimeGap_Main = 60f / Game.BPM;
 			m_GridRenderer.TimeOffset = Game.Shift;
 			m_GridRenderer.SpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
 		}

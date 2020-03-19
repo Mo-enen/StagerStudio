@@ -1,10 +1,4 @@
-﻿Menu.Grid.bps0
-3 Beat per Section
-
-Menu.Grid.bps1
-4 Beat per Section
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -67,6 +61,12 @@ Rename
 Menu.ChapterItem.ShowInExplorer
 Show in Explorer
 
+Menu.Grid.bps0
+3 Beat per Section
+
+Menu.Grid.bps1
+4 Beat per Section
+
 Menu.Grid.x0
 Grid X ×1
 
@@ -83,13 +83,13 @@ Menu.Grid.y0
 Grid Y ×1
 
 Menu.Grid.y1
-Grid Y ×3
+Grid Y ×2
 
 Menu.Grid.y2
-Grid Y ×5
+Grid Y ×4
 
 Menu.Grid.y3
-Grid Y ×7
+Grid Y ×8
 
 Menu.Home.ImportProject
 Import Project

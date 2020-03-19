@@ -7756,7 +7756,7 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 3
+            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -7772,7 +7772,7 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 5
+            m_IntArgument: 4
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -7788,7 +7788,7 @@ MonoBehaviour:
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 7
+            m_IntArgument: 8
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -13526,6 +13526,10 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 0.14117648}
   - {r: 0.654902, g: 0.63955575, b: 0.113725506, a: 0.32156864}
   - {r: 0.11536932, g: 0.655, b: 0.52474433, a: 0.36078432}
+  m_Mode: 0
+  m_UseX: 1
+  m_UseY: 1
+  m_Thickness: 1
 --- !u!33 &1637691685
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -16544,10 +16548,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Menu.Grid.bps0
-  - 3 Beat per Section
-  - Menu.Grid.bps1
-  - 4 Beat per Section
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -16590,6 +16590,10 @@ MonoBehaviour:
   - Rename
   - Menu.ChapterItem.ShowInExplorer
   - Show in Explorer
+  - Menu.Grid.bps0
+  - 3 Beat per Section
+  - Menu.Grid.bps1
+  - 4 Beat per Section
   - Menu.Grid.x0
   - "Grid X \xD71"
   - Menu.Grid.x1
@@ -16601,11 +16605,11 @@ MonoBehaviour:
   - Menu.Grid.y0
   - "Grid Y \xD71"
   - Menu.Grid.y1
-  - "Grid Y \xD73"
+  - "Grid Y \xD72"
   - Menu.Grid.y2
-  - "Grid Y \xD75"
+  - "Grid Y \xD74"
   - Menu.Grid.y3
-  - "Grid Y \xD77"
+  - "Grid Y \xD78"
   - Menu.Home.ImportProject
   - Import Project
   - Menu.Home.NewChapter

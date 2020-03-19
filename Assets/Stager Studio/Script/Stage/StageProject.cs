@@ -119,7 +119,6 @@
 		public string MusicAuthor { get; set; } = "";
 		public string BackgroundAuthor { get; set; } = "";
 		public long LastEditTime { get; private set; } = 0;
-		public Gene ProjectGene { get; set; } = new Gene();
 		public Dictionary<string, Beatmap> BeatmapMap { get; } = new Dictionary<string, Beatmap>();
 		public (Project.FileData data, Sprite sprite) Background { get; private set; } = (null, null);
 		public (Project.ImageData data, Sprite sprite) FrontCover { get; private set; } = (null, null);
@@ -230,7 +229,6 @@
 				Tweens.Clear();
 				ClickSounds.Clear();
 				LastEditTime = 0;
-				ProjectGene = null;
 				OnProjectLoadingStart();
 				RefreshAutoSaveTime();
 
@@ -311,13 +309,6 @@
 						});
 					}
 					LogClickSoundCallback();
-				}
-
-				// Gene
-				try {
-					ProjectGene = project.ProjectGene;
-				} catch (System.Exception ex) {
-					LogMessageLogic("", true, ex.Message);
 				}
 
 				// Background
@@ -936,7 +927,6 @@
 				project.BackgroundData = Background.data;
 				project.MusicData = Music.data;
 				project.LastEditTime = LastEditTime = Util.GetLongTime();
-				project.ProjectGene = ProjectGene;
 				// Click Sound
 				project.ClickSounds.Clear();
 				foreach (var (data, _) in ClickSounds) {

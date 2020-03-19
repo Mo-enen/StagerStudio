@@ -15,7 +15,6 @@
 		public class ProjectAsset {
 			public ProjectType Type = ProjectType.StagerStudio;
 			public Color32[] Palette = null;
-			public TextAsset Gene = null;
 			public TextAsset Tween = null;
 			public TextAsset Beatmap = null;
 		}
@@ -174,7 +173,6 @@
 			if (asset != null) {
 				// Data
 				try {
-					result.ProjectGene = Gene.JsonToGene(asset.Gene.text);
 					result.Palette.AddRange(asset.Palette);
 					result.Tweens.AddRange(JsonUtility.FromJson<Project.TweenArray>(asset.Tween.text).GetAnimationTweens());
 				} catch {
