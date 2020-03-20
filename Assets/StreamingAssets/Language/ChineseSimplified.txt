@@ -47,7 +47,7 @@ Menu.BeatmapItem.DeleteBeatmap
 删除谱面
 
 Menu.BeatmapItem.DuplicateBeatmap
-复制
+复制谱面
 
 Menu.BeatmapItem.ExportBeatmap
 导出谱面

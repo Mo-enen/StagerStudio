@@ -47,7 +47,7 @@ Menu.BeatmapItem.DeleteBeatmap
 Delete Beatmap
 
 Menu.BeatmapItem.DuplicateBeatmap
-Duplicate
+Duplicate Beatmap
 
 Menu.BeatmapItem.ExportBeatmap
 Export Beatmap

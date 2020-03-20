@@ -352,16 +352,30 @@
 		public static implicit operator bool (Beatmap map) => map != null;
 
 
-		public void SortByTime () {
-			SortStagesByTime();
-			SortTracksByTime();
-			SortNotesByTime();
-			SortSpeedNotesByTime();
+		public void SortNotesByTime () {
+			// OldID / Note Map
+			var oldID_Note = new Dictionary<int, Note>();
+			int noteCount = Notes.Count;
+			for (int i = 0; i < noteCount; i++) {
+				oldID_Note.Add(i, Notes[i]);
+			}
+			// Sort
+			Notes.Sort(new NoteComparer());
+			// Note / NewID Map
+			var note_NewID = new Dictionary<Note, int>();
+			for (int i = 0; i < noteCount; i++) {
+				var note = Notes[i];
+				if (note_NewID.ContainsKey(note)) { continue; }
+				note_NewID.Add(note, i);
+			}
+			for (int i = 0; i < noteCount; i++) {
+				var note = Notes[i];
+				if (!oldID_Note.ContainsKey(note.LinkedNoteIndex)) { continue; }
+				var linkedNote = oldID_Note[note.LinkedNoteIndex];
+				if (!note_NewID.ContainsKey(linkedNote)) { continue; }
+				note.LinkedNoteIndex = note_NewID[linkedNote];
+			}
 		}
-		public void SortStagesByTime () => Stages.Sort(new StageComparer());
-		public void SortTracksByTime () => Tracks.Sort(new TrackComparer());
-		public void SortNotesByTime () => Notes.Sort(new NoteComparer());
-		public void SortSpeedNotesByTime () => SpeedNotes.Sort(new SpeedNoteComparer());
 
 
 

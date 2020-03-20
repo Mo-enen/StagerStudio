@@ -110,7 +110,7 @@
 				bool active = ShowIndexLabel && !MusicPlaying && stageActive;
 				Label.gameObject.SetActive(active);
 				if (active) {
-					Label.text = stageIndex.ToString();
+					Label.Text = stageIndex.ToString();
 				}
 			}
 

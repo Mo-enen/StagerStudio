@@ -140,7 +140,10 @@
 
 
 		protected override void LateUpdate () {
-			if (LateNote is null || Beatmap is null) { return; }
+			if (LateNote is null || Beatmap is null) {
+				base.LateUpdate();
+				return;
+			}
 			Update_Movement(LateStage, LateTrack, LateNote, LateLinkedNote);
 			base.LateUpdate();
 		}
@@ -330,7 +333,7 @@
 			if (Label != null) {
 				if (ShowIndexLabel && active) {
 					Label.gameObject.SetActive(true);
-					Label.text = noteIndex.ToString();
+					Label.Text = noteIndex.ToString();
 					Label.transform.localRotation = MainRenderer.transform.localRotation;
 				} else {
 					Label.gameObject.SetActive(false);

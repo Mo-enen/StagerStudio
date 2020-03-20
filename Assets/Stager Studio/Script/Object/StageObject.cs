@@ -49,7 +49,7 @@
 		public static int MaterialZoneID { get; set; } = 0;
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
-		protected TextMesh Label => m_Label;
+		protected TextRenderer Label => m_Label;
 		protected SpriteRenderer Highlight => m_Highlight;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
@@ -59,7 +59,7 @@
 		// Ser
 		[SerializeField] private ObjectRenderer m_MainRenderer = null;
 		[SerializeField] private BoxCollider m_Col = null;
-		[SerializeField] private TextMesh m_Label = null;
+		[SerializeField] private TextRenderer m_Label = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 
 		// Data

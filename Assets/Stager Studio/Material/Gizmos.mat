@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Grid
+  m_Name: Gizmos
   m_Shader: {fileID: 4800000, guid: ec056f6009a68874483d27908729f1bf, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

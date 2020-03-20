@@ -147,7 +147,7 @@
 				bool active = ShowIndexLabel && !MusicPlaying && trackActive;
 				Label.gameObject.SetActive(active);
 				if (active) {
-					Label.text = trackIndex.ToString();
+					Label.Text = trackIndex.ToString();
 				}
 			}
 

@@ -49,7 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MainRenderer: {fileID: 2256738902804353182}
   m_Col: {fileID: 4937013644748653825}
-  m_Label: {fileID: 2325836674242596509}
+  m_Label: {fileID: 0}
   m_Highlight: {fileID: 7348898952930880161}
   m_JudgelineRenderer: {fileID: 1565432842165653743}
 --- !u!1 &1225454915215906052
@@ -61,8 +61,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1624712766183426561}
-  - component: {fileID: 4377730808615548834}
-  - component: {fileID: 2325836674242596509}
+  - component: {fileID: 1051000069987569307}
+  - component: {fileID: 5496715407925707142}
+  - component: {fileID: 5970267079920563070}
   m_Layer: 8
   m_Name: Index
   m_TagString: Untagged
@@ -79,12 +80,42 @@ Transform:
   m_GameObject: {fileID: 1225454915215906052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.02125, y: 0.03375, z: 1}
   m_Children: []
   m_Father: {fileID: 303450346128465511}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &4377730808615548834
+--- !u!114 &1051000069987569307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1225454915215906052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 085bb8d647bca0b47a23117dca0cddb0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Tint:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_Pivot: {x: 0.5, y: 0, z: 0}
+  m_Scale: {x: 1, y: 1}
+  m_SpriteSets:
+  - {fileID: -7519833676518121747, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: -4182881303555017736, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: -8585984559828919375, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: 452584462048133021, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: -3871108541867217329, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: 6391242151159119377, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: -3757009910867425468, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  - {fileID: 2694897597151364604, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  m_Text: 
+  m_Gap: 0.1
+--- !u!23 &5496715407925707142
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -102,7 +133,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 6a59b0592a512bf49867dea40a69d4ea, type: 3}
+  - {fileID: 2100000, guid: b89893aedb642414ea0d894761b8e6e6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -123,28 +154,14 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!102 &2325836674242596509
-TextMesh:
-  serializedVersion: 3
+--- !u!33 &5970267079920563070
+MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1225454915215906052}
-  m_Text: 
-  m_OffsetZ: 0
-  m_CharacterSize: 0.0035
-  m_LineSpacing: 1
-  m_Anchor: 7
-  m_Alignment: 1
-  m_TabSize: 4
-  m_FontSize: 64
-  m_FontStyle: 0
-  m_RichText: 0
-  m_Font: {fileID: 12800000, guid: 6a59b0592a512bf49867dea40a69d4ea, type: 3}
-  m_Color:
-    serializedVersion: 2
-    rgba: 4294967295
+  m_Mesh: {fileID: 0}
 --- !u!1 &1413915121714520315
 GameObject:
   m_ObjectHideFlags: 0
@@ -193,8 +210,9 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
+  m_Allow3D: 1
 --- !u!23 &8084753773499633871
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -310,7 +328,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
-  m_SortingLayer: 12
+  m_SortingLayer: 13
   m_SortingOrder: 0
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
@@ -417,8 +435,9 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0}
+  m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
+  m_Allow3D: 1
 --- !u!23 &653956376709269490
 MeshRenderer:
   m_ObjectHideFlags: 0
