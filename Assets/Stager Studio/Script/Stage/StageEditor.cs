@@ -53,6 +53,7 @@
 		[SerializeField] private RectTransform m_FocusCancel = null;
 		[SerializeField] private Animator m_FocusAni = null;
 		[SerializeField] private GridRenderer m_Grid = null;
+		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
@@ -74,6 +75,7 @@
 		private bool ClickStartInsideSelection = false;
 		private int HoldNoteLayer = -1;
 		private Ray? MouseRayDown = null;
+		private Vector2 HoverScaleMuti = Vector2.one;
 
 
 		#endregion
@@ -123,29 +125,42 @@
 					SetLock(index, locked);
 				});
 			}
+
+			// UI
+			HoverScaleMuti = m_Hover.transform.localScale;
+
 		}
 
 
 		private void LateUpdate () {
+			// Check
 			if (!AntiTargetAllow()) {
 				MouseRayDown = null;
-				m_Grid.SetGridTransform(false);
+				if (m_Grid.GridEnabled) {
+					m_Grid.SetGridTransform(false);
+				}
+				if (m_Hover.enabled) {
+					m_Hover.enabled = false;
+				}
 				return;
 			}
 			// Mouse
 			if (Input.GetMouseButton(0)) {
 				if (!MouseRayDown.HasValue) {
+					// Down
 					MouseRayDown = GetMouseRay();
 					OnMouseLeftDown();
 				} else {
+					// Drag
 					OnMouseLeftDrag();
 				}
 			} else {
+				// Normal
 				if (MouseRayDown.HasValue) {
 					MouseRayDown = null;
 				}
-				OnMouseHover(GetBeatmap());
 			}
+			OnMouseHover(GetBeatmap());
 		}
 
 
@@ -199,7 +214,11 @@
 		private void OnMouseHover (Beatmap map) {
 			var (brushType, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex >= 0) {
-				// Paint
+				// Hover
+				if (m_Hover.enabled) {
+					m_Hover.enabled = false;
+				}
+				// Paint Grid
 				bool gridEnable = false;
 				Vector3 pos = default;
 				Quaternion rot = default;
@@ -208,7 +227,7 @@
 				var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
 				if (brushType > 0) {
 					var (layerIndex, itemIndex, target) = GetCastLayerIndex(ItemMasks[brushType - 1], true);
-					if (!(target is null)) {
+					if (target != null) {
 						gridEnable = true;
 						pos = target.position;
 						rot = target.rotation;
@@ -225,9 +244,24 @@
 				}
 				m_Grid.ObjectSpeedMuti = speed;
 				m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
-			} else if (m_Grid.GridEnabled) {
+			} else {
 				// Select
-				m_Grid.SetGridTransform(false);
+				// Grid
+				if (m_Grid.GridEnabled) {
+					m_Grid.SetGridTransform(false);
+				}
+				// Hover
+				var (_, _, target) = GetCastLayerIndex(UnlockedMask, true);
+				if (target != null) {
+					if (!m_Hover.enabled) {
+						m_Hover.enabled = true;
+					}
+					m_Hover.transform.position = target.position;
+					m_Hover.transform.rotation = target.GetChild(0).rotation;
+					m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
+				} else if (m_Hover.enabled) {
+					m_Hover.enabled = false;
+				}
 			}
 		}
 

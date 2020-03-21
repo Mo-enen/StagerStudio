@@ -53,6 +53,15 @@ TextureImporter:
   - first:
       213: 1077981945261990108
     second: Dotted Ring
+  - first:
+      213: -274270360904273482
+    second: Dotted White Black Ring
+  - first:
+      213: -274270360904273482
+    second: Pixel Rect Bottom
+  - first:
+      213: -7746448090056230874
+    second: Rect Frame
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -92,7 +101,7 @@ TextureImporter:
   lightmap: 0
   compressionQuality: 50
   spriteMode: 2
-  spriteExtrude: 1
+  spriteExtrude: 0
   spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
@@ -111,7 +120,7 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 32
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -123,7 +132,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Standalone
-    maxTextureSize: 32
+    maxTextureSize: 1024
     resizeAlgorithm: 0
     textureFormat: -1
     textureCompression: 0
@@ -437,8 +446,8 @@ TextureImporter:
       name: Dotted Ring
       rect:
         serializedVersion: 2
-        x: 14
-        y: 15
+        x: 13
+        y: 13
         width: 9
         height: 9
       alignment: 0
@@ -450,6 +459,48 @@ TextureImporter:
       bones: []
       spriteID: cd020a92ed2c5fe00800000000000000
       internalID: 1077981945261990108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pixel Rect Bottom
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 1
+        width: 5
+        height: 5
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 2, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6b1f1e55f88913cf0800000000000000
+      internalID: -274270360904273482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rect Frame
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 1
+        width: 11
+        height: 11
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 5, y: 5, z: 5, w: 5}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 628f13921861f7490800000000000000
+      internalID: -7746448090056230874
       vertices: []
       indices: 
       edges: []

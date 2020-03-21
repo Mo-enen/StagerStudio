@@ -98,7 +98,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  m_Renderer: {fileID: 6928075222810422909}
   m_DotColor: {r: 0.087347314, g: 0.503, b: 0.40360478, a: 1}
   m_Step: 24
   m_DotSize: 1.6
@@ -139,34 +138,34 @@ LineRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
-  m_SortingLayer: 7
+  m_SortingLayer: 13
   m_SortingOrder: 2
   m_Positions:
   - {x: 0, y: 0, z: 0}
-  - {x: 6.875, y: 0.12152778, z: 0}
-  - {x: 13.75, y: 0.4722222, z: 0}
-  - {x: 20.625, y: 1.03125, z: 0}
-  - {x: 27.5, y: 1.7777779, z: 0}
-  - {x: 34.375, y: 2.6909726, z: 0}
-  - {x: 41.25, y: 3.75, z: 0}
-  - {x: 48.125, y: 4.9340277, z: 0}
-  - {x: 54.999996, y: 6.2222223, z: 0}
-  - {x: 61.874996, y: 7.5937486, z: 0}
-  - {x: 68.74999, y: 9.027777, z: 0}
-  - {x: 75.62499, y: 10.503471, z: 0}
-  - {x: 82.49999, y: 11.999997, z: 0}
-  - {x: 89.37499, y: 13.496527, z: 0}
-  - {x: 96.25, y: 14.972221, z: 0}
-  - {x: 103.125, y: 16.40625, z: 0}
-  - {x: 110, y: 17.777779, z: 0}
-  - {x: 116.87501, y: 19.065973, z: 0}
-  - {x: 123.75001, y: 20.250002, z: 0}
-  - {x: 130.62502, y: 21.30903, z: 0}
-  - {x: 137.50002, y: 22.222223, z: 0}
-  - {x: 144.37502, y: 22.96875, z: 0}
-  - {x: 151.25003, y: 23.527779, z: 0}
-  - {x: 158.12503, y: 23.878471, z: 0}
-  - {x: 165, y: 24, z: 0}
+  - {x: 4.041667, y: 0.091145836, z: 0}
+  - {x: 8.083334, y: 0.35416666, z: 0}
+  - {x: 12.125, y: 0.7734375, z: 0}
+  - {x: 16.166668, y: 1.3333335, z: 0}
+  - {x: 20.208334, y: 2.0182295, z: 0}
+  - {x: 24.25, y: 2.8125, z: 0}
+  - {x: 28.291666, y: 3.7005208, z: 0}
+  - {x: 32.333332, y: 4.6666665, z: 0}
+  - {x: 36.374996, y: 5.6953115, z: 0}
+  - {x: 40.416664, y: 6.770832, z: 0}
+  - {x: 44.45833, y: 7.8776035, z: 0}
+  - {x: 48.499992, y: 8.999998, z: 0}
+  - {x: 52.541664, y: 10.122395, z: 0}
+  - {x: 56.583332, y: 11.229166, z: 0}
+  - {x: 60.625, y: 12.3046875, z: 0}
+  - {x: 64.66667, y: 13.333334, z: 0}
+  - {x: 68.708336, y: 14.2994795, z: 0}
+  - {x: 72.75001, y: 15.187501, z: 0}
+  - {x: 76.79167, y: 15.981773, z: 0}
+  - {x: 80.83334, y: 16.666668, z: 0}
+  - {x: 84.875015, y: 17.226562, z: 0}
+  - {x: 88.91668, y: 17.645834, z: 0}
+  - {x: 92.95835, y: 17.908854, z: 0}
+  - {x: 97, y: 18, z: 0}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1.6
@@ -520,7 +519,7 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.83, g: 0.83, b: 0.83, a: 0}
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
     m_HighlightedColor: {r: 0.83, g: 0.83, b: 0.83, a: 1}
     m_PressedColor: {r: 0.83, g: 0.83, b: 0.83, a: 1}
     m_SelectedColor: {r: 0.83, g: 0.83, b: 0.83, a: 1}
@@ -561,13 +560,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.83, g: 0.83, b: 0.83, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: -469349188787951888, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+    type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -575,7 +575,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
+  m_PixelsPerUnitMultiplier: 12
 --- !u!114 &6871571275372746926
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -599,7 +599,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4825271307315769952}
   - component: {fileID: 5168511098951762541}
-  - component: {fileID: 6836994135999994994}
   - component: {fileID: 3785570307324796081}
   m_Layer: 0
   m_Name: Curve
@@ -636,57 +635,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8088063094030043646}
   m_CullTransparentMesh: 0
---- !u!114 &6836994135999994994
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8088063094030043646}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.83, g: 0.83, b: 0.83, a: 1}
-  m_RaycastTarget: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: -12
-    m_Right: -12
-    m_Top: -8
-    m_Bottom: -8
-    m_Color: {r: 0, g: 0, b: 0, a: 0.039215688}
-    m_ClearColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &3785570307324796081
 MonoBehaviour:
   m_ObjectHideFlags: 0
