@@ -1,4 +1,7 @@
-﻿Author
+﻿Tip.Library.AddFromSelection
+Add current selecting objects to Library
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

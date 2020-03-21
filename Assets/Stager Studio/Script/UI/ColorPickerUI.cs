@@ -11,6 +11,7 @@
 
 		#region --- VAR ---
 
+
 		// Handler
 		public delegate string StringStringHandler (string key);
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -60,10 +61,15 @@
 		[SerializeField] private Slider m_SliderS = null;
 		[SerializeField] private Slider m_SliderV = null;
 		[SerializeField] private Slider m_SliderA = null;
+		[SerializeField] private InputField m_FieldH = null;
+		[SerializeField] private InputField m_FieldS = null;
+		[SerializeField] private InputField m_FieldV = null;
+		[SerializeField] private InputField m_FieldA = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
 		private System.Action<Color> Done = null;
+		private bool UIReady = true;
 
 
 		#endregion
@@ -116,12 +122,42 @@
 
 
 		public void RefreshUI () {
-			var tint = GetColorFromUI();
-			m_Thumbnail_New.color = tint;
-			m_SliderTint_S.color = Color.HSVToRGB(Color_H, 1f, Mathf.Lerp(0.4f, 1f, Color_V));
-			m_SliderTint_S_Back.color = Color.HSVToRGB(Color_H, 0f, Mathf.Lerp(0.4f, 1f, Color_V));
-			m_SliderTint_V.color = Color.HSVToRGB(Color_H, Color_S, 1f);
-			m_SliderTint_A.color = tint;
+			if (!UIReady) { return; }
+			UIReady = false;
+			try {
+				var tint = GetColorFromUI();
+				m_Thumbnail_New.color = tint;
+				m_SliderTint_S.color = Color.HSVToRGB(Color_H, 1f, Mathf.Lerp(0.4f, 1f, Color_V));
+				m_SliderTint_S_Back.color = Color.HSVToRGB(Color_H, 0f, Mathf.Lerp(0.4f, 1f, Color_V));
+				m_SliderTint_V.color = Color.HSVToRGB(Color_H, Color_S, 1f);
+				m_SliderTint_A.color = tint;
+				m_SliderH.value = Mathf.Clamp01(m_SliderH.value);
+				m_FieldH.text = Mathf.RoundToInt(Mathf.Repeat(Color_H * 360f, 360f)).ToString();
+				m_FieldS.text = Mathf.Clamp(Color_S * 100f, 0, 100).ToString();
+				m_FieldV.text = Mathf.Clamp(Color_V * 100f, 0, 100).ToString();
+				m_FieldA.text = Mathf.Clamp(Color_A * 100f, 0, 100).ToString();
+			} catch { }
+			UIReady = true;
+		}
+
+
+		public void FieldToSlider () {
+			UIReady = false;
+			try {
+				if (int.TryParse(m_FieldH.text, out int valueH)) {
+					m_SliderH.value = valueH / 360f;
+				}
+				if (int.TryParse(m_FieldS.text, out int valueS)) {
+					m_SliderS.value = valueS / 100f;
+				}
+				if (int.TryParse(m_FieldV.text, out int valueV)) {
+					m_SliderV.value = valueV / 100f;
+				}
+				if (int.TryParse(m_FieldA.text, out int valueA)) {
+					m_SliderA.value = valueA / 100f;
+				}
+			} catch { }
+			UIReady = true;
 		}
 
 

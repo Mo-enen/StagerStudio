@@ -5,6 +5,7 @@
 	using UnityEngine.UI;
 	using Data;
 	using global::StagerStudio.Stage;
+	using UnityEngine.EventSystems;
 
 	public class StageLibrary : MonoBehaviour {
 
@@ -40,44 +41,6 @@
 			public PrefabData (Beatmap.Stage stage) : this(DataType.Stage, stage, null, null, 0f) { }
 			public PrefabData (Beatmap.Track track) : this(DataType.Track, null, track, null, 0f) { }
 			public PrefabData (List<Beatmap.Note> notes, float bpm) : this(DataType.Note, null, null, notes, bpm) { }
-			public PrefabData (DataType type, Beatmap.Stage stage, Beatmap.Track track, List<Beatmap.Note> notes, float bpm) {
-				Type = type;
-				Stage = null;
-				Track = null;
-				Notes = null;
-				if (!(stage is null)) {
-					try {
-						Stage = Util.BytesToObject(Util.ObjectToBytes(stage)) as Beatmap.Stage;
-						Stage.Time = 0f;
-						Stage.X = 0f;
-						Stage.Y = 0f;
-					} catch { }
-				} else if (!(track is null)) {
-					try {
-						Track = Util.BytesToObject(Util.ObjectToBytes(track)) as Beatmap.Track;
-						Track.Time = 0f;
-						Track.X = 0f;
-					} catch { }
-				} else if (!(notes is null) && notes.Count > 0) {
-					Notes = new List<Beatmap.Note>();
-					float firstTime = 0f;
-					bpm = Mathf.Max(bpm, float.Epsilon);
-					foreach (var n in notes) {
-						if (n is null) { continue; }
-						firstTime = Mathf.Min(firstTime, n.Time);
-					}
-					foreach (var n in notes) {
-						try {
-							var newNote = Util.BytesToObject(Util.ObjectToBytes(n)) as Beatmap.Note;
-							if (!(newNote is null)) {
-								newNote.Time -= firstTime;
-								newNote.Time /= 60f / bpm;
-								Notes.Add(newNote);
-							}
-						} catch { }
-					}
-				}
-			}
 			public void SetThumbnail (RectUI thumb, Color stageColor, Color trackColor, Color noteColor) {
 				if (thumb is null) { return; }
 				thumb.Clear();
@@ -142,10 +105,54 @@
 				}
 			}
 
+			// LGC
+			private PrefabData (DataType type, Beatmap.Stage stage, Beatmap.Track track, List<Beatmap.Note> notes, float bpm) {
+				Type = type;
+				Stage = null;
+				Track = null;
+				Notes = null;
+				if (!(stage is null)) {
+					try {
+						Stage = Util.BytesToObject(Util.ObjectToBytes(stage)) as Beatmap.Stage;
+						Stage.Time = 0f;
+						Stage.X = 0f;
+						Stage.Y = 0f;
+					} catch { }
+				} else if (!(track is null)) {
+					try {
+						Track = Util.BytesToObject(Util.ObjectToBytes(track)) as Beatmap.Track;
+						Track.Time = 0f;
+						Track.X = 0f;
+					} catch { }
+				} else if (!(notes is null) && notes.Count > 0) {
+					Notes = new List<Beatmap.Note>();
+					float firstTime = 0f;
+					bpm = Mathf.Max(bpm, float.Epsilon);
+					foreach (var n in notes) {
+						if (n is null) { continue; }
+						firstTime = Mathf.Min(firstTime, n.Time);
+					}
+					foreach (var n in notes) {
+						try {
+							var newNote = Util.BytesToObject(Util.ObjectToBytes(n)) as Beatmap.Note;
+							if (!(newNote is null)) {
+								newNote.Time -= firstTime;
+								newNote.Time /= 60f / bpm;
+								Notes.Add(newNote);
+							}
+						} catch { }
+					}
+				}
+			}
+
 		}
 
 
 		public delegate void VoidIntHandler (int index);
+		public delegate int IntHandler ();
+		public delegate float FloatHandler ();
+		public delegate void VoidStringRTHandler (string key, RectTransform rt);
+		public delegate (int type, List<object> list) SelectionHandler ();
 
 
 		#endregion
@@ -158,17 +165,21 @@
 
 		// Handler
 		public static VoidIntHandler OnSelectionChanged { get; set; } = null;
+		public static SelectionHandler GetSelectingObjects { get; set; } = null;
+		public static IntHandler GetSelectionCount { get; set; } = null;
+		public static FloatHandler GetBPM { get; set; } = null;
+		public static VoidStringRTHandler OpenMenu { get; set; } = null;
 
 		// API
 		public (int type, int index) SelectingItemTypeIndex { get; private set; } = (-1, -1);
 
 		// Short
 		private string PrefabJsonPath => Util.CombinePaths(Application.streamingAssetsPath, "Library", "Prefabs.json");
-		private static StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
 
 		// Ser
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
 		[SerializeField] private Grabber m_BrushPrefab = null;
+		[SerializeField] private EventTrigger m_AddPrefab = null;
 		[SerializeField] private RectTransform m_LibraryView = null;
 		[SerializeField] private RectTransform m_BrushContainer = null;
 		[SerializeField] private Color m_StagePrefabColor = Color.white;
@@ -183,7 +194,7 @@
 		private const string DIALOG_ExportPrefabTitle = "Dialog.Library.ExportPrefabTitle";
 		private const string PREFAB_MENU_KEY = "Menu.Library.PrefabItem";
 		private readonly List<PrefabData> PrefabDatas = new List<PrefabData>();
-		private static StageMenu _Menu = null;
+		private EventTrigger AddFromSelectionButton = null;
 		private bool UIReady = true;
 
 
@@ -206,6 +217,10 @@
 			}
 			// Final
 			LoadFromFile(PrefabJsonPath);
+		}
+
+
+		private void Start () {
 			ReloadPrefabsUI();
 		}
 
@@ -221,11 +236,6 @@
 			if (m_LibraryView != null) {
 				m_LibraryView.gameObject.SetActive(false);
 			}
-		}
-
-
-		private void OnApplicationQuit () {
-			SaveToFile(PrefabJsonPath);
 		}
 
 
@@ -249,6 +259,7 @@
 				var path = DialogUtil.PickFileDialog(DIALOG_ImportPrefabTitle, "json", "json");
 				if (!string.IsNullOrEmpty(path)) {
 					LoadFromFile(path);
+					SaveToFile(PrefabJsonPath);
 					ReloadPrefabsUI();
 				}
 			});
@@ -270,6 +281,7 @@
 			if (index < 0 || index >= PrefabDatas.Count) { return; }
 			DialogUtil.Dialog_Delete_Cancel(DIALOG_DeletePrefabConfirm, () => {
 				PrefabDatas.RemoveAt(index);
+				SaveToFile(PrefabJsonPath);
 				ReloadPrefabsUI();
 			});
 		}
@@ -278,12 +290,23 @@
 		public void UI_MovePrefabLeft (object itemRT) {
 			if (!(itemRT is RectTransform rt)) { return; }
 			MovePrefabLogic(rt.GetSiblingIndex(), true);
+			SaveToFile(PrefabJsonPath);
+			ReloadPrefabsUI();
 		}
 
 
 		public void UI_MovePrefabRight (object itemRT) {
 			if (!(itemRT is RectTransform rt)) { return; }
 			MovePrefabLogic(rt.GetSiblingIndex(), false);
+			SaveToFile(PrefabJsonPath);
+			ReloadPrefabsUI();
+		}
+
+
+		public void RefreshAddButton (bool active) {
+			if (AddFromSelectionButton != null) {
+				AddFromSelectionButton.gameObject.SetActive(active);
+			}
 		}
 
 
@@ -345,13 +368,14 @@
 			var temp = PrefabDatas[index];
 			PrefabDatas[index] = PrefabDatas[newIndex];
 			PrefabDatas[newIndex] = temp;
-			ReloadPrefabsUI();
 		}
 
 
 		// File
 		private void ReloadPrefabsUI () {
 			m_BrushContainer.DestroyAllChildImmediately();
+			AddFromSelectionButton = null;
+			// Brushs
 			int defaultCount = m_DefaultBrushTGs.Length;
 			for (int i = 0; i < PrefabDatas.Count; i++) {
 				var prefabData = PrefabDatas[i];
@@ -369,11 +393,46 @@
 					SetSelectionLogic(isOn ? index + defaultCount : -1);
 				});
 				// Menu
-				grab.Grab<TriggerUI>().CallbackRight.AddListener(() => Menu.OpenMenu(PREFAB_MENU_KEY, rt));
+				grab.Grab<TriggerUI>().CallbackRight.AddListener(() => OpenMenu(PREFAB_MENU_KEY, rt));
 				// Thumbnail
 				prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"), m_StagePrefabColor, m_TrackPrefabColor, m_NotePrefabColor);
 			}
 			SetSelectionLogic(SelectingItemTypeIndex.index);
+			// Add Button
+			{
+				var addTri = AddFromSelectionButton = Instantiate(m_AddPrefab, m_BrushContainer);
+				// RT
+				var rt = addTri.transform as RectTransform;
+				rt.SetAsLastSibling();
+				rt.anchoredPosition3D = rt.anchoredPosition;
+				rt.gameObject.SetActive(GetSelectionCount() > 0);
+				// Btn
+				addTri.triggers[0].callback.AddListener((e) => {
+					if ((e as PointerEventData).button != PointerEventData.InputButton.Left) { return; }
+					// Clear Lib Selection
+					if (SelectingItemTypeIndex.type < 0) {
+						SetSelectionLogic(-1);
+					}
+					// Add Prefab
+					var (type, selectionList) = GetSelectingObjects();
+					if (selectionList == null || selectionList.Count == 0) { return; }
+					switch (type) {
+						case 0:
+							AddToPrefab(selectionList[0] as Beatmap.Stage);
+							break;
+						case 1:
+							AddToPrefab(selectionList[0] as Beatmap.Track);
+							break;
+						case 2:
+							AddToPrefab(selectionList);
+							break;
+					}
+					// Final
+					SaveToFile(PrefabJsonPath);
+					Invoke("ReloadPrefabsUI", 0.01f);
+				});
+
+			}
 		}
 
 
@@ -396,6 +455,29 @@
 					Prefabs = PrefabDatas.ToArray(),
 				}, false), path);
 			} catch { }
+		}
+
+
+		private void AddToPrefab (Beatmap.Stage stage) {
+			if (stage == null) { return; }
+			PrefabDatas.Add(new PrefabData(stage));
+		}
+
+
+		private void AddToPrefab (Beatmap.Track track) {
+			if (track == null) { return; }
+			PrefabDatas.Add(new PrefabData(track));
+		}
+
+
+		private void AddToPrefab (List<object> notes) {
+			if (notes == null) { return; }
+			var noteList = new List<Beatmap.Note>();
+			foreach (Beatmap.Note note in notes) {
+				if (note == null) { continue; }
+				noteList.Add(note);
+			}
+			PrefabDatas.Add(new PrefabData(noteList, GetBPM()));
 		}
 
 

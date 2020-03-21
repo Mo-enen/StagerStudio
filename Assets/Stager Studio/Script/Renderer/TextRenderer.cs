@@ -19,7 +19,6 @@
 		// Ser
 		[SerializeField] private Sprite[] m_SpriteSets = null;  // 0-9 A-Z a-z
 		[SerializeField] private string m_Text = "";
-		[SerializeField] private float m_Gap = 0.1f;
 
 
 
@@ -39,10 +38,9 @@
 				var sprite = m_SpriteSets[index];
 				var uvMin = sprite.uv[2];
 				var uvMax = sprite.uv[1];
-				float l = i * (1f + m_Gap);
-				var offset = new Vector3(-(textLength - 1) / 2f * (1f + m_Gap), 0f, 0f);
+				var offset = new Vector3((1 - textLength) / 2f, 0f, 0f);
 				AddQuad01(
-					l, l + 1f, 0f, Scale.y,
+					i, i + 1f, 0f, Scale.y,
 					uvMin.x, uvMax.x, uvMin.y, uvMax.y,
 					offset
 				);

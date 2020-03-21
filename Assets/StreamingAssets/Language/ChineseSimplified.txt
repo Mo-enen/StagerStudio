@@ -1,4 +1,7 @@
-﻿Author
+﻿Tip.Library.AddFromSelection
+将当前选择的物体添加为笔刷
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject

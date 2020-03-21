@@ -21,6 +21,7 @@
 		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
 		public delegate string StringStringHandler (string str);
 		public delegate void VoidStringBoolHandler (string s, bool b);
+		public delegate Beatmap BeatmapHandler ();
 
 
 		#endregion
@@ -43,6 +44,7 @@
 		public static VoidHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
+		public static BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// API
 		public float Ratio {
@@ -67,7 +69,6 @@
 		public bool PositiveScroll { get; set; } = true;
 
 		// Short
-		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -84,7 +85,6 @@
 		[SerializeField] private RectTransform m_ZoneRT = null;
 
 		// Data
-		private StageProject _Project = null;
 		private StageMusic _Music = null;
 		private Camera _Camera = null;
 		private Transform[] Containers = null;
@@ -161,7 +161,7 @@
 
 		private void Update_Beatmap () {
 			if (Music.IsPlaying) { return; }
-			var map = Project.Beatmap;
+			var map = GetBeatmap();
 			if (!(map is null)) {
 				// Has Beatmap
 				bool changed = false;
@@ -185,7 +185,7 @@
 		private void Update_SpeedCurve () {
 			if (Music.IsPlaying) { return; }
 			// Speed Curve
-			if (Project.Beatmap is null) {
+			if (GetBeatmap() is null) {
 				// No Map
 				if (SpeedCurve.Count > 0) {
 					SpeedCurve.Clear();
@@ -193,7 +193,7 @@
 				}
 			} else {
 				// Has Beatmap
-				var speedNotes = Project.Beatmap.SpeedNotes;
+				var speedNotes = GetBeatmap().SpeedNotes;
 				if (speedNotes is null || speedNotes.Count == 0) {
 					// No SpeedNote
 					if (SpeedCurve.Count > 0) {
@@ -201,7 +201,7 @@
 					}
 					// Init Speed Note
 					if (speedNotes is null) {
-						Project.Beatmap.SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 1), };
+						GetBeatmap().SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 1), };
 					} else {
 						speedNotes.Add(new Beatmap.SpeedNote(0, 1));
 					}
@@ -260,12 +260,11 @@
 				} else {
 					// Right Drag
 					float mouseTime = GetMusicTimeAt(Input.mousePosition);
-					float aimTime = FillDropTime(
+					Music.Seek(FillDropTime(
 						MouseDownMusicTime,
 						Mathf.Sign(Music.Time - mouseTime) * AreaBetween(mouseTime, Music.Time, GameDropSpeed * MapDropSpeed),
 						GameDropSpeed * MapDropSpeed
-					);
-					Music.Seek(aimTime);
+					));
 				}
 			} else {
 				MouseDownMusicTime = -1f;

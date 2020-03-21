@@ -377,6 +377,7 @@
 				m_Zone.SetFitterRatio(ratio);
 				Data.Beatmap.DEFAULT_STAGE.Height = 1f / ratio;
 			};
+			StageGame.GetBeatmap = () => Project.Beatmap;
 		}
 
 
@@ -406,7 +407,7 @@
 		private void Awake_Editor () {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
-
+				Library.RefreshAddButton(Editor.SelectingCount > 0);
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				Editor.ClearSelection();
@@ -422,8 +423,36 @@
 				if (index >= 0) {
 					Editor.ClearSelection();
 				}
-
 			};
+			StageLibrary.GetSelectingObjects = () => {
+				int finalType = -1;
+				var finalList = new List<object>();
+				Editor.ForAddSelectingObjects((type, index) => {
+					var map = Project.Beatmap;
+					if (map == null || type >= 3 || index < 0) { return; }
+					if (type > finalType) {
+						finalType = type;
+						finalList.Clear();
+					}
+					if (type == 0) {
+						if (map.Stages != null && index < map.Stages.Count) {
+							finalList.Add(map.Stages[index]);
+						}
+					} else if (type == 1) {
+						if (map.Tracks != null && index < map.Tracks.Count) {
+							finalList.Add(map.Tracks[index]);
+						}
+					} else if (type == 2) {
+						if (map.Notes != null && index < map.Notes.Count) {
+							finalList.Add(map.Notes[index]);
+						}
+					}
+				});
+				return (finalType, finalList);
+			};
+			StageLibrary.GetSelectionCount = () => Editor.SelectingCount;
+			StageLibrary.OpenMenu = Menu.OpenMenu;
+			StageLibrary.GetBPM = () => Game.BPM;
 		}
 
 

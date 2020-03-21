@@ -1561,6 +1561,8 @@ MonoBehaviour:
   - {fileID: 1862773114}
   m_BrushPrefab: {fileID: 3566625496265129375, guid: 5ede1592e7b829b4ebf7721cd9018417,
     type: 3}
+  m_AddPrefab: {fileID: 5093649808672166835, guid: 71fa4fc7260dad64190f45c418556ef7,
+    type: 3}
   m_LibraryView: {fileID: 872726765}
   m_BrushContainer: {fileID: 772606999}
   m_StagePrefabColor: {r: 0.5, g: 0.11, b: 0.65, a: 1}
@@ -16548,6 +16550,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - Tip.Library.AddFromSelection
+  - Add current selecting objects to Library
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject

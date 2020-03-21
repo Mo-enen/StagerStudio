@@ -269,6 +269,9 @@ TextureImporter:
   - first:
       213: 2694897597151364604
     second: Char 9
+  - first:
+      213: 407823355223738349
+    second: Library Brush Rect
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -611,10 +614,10 @@ TextureImporter:
       name: Char 0
       rect:
         serializedVersion: 2
-        x: 6
-        y: 78
-        width: 34
-        height: 54
+        x: 4
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -632,10 +635,10 @@ TextureImporter:
       name: Char 1
       rect:
         serializedVersion: 2
-        x: 41
-        y: 78
-        width: 34
-        height: 54
+        x: 44
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -653,10 +656,10 @@ TextureImporter:
       name: Char 2
       rect:
         serializedVersion: 2
-        x: 77
-        y: 78
-        width: 34
-        height: 54
+        x: 84
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -674,10 +677,10 @@ TextureImporter:
       name: Char 3
       rect:
         serializedVersion: 2
-        x: 112
-        y: 78
-        width: 34
-        height: 54
+        x: 124
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -695,10 +698,10 @@ TextureImporter:
       name: Char 4
       rect:
         serializedVersion: 2
-        x: 147
-        y: 78
-        width: 34
-        height: 54
+        x: 164
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -716,10 +719,10 @@ TextureImporter:
       name: Char 5
       rect:
         serializedVersion: 2
-        x: 182
-        y: 78
-        width: 34
-        height: 54
+        x: 204
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -737,10 +740,10 @@ TextureImporter:
       name: Char 6
       rect:
         serializedVersion: 2
-        x: 217
-        y: 78
-        width: 34
-        height: 54
+        x: 244
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -758,10 +761,10 @@ TextureImporter:
       name: Char 7
       rect:
         serializedVersion: 2
-        x: 252
-        y: 78
-        width: 34
-        height: 54
+        x: 284
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -779,10 +782,10 @@ TextureImporter:
       name: Char 8
       rect:
         serializedVersion: 2
-        x: 287
-        y: 78
-        width: 34
-        height: 54
+        x: 324
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -800,10 +803,10 @@ TextureImporter:
       name: Char 9
       rect:
         serializedVersion: 2
-        x: 323
-        y: 78
-        width: 34
-        height: 54
+        x: 364
+        y: 77
+        width: 39
+        height: 56
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -813,6 +816,27 @@ TextureImporter:
       bones: []
       spriteID: cf5c2402613366520800000000000000
       internalID: 2694897597151364604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Library Brush Rect
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 42
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 2, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de7083b4e21e8a500800000000000000
+      internalID: 407823355223738349
       vertices: []
       indices: 
       edges: []

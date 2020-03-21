@@ -22,6 +22,7 @@
 		public delegate (int type, int index) IntIntHandler ();
 		public delegate bool BoolHandler ();
 
+
 		#endregion
 
 
@@ -36,6 +37,9 @@
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
+
+		// Api
+		public int SelectingCount => SelectingObjectsIndex.Count;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -70,6 +74,7 @@
 		private bool ClickStartInsideSelection = false;
 		private int HoldNoteLayer = -1;
 		private Ray? MouseRayDown = null;
+
 
 		#endregion
 
@@ -339,6 +344,34 @@
 		}
 
 
+		public void ForAddSelectingObjects (System.Action<int, int> action) {   // type, index 
+			foreach (var (layer, index) in SelectingObjectsIndex) {
+				int type = -1;
+				switch (layer) {
+					case int l when l == ItemLayers[0]:
+						type = 0;
+						break;
+					case int l when l == ItemLayers[1]:
+						type = 1;
+						break;
+					case int l when l == ItemLayers[2]:
+					case int hl when hl == HoldNoteLayer:
+						type = 2;
+						break;
+					case int l when l == ItemLayers[3]:
+						type = 3;
+						break;
+					case int l when l == ItemLayers[4]:
+						type = 4;
+						break;
+				}
+				if (type >= 0) {
+					action(type, index);
+				}
+			}
+		}
+
+
 		// Container
 		public void UI_SwitchContainerActive (int index) => SetEye(index, !GetContainerActive(index));
 
@@ -442,7 +475,7 @@
 		}
 
 
-		private (int, int, Transform) GetCastLayerIndex (LayerMask mask, bool insideZone) {
+		private (int layer, int index, Transform target) GetCastLayerIndex (LayerMask mask, bool insideZone) {
 			var ray = GetMouseRay();
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
 			int overlapLayer = -1;
