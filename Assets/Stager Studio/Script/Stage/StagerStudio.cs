@@ -141,6 +141,7 @@
 			StageObject.Abreast = (Game.AbreastIndex, Game.UseAbreast, Game.AllStageAbreast);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			Object.Stage.StageCount = Game.GetItemCount(0);
+			Object.Stage.AbreastWidth = Game.AbreastWidth;
 		}
 
 

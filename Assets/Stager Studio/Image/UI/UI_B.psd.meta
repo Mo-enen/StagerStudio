@@ -272,6 +272,9 @@ TextureImporter:
   - first:
       213: 407823355223738349
     second: Library Brush Rect
+  - first:
+      213: 8741564452827434407
+    second: Abreast Width
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -837,6 +840,27 @@ TextureImporter:
       bones: []
       spriteID: de7083b4e21e8a500800000000000000
       internalID: 407823355223738349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Abreast Width
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 64
+        width: 103
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7ad06f71e86405970800000000000000
+      internalID: 8741564452827434407
       vertices: []
       indices: 
       edges: []

@@ -17,6 +17,7 @@
 
 		// Api
 		public static int StageCount { get; set; } = 0;
+		public static float AbreastWidth { get; set; } = 1f;
 		public static float JudgeLineHeight { get; set; } = 0f;
 		public static int SortingLayerID_Stage { get; set; } = -1;
 
@@ -147,7 +148,9 @@
 		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Abreast.active ? 0f : -Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f);
 
 
-		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ? Abreast.all && StageCount > 0 ? 1f / StageCount : 1f : Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
+		public static float GetStageWidth (Beatmap.Stage data) => Abreast.active ?
+			Abreast.all && StageCount > 0 ? AbreastWidth / StageCount : AbreastWidth :
+			Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f);
 
 
 		public static float GetStageHeight (Beatmap.Stage data) => Abreast.active ? Mathf.Clamp(1f / ZoneMinMax.ratio, 0f, 256f) : Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0f);
@@ -161,7 +164,9 @@
 		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) => (!Abreast.active || (Abreast.all && stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
-		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ? new Vector2(Abreast.all && StageCount > 0 ? ((2 * stageIndex + 1) / (2f * StageCount)) : 0.5f, 0f) : (new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ?
+			new Vector2(Abreast.all && StageCount > 0 ? ((1f - AbreastWidth + AbreastWidth / StageCount) / 2f + stageIndex * AbreastWidth / StageCount) : 0.5f, 0f) :
+			(new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
 
 
 		public static float GetStageAngle (Beatmap.Stage data) => Abreast.active ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);

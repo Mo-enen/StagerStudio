@@ -1,5 +1,5 @@
-﻿Tip.Library.AddFromSelection
-Add current selecting objects to Library
+﻿Game.Hint.AbreastWidth
+Stage width {0}
 
 Author
 Stager Official
@@ -418,6 +418,9 @@ Show all stages
 Tip.AbreastSwitcher.Item
 Switch to specified stage
 
+Tip.AbreastSwitcher.Width
+The width of the stage area
+
 Tip.AbreastView
 Panorama mode
 
@@ -447,6 +450,9 @@ Stage brush
 
 Tip.Lib.Track
 Track brush
+
+Tip.Library.AddFromSelection
+Add current selecting objects to Library
 
 Tip.Music.Pause
 Pause music

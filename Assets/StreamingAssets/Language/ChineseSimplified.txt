@@ -1,5 +1,5 @@
-﻿Tip.Library.AddFromSelection
-将当前选择的物体添加为笔刷
+﻿Game.Hint.AbreastWidth
+全景舞台宽度 {0}
 
 Author
 Stager 官方
@@ -418,6 +418,9 @@ Tip.AbreastSwitcher.All
 Tip.AbreastSwitcher.Item
 切换到指定编号的舞台
 
+Tip.AbreastSwitcher.Width
+舞台区域的宽度
+
 Tip.AbreastView
 全景模式
 
@@ -447,6 +450,9 @@ Tip.Lib.Stage
 
 Tip.Lib.Track
 轨道笔刷
+
+Tip.Library.AddFromSelection
+将当前选择的物体添加为笔刷
 
 Tip.Music.Pause
 暂停音乐

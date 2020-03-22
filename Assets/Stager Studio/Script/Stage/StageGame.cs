@@ -35,6 +35,8 @@
 		// Const
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
+		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";
+		private readonly static float[] ABREAST_WIDTHS = { 1f, 0.75f, 0.618f, 0.5f, };
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -67,6 +69,7 @@
 		public int GridY => GridCountY;
 		public int TheBeatPerSection => BeatPerSection;
 		public bool PositiveScroll { get; set; } = true;
+		public float AbreastWidth { get; private set; } = 1f;
 
 		// Short
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
@@ -99,6 +102,7 @@
 		private SavingInt GridCountX = new SavingInt("StageGame.GridCountX", 3);
 		private SavingInt GridCountY = new SavingInt("StageGame.GridCountY", 1);
 		private SavingInt BeatPerSection = new SavingInt("StageGame.BeatPerSection", 4);
+		private SavingInt AbreastWidthIndex = new SavingInt("StageGame.AbreastWidthIndex", 0);
 
 
 		#endregion
@@ -149,6 +153,7 @@
 			SetGridCountX(GridCountX);
 			SetGridCountY(GridCountY);
 			SetBeatPerSection(BeatPerSection);
+			SetAbreastWidth(AbreastWidthIndex);
 		}
 
 
@@ -417,6 +422,25 @@
 		}
 
 
+		public void SwitchAbreastWidth () {
+			SetAbreastWidth((AbreastWidthIndex + 1) % ABREAST_WIDTHS.Length);
+			// Hint
+			string str = "% ";
+			for (int i = 0; i < ABREAST_WIDTHS.Length; i++) {
+				str += i == AbreastWidthIndex ? '■' : '□';
+			}
+			LogGameHint_Key(ABREAST_WIDTH_HINT, (AbreastWidth * 100f).ToString("0") + str, false);
+		}
+
+
+		public void SetAbreastWidth (int index) {
+			index = Mathf.Clamp(index, 0, ABREAST_WIDTHS.Length - 1);
+			AbreastWidthIndex.Value = index;
+			AbreastWidth = ABREAST_WIDTHS[index];
+			OnAbreastChanged();
+		}
+
+
 		#endregion
 
 
@@ -489,9 +513,6 @@
 
 
 		// Misc
-		//private void LogGameHint_Key (string key, bool flash) => LogGameHint_Message(GetLanguage(key), flash);
-
-
 		private void LogGameHint_Key (string key, string arg, bool flash) {
 			try {
 				LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
