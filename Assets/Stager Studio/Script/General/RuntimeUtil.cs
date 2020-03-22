@@ -466,11 +466,18 @@
 
 
 		public static float Remap (float l, float r, float newL, float newR, float t) {
-			return l == r ? 0 : Mathf.Lerp(
+			return l == r ? l : Mathf.Lerp(
 				newL, newR,
 				(t - l) / (r - l)
 			);
 		}
+
+
+		public static Vector3 Remap (float l, float r, Vector3 newL, Vector3 newR, float t) => new Vector3(
+			Remap(l, r, newL.x, newR.x, t),
+			Remap(l, r, newL.y, newR.y, t),
+			Remap(l, r, newL.z, newR.z, t)
+		);
 
 
 		public static Texture2D TrimTexture (Texture2D texture, float alpha = 0.01f, int gap = 0) {
