@@ -2050,7 +2050,6 @@ MonoBehaviour:
       rgba: 4288357842
     - serializedVersion: 2
       rgba: 16777215
-    Gene: {fileID: 4900000, guid: 3a834b5134a9cb4429f346a9bd8bba37, type: 3}
     Tween: {fileID: 4900000, guid: e1b0634f6cf2ac547834c659bb3b14f5, type: 3}
     Beatmap: {fileID: 4900000, guid: 06653e03e3fe0774982a3186db4043d8, type: 3}
   - Type: 1
@@ -2075,7 +2074,6 @@ MonoBehaviour:
       rgba: 4291550070
     - serializedVersion: 2
       rgba: 4293961390
-    Gene: {fileID: 4900000, guid: 9f97fc12b703c2f498fc1147af97fb23, type: 3}
     Tween: {fileID: 4900000, guid: 26808e66a372ba24fb462a0becef9c0b, type: 3}
     Beatmap: {fileID: 4900000, guid: 6d53e2b544d736947ae45a0cb5dd17be, type: 3}
   - Type: 2
@@ -2084,7 +2082,6 @@ MonoBehaviour:
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
-    Gene: {fileID: 4900000, guid: 2b018e3bed33a43408aaa00535f7a3e1, type: 3}
     Tween: {fileID: 4900000, guid: 42a05c5d4cd57054e83d95fac72a1a0b, type: 3}
     Beatmap: {fileID: 4900000, guid: b30be3bf4a1e17f4283d078f13c7c4d1, type: 3}
   - Type: 3
@@ -2093,7 +2090,6 @@ MonoBehaviour:
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
-    Gene: {fileID: 4900000, guid: 1f4c345102be8474aaf70170aa1d7edf, type: 3}
     Tween: {fileID: 4900000, guid: 4e2c32bf974f305479792013a50d8097, type: 3}
     Beatmap: {fileID: 4900000, guid: 5dc459b117b5ea547826842feae7a786, type: 3}
   - Type: 4
@@ -2106,7 +2102,18 @@ MonoBehaviour:
       rgba: 268435455
     - serializedVersion: 2
       rgba: 251699967
-    Gene: {fileID: 4900000, guid: 42ddce54f0c79114b97d4ff43d6aedd3, type: 3}
+    Tween: {fileID: 4900000, guid: b5407d18ed38e7c4eb443be5512dfd9c, type: 3}
+    Beatmap: {fileID: 4900000, guid: 183ee389bae0a494a8d72479e9a862ae, type: 3}
+  - Type: 4
+    Palette:
+    - serializedVersion: 2
+      rgba: 4294967295
+    - serializedVersion: 2
+      rgba: 268418560
+    - serializedVersion: 2
+      rgba: 268435455
+    - serializedVersion: 2
+      rgba: 251699967
     Tween: {fileID: 4900000, guid: b5407d18ed38e7c4eb443be5512dfd9c, type: 3}
     Beatmap: {fileID: 4900000, guid: 183ee389bae0a494a8d72479e9a862ae, type: 3}
   m_ContentRoot: {fileID: 6188474199923220270}

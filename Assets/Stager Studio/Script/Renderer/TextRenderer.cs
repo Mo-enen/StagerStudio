@@ -12,12 +12,17 @@
 		// Api
 		public string Text {
 			get => m_Text;
-			set => m_Text = value;
+			set {
+				if (value != m_Text) {
+					m_Text = value;
+					SetDirty();
+				}
+			}
 		}
 
 
 		// Ser
-		[SerializeField] private Sprite[] m_SpriteSets = null;  // 0-9 A-Z a-z
+		[SerializeField] private TextSpriteSheet m_SpriteSheet = null;
 		[SerializeField] private string m_Text = "";
 
 
@@ -27,15 +32,19 @@
 		}
 
 
+		private void OnEnable () {
+			SetDirty();
+		}
+
+
 		protected override void OnMeshFill () {
 
-			if (m_SpriteSets is null || string.IsNullOrEmpty(m_Text)) { return; }
+			if (m_SpriteSheet is null || string.IsNullOrEmpty(m_Text)) { return; }
 
 			var textLength = m_Text.Length;
 			for (int i = 0; i < textLength; i++) {
-				int index = Char_to_Index(m_Text[i]);
-				if (index < 0 || index >= m_SpriteSets.Length) { continue; }
-				var sprite = m_SpriteSets[index];
+				Sprite sprite = m_SpriteSheet.Char_to_Sprite(m_Text[i]);
+				if (sprite == null) { continue; }
 				var uvMin = sprite.uv[2];
 				var uvMax = sprite.uv[1];
 				var offset = new Vector3((1 - textLength) / 2f, 0f, 0f);
@@ -49,19 +58,6 @@
 
 		}
 
-
-
-		private int Char_to_Index (char c) {
-			if (c >= '0' && c <= '9') {
-				return c - '0';
-			} else if (c >= 'A' && c <= 'Z') {
-				return c - 'A' + 10;
-			} else if (c >= 'a' && c <= 'z') {
-				return c - 'a' + 36;
-			} else {
-				return -1;
-			}
-		}
 
 
 

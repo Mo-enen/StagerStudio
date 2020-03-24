@@ -188,7 +188,7 @@
 			}
 			public float Duration {
 				get => m_Duration / 1000f;
-				set => m_Duration = (int)(value * 1000f);
+				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
 			}
 			public float Speed {
 				get => m_Speed / 1000f;
@@ -272,7 +272,7 @@
 			}
 			public float Duration {
 				get => m_Duration / 1000f;
-				set => m_Duration = (int)(value * 1000f);
+				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
 			}
 			public float X {
 				get => m_X / 1000f;
@@ -337,7 +337,7 @@
 			}
 			public float Duration {
 				get => m_Duration / 1000f;
-				set => m_Duration = (int)(value * 1000f);
+				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
 			}
 			public float X {
 				get => m_X / 1000f;
@@ -362,6 +362,7 @@
 			public int LinkedNoteIndex = -1;
 			public short ClickSoundIndex = -1;
 			public bool Tap = true;
+			public string Comment = "";
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
 

@@ -25,6 +25,8 @@
 		NoteLuminous = 10,
 		HoldLuminous = 11,
 
+		Comment = 12,
+
 	}
 
 

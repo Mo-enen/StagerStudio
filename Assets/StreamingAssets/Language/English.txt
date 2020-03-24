@@ -1,4 +1,7 @@
-﻿Author
+﻿SkinEditor.Item.Comment
+Comment
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

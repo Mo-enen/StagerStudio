@@ -40,7 +40,7 @@
 
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
-			if (noteData is null) { return; }
+			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment)) { return; }
 			float noteEndTime = noteData.Time + noteData.Duration;
 
 			if (!MusicPlaying) {

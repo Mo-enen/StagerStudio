@@ -11588,17 +11588,17 @@ MonoBehaviour:
   m_Level: {fileID: 315509731}
   m_ZoneRT: {fileID: 1866341393}
   m_TestBeatmap:
-    Tag: Normal
-    Level: 1
-    DropSpeed: 1
     BPM: 120
-    Shift: 0
-    Ratio: 1.5
+    Level: 1
+    Tag: Normal
     CreatedTime: 0
     Stages: []
     Tracks: []
     Notes: []
     SpeedNotes: []
+    m_DropSpeed: 1000
+    m_Shift: 0
+    m_Ratio: 1500
 --- !u!1 &1342028737
 GameObject:
   m_ObjectHideFlags: 0
@@ -16867,6 +16867,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - SkinEditor.Item.Comment
+  - Comment
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17410,8 +17412,6 @@ MonoBehaviour:
   - Lum Height
   - UI.SkinEditor.LuminousWidth
   - Lum Width
-  - 
-  - Shadow
   - UI.SkinEditor.PingPong
   - PingPong
   - UI.SkinEditor.PingPongStay
