@@ -47,7 +47,6 @@
 		[SerializeField] private InputField m_ScaleMutiIF = null;
 		[SerializeField] private InputField m_LuminWidthAppendIF = null;
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
-		[SerializeField] private InputField m_NoteShadowDistanceIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
@@ -158,15 +157,6 @@
 				}
 			});
 
-			// Note Shadow Dis
-			m_NoteShadowDistanceIF.onEndEdit.AddListener((str) => {
-				if (!UIReady) { return; }
-				if (float.TryParse(str, out float size)) {
-					Data.NoteShadowDistance_UI = size;
-					m_NoteShadowDistanceIF.text = Data.NoteShadowDistance_UI.ToString();
-				}
-			});
-
 			// Vanish Duration 
 			m_VanishDurationIF.onEndEdit.AddListener((str) => {
 				if (!UIReady) { return; }
@@ -248,7 +238,6 @@
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
-				m_NoteShadowDistanceIF.text = data.NoteShadowDistance_UI.ToString();
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
 				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {

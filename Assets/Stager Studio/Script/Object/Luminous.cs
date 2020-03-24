@@ -84,18 +84,22 @@
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			float trackX = Track.GetTrackX(linkedTrack);
 			float trackWidth = Track.GetTrackWidth(linkedTrack);
-			float trackRotX = Stage.GetStageAngle(linkedStage);
+			float trackRotX = Track.GetTrackAngle(linkedTrack);
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
-			var (pos, _, rotZ) = Track.Inside(
+			var (pos, rotX, rotZ) = Track.Inside(
 				noteData.X, stageHeight > 0f ? Stage.JudgeLineHeight / 2f / stageHeight : 0f,
 				stagePos, stageWidth, stageHeight, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
-
+			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
+			if (noteData.Z != 0f) {
+				var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
+				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
+			}
 			// Movement
 			float scaleX = (Note.NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : Note.NoteSize.x) + LuminousAppend.x;
 			float scaleY = (tap ? LumHeight_Tap : LumHeight_Hold) + LuminousAppend.y;
-			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
+			transform.position = noteWorldPos;
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 			MainRenderer.transform.localScale = new Vector3(
 				zoneSize * scaleX,

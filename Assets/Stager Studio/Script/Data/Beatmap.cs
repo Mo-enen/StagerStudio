@@ -28,14 +28,30 @@
 		// SUB
 		[System.Serializable]
 		public struct TimeFloatTween {
-			public float Time;
-			public float Value;
-			public byte Tween;
-			public TimeFloatTween (float time, float value, byte tween) {
-				Time = time;
-				Value = value;
-				Tween = tween;
+
+			public float Time {
+				get => m_Time / 1000f;
+				set {
+					m_Time = (int)(value * 1000f);
+				}
 			}
+			public float Value {
+				get => m_Value / 1000f;
+				set {
+					m_Value = (int)(value * 1000f);
+				}
+			}
+			public int Tween {
+				get => m_Tween;
+				set {
+					m_Tween = value;
+				}
+			}
+
+			public int m_Time;
+			public int m_Value;
+			public int m_Tween;
+
 			public static int Search (List<TimeFloatTween> data, float time) {
 				int start = 0;
 				int end = data.Count - 1;
@@ -52,20 +68,35 @@
 				}
 				return (start + end) / 2;
 			}
+
 		}
 
 
 		[System.Serializable]
-		public struct TimeByteTween {
-			public float Time;
-			public byte Value;
-			public byte Tween;
-			public TimeByteTween (float time, byte value, byte tween) {
-				Time = time;
-				Value = value;
-				Tween = tween;
+		public struct TimeIntTween {
+
+			public float Time {
+				get => m_Time / 1000f;
+				set {
+					m_Time = (int)(value * 1000f);
+				}
 			}
-			public static int Search (List<TimeByteTween> data, float time) {
+			public int Value {
+				get => m_Value;
+				set => m_Value = value;
+			}
+			public int Tween {
+				get => m_Tween;
+				set {
+					m_Tween = value;
+				}
+			}
+
+			public int m_Time;
+			public int m_Value;
+			public int m_Tween;
+
+			public static int Search (List<TimeIntTween> data, float time) {
 				int start = 0;
 				int end = data.Count - 1;
 				int mid;
@@ -81,21 +112,43 @@
 				}
 				return (start + end) / 2;
 			}
+
 		}
 
 
 		[System.Serializable]
 		public struct TimeFloatFloatTween {
-			public float Time;
-			public float A;
-			public float B;
-			public byte Tween;
-			public TimeFloatFloatTween (float time, float a, float b, byte tween) {
-				Time = time;
-				A = a;
-				B = b;
-				Tween = tween;
+
+			public float Time {
+				get => m_Time / 1000f;
+				set {
+					m_Time = (int)(value * 1000f);
+				}
 			}
+			public float A {
+				get => m_A / 1000f;
+				set {
+					m_A = (int)(value * 1000f);
+				}
+			}
+			public float B {
+				get => m_B / 1000f;
+				set {
+					m_B = (int)(value * 1000f);
+				}
+			}
+			public int Tween {
+				get => m_Tween;
+				set {
+					m_Tween = (byte)value;
+				}
+			}
+
+			public int m_Time;
+			public int m_A;
+			public int m_B;
+			public byte m_Tween;
+
 			public static int Search (List<TimeFloatFloatTween> data, float time) {
 				int start = 0;
 				int end = data.Count - 1;
@@ -112,38 +165,74 @@
 				}
 				return (start + end) / 2;
 			}
+
 		}
 
 
 
 		[System.Serializable]
 		public class Stage {
+
 			public const int MOTION_COUNT = 5;
 			public enum MotionType {
 				Position = 0,
 				Rotation = 1,
 				Width = 2,
 				Height = 3,
-				Angle = 4,
 			}
+
+			// API
+			public float Time {
+				get => m_Time / 1000f;
+				set => m_Time = (int)(value * 1000f);
+			}
+			public float Duration {
+				get => m_Duration / 1000f;
+				set => m_Duration = (int)(value * 1000f);
+			}
+			public float Speed {
+				get => m_Speed / 1000f;
+				set => m_Speed = (int)(value * 1000f);
+			}
+			public float X {
+				get => m_X / 1000f;
+				set => m_X = (int)(value * 1000f);
+			}
+			public float Y {
+				get => m_Y / 1000f;
+				set => m_Y = (int)(value * 1000f);
+			}
+			public float Width {
+				get => m_Width / 1000f;
+				set => m_Width = (int)(value * 1000f);
+			}
+			public float Height {
+				get => m_Height / 1000f;
+				set => m_Height = (int)(value * 1000f);
+			}
+			public float Rotation {
+				get => m_Rotation;
+				set => m_Rotation = (int)value;
+			}
+
 			// SER-API
-			public float Time = 0f;
-			public float Duration = 0f;
-			public float Speed = 1f;
-			public float X = 0f;
-			public float Y = 0f;
-			public float Width = 1f;
-			public float Height = 1f;
-			public float Rotation = 0f;
-			public float Angle = 0f;
+			public int m_Time = 0;
+			public int m_Duration = 0;
+			public int m_Speed = 1000;
+			public int m_X = 0;
+			public int m_Y = 0;
+			public int m_Width = 1000;
+			public int m_Height = 1000;
+			public int m_Rotation = 0;
 			public List<TimeFloatFloatTween> Positions;
 			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
-			public List<TimeFloatTween> Angles;
+
 			// Cache
 			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public bool Selecting = false;
+
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -157,38 +246,67 @@
 						return Widths is null ? 0 : Widths.Count;
 					case MotionType.Height:
 						return Heights is null ? 0 : Heights.Count;
-					case MotionType.Angle:
-						return Angles is null ? 0 : Angles.Count;
+
 				}
 			}
+
 		}
 
 
 
 		[System.Serializable]
 		public class Track {
+
 			public const int MOTION_COUNT = 3;
 			public enum MotionType {
 				X = 0,
 				Width = 1,
 				Color = 2,
+				Angle = 3,
 			}
+
+			// API
+			public float Time {
+				get => m_Time / 1000f;
+				set => m_Time = (int)(value * 1000f);
+			}
+			public float Duration {
+				get => m_Duration / 1000f;
+				set => m_Duration = (int)(value * 1000f);
+			}
+			public float X {
+				get => m_X / 1000f;
+				set => m_X = (int)(value * 1000f);
+			}
+			public float Width {
+				get => m_Width / 1000f;
+				set => m_Width = (int)(value * 1000f);
+			}
+			public float Angle {
+				get => m_Angle;
+				set => m_Angle = (int)value;
+			}
+
 			// API - Ser
+			public int m_Time = 0;
+			public int m_Duration = 0;
+			public int m_X = 0;
+			public int m_Width = 1000;
+			public int m_Angle = 0;
 			public int StageIndex = -1;
-			public float Time = 0f;
-			public float Duration = 0f;
+			public int Color = 0;
 			public bool HasTray = false;
-			public float X = 0f;
-			public float Width = 1f;
-			public byte Color = 0;
 			public List<TimeFloatTween> Xs;
 			public List<TimeFloatTween> Widths;
-			public List<TimeByteTween> Colors;
+			public List<TimeIntTween> Colors;
+			public List<TimeFloatTween> Angles;
+
 			// Cache
 			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
 			[System.NonSerialized] public float TrayTime = float.MaxValue;
+
 			// API
 			public int GetMotionCount (MotionType type) {
 				switch (type) {
@@ -200,8 +318,11 @@
 						return Widths is null ? 0 : Widths.Count;
 					case MotionType.Color:
 						return Colors is null ? 0 : Colors.Count;
+					case MotionType.Angle:
+						return Angles is null ? 0 : Angles.Count;
 				}
 			}
+
 		}
 
 
@@ -209,13 +330,36 @@
 		[System.Serializable]
 		public class Note {
 
+			// API
+			public float Time {
+				get => m_Time / 1000f;
+				set => m_Time = (int)(value * 1000f);
+			}
+			public float Duration {
+				get => m_Duration / 1000f;
+				set => m_Duration = (int)(value * 1000f);
+			}
+			public float X {
+				get => m_X / 1000f;
+				set => m_X = (int)(value * 1000f);
+			}
+			public float Z {
+				get => m_Z / 1000f;
+				set => m_Z = (int)(value * 1000f);
+			}
+			public float Width {
+				get => m_Width / 1000f;
+				set => m_Width = (int)(value * 1000f);
+			}
+
 			// SER-API
+			public int m_Time = 0;
+			public int m_Duration = 0;
+			public int m_X = 0;
+			public int m_Z = 0;
+			public int m_Width = 1000;
 			public int TrackIndex = -1;
 			public int LinkedNoteIndex = -1;
-			public float Time = 0f;
-			public float Duration = 0f;
-			public float X = 0f;
-			public float Width = 1f;
 			public short ClickSoundIndex = -1;
 			public bool Tap = true;
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
@@ -235,17 +379,30 @@
 
 		[System.Serializable]
 		public class SpeedNote {
-			public float Time;
-			public float Speed;
+
+			// API
+			public float Time {
+				get => m_Time / 1000f;
+				set => m_Time = (int)(value * 1000f);
+			}
+			public float Speed {
+				get => m_Speed / 1000f;
+				set => m_Speed = (int)(value * 1000f);
+			}
+
+			// SER
+			public int m_Time = 0;
+			public int m_Speed = 0;
+
 			public SpeedNote (float time, float speed) {
 				Time = time;
 				Speed = speed;
 			}
+
 		}
 
 
-		// Data
-		public const int PALETTE_CLEAR = 9;
+		// API-SER
 		public readonly static Stage DEFAULT_STAGE = new Stage() {
 			Time = 0f,
 			Duration = float.MaxValue,
@@ -255,37 +412,56 @@
 			X = 0.5f,
 			Y = 0f,
 			Speed = 1f,
-			Angle = 0f,
 			Rotations = { },
 			Positions = { },
 			Heights = { },
 			Widths = { },
-			Angles = { },
 		};
 		public readonly static Track DEFAULT_TRACK = new Track() {
 			Time = 0f,
 			Duration = float.MaxValue,
-			Color = PALETTE_CLEAR,
+			Color = -1,
 			X = 0.5f,
 			Width = 1f,
 			HasTray = false,
 			StageIndex = -1,
+			Angle = 0f,
 			Xs = { },
 			Colors = { },
 			Widths = { },
+			Angles = { },
 		};
-		public string Tag = "Normal";
+		public float DropSpeed {
+			get => m_DropSpeed / 1000f;
+			set {
+				m_DropSpeed = (int)(value * 1000f);
+			}
+		}
+		public float Shift {
+			get => m_Shift / 1000f;
+			set {
+				m_Shift = (int)(value * 1000f);
+			}
+		}
+		public float Ratio {
+			get => m_Ratio / 1000f;
+			set {
+				m_Ratio = (int)(value * 1000f);
+			}
+		}
+		public int BPM = 120;
 		public int Level = 1;
-		public float DropSpeed = 1f;
-		public float BPM = 120f;
-		public float Shift = 0f;
-		public float Ratio = 1.5f;
+		public string Tag = "Normal";
 		public long CreatedTime = 0;
 		public List<Stage> Stages = new List<Stage>();
 		public List<Track> Tracks = new List<Track>();
 		public List<Note> Notes = new List<Note>();
 		public List<SpeedNote> SpeedNotes = new List<SpeedNote>();
 
+		// SER
+		public int m_DropSpeed = 1000;
+		public int m_Shift = 0;
+		public int m_Ratio = 1500;
 
 		// Beatmap
 		public static Beatmap NewBeatmap () {

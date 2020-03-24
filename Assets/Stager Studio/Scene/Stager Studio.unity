@@ -1939,7 +1939,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -7746448090056230874, guid: 7a27da5dc56b4574ba3d0d5a3102e617,
     type: 3}
-  m_Color: {r: 0.574, g: 0.574, b: 0.574, a: 0.56078434}
+  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -13173,7 +13173,6 @@ MonoBehaviour:
   m_DefaultSkin:
     Author: Stager
     ScaleMuti: 4096
-    NoteShadowDistance: 0.005
     LuminousAppendX: 0.04
     LuminousAppendY: 0.02
     VanishDuration: 0.1
@@ -16868,8 +16867,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Game.Hint.AbreastWidth
-  - Stage width {0}
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -16886,6 +16883,8 @@ MonoBehaviour:
   - Prefabs exported
   - Dialog.TweenEditor.CancelConfirm
   - Close tween editor? Changes will not be save.
+  - Game.Hint.AbreastWidth
+  - Stage width {0}
   - Game.Hint.GameDropSpeed
   - "Drop Speed \xD7 {0}"
   - Game.Hint.Pitch
@@ -17411,7 +17410,7 @@ MonoBehaviour:
   - Lum Height
   - UI.SkinEditor.LuminousWidth
   - Lum Width
-  - UI.SkinEditor.NoteShadowDistance
+  - 
   - Shadow
   - UI.SkinEditor.PingPong
   - PingPong

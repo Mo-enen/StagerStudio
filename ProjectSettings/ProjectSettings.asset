@@ -14,8 +14,8 @@ PlayerSettings:
   accelerometerFrequency: 60
   companyName: MoenenGames
   productName: Stager Studio
-  defaultCursor: {fileID: 0}
-  cursorHotspot: {x: 0, y: 0}
+  defaultCursor: {fileID: 2800000, guid: ef151384c3409a349a00b843809f5a7f, type: 3}
+  cursorHotspot: {x: 15, y: 10}
   m_SplashScreenBackgroundColor: {r: 0.105671994, g: 0.118999995, b: 0.11581287, a: 1}
   m_ShowUnitySplashScreen: 1
   m_ShowUnitySplashLogo: 0

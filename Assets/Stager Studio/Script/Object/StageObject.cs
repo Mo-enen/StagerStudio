@@ -16,7 +16,7 @@
 
 
 		public delegate float FloatFloatIntHandler (float time, int index);
-		public delegate Color ColorByteHandler (byte index);
+		public delegate Color ColorIntHandler (int index);
 		public delegate float SpeedMutiHandler ();
 
 
@@ -34,7 +34,7 @@
 		// Handler
 		public static SpeedMutiHandler GetGameSpeedMuti { get; set; } = null;
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
-		public static ColorByteHandler PaletteColor { get; set; } = null;
+		public static ColorIntHandler PaletteColor { get; set; } = null;
 
 		// API
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
@@ -167,13 +167,13 @@
 		}
 
 
-		protected static Color EvaluateColor (List<Beatmap.TimeByteTween> data, float lifeTime) {
+		protected static Color EvaluateColor (List<Beatmap.TimeIntTween> data, float lifeTime) {
 			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
 				return Color.white;
 			} else if (data.Count == 1) {
 				return PaletteColor(data[0].Value);
 			} else {
-				int index = Beatmap.TimeByteTween.Search(data, lifeTime);
+				int index = Beatmap.TimeIntTween.Search(data, lifeTime);
 				if (index < data.Count - 1) {
 					var l = data[index];
 					var r = data[index + 1];

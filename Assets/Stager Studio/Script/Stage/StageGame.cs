@@ -127,7 +127,6 @@
 			Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
 			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
 			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
-			Note.SortingLayerID_Shadow = SortingLayer.NameToID("Shadow");
 			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
 			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
 			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");

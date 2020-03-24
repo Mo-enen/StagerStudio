@@ -42,17 +42,14 @@
 		public static int LayerID_Note_Hold { get; set; } = -1;
 		public static int SortingLayerID_Note { get; set; } = -1;
 		public static int SortingLayerID_Note_Hold { get; set; } = -1;
-		public static int SortingLayerID_Shadow { get; set; } = -1;
 		public static int SortingLayerID_Pole { get; set; } = -1;
 		public static int SortingLayerID_Arrow { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_SubRenderer = null;
-		[SerializeField] private ObjectRenderer m_ShadowRenderer = null;
 
 		// Data
 		private static byte CacheDirtyID = 1;
-		private static float ShadowDistance = 0f;
 		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
 		private bool PrevClickedAlt = false;
@@ -79,7 +76,6 @@
 			LateLinkedNote = null;
 			MainRenderer.RendererEnable = false;
 			m_SubRenderer.RendererEnable = false;
-			m_ShadowRenderer.RendererEnable = false;
 			ColSize = null;
 
 			// Get NoteData
@@ -197,7 +193,7 @@
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			float trackX = Track.GetTrackX(linkedTrack);
 			float trackWidth = Track.GetTrackWidth(linkedTrack);
-			float stageAngle = Stage.GetStageAngle(linkedStage);
+			float trackAngle = Track.GetTrackAngle(linkedTrack);
 			float gameOffset = GetGameDropOffset(noteData.SpeedMuti);
 			float noteY01 = MusicTime < Time ? (noteData.NoteDropStart - gameOffset) : 0f;
 			float noteSizeY = noteData.NoteDropEnd - gameOffset - noteY01;
@@ -210,11 +206,14 @@
 			var (noteZonePos, rotX, rotZ) = Track.Inside(
 				noteData.X, noteY01,
 				stagePos, stageWidth, stageHeight, stageRotZ,
-				trackX, trackWidth, stageAngle
+				trackX, trackWidth, trackAngle
 			);
+			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			noteWorldPos.z += noteZonePos.z * zoneSize;
-			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
+			if (noteData.Z != 0f) {
+				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
+			}
 			float noteScaleX = NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : NoteSize.x;
 			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteSize.y);
 			var zoneNoteScale = new Vector3(
@@ -243,22 +242,6 @@
 			m_SubRenderer.Type = isLink ? SkinType.LinkPole : SkinType.SwipeArrow;
 			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
 
-			// Shadow
-			if (ShadowDistance > 0.0001f) {
-				// Movement
-				m_ShadowRenderer.transform.localPosition = noteRot * (Vector3.down * ShadowDistance);
-				m_ShadowRenderer.transform.rotation = noteRot;
-				m_ShadowRenderer.transform.localScale = zoneNoteScale;
-				// Render
-				m_ShadowRenderer.RendererEnable = MainRenderer.RendererEnable;
-				m_ShadowRenderer.Type = MainRenderer.Type;
-				m_ShadowRenderer.LifeTime = MainRenderer.LifeTime;
-				m_ShadowRenderer.Duration = Duration;
-				m_ShadowRenderer.Tint = Color.black;
-				m_ShadowRenderer.Scale = MainRenderer.Scale;
-				m_ShadowRenderer.Alpha = alpha * 0.309f;
-				m_ShadowRenderer.SetSortingLayer(SortingLayerID_Shadow, GetSortingOrder());
-			}
 		}
 
 
@@ -276,7 +259,7 @@
 			float linkedStageWidth = Stage.GetStageWidth(linkedStage);
 			float linkedStageHeight = Stage.GetStageHeight(linkedStage);
 			float linkedStageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
-			float linkedStageAngle = Stage.GetStageAngle(linkedStage);
+			float linkedTrackAngle = Track.GetTrackAngle(linkedTrack);
 
 			// Movement
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
@@ -291,7 +274,7 @@
 				linkedStageRotZ,
 				Track.GetTrackX(linkedTrack),
 				Track.GetTrackWidth(linkedTrack),
-				linkedStageAngle
+				linkedTrackAngle
 			);
 
 			// Linked Note World Pos
@@ -387,7 +370,6 @@
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
 			m_SubRenderer.SkinData = skin;
-			m_ShadowRenderer.SkinData = skin;
 		}
 
 
@@ -405,15 +387,12 @@
 			arrowSize.y = Mathf.Max(arrowSize.y, 0.001f);
 			ArrowSize = new Vector2(arrowSize.x, arrowSize.y);
 			PoleThickness = skin.TryGetItemSize((int)SkinType.LinkPole).x / skin.ScaleMuti;
-			// Shadow
-			ShadowDistance = skin.NoteShadowDistance;
 		}
 
 
 		protected override void RefreshRendererZone () {
 			base.RefreshRendererZone();
 			RefreshRendererZoneFor(m_SubRenderer);
-			RefreshRendererZoneFor(m_ShadowRenderer);
 		}
 
 

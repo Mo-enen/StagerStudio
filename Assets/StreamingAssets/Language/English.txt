@@ -1,7 +1,4 @@
-﻿Game.Hint.AbreastWidth
-Stage width {0}
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -24,6 +21,9 @@ Prefabs exported
 
 Dialog.TweenEditor.CancelConfirm
 Close tween editor? Changes will not be save.
+
+Game.Hint.AbreastWidth
+Stage width {0}
 
 Game.Hint.GameDropSpeed
 Drop Speed × {0}
@@ -801,9 +801,6 @@ Lum Height
 
 UI.SkinEditor.LuminousWidth
 Lum Width
-
-UI.SkinEditor.NoteShadowDistance
-Shadow
 
 UI.SkinEditor.PingPong
 PingPong

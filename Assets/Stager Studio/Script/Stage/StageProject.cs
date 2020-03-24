@@ -853,7 +853,6 @@
 				foreach (var stage in map.Stages) {
 					FixBeatmapTweenValueIndexForDelete(stage.Positions, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Rotations, index);
-					FixBeatmapTweenValueIndexForDelete(stage.Angles, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Widths, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Heights, index);
 				}
@@ -861,6 +860,7 @@
 					FixBeatmapTweenValueIndexForDelete(track.Xs, index);
 					FixBeatmapTweenValueIndexForDelete(track.Widths, index);
 					FixBeatmapTweenValueIndexForDelete(track.Colors, index, false);
+					FixBeatmapTweenValueIndexForDelete(track.Angles, index);
 				}
 			}
 			FixIndexRangesForProjectData();
@@ -1159,7 +1159,7 @@
 		}
 
 
-		private void FixBeatmapTweenValueIndexForDelete (List<Beatmap.TimeByteTween> list, int index, bool fixValue) {
+		private void FixBeatmapTweenValueIndexForDelete (List<Beatmap.TimeIntTween> list, int index, bool fixValue) {
 			if (list is null || index < 0 || index >= list.Count) { return; }
 			for (int i = 0; i < list.Count; i++) {
 				var c = list[i];
@@ -1238,7 +1238,6 @@
 				foreach (var stage in map.Stages) {
 					FixRange_TFFT(stage.Positions);
 					FixRange_TFT(stage.Rotations);
-					FixRange_TFT(stage.Angles);
 					FixRange_TFT(stage.Widths);
 					FixRange_TFT(stage.Heights);
 				}
@@ -1246,10 +1245,11 @@
 					FixRange_TBT(track.Colors, palLen);
 					FixRange_TFT(track.Xs);
 					FixRange_TFT(track.Widths);
+					FixRange_TFT(track.Angles);
 				}
 			}
 			// Func
-			void FixRange_TBT (List<Beatmap.TimeByteTween> list, int valueLen) {
+			void FixRange_TBT (List<Beatmap.TimeIntTween> list, int valueLen) {
 				if (list is null) { return; }
 				for (int i = 0; i < list.Count; i++) {
 					var c = list[i];

@@ -489,7 +489,7 @@
 						}
 					}
 					void OnBPMEdit (string txt) {
-						if (Project.BeatmapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
+						if (Project.BeatmapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = Project.BeatmapMap[key];
 							_map.BPM = value;
 							OnBeatmapInfoChanged(_map);

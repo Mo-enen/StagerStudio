@@ -103,7 +103,7 @@
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			var stagePos = Stage.GetStagePosition(linkedStage, trackData.StageIndex);
-			float rotX = Stage.GetStageAngle(linkedStage);
+			float rotX = GetTrackAngle(trackData);
 			float trackX = GetTrackX(trackData);
 			var (pos, _, rotZ) = Stage.Inside(trackX, 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
@@ -207,6 +207,9 @@
 		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(
 			VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration
 		);
+
+
+		public static float GetTrackAngle (Beatmap.Track data) => data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
 
 
 		public static (Vector3 pos, float rotX, float rotZ) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float trackX, float trackWidth, float trackRotX) {

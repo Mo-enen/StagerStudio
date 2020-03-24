@@ -226,7 +226,7 @@
 
 		private void Awake_Object () {
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
-			StageObject.PaletteColor = (index) => Project.Palette[Mathf.Clamp(index, 0, Project.Palette.Count - 1)];
+			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : Project.Palette[Mathf.Min(index, Project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
 			StageObject.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;

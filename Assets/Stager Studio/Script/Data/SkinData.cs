@@ -43,10 +43,6 @@
 
 		// API
 		public Texture2D Texture { get; set; } = null;
-		public float NoteShadowDistance_UI {
-			get => NoteShadowDistance * 100f;
-			set => NoteShadowDistance = Mathf.Clamp01(value / 100f);
-		}
 		public float LuminousAppendX_UI {
 			get => LuminousAppendX * 100f;
 			set => LuminousAppendX = Mathf.Clamp01(value / 100f);
@@ -67,7 +63,6 @@
 		// Ser
 		public string Author = "";
 		public float ScaleMuti = 2000f;
-		public float NoteShadowDistance = 0f;
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
 		public float VanishDuration = 0.1f;

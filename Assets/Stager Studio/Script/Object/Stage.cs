@@ -79,7 +79,7 @@
 			var stagePos = GetStagePosition(stageData, stageIndex);
 
 			// Movement
-			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData)) * Quaternion.Euler(GetStageAngle(stageData), 0f, 0f);
+			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
 			transform.localRotation = stageRot;
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
@@ -167,9 +167,6 @@
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => Abreast.active ?
 			new Vector2(Abreast.all && StageCount > 0 ? ((1f - AbreastWidth + AbreastWidth / StageCount) / 2f + stageIndex * AbreastWidth / StageCount) : 0.5f, 0f) :
 			(new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time));
-
-
-		public static float GetStageAngle (Beatmap.Stage data) => Abreast.active ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
 
 
 		public static (Vector2 pos, Vector2 zero, float rot) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ) {

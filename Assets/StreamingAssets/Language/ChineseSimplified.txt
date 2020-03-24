@@ -1,7 +1,4 @@
-﻿Game.Hint.AbreastWidth
-全景舞台宽度 {0}
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -24,6 +21,9 @@ Dialog.Library.PrefabExported
 
 Dialog.TweenEditor.CancelConfirm
 关闭补间编辑器吗？修改将不会被保存
+
+Game.Hint.AbreastWidth
+全景舞台宽度 {0}
 
 Game.Hint.GameDropSpeed
 下落速度 × {0}
@@ -801,9 +801,6 @@ UI.SkinEditor.LuminousHeight
 
 UI.SkinEditor.LuminousWidth
 光效宽度
-
-UI.SkinEditor.NoteShadowDistance
-阴影距离
 
 UI.SkinEditor.PingPong
 折返播放
