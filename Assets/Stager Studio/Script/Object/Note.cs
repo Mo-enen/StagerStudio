@@ -35,9 +35,6 @@
 		public static VoidIntFloatHandler PlayClickSound { get; set; } = null;
 
 		// API
-		public static Vector2 NoteSize { get; private set; } = new Vector2(0.015f, 0.015f);
-		public static Vector2 ArrowSize { get; private set; } = new Vector2(0.015f, 0.015f);
-		public static float PoleThickness { get; private set; } = 0.007f;
 		public static int LayerID_Note { get; set; } = -1;
 		public static int LayerID_Note_Hold { get; set; } = -1;
 		public static int SortingLayerID_Note { get; set; } = -1;
@@ -213,6 +210,7 @@
 			bool isSwipe = noteData.SwipeX != 1 || noteData.SwipeY != 1;
 			bool activeSelf = GetNoteActive(noteData, null, noteData.AppearTime);
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
+			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 
 			// Movement
 			var (noteZonePos, rotX, rotZ) = Track.Inside(
@@ -226,8 +224,9 @@
 			if (noteData.Z != 0f) {
 				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
 			}
-			float noteScaleX = NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : NoteSize.x;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, NoteSize.y);
+			var noteSize = GetRectSize(type);
+			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteSize.y);
 			var zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,
@@ -242,7 +241,7 @@
 				Update_Movement_Linked(noteData, linkedNote, noteWorldPos, noteRot, alpha);
 			}
 			if (isSwipe && activeSelf) {
-				Update_Movement_Swipe(noteData, zoneSize, noteRot, alpha);
+				Update_Movement_Swipe(noteData, zoneSize, noteRot, alpha, type);
 			}
 
 			// Renderer
@@ -251,8 +250,7 @@
 			MainRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
-			MainRenderer.Type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
-
+			MainRenderer.Type = type;
 			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
 
 		}
@@ -318,28 +316,31 @@
 			}
 
 			// Final
+			var poleSize = GetRectSize(SkinType.LinkPole, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
 				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
-			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * PoleThickness, scaleY, 1f);
+			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
 			m_PoleRenderer.Duration = Duration;
 			m_PoleRenderer.LifeTime = MusicTime - Time;
 			m_PoleRenderer.Pivot = new Vector3(0.5f, 0f);
-			m_PoleRenderer.Scale = new Vector2(PoleThickness, scaleY / zoneSize);
+			m_PoleRenderer.Scale = new Vector2(poleSize.x, scaleY / zoneSize);
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
 			m_PoleRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
 		}
 
 
-		private void Update_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha) {
+		private void Update_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha, SkinType type) {
+			var noteSize = GetRectSize(type);
+			var arrowSize = GetRectSize(SkinType.SwipeArrow, false, false);
 			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
-			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * NoteSize.y * 0.5f, 0f);
+			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * noteSize.y * 0.5f, 0f);
 			m_ArrowRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
-			m_ArrowRenderer.transform.localScale = new Vector3(zoneSize * ArrowSize.x, zoneSize * ArrowSize.y, 1f);
+			m_ArrowRenderer.transform.localScale = new Vector3(zoneSize * arrowSize.x, zoneSize * arrowSize.y, 1f);
 			m_ArrowRenderer.RendererEnable = true;
 			m_ArrowRenderer.Pivot = new Vector3(0.5f, 0.5f);
-			m_ArrowRenderer.Scale = ArrowSize;
+			m_ArrowRenderer.Scale = arrowSize;
 			m_ArrowRenderer.Alpha = alpha;
 			m_ArrowRenderer.Duration = Duration;
 			m_ArrowRenderer.LifeTime = MusicTime - Time;
@@ -389,25 +390,6 @@
 			base.SetSkinData(skin);
 			m_ArrowRenderer.SkinData = skin;
 			m_PoleRenderer.SkinData = skin;
-		}
-
-
-		public static void SetNoteSkin (SkinData skin) {
-			// Note Size
-			var noteSize = skin.TryGetItemSize((int)SkinType.TapNote) / skin.ScaleMuti;
-			noteSize.x = Mathf.Max(noteSize.x, 0f);
-			noteSize.y = Mathf.Max(noteSize.y, 0.001f);
-			if (!skin.FixedNoteWidth) {
-				noteSize.x = -1f;
-			}
-			NoteSize = noteSize;
-			// Arrow Size
-			var arrowSize = skin.TryGetItemSize((int)SkinType.SwipeArrow) / skin.ScaleMuti;
-			arrowSize.x = Mathf.Max(arrowSize.x, 0f);
-			arrowSize.y = Mathf.Max(arrowSize.y, 0.001f);
-			ArrowSize = new Vector2(arrowSize.x, arrowSize.y);
-			// Pole
-			PoleThickness = skin.TryGetItemSize((int)SkinType.LinkPole).x / skin.ScaleMuti;
 		}
 
 

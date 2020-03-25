@@ -68,7 +68,6 @@
 		public float LuminousAppendX = 0f;
 		public float LuminousAppendY = 0f;
 		public float VanishDuration = 0.1f;
-		public bool FixedNoteWidth = false;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
 		// API
@@ -238,6 +237,7 @@
 		public int FrameDuration = 200;
 		public bool Is3D = false;
 		public int Thickness3D = 0;
+		public bool FixedRatio = false;
 
 		// API
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);

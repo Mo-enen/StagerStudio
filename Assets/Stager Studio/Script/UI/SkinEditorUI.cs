@@ -36,7 +36,6 @@
 		// Short
 		private SkinEditorPainterUI Painter => m_Painter;
 		private SkinType EditingType { get; set; } = SkinType.Stage;
-		private int EditingFrame { get; set; } = 0;
 		private string SkinName { get => m_SkinNameIF.text; set => m_SkinNameIF.text = value; }
 		private string SkinAuthor { get => m_SkinAuthorIF.text; set => m_SkinAuthorIF.text = value; }
 
@@ -49,7 +48,7 @@
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
-		[SerializeField] private Toggle m_FixedNoteWidthTG = null;
+		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
 		[SerializeField] private Button[] m_LoopTypeBtns = null;
@@ -125,7 +124,7 @@
 			m_DurationIF.onEndEdit.AddListener((str) => {
 				if (!UIReady) { return; }
 				var ani = GetEditingAniData();
-				if (ani is null || EditingFrame < 0 || EditingFrame >= ani.Rects.Count) { return; }
+				if (ani is null) { return; }
 				if (int.TryParse(str, out int durationMS)) {
 					ani.SetDuration(durationMS);
 					m_DurationIF.text = ani.FrameDuration.ToString();
@@ -166,10 +165,12 @@
 				}
 			});
 
-			// Fixed Note Width
-			m_FixedNoteWidthTG.onValueChanged.AddListener((isOn) => {
+			// Fixed Ratio
+			m_FixedRatioTG.onValueChanged.AddListener((isOn) => {
 				if (!UIReady) { return; }
-				Data.FixedNoteWidth = isOn;
+				var ani = GetEditingAniData();
+				if (ani is null) { return; }
+				ani.FixedRatio = isOn;
 			});
 
 			// Type TGs
@@ -233,13 +234,20 @@
 			if (data is null || ani is null) { return; }
 			UIReady = false;
 			try {
+				// Active
+				m_FixedRatioTG.gameObject.SetActive(
+					EditingType == SkinType.Comment ||
+					EditingType == SkinType.HoldNote ||
+					EditingType == SkinType.TapNote ||
+					EditingType == SkinType.SlideNote
+				);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
-				m_FixedNoteWidthTG.isOn = data.FixedNoteWidth;
+				m_FixedRatioTG.isOn = ani.FixedRatio;
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
 				}

@@ -78,6 +78,8 @@
 			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
 			Time = noteData.Time;
+			var noteType = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
+			var judgeLineSize = GetRectSize(SkinType.JudgeLine);
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
@@ -87,7 +89,7 @@
 			float trackRotX = Track.GetTrackAngle(linkedTrack);
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var (pos, rotX, rotZ) = Track.Inside(
-				noteData.X, stageHeight > 0f ? Stage.JudgeLineHeight / 2f / stageHeight : 0f,
+				noteData.X, stageHeight > 0f ? judgeLineSize.y / 2f / stageHeight : 0f,
 				stagePos, stageWidth, stageHeight, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
@@ -97,7 +99,8 @@
 				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
 			}
 			// Movement
-			float scaleX = (Note.NoteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : Note.NoteSize.x) + LuminousAppend.x;
+			var noteSize = GetRectSize(noteType);
+			float scaleX = (noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x) + LuminousAppend.x;
 			float scaleY = (tap ? LumHeight_Tap : LumHeight_Hold) + LuminousAppend.y;
 			transform.position = noteWorldPos;
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);

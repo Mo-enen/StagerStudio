@@ -277,7 +277,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 24060549}
-  - component: {fileID: 24060550}
   m_Layer: 0
   m_Name: Bottom Bar
   m_TagString: Untagged
@@ -307,18 +306,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 32}
   m_Pivot: {x: 0.5, y: 0}
---- !u!114 &24060550
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 24060548}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3312d7739989d2b4e91e6319e9a96d76, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &40944125
 GameObject:
   m_ObjectHideFlags: 0
@@ -12144,6 +12131,7 @@ MonoBehaviour:
   m_StageColor: {r: 0.5, g: 0.11, b: 0.65, a: 1}
   m_TrackColor: {r: 0.6, g: 0.61, b: 0.1, a: 1}
   m_NoteColor: {r: 0.11, g: 0.65, b: 0.52, a: 1}
+  m_SelectionColor: {r: 0.8235295, g: 0.5529412, b: 0.14509805, a: 1}
 --- !u!1 &1443414469
 GameObject:
   m_ObjectHideFlags: 0
@@ -13176,7 +13164,6 @@ MonoBehaviour:
     LuminousAppendX: 0.04
     LuminousAppendY: 0.02
     VanishDuration: 0.1
-    FixedNoteWidth: 0
     Items:
     - Loop: 1
       Rects:
@@ -13191,6 +13178,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 95
@@ -13204,6 +13192,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 16
@@ -13217,6 +13206,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 4
@@ -13230,6 +13220,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 4
@@ -13243,6 +13234,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 291
@@ -13256,6 +13248,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 291
@@ -13269,6 +13262,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 9
@@ -13282,6 +13276,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 46
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 291
@@ -13295,6 +13290,7 @@ MonoBehaviour:
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 53
@@ -13308,6 +13304,7 @@ MonoBehaviour:
       FrameDuration: 24
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 384
@@ -13345,6 +13342,7 @@ MonoBehaviour:
       FrameDuration: 24
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects:
       - X: 384
@@ -13366,16 +13364,19 @@ MonoBehaviour:
       FrameDuration: 40
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects: []
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
     - Loop: 1
       Rects: []
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
+      FixedRatio: 0
   m_DefaultTexture: {fileID: 2800000, guid: 9d90311eb76e9cd4d8b2620aa302c098, type: 3}
 --- !u!1 &1580449698
 GameObject:
@@ -16867,8 +16868,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - SkinEditor.Item.Comment
-  - Comment
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17121,6 +17120,8 @@ MonoBehaviour:
   - Import Image
   - SkinEditor.Dialog.SkinImageExported
   - Image exported
+  - SkinEditor.Item.Comment
+  - Comment
   - SkinEditor.Item.Hold
   - Hold
   - SkinEditor.Item.HoldLuminous
@@ -17400,8 +17401,8 @@ MonoBehaviour:
   - Duration
   - UI.SkinEditor.ExportImage
   - Export Image
-  - UI.SkinEditor.FixedNoteWidth
-  - Fixed Note Width
+  - UI.SkinEditor.FixedRatio
+  - Fixed Ratio
   - UI.SkinEditor.Forward
   - Forward
   - UI.SkinEditor.ImportImage

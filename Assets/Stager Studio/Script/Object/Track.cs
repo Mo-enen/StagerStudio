@@ -26,7 +26,6 @@
 		[SerializeField] GridRenderer m_SectionLineRenderer = null;
 
 		// Data
-		private static Vector2 TraySize = default;
 		private Beatmap.Track LateTrackData = null;
 		private float AimTrayX = 0.5f;
 		private float TrayX = 0.5f;
@@ -118,10 +117,12 @@
 
 			// Tray
 			if (trackData.HasTray) {
-				var (trayPos, _, _) = Inside(TrayX, Stage.JudgeLineHeight / 2f / stageHeight, stagePos, stageWidth, stageHeight, stageRotZ, trackX, trackWidth, rotX);
+				var traySize = GetRectSize(SkinType.Tray, false, false);
+				var judgeLineSize = GetRectSize(SkinType.JudgeLine);
+				var (trayPos, _, _) = Inside(TrayX, judgeLineSize.y / 2f / stageHeight, stagePos, stageWidth, stageHeight, stageRotZ, trackX, trackWidth, rotX);
 				m_TrayRenderer.transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, trayPos.x, trayPos.y);
-				m_TrayRenderer.transform.localScale = new Vector3(TraySize.x, TraySize.y, 1f);
-				m_TrayRenderer.Scale = TraySize;
+				m_TrayRenderer.transform.localScale = new Vector3(traySize.x, traySize.y, 1f);
+				m_TrayRenderer.Scale = traySize;
 			}
 
 			// Renderer
@@ -229,11 +230,6 @@
 			base.SetSkinData(skin);
 			m_TrayRenderer.SkinData = skin;
 			m_TrackTintRenderer.SkinData = skin;
-		}
-
-
-		public static void SetTrackSkinData (SkinData skin) {
-			TraySize = skin.TryGetItemSize((int)SkinType.Tray) / skin.ScaleMuti;
 		}
 
 

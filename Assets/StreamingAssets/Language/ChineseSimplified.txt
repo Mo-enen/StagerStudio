@@ -1,7 +1,4 @@
-﻿SkinEditor.Item.Comment
-注释
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -369,6 +366,9 @@ SkinEditor.Dialog.ImportImageTitle
 
 SkinEditor.Dialog.SkinImageExported
 图片已导出
+
+SkinEditor.Item.Comment
+注释
 
 SkinEditor.Item.Hold
 长按音符
@@ -787,8 +787,8 @@ UI.SkinEditor.Duration
 UI.SkinEditor.ExportImage
 导出图片
 
-UI.SkinEditor.FixedNoteWidth
-固定音符宽度
+UI.SkinEditor.FixedRatio
+固定长宽比
 
 UI.SkinEditor.Forward
 顺序播放

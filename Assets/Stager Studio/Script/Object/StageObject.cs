@@ -63,6 +63,7 @@
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 
 		// Data
+		private static (Vector2 size, bool fixedRatio)[] RectSizes = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
 		private float HighlightScaleMuti = 0f;
@@ -195,10 +196,37 @@
 		protected static void RefreshRendererZoneFor (StageRenderer renderer) =>
 			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
 				ScreenZoneMinMax.min.x,
-				ScreenZoneMinMax.min.y,
+				Screen.height - ScreenZoneMinMax.max.y,
 				ScreenZoneMinMax.max.x,
-				ScreenZoneMinMax.max.y
+				Screen.height - ScreenZoneMinMax.min.y
 			));
+
+
+		public static void LoadSkin (SkinData skin) {
+			// Sizes
+			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
+			RectSizes = new (Vector2, bool)[typeCount];
+			for (int i = 0; i < RectSizes.Length; i++) {
+				var size = skin.TryGetItemSize(i) / skin.ScaleMuti;
+				size.x = Mathf.Max(size.x, 0f);
+				size.y = Mathf.Max(size.y, 0.001f);
+				RectSizes[i] = (size, skin.Items[i].FixedRatio);
+			}
+		}
+
+
+		protected static Vector2 GetRectSize (SkinType type, bool fixX = true, bool fixY = false) {
+			var (size, fix) = RectSizes[(int)type];
+			if (!fix) {
+				if (fixX) {
+					size.x = -1f;
+				}
+				if (fixY) {
+					size.y = -1f;
+				}
+			}
+			return size;
+		}
 
 
 		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);

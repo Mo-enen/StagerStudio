@@ -409,6 +409,7 @@
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
 				Library.RefreshAddButton(Editor.SelectingCount > 0);
+				m_Preview.SetDirty();
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				Editor.ClearSelection();
@@ -461,9 +462,8 @@
 			StageSkin.OnSkinLoaded = (data) => {
 				TryRefreshSetting();
 				Game.ClearAllContainers();
-				Note.SetNoteSkin(data);
+				StageObject.LoadSkin(data);
 				Luminous.SetLuminousSkin(data);
-				Track.SetTrackSkinData(data);
 				Resources.UnloadUnusedAssets();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
 			};

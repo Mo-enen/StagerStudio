@@ -102,17 +102,7 @@ MonoBehaviour:
     rgba: 4291559168
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
-  m_SpriteSets:
-  - {fileID: -7519833676518121747, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: -4182881303555017736, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: -8585984559828919375, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: 452584462048133021, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: -3871108541867217329, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: 6391242151159119377, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: -3757009910867425468, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
-  - {fileID: 2694897597151364604, guid: da7f946bf2fc8f84f95134f233c99156, type: 3}
+  m_SpriteSheet: {fileID: 0}
   m_Text: 
 --- !u!23 &5496715407925707142
 MeshRenderer:
@@ -331,7 +321,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.8235295, g: 0.5529412, b: 0.14509805, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1

@@ -18,7 +18,6 @@
 		// Api
 		public static int StageCount { get; set; } = 0;
 		public static float AbreastWidth { get; set; } = 1f;
-		public static float JudgeLineHeight { get; set; } = 0f;
 		public static int SortingLayerID_Stage { get; set; } = -1;
 
 		// Ser
@@ -77,6 +76,7 @@
 			float width = GetStageWidth(stageData);
 			float height = GetStageHeight(stageData);
 			var stagePos = GetStagePosition(stageData, stageIndex);
+			var judgeLineSize = GetRectSize(SkinType.JudgeLine);
 
 			// Movement
 			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
@@ -85,7 +85,7 @@
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
-				Mathf.Max(zoneSize * JudgeLineHeight, 0.00001f),
+				Mathf.Max(zoneSize * judgeLineSize.y, 0.00001f),
 				1f
 			);
 
@@ -97,7 +97,7 @@
 			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
-			m_JudgelineRenderer.Scale = new Vector2(width, JudgeLineHeight);
+			m_JudgelineRenderer.Scale = new Vector2(width, judgeLineSize.y);
 			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
 			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
 
@@ -135,7 +135,6 @@
 		public override void SetSkinData (SkinData skin) {
 			base.SetSkinData(skin);
 			m_JudgelineRenderer.SkinData = skin;
-			JudgeLineHeight = skin.TryGetItemSize((int)SkinType.JudgeLine).y / skin.ScaleMuti;
 		}
 
 

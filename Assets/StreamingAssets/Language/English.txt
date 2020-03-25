@@ -1,7 +1,4 @@
-﻿SkinEditor.Item.Comment
-Comment
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -369,6 +366,9 @@ Import Image
 
 SkinEditor.Dialog.SkinImageExported
 Image exported
+
+SkinEditor.Item.Comment
+Comment
 
 SkinEditor.Item.Hold
 Hold
@@ -787,8 +787,8 @@ Duration
 UI.SkinEditor.ExportImage
 Export Image
 
-UI.SkinEditor.FixedNoteWidth
-Fixed Note Width
+UI.SkinEditor.FixedRatio
+Fixed Ratio
 
 UI.SkinEditor.Forward
 Forward
