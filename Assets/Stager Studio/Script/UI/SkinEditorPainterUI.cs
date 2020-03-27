@@ -552,10 +552,8 @@
 		public void Refresh3DUI () {
 			var data = m_Editor.Data;
 			var ani = m_Editor.GetEditingAniData();
-			if (ani is null || ani.Rects is null || data is null || data.Texture is null) {
-				return;
-			}
-			if (SelectingRectIndex >= 0) {
+			if (ani == null || ani.Rects == null || data == null || data.Texture == null) { return; }
+			if (SelectingRectIndex >= 0 && SelectingRectIndex < ani.Rects.Count) {
 				var rData = ani.Rects[SelectingRectIndex];
 				// 3D Pos
 				ani.Is3D = ani.Is3D && rData.Width > 0 && rData.Height > 0;
@@ -566,6 +564,9 @@
 					m_3DRectL.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, uiSize3D);
 					m_3DRectD.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, uiSize3D);
 				}
+			} else {
+				m_3DRectD.gameObject.SetActive(false);
+				m_3DRectL.gameObject.SetActive(false);
 			}
 			// 3D Toggle
 			UIReady = false;

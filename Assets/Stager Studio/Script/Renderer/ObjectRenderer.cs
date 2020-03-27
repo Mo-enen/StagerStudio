@@ -88,7 +88,7 @@
 			float tWidth = SkinData.Texture.width;
 			float tHeight = SkinData.Texture.height;
 			bool is3D = m_Allow3D && ani.Is3D;
-			float thickness3D = m_Allow3D ? ani.Thickness3D / SkinData.ScaleMuti : 0f;
+			float thickness3D = is3D ? ani.Thickness3D / SkinData.ScaleMuti : 0f;
 			Vector3 offset = new Vector3(0f, 0f, -thickness3D);
 			// Add Rect Mesh Cache
 			float uvL = rData.L / tWidth;

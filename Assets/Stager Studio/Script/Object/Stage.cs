@@ -19,6 +19,7 @@
 		public static int StageCount { get; set; } = 0;
 		public static float AbreastWidth { get; set; } = 1f;
 		public static int SortingLayerID_Stage { get; set; } = -1;
+		public static int SortingLayerID_Judge { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_JudgelineRenderer = null;
@@ -98,7 +99,7 @@
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
 			m_JudgelineRenderer.Type = SkinType.JudgeLine;
 			m_JudgelineRenderer.Scale = new Vector2(width, judgeLineSize.y);
-			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
+			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Judge, GetSortingOrder());
 			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
 
 		}

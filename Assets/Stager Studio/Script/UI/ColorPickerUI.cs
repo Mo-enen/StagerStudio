@@ -133,9 +133,9 @@
 				m_SliderTint_A.color = tint;
 				m_SliderH.value = Mathf.Clamp01(m_SliderH.value);
 				m_FieldH.text = Mathf.RoundToInt(Mathf.Repeat(Color_H * 360f, 360f)).ToString();
-				m_FieldS.text = Mathf.Clamp(Color_S * 100f, 0, 100).ToString();
-				m_FieldV.text = Mathf.Clamp(Color_V * 100f, 0, 100).ToString();
-				m_FieldA.text = Mathf.Clamp(Color_A * 100f, 0, 100).ToString();
+				m_FieldS.text = Mathf.RoundToInt(Mathf.Clamp(Color_S * 100f, 0, 100)).ToString();
+				m_FieldV.text = Mathf.RoundToInt(Mathf.Clamp(Color_V * 100f, 0, 100)).ToString();
+				m_FieldA.text = Mathf.RoundToInt(Mathf.Clamp(Color_A * 100f, 0, 100)).ToString();
 			} catch { }
 			UIReady = true;
 		}

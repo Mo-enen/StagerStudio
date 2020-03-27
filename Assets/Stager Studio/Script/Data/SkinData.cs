@@ -26,6 +26,7 @@
 		HoldLuminous = 11,
 
 		Comment = 12,
+		Pixel = 13,
 
 	}
 
@@ -95,9 +96,10 @@
 				if (pngLength > 0) {
 					var (pixels32, width, height) = Util.ImageToPixels(bytes.Skip(index).Take(pngLength).ToArray());
 					if (!(pixels32 is null) && pixels32.Length > 0 && width * height == pixels32.Length) {
-						skin.Texture = new Texture2D(width, height, TextureFormat.ARGB32, false) {
+						skin.Texture = new Texture2D(width, height, TextureFormat.RGBA32, false) {
 							filterMode = FilterMode.Point,
 							alphaIsTransparency = true,
+							wrapMode = TextureWrapMode.Clamp,
 						};
 						skin.Texture.SetPixels32(pixels32);
 						skin.Texture.Apply();
@@ -165,12 +167,12 @@
 		}
 
 
-		public Vector2 TryGetItemSize (int index) {
+		public Vector3 TryGetItemSize (int index) {
 			if (Items is null || index < 0 || index >= Items.Count) { return default; }
 			var item = Items[index];
 			if (item.Rects is null || item.Rects.Count == 0) { return default; }
 			var rect = item.Rects[0];
-			return new Vector2(rect.Width, rect.Height);
+			return new Vector3(rect.Width, rect.Height, item.Is3D ? item.Thickness3D : 0f);
 		}
 
 

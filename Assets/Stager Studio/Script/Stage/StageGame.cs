@@ -106,7 +106,7 @@
 
 
 		#endregion
-		
+
 
 
 
@@ -125,6 +125,7 @@
 		private void Awake () {
 			// Layer ID
 			Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
+			Stage.SortingLayerID_Judge = SortingLayer.NameToID("Judge");
 			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
 			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
 			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
@@ -362,6 +363,7 @@
 
 		public void SetUseAbreastView (bool abreast) {
 			UseAbreast = abreast;
+			Camera.orthographic = abreast;
 			OnAbreastChanged();
 		}
 

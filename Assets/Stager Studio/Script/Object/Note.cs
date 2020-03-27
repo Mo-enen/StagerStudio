@@ -65,14 +65,6 @@
 		#region --- MSG ---
 
 
-
-		protected override void Awake () {
-			base.Awake();
-			m_ArrowRenderer.Type = SkinType.SwipeArrow;
-			m_PoleRenderer.Type = SkinType.LinkPole;
-		}
-
-
 		private void Update () {
 
 			LateStage = null;
@@ -148,7 +140,7 @@
 				base.LateUpdate();
 				return;
 			}
-			Update_Movement(LateStage, LateTrack, LateNote, LateLinkedNote);
+			LateUpdate_Movement(LateStage, LateTrack, LateNote, LateLinkedNote);
 			base.LateUpdate();
 		}
 
@@ -193,7 +185,7 @@
 		}
 
 
-		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, Beatmap.Note linkedNote) {
+		private void LateUpdate_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, Beatmap.Note linkedNote) {
 
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
@@ -221,10 +213,10 @@
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			noteWorldPos.z += noteZonePos.z * zoneSize;
-			if (noteData.Z != 0f) {
+			if (Mathf.Abs(noteData.Z) > 0.0005f) {
 				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
 			}
-			var noteSize = GetRectSize(type);
+			var noteSize = GetRectSize(type == SkinType.HoldNote ? SkinType.TapNote : type);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
 			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteSize.y);
 			var zoneNoteScale = new Vector3(
@@ -238,10 +230,10 @@
 
 			// Sub Update
 			if (isLink) {
-				Update_Movement_Linked(noteData, linkedNote, noteWorldPos, noteRot, alpha);
+				LateUpdate_Movement_Linked(noteData, linkedNote, noteWorldPos, noteRot, alpha);
 			}
 			if (isSwipe && activeSelf) {
-				Update_Movement_Swipe(noteData, zoneSize, noteRot, alpha, type);
+				LateUpdate_Movement_Swipe(noteData, zoneSize, noteRot, alpha, type);
 			}
 
 			// Renderer
@@ -256,10 +248,10 @@
 		}
 
 
-		private void Update_Movement_Linked (Beatmap.Note noteData, Beatmap.Note linkedNote, Vector3 noteWorldPos, Quaternion noteRot, float alpha) {
+		private void LateUpdate_Movement_Linked (Beatmap.Note noteData, Beatmap.Note linkedNote, Vector3 noteWorldPos, Quaternion noteRot, float alpha) {
 
 			// Get Basic Linked Data
-			if (linkedNote == null || noteData.Time + noteData.Duration > linkedNote.Time) { return; }
+			if (linkedNote == null || noteData.Time + noteData.Duration >= linkedNote.Time + 0.001f) { return; }
 			var linkedTrack = Beatmap.GetTrackAt(linkedNote.TrackIndex);
 			if (linkedTrack == null || !Track.GetTrackActive(linkedTrack)) { return; }
 			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
@@ -291,10 +283,15 @@
 			// Linked Note World Pos
 			var linkedNoteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedZonePos.x, linkedZonePos.y);
 			linkedNoteWorldPos.z += linkedZonePos.z * zoneSize;
+			if (Mathf.Abs(linkedNote.Z) > 0.0005f) {
+				var linkedRot = Quaternion.Euler(0f, 0f, linkedStageRotZ) * Quaternion.Euler(linkedTrackAngle, 0f, 0f);
+				linkedNoteWorldPos += linkedNote.Z * zoneSize * (linkedRot * Vector3.back);
+			}
 
 			// Sub Pole World Pos
-			var subWorldPos = m_PoleRenderer.transform.position = Util.Remap(
-				noteData.Time + noteData.Duration,
+			float noteEndTime = noteData.Time + noteData.Duration;
+			var subWorldPos = m_PoleRenderer.transform.position = Mathf.Abs(linkedNote.Time - noteEndTime) > 0.01f ? Util.Remap(
+				noteEndTime,
 				linkedNote.Time,
 				noteWorldPos + noteRot * new Vector3(
 					0f,
@@ -305,7 +302,7 @@
 				),
 				linkedNoteWorldPos,
 				MusicTime
-			);
+			) : noteWorldPos;
 
 			// Get Scale Y from World Distance
 			float scaleY = Vector3.Distance(subWorldPos, linkedNoteWorldPos);
@@ -316,12 +313,14 @@
 			}
 
 			// Final
-			var poleSize = GetRectSize(SkinType.LinkPole, false, false);
+			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
+			var poleSize = GetRectSize(poleType, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
 				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
+			m_PoleRenderer.Type = poleType;
 			m_PoleRenderer.Duration = Duration;
 			m_PoleRenderer.LifeTime = MusicTime - Time;
 			m_PoleRenderer.Pivot = new Vector3(0.5f, 0f);
@@ -331,14 +330,15 @@
 		}
 
 
-		private void Update_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha, SkinType type) {
+		private void LateUpdate_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha, SkinType type) {
 			var noteSize = GetRectSize(type);
 			var arrowSize = GetRectSize(SkinType.SwipeArrow, false, false);
 			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
-			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * noteSize.y * 0.5f, 0f);
+			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * noteSize.y * 0.5f, -noteSize.z);
 			m_ArrowRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
 			m_ArrowRenderer.transform.localScale = new Vector3(zoneSize * arrowSize.x, zoneSize * arrowSize.y, 1f);
 			m_ArrowRenderer.RendererEnable = true;
+			m_ArrowRenderer.Type = SkinType.SwipeArrow;
 			m_ArrowRenderer.Pivot = new Vector3(0.5f, 0.5f);
 			m_ArrowRenderer.Scale = arrowSize;
 			m_ArrowRenderer.Alpha = alpha;
@@ -354,8 +354,8 @@
 
 			// ID
 			if (Label != null) {
-				bool hasComment = noteData != null && !string.IsNullOrEmpty(noteData.Comment);
-				if ((ShowIndexLabel || hasComment) && active) {
+				if (ShowIndexLabel && active) {
+					bool hasComment = !string.IsNullOrEmpty(noteData.Comment);
 					Label.gameObject.SetActive(true);
 					Label.Text = hasComment ? $"{noteIndex} /{noteData.Comment.ToLower()}" : noteIndex.ToString();
 					Label.transform.localRotation = MainRenderer.transform.localRotation;

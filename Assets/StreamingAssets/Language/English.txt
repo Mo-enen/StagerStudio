@@ -1,4 +1,7 @@
-﻿Author
+﻿SkinEditor.Item.Pixel
+Pixel
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -282,6 +285,9 @@ Music can not be empty
 
 ProjectCreator.Error.NoTitle
 Project name can not be empty
+
+ProjectCreator.Hint.Arcaea
+Create as fixed track project with floating notes, the width and position of non-floating notes are fixed, and the position of floating notes is not fixed.
 
 ProjectCreator.Hint.Deemo
 Created as invisible stage / track project, unlimited position and width for notes, no holding notes.

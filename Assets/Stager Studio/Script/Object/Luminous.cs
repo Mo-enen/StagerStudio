@@ -42,22 +42,22 @@
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
 			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment)) { return; }
 			float noteEndTime = noteData.Time + noteData.Duration;
+			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+			Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
+			MainRenderer.Type = type;
 
 			if (!MusicPlaying) {
+				// Not Playing
 				MovementDirtyTime = float.MaxValue / 2f;
-				SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
-				Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
-				MainRenderer.Type = type;
-				return;
+			} else {
+				// Playing
+				Update_Movement(noteData, noteEndTime, noteData.Duration <= DURATION_GAP, type);
 			}
-
-			// === Playing Only ===
-			Update_Movement(noteData, noteEndTime, noteData.Duration <= DURATION_GAP);
 
 		}
 
 
-		private void Update_Movement (Beatmap.Note noteData, float noteEndTime, bool tap) {
+		private void Update_Movement (Beatmap.Note noteData, float noteEndTime, bool tap, SkinType lumType) {
 
 			// Active Check
 			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
@@ -98,10 +98,26 @@
 				var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
 				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
 			}
+
 			// Movement
 			var noteSize = GetRectSize(noteType);
-			float scaleX = (noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x) + LuminousAppend.x;
-			float scaleY = (tap ? LumHeight_Tap : LumHeight_Hold) + LuminousAppend.y;
+			var lumSize = GetRectSize(lumType, true, true);
+			float scaleX, scaleY;
+			if (lumSize.x < 0f) {
+				// Scaled
+				scaleX = (noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x) + LuminousAppend.x;
+			} else {
+				// Fixed
+				scaleX = lumSize.x + LuminousAppend.x;
+			}
+			if (lumSize.y < 0f) {
+				// Scaled
+				scaleY = (tap ? LumHeight_Tap : LumHeight_Hold) + LuminousAppend.y;
+			} else {
+				// Fixed
+				scaleY = lumSize.y + LuminousAppend.y;
+			}
+
 			transform.position = noteWorldPos;
 			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
 			MainRenderer.transform.localScale = new Vector3(

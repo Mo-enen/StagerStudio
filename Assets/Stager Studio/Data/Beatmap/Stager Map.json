@@ -1,62 +1,63 @@
 ﻿{
-    "Tag": "Normal",
-    "Level": 1,
-    "DropSpeed": 1.0,
-    "BPM": 120.0,
-    "Shift": 0.0,
-    "Ratio": 1.5,
-    "CreatedTime": 0,
-    "Stages": [
-        {
-            "Time": 0.0,
-            "Duration": 1.0000000150474662e30,
-            "Speed": 1.0,
-            "X": 0.5,
-            "Y": 0.0,
-            "Width": 1.0,
-            "Height": 0.666670024394989,
-            "Rotation": 0.0,
-            "Angle": 0.0,
-            "Positions": [],
-            "Rotations": [],
-            "Widths": [],
-            "Heights": [],
-            "Angles": []
-        }
-    ],
-    "Tracks": [
-        {
-            "StageIndex": 0,
-            "Time": 0.0,
-            "Duration": 1.0000000150474662e30,
-            "HasTray": false,
-            "X": 0.5,
-            "Width": 0.20000000298023225,
-            "Color": 0,
-            "Xs": [],
-            "Widths": [],
-            "Colors": []
-        }
-    ],
-    "Notes": [
-        {
-            "TrackIndex": 0,
-            "LinkedNoteIndex": -1,
-            "Time": 0.20000000298023225,
-            "Duration": 0.0,
-            "X": 0.5,
-            "Width": 0.6179999709129334,
-            "ClickSoundIndex": 0,
-            "Tap": true,
-            "SwipeX": 1,
-            "SwipeY": 1
-        }
-    ],
-    "SpeedNotes": [
-        {
-            "Time": 0.0,
-            "Duration": 0.0,
-            "Speed": 1.0
-        }
-    ]
+  "BPM": 120,
+  "Level": 1,
+  "Tag": "Normal",
+  "CreatedTime": 637208493784316751,
+  "Stages": [
+    {
+      "m_Time": 0,
+      "m_Duration": 2147483646,
+      "m_Speed": 1000,
+      "m_X": 500,
+      "m_Y": 0,
+      "m_Width": 1000,
+      "m_Height": 666,
+      "m_Rotation": 0,
+      "Positions": [],
+      "Rotations": [],
+      "Widths": [],
+      "Heights": []
+    }
+  ],
+  "Tracks": [
+    {
+      "m_Time": 0,
+      "m_Duration": 2147483646,
+      "m_X": 500,
+      "m_Width": 200,
+      "m_Angle": 0,
+      "StageIndex": 0,
+      "Color": 0,
+      "HasTray": false,
+      "Xs": [],
+      "Widths": [],
+      "Colors": [],
+      "Angles": []
+    }
+  ],
+  "Notes": [
+    {
+      "m_Time": 300,
+      "m_Duration": 0,
+      "m_X": 500,
+      "m_Z": 0,
+      "m_Width": 618,
+      "TrackIndex": 0,
+      "LinkedNoteIndex": -1,
+      "ClickSoundIndex": 0,
+      "Tap": true,
+      "Comment": "",
+      "SwipeX": 1,
+      "SwipeY": 1
+    }
+  ],
+  "SpeedNotes": [
+    {
+      "m_Time": 0,
+      "m_Speed": 1000
+    }
+  ],
+  "m_DropSpeed": 1000,
+  "m_Shift": 0,
+  "m_Ratio": 1500
 }

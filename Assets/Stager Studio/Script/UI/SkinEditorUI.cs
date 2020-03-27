@@ -239,7 +239,9 @@
 					EditingType == SkinType.Comment ||
 					EditingType == SkinType.HoldNote ||
 					EditingType == SkinType.TapNote ||
-					EditingType == SkinType.SlideNote
+					EditingType == SkinType.SlideNote ||
+					EditingType == SkinType.NoteLuminous ||
+					EditingType == SkinType.HoldLuminous
 				);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
@@ -274,9 +276,10 @@
 			if (string.IsNullOrEmpty(path)) { return; }
 			var (pixels32, width, height) = Util.ImageToPixels(path);
 			if (pixels32 is null || width == 0 || height == 0) { return; }
-			var texture = new Texture2D(width, height, TextureFormat.ARGB32, false) {
+			var texture = new Texture2D(width, height, TextureFormat.RGBA32, false) {
 				filterMode = FilterMode.Point,
 				alphaIsTransparency = true,
+				wrapMode = TextureWrapMode.Clamp,
 			};
 			texture.SetPixels32(pixels32);
 			texture.Apply();

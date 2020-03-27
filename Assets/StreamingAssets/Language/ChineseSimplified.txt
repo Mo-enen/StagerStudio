@@ -1,4 +1,7 @@
-﻿Author
+﻿SkinEditor.Item.Pixel
+像素
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -282,6 +285,9 @@ ProjectCreator.Error.NoMusic
 
 ProjectCreator.Error.NoTitle
 标题不能为空
+
+ProjectCreator.Hint.Arcaea
+创建为悬浮音符的固定轨道工程，非悬浮音符的宽度与位置固定，悬浮音符的位置不固定。
 
 ProjectCreator.Hint.Deemo
 创建为简单的隐藏舞台轨道工程，不限制音符横向位置，不限制音符宽度，无长按音符。

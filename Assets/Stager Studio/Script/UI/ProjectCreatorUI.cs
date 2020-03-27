@@ -26,6 +26,7 @@
 			Dynamix = 2,
 			Deemo = 3,
 			Osu = 4,
+			Arcaea = 5,
 
 		}
 
@@ -60,6 +61,7 @@
 			"ProjectCreator.Hint.Dynamix",
 			"ProjectCreator.Hint.Deemo",
 			"ProjectCreator.Hint.Osu",
+			"ProjectCreator.Hint.Arcaea",
 		};
 		private const string DIALOG_ErrorOnCreateProject = "Dialog.Error.FailCreateProject";
 		private const string DIALOG_NoTitle = "ProjectCreator.Error.NoTitle";

@@ -63,7 +63,7 @@
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 
 		// Data
-		private static (Vector2 size, bool fixedRatio)[] RectSizes = default;
+		private static (Vector3 size, bool fixedRatio)[] RectSizes = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
 		private float HighlightScaleMuti = 0f;
@@ -168,9 +168,9 @@
 		}
 
 
-		protected static Color EvaluateColor (List<Beatmap.TimeIntTween> data, float lifeTime) {
+		protected static Color EvaluateColor (List<Beatmap.TimeIntTween> data, float lifeTime, Color defaultColor) {
 			if (data is null || data.Count == 0 || lifeTime < data[0].Time) {
-				return Color.white;
+				return defaultColor;
 			} else if (data.Count == 1) {
 				return PaletteColor(data[0].Value);
 			} else {
@@ -205,23 +205,24 @@
 		public static void LoadSkin (SkinData skin) {
 			// Sizes
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
-			RectSizes = new (Vector2, bool)[typeCount];
+			RectSizes = new (Vector3, bool)[typeCount];
 			for (int i = 0; i < RectSizes.Length; i++) {
 				var size = skin.TryGetItemSize(i) / skin.ScaleMuti;
 				size.x = Mathf.Max(size.x, 0f);
 				size.y = Mathf.Max(size.y, 0.001f);
+				size.z = Mathf.Max(size.z, 0f);
 				RectSizes[i] = (size, skin.Items[i].FixedRatio);
 			}
 		}
 
 
-		protected static Vector2 GetRectSize (SkinType type, bool fixX = true, bool fixY = false) {
+		protected static Vector3 GetRectSize (SkinType type, bool scalableX = true, bool scalableY = false) {
 			var (size, fix) = RectSizes[(int)type];
 			if (!fix) {
-				if (fixX) {
+				if (scalableX) {
 					size.x = -1f;
 				}
-				if (fixY) {
+				if (scalableY) {
 					size.y = -1f;
 				}
 			}

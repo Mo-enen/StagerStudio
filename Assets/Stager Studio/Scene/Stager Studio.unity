@@ -4495,7 +4495,7 @@ Camera:
   far clip plane: 10
   field of view: 60
   orthographic: 0
-  orthographic size: 5
+  orthographic size: 0.5
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -16868,6 +16868,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - SkinEditor.Item.Pixel
+  - Pixel
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17058,6 +17060,9 @@ MonoBehaviour:
   - Music can not be empty
   - ProjectCreator.Error.NoTitle
   - Project name can not be empty
+  - ProjectCreator.Hint.Arcaea
+  - Create as fixed track project with floating notes, the width and position of
+    non-floating notes are fixed, and the position of floating notes is not fixed.
   - ProjectCreator.Hint.Deemo
   - Created as invisible stage / track project, unlimited position and width for
     notes, no holding notes.
