@@ -45,16 +45,16 @@
 		// Ser
 		[SerializeField] private ObjectRenderer m_ArrowRenderer = null;
 		[SerializeField] private ObjectRenderer m_PoleRenderer = null;
+		[SerializeField] private SpriteRenderer m_ZLineRenderer = null;
 
 		// Data
 		private static byte CacheDirtyID = 1;
 		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
 		private bool PrevClickedAlt = false;
-		private Beatmap.Stage LateStage = null;
-		private Beatmap.Track LateTrack = null;
-		private Beatmap.Note LateNote = null;
-		private Beatmap.Note LateLinkedNote = null;
+		private Beatmap.Note Late_Note = null;
+		private Beatmap.Note Late_LinkedNote = null;
+		private Vector3 Late_NoteWorldPos = default;
 
 
 		#endregion
@@ -67,10 +67,8 @@
 
 		private void Update () {
 
-			LateStage = null;
-			LateTrack = null;
-			LateNote = null;
-			LateLinkedNote = null;
+			Late_Note = null;
+			Late_LinkedNote = null;
 			MainRenderer.RendererEnable = false;
 			m_ArrowRenderer.RendererEnable = false;
 			m_PoleRenderer.RendererEnable = false;
@@ -127,20 +125,29 @@
 			Update_Tray(linkedTrack, noteData);
 
 			// Final
-			LateStage = linkedStage;
-			LateTrack = linkedTrack;
-			LateNote = noteData;
-			LateLinkedNote = linkedNote;
+			Late_Note = noteData;
+			Late_LinkedNote = linkedNote;
+
+			Update_Movement(linkedStage, linkedTrack, noteData, linkedNote);
 
 		}
 
 
 		protected override void LateUpdate () {
-			if (LateNote is null || Beatmap is null) {
+			if (Late_Note is null || Beatmap is null) {
 				base.LateUpdate();
 				return;
 			}
-			LateUpdate_Movement(LateStage, LateTrack, LateNote, LateLinkedNote);
+
+			// Sub Update
+			var (_, _, zoneSize, _) = ZoneMinMax;
+			if (Late_LinkedNote != null) {
+				LateUpdate_Movement_Linked(Late_Note, Late_LinkedNote, Late_NoteWorldPos, ColRot ?? Quaternion.identity, MainRenderer.Alpha);
+			}
+			if ((Late_Note.SwipeX != 1 || Late_Note.SwipeY != 1) && GetNoteActive(Late_Note, null, Late_Note.AppearTime)) {
+				LateUpdate_Movement_Swipe(Late_Note, zoneSize, ColRot ?? Quaternion.identity, MainRenderer.Alpha, MainRenderer.Type);
+			}
+
 			base.LateUpdate();
 		}
 
@@ -185,7 +192,7 @@
 		}
 
 
-		private void LateUpdate_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, Beatmap.Note linkedNote) {
+		private void Update_Movement (Beatmap.Stage linkedStage, Beatmap.Track linkedTrack, Beatmap.Note noteData, Beatmap.Note linkedNote) {
 
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
@@ -199,7 +206,6 @@
 			float noteSizeY = noteData.NoteDropEnd - gameOffset - noteY01;
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			bool isLink = !(linkedNote is null);
-			bool isSwipe = noteData.SwipeX != 1 || noteData.SwipeY != 1;
 			bool activeSelf = GetNoteActive(noteData, null, noteData.AppearTime);
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
 			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
@@ -224,17 +230,9 @@
 				zoneSize * noteScaleY,
 				1f
 			);
-			transform.position = noteWorldPos;
+			transform.position = Late_NoteWorldPos = noteWorldPos;
 			ColRot = MainRenderer.transform.rotation = noteRot;
 			ColSize = MainRenderer.transform.localScale = zoneNoteScale;
-
-			// Sub Update
-			if (isLink) {
-				LateUpdate_Movement_Linked(noteData, linkedNote, noteWorldPos, noteRot, alpha);
-			}
-			if (isSwipe && activeSelf) {
-				LateUpdate_Movement_Swipe(noteData, zoneSize, noteRot, alpha, type);
-			}
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || activeSelf;
@@ -244,6 +242,60 @@
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.Type = type;
 			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
+
+		}
+
+
+		private void Update_Gizmos (Beatmap.Note noteData, bool selecting, int noteIndex) {
+
+			bool active = !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
+
+			// ID
+			if (Label != null) {
+				if (ShowIndexLabel && !MusicPlaying && active) {
+					bool hasComment = !string.IsNullOrEmpty(noteData.Comment);
+					Label.gameObject.SetActive(true);
+					Label.Text = hasComment ? $"{noteIndex} /{noteData.Comment.ToLower()}" : noteIndex.ToString();
+					Label.transform.localRotation = MainRenderer.transform.localRotation;
+				} else {
+					Label.gameObject.SetActive(false);
+				}
+			}
+
+			// Highlight
+			if (Highlight != null) {
+				Highlight.enabled = !MusicPlaying && active && selecting;
+			}
+
+			// Col
+			TrySetColliderLayer(Duration <= DURATION_GAP ? LayerID_Note : LayerID_Note_Hold);
+
+			// ZLine
+			bool zlineActive = ShowGrid && active && noteData.Z > 0.0005f;
+			if (m_ZLineRenderer.gameObject.activeSelf != zlineActive) {
+				m_ZLineRenderer.gameObject.SetActive(zlineActive);
+			}
+			// ZLine Color
+			if (zlineActive) {
+				m_ZLineRenderer.color = Color.Lerp(
+					m_ZLineRenderer.color,
+					Color.black * 0.2f,
+					UnityEngine.Time.deltaTime * 1.4f
+				);
+			} else {
+				if (m_ZLineRenderer.color != Color.clear) {
+					m_ZLineRenderer.color = Color.clear;
+				}
+			}
+			// ZLine Scale
+			float zlineScaleY = (noteData.Z * ZoneMinMax.size * (MainRenderer.transform.rotation * Vector3.back)).magnitude;
+			var zScale = m_ZLineRenderer.transform.localScale;
+			if (Mathf.Abs(zScale.y - zlineScaleY) > 0.0001f) {
+				zScale.y = zlineScaleY;
+				m_ZLineRenderer.transform.localScale = zScale;
+			}
+			// ZLine Rot
+			m_ZLineRenderer.transform.localRotation = MainRenderer.transform.localRotation * Quaternion.Euler(-90f, 0f, 0f);
 
 		}
 
@@ -316,7 +368,7 @@
 			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
 			var poleSize = GetRectSize(poleType, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
-				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
+				linkedNoteWorldPos - subWorldPos, Vector3.back//-MainRenderer.transform.forward
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
@@ -345,33 +397,6 @@
 			m_ArrowRenderer.Duration = Duration;
 			m_ArrowRenderer.LifeTime = MusicTime - Time;
 			m_ArrowRenderer.SetSortingLayer(SortingLayerID_Arrow, GetSortingOrder());
-		}
-
-
-		private void Update_Gizmos (Beatmap.Note noteData, bool selecting, int noteIndex) {
-
-			bool active = !MusicPlaying && !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
-
-			// ID
-			if (Label != null) {
-				if (ShowIndexLabel && active) {
-					bool hasComment = !string.IsNullOrEmpty(noteData.Comment);
-					Label.gameObject.SetActive(true);
-					Label.Text = hasComment ? $"{noteIndex} /{noteData.Comment.ToLower()}" : noteIndex.ToString();
-					Label.transform.localRotation = MainRenderer.transform.localRotation;
-				} else {
-					Label.gameObject.SetActive(false);
-				}
-			}
-
-			// Highlight
-			if (Highlight != null) {
-				Highlight.enabled = active && selecting;
-			}
-
-			// Col
-			TrySetColliderLayer(Duration <= DURATION_GAP ? LayerID_Note : LayerID_Note_Hold);
-
 		}
 
 

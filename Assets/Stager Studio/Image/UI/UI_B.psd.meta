@@ -365,6 +365,9 @@ TextureImporter:
   - first:
       213: 4436141162012384539
     second: UI_B_1
+  - first:
+      213: -2338392107245704997
+    second: Note ZLine
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1553,7 +1556,7 @@ TextureImporter:
         width: 59
         height: 46
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1561,6 +1564,27 @@ TextureImporter:
       bones: []
       spriteID: b3883629853e3c580800000000000000
       internalID: -8807946476653934533
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Note ZLine
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 2
+        width: 14
+        height: 27
+      alignment: 2
+      pivot: {x: 0.5, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd8ea0e84cc5c8fd0800000000000000
+      internalID: -2338392107245704997
       vertices: []
       indices: 
       edges: []

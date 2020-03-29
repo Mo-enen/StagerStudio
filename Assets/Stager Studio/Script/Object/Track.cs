@@ -18,7 +18,6 @@
 		public static int SortingLayerID_TrackTint { get; set; } = -1;
 		public static int SortingLayerID_Tray { get; set; } = -1;
 		public static int BeatPerSection { get; set; } = 1;
-		public static bool ShowGrid { get; set; } = true;
 
 		// Ser
 		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
@@ -159,7 +158,7 @@
 
 			// Section
 			m_SectionLineRenderer.RendererEnable = ShowGrid && trackActive;
-			if (ShowGrid && trackActive) {
+			if (ShowGrid && trackActive && !MusicPlaying) {
 				m_SectionLineRenderer.MusicTime = MusicTime;
 				m_SectionLineRenderer.ObjectSpeedMuti = 1f;
 				m_SectionLineRenderer.SpeedMuti = speed;

@@ -371,7 +371,7 @@
 				m_GridTG.isOn = Game.TheShowGrid;
 				m_GridRenderer.SetShow(Game.TheShowGrid);
 				Track.BeatPerSection = Game.TheBeatPerSection;
-				Track.ShowGrid = Game.TheShowGrid;
+				StageObject.ShowGrid = Game.TheShowGrid;
 				RefreshGridRenderer();
 			};
 			StageGame.OnRatioChanged = (ratio) => {

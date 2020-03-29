@@ -76,7 +76,7 @@
 
 		#region --- VAR ---
 
-
+		
 		// Handler
 		public static VoidFloatStringHandler OnLoadProgress { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;

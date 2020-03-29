@@ -46,6 +46,7 @@
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
+		public static bool ShowGrid { get; set; } = true;
 		public static int MaterialZoneID { get; set; } = 0;
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
