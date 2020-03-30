@@ -368,6 +368,9 @@ TextureImporter:
   - first:
       213: -2338392107245704997
     second: Note ZLine
+  - first:
+      213: -666367858726670617
+    second: Track Section Bar
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1585,6 +1588,27 @@ TextureImporter:
       bones: []
       spriteID: bd8ea0e84cc5c8fd0800000000000000
       internalID: -2338392107245704997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Track Section Bar
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 6
+        width: 8
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7eeebda86f590c6f0800000000000000
+      internalID: -666367858726670617
       vertices: []
       indices: 
       edges: []

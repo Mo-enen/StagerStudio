@@ -1,5 +1,5 @@
-﻿SkinEditor.Item.Pixel
-像素
+﻿UI.SkinEditor.Highlight
+高光
 
 Author
 Stager 官方
@@ -390,6 +390,9 @@ SkinEditor.Item.LinkPole
 
 SkinEditor.Item.Luminous
 光效
+
+SkinEditor.Item.Pixel
+像素
 
 SkinEditor.Item.Slide
 滑动音符

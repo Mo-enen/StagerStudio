@@ -361,10 +361,11 @@
 			public int TrackIndex = -1;
 			public int LinkedNoteIndex = -1;
 			public short ClickSoundIndex = -1;
+			public int SoundFxIndex = -1;
 			public bool Tap = true;
-			public string Comment = "";
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
+			public string Comment = "";
 
 			// Cache
 			[System.NonSerialized] public bool Active = false;

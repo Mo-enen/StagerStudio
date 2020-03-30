@@ -48,6 +48,7 @@
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private Button m_HighlightCP = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
@@ -55,6 +56,7 @@
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
+		private StagerStudio SS = null;
 		private StageSkin Skin = null;
 		private StageMenu Menu = null;
 		private StageMusic Music = null;
@@ -108,6 +110,7 @@
 			Menu = FindObjectOfType<StageMenu>();
 			Music = FindObjectOfType<StageMusic>();
 			Skin = FindObjectOfType<StageSkin>();
+			SS = FindObjectOfType<StagerStudio>();
 
 			// Language
 			foreach (var text in m_LanguageTexts) {
@@ -130,6 +133,18 @@
 					m_DurationIF.text = ani.FrameDuration.ToString();
 				}
 			});
+
+			// Highlight
+			m_HighlightCP.onClick.AddListener(() => {
+				if (!UIReady) { return; }
+				var ani = GetEditingAniData();
+				if (ani is null) { return; }
+				SS.SpawnColorPicker(ani.HighlightTint, (newHighlight) => {
+					ani.HighlightTint = newHighlight;
+					m_HighlightCP.GetComponent<Image>().color = ani.HighlightTint;
+				});
+			});
+
 
 			// Scale Muti
 			m_ScaleMutiIF.onEndEdit.AddListener((str) => {
@@ -235,7 +250,7 @@
 			UIReady = false;
 			try {
 				// Active
-				m_FixedRatioTG.gameObject.SetActive(
+				m_FixedRatioTG.transform.parent.gameObject.SetActive(
 					EditingType == SkinType.Comment ||
 					EditingType == SkinType.HoldNote ||
 					EditingType == SkinType.TapNote ||
@@ -243,8 +258,16 @@
 					EditingType == SkinType.NoteLuminous ||
 					EditingType == SkinType.HoldLuminous
 				);
+				m_HighlightCP.transform.parent.gameObject.SetActive(
+					EditingType == SkinType.HoldNote ||
+					EditingType == SkinType.SlideNote ||
+					EditingType == SkinType.Comment ||
+					EditingType == SkinType.LinkPole ||
+					EditingType == SkinType.Pixel
+				);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
+				m_HighlightCP.GetComponent<Image>().color = ani.HighlightTint;
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();

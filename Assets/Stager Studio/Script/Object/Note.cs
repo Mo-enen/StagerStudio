@@ -209,6 +209,7 @@
 			bool activeSelf = GetNoteActive(noteData, null, noteData.AppearTime);
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
 			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
+			bool highlighing = (type == SkinType.HoldNote || type == SkinType.Comment || type == SkinType.SlideNote) && MusicTime > Time && MusicTime < Time + Duration;
 
 			// Movement
 			var (noteZonePos, rotX, rotZ) = Track.Inside(
@@ -236,9 +237,10 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || activeSelf;
+			MainRenderer.Tint = highlighing ? HighlightTints[(int)type] : WHITE_32;
+			MainRenderer.Alpha = alpha;
 			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = MusicTime - Time;
-			MainRenderer.Alpha = alpha;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.Type = type;
 			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
@@ -288,14 +290,16 @@
 				}
 			}
 			// ZLine Scale
-			float zlineScaleY = (noteData.Z * ZoneMinMax.size * (MainRenderer.transform.rotation * Vector3.back)).magnitude;
-			var zScale = m_ZLineRenderer.transform.localScale;
-			if (Mathf.Abs(zScale.y - zlineScaleY) > 0.0001f) {
-				zScale.y = zlineScaleY;
-				m_ZLineRenderer.transform.localScale = zScale;
+			if (zlineActive) {
+				float zlineScaleY = (noteData.Z * ZoneMinMax.size * (MainRenderer.transform.rotation * Vector3.back)).magnitude;
+				var zScale = m_ZLineRenderer.transform.localScale;
+				if (Mathf.Abs(zScale.y - zlineScaleY) > 0.0001f) {
+					zScale.y = zlineScaleY;
+					m_ZLineRenderer.transform.localScale = zScale;
+				}
+				// ZLine Rot
+				m_ZLineRenderer.transform.localRotation = MainRenderer.transform.localRotation * Quaternion.Euler(-90f, 0f, 0f);
 			}
-			// ZLine Rot
-			m_ZLineRenderer.transform.localRotation = MainRenderer.transform.localRotation * Quaternion.Euler(-90f, 0f, 0f);
 
 		}
 
@@ -368,7 +372,7 @@
 			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
 			var poleSize = GetRectSize(poleType, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
-				linkedNoteWorldPos - subWorldPos, Vector3.back//-MainRenderer.transform.forward
+				linkedNoteWorldPos - subWorldPos, Vector3.back
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
@@ -377,6 +381,7 @@
 			m_PoleRenderer.LifeTime = MusicTime - Time;
 			m_PoleRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_PoleRenderer.Scale = new Vector2(poleSize.x, scaleY / zoneSize);
+			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)poleType] : WHITE_32;
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
 			m_PoleRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
 		}

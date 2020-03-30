@@ -30,6 +30,7 @@
 
 		// Const
 		protected const float DURATION_GAP = 0.0001f;
+		protected readonly static Color32 WHITE_32 = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 
 		// Handler
 		public static SpeedMutiHandler GetGameSpeedMuti { get; set; } = null;
@@ -49,6 +50,7 @@
 		public static bool ShowGrid { get; set; } = true;
 		public static int MaterialZoneID { get; set; } = 0;
 		protected static float VanishDuration { get; private set; } = 0f;
+		protected static Color32[] HighlightTints { get; set; } = default;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
 		protected TextRenderer Label => m_Label;
 		protected SpriteRenderer Highlight => m_Highlight;
@@ -204,16 +206,20 @@
 
 
 		public static void LoadSkin (SkinData skin) {
-			// Sizes
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
 			RectSizes = new (Vector3, bool)[typeCount];
+			HighlightTints = new Color32[typeCount];
 			for (int i = 0; i < RectSizes.Length; i++) {
+				// Sizes
 				var size = skin.TryGetItemSize(i) / skin.ScaleMuti;
 				size.x = Mathf.Max(size.x, 0f);
 				size.y = Mathf.Max(size.y, 0.001f);
 				size.z = Mathf.Max(size.z, 0f);
 				RectSizes[i] = (size, skin.Items[i].FixedRatio);
+				// Highlights
+				HighlightTints[i] = skin.Items[i].HighlightTint;
 			}
+
 		}
 
 

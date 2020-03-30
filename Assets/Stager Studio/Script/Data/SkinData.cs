@@ -226,16 +226,39 @@
 
 		}
 
+
+		[System.Serializable]
+		public struct ColorData {
+			public byte R;
+			public byte G;
+			public byte B;
+			public byte A;
+			public ColorData (byte r, byte g, byte b, byte a) {
+				R = r;
+				G = g;
+				B = b;
+				A = a;
+			}
+		}
+
+
 		// API
 		public float TotalDuration => FrameDuration / 1000f * Rects.Count;
 		public int Thickness3D_UI {
 			get => Mathf.Max(Thickness3D, 0);
 			set => Thickness3D = Mathf.Max(value, 0);
 		}
+		public Color32 HighlightTint {
+			get => new Color32(Highlight.R, Highlight.G, Highlight.B, Highlight.A);
+			set {
+				Highlight = new ColorData(value.r, value.g, value.b, value.a);
+			}
+		}
 
 		// Ser
 		public SkinLoopType Loop = SkinLoopType.Forward;
 		public List<RectData> Rects = new List<RectData>();
+		public ColorData Highlight = new ColorData(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 		public int FrameDuration = 200;
 		public bool Is3D = false;
 		public int Thickness3D = 0;

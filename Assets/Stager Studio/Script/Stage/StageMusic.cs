@@ -2,6 +2,7 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
+	using UnityEngine.Audio;
 	using UnityEngine.Events;
 
 
@@ -86,6 +87,7 @@
 					_Source = gameObject.AddComponent<AudioSource>();
 					_Source.playOnAwake = false;
 					_Source.loop = false;
+					_Source.outputAudioMixerGroup = m_Mixer;
 				}
 				return _Source;
 			}
@@ -105,6 +107,7 @@
 
 		// Ser
 		[SerializeField] private AudioClip m_DefaultSfx = null;
+		[SerializeField] private AudioMixerGroup m_Mixer = null;
 
 		// Data
 		private const float DURATION_MIN = 0.001f;

@@ -4741,6 +4741,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultSfx: {fileID: 8300000, guid: 4bf25f627b356244bb37f8d9079f188c, type: 3}
+  m_Mixer: {fileID: 24300002, guid: 6b0f43d36599e3f47a5da521b76e4975, type: 2}
 --- !u!1 &594039035
 GameObject:
   m_ObjectHideFlags: 0
@@ -6459,7 +6460,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &798248423
 MonoBehaviour:
@@ -7472,7 +7473,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &826612610
 MonoBehaviour:
@@ -12375,6 +12376,7 @@ Transform:
   - {fileID: 949943522}
   - {fileID: 1967135108}
   - {fileID: 572003328}
+  - {fileID: 2029856296}
   - {fileID: 1564010260}
   - {fileID: 826612609}
   - {fileID: 798248422}
@@ -13144,7 +13146,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1564010261
 MonoBehaviour:
@@ -13175,6 +13177,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 27
         BorderR: 27
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13189,6 +13196,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 0
         BorderR: 0
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13203,6 +13215,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 12
         BorderR: 12
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13217,6 +13234,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 0
         BorderR: 0
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13231,6 +13253,11 @@ MonoBehaviour:
         BorderD: 32
         BorderL: 16
         BorderR: 16
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13245,6 +13272,11 @@ MonoBehaviour:
         BorderD: 8
         BorderL: 8
         BorderR: 8
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
@@ -13259,6 +13291,11 @@ MonoBehaviour:
         BorderD: 92
         BorderL: 8
         BorderR: 8
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
@@ -13273,6 +13310,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 0
         BorderR: 0
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 46
@@ -13287,6 +13329,11 @@ MonoBehaviour:
         BorderD: 92
         BorderL: 8
         BorderR: 8
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 1
       Thickness3D: 46
@@ -13301,6 +13348,11 @@ MonoBehaviour:
         BorderD: 20
         BorderL: 12
         BorderR: 12
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 24
       Is3D: 0
       Thickness3D: 0
@@ -13339,6 +13391,11 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 0
         BorderR: 0
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 24
       Is3D: 0
       Thickness3D: 0
@@ -13361,18 +13418,33 @@ MonoBehaviour:
         BorderD: 0
         BorderL: 0
         BorderR: 0
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 40
       Is3D: 0
       Thickness3D: 0
       FixedRatio: 0
     - Loop: 1
       Rects: []
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
       FixedRatio: 0
     - Loop: 1
       Rects: []
+      Highlight:
+        R: 255
+        G: 255
+        B: 255
+        A: 255
       FrameDuration: 120
       Is3D: 0
       Thickness3D: 0
@@ -13846,8 +13918,6 @@ MonoBehaviour:
   - {r: 0.654902, g: 0.63955575, b: 0.113725506, a: 0.32156864}
   - {r: 0.11536932, g: 0.655, b: 0.52474433, a: 0.36078432}
   m_Mode: 0
-  m_UseX: 1
-  m_UseY: 1
   m_Thickness: 1
 --- !u!33 &1637691685
 MeshFilter:
@@ -16868,8 +16938,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - SkinEditor.Item.Pixel
-  - Pixel
+  - UI.SkinEditor.Highlight
+  - Highlight
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17137,6 +17207,8 @@ MonoBehaviour:
   - Link Pole
   - SkinEditor.Item.Luminous
   - Luminous
+  - SkinEditor.Item.Pixel
+  - Pixel
   - SkinEditor.Item.Slide
   - Slide
   - SkinEditor.Item.Stage
@@ -18080,6 +18152,49 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2027629252}
   m_CullTransparentMesh: 0
+--- !u!1 &2029856295
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2029856296}
+  - component: {fileID: 2029856297}
+  m_Layer: 0
+  m_Name: SoundFX
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2029856296
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029856295}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1488624209}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2029856297
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2029856295}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 593c7d893a6674b439d02150c0a6ea24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2044312210
 GameObject:
   m_ObjectHideFlags: 0

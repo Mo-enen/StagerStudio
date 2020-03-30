@@ -4,7 +4,7 @@
 	using UnityEngine;
 
 
-	[CreateAssetMenu(fileName = "Text Sheet", menuName = "Stager/Text Sheet", order = 0)]
+	[CreateAssetMenu(fileName = "Text Sheet", menuName = "Stager/Text Sheet", order = 1000)]
 	public class TextSpriteSheet : ScriptableObject {
 
 

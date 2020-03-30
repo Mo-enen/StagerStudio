@@ -94,8 +94,6 @@
 		[SerializeField] private Sprite m_SpriteH = null;
 		[SerializeField] private Color[] m_Tints = default;
 		[SerializeField] private GridMode m_Mode = GridMode.XX;
-		[SerializeField] private bool m_UseX = true;
-		[SerializeField] private bool m_UseY = true;
 		[SerializeField] private ushort m_Thickness = 1;
 
 		// Data
@@ -123,8 +121,6 @@
 
 		protected override void OnMeshFill () {
 
-			if (m_SpriteV is null || m_SpriteH is null || (!m_UseX && !m_UseY)) { return; }
-
 			float thick = m_Thickness / 1000f;
 			var uvMin0 = m_SpriteV.uv[2];
 			var uvMax0 = m_SpriteV.uv[1];
@@ -133,53 +129,49 @@
 			Tint = m_Tints[(int)m_Mode];
 
 			// X
-			if (m_UseX) {
-				int countX = Mathf.Clamp(CountX + 1, 1, 32);
-				for (int i = 0; i <= countX; i++) {
-					AddQuad01(
-						(float)i / countX - thick / Scale.x,
-						(float)i / countX + thick / Scale.x,
-						0f, 1f,
-						uvMin0.x, uvMax0.x,
-						uvMin0.y, uvMax0.y,
-						Vector3.zero
-					);
-				}
+			int countX = Mathf.Clamp(CountX + 1, 1, 32);
+			for (int i = 0; i <= countX; i++) {
+				AddQuad01(
+					(float)i / countX - thick / Scale.x,
+					(float)i / countX + thick / Scale.x,
+					0f, 1f,
+					uvMin0.x, uvMax0.x,
+					uvMin0.y, uvMax0.y,
+					Vector3.zero
+				);
 			}
 
 			// Y
-			if (m_UseY) {
-				switch (m_Mode) {
-					case GridMode.XX: {
-							int countY = Mathf.Clamp(CountX + 1, 1, 32);
-							for (int i = 0; i <= countY; i++) {
-								AddQuad01(0f, 1f, (float)i / countY - thick / Scale.y, (float)i / countY + thick / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
-							}
+			switch (m_Mode) {
+				case GridMode.XX: {
+						int countY = Mathf.Clamp(CountX + 1, 1, 32);
+						for (int i = 0; i <= countY; i++) {
+							AddQuad01(0f, 1f, (float)i / countY - thick / Scale.y, (float)i / countY + thick / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
 						}
-						break;
-					case GridMode.X0:
-						break;
-					case GridMode.XY: {
-							float speedMuti = SpeedMuti * ObjectSpeedMuti;
-							float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
-							float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
-								Mathf.Min(MusicTime, time),
-								Mathf.Max(MusicTime, time),
-								speedMuti
-							);
-							for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
-								if (y01 > 0f) {
-									AddQuad01(
-										0f, 1f, y01 - thick / Scale.y, y01 + thick / Scale.y,
-										uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
-									);
-								}
-								y01 += GetAreaBetween(time, time + TimeGap, speedMuti);
-								time += TimeGap;
+					}
+					break;
+				case GridMode.X0:
+					break;
+				case GridMode.XY: {
+						float speedMuti = SpeedMuti * ObjectSpeedMuti;
+						float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
+						float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
+							Mathf.Min(MusicTime, time),
+							Mathf.Max(MusicTime, time),
+							speedMuti
+						);
+						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
+							if (y01 > 0f) {
+								AddQuad01(
+									0f, 1f, y01 - thick / Scale.y, y01 + thick / Scale.y,
+									uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
+								);
 							}
+							y01 += GetAreaBetween(time, time + TimeGap, speedMuti);
+							time += TimeGap;
 						}
-						break;
-				}
+					}
+					break;
 			}
 
 		}

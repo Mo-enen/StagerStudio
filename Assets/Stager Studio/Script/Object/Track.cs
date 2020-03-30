@@ -22,7 +22,7 @@
 		// Ser
 		[SerializeField] ObjectRenderer m_TrackTintRenderer = null;
 		[SerializeField] ObjectRenderer m_TrayRenderer = null;
-		[SerializeField] GridRenderer m_SectionLineRenderer = null;
+		[SerializeField] TrackSectionRenderer m_SectionRenderer = null;
 
 		// Data
 		private Beatmap.Track LateTrackData = null;
@@ -143,29 +143,26 @@
 		private void Update_Gizmos (bool trackActive, bool selecting, int trackIndex, float speed) {
 
 			// Label
-			if (Label != null) {
-				bool active = ShowIndexLabel && !MusicPlaying && trackActive;
-				Label.gameObject.SetActive(active);
-				if (active) {
-					Label.Text = trackIndex.ToString();
-				}
+			bool active = ShowIndexLabel && !MusicPlaying && trackActive;
+			Label.gameObject.SetActive(active);
+			if (active) {
+				Label.Text = trackIndex.ToString();
 			}
 
 			// Highlight
-			if (Highlight != null) {
-				Highlight.enabled = !MusicPlaying && trackActive && selecting;
-			}
+			Highlight.enabled = !MusicPlaying && trackActive && selecting;
 
 			// Section
-			m_SectionLineRenderer.RendererEnable = ShowGrid && trackActive;
-			if (ShowGrid && trackActive && !MusicPlaying) {
-				m_SectionLineRenderer.MusicTime = MusicTime;
-				m_SectionLineRenderer.ObjectSpeedMuti = 1f;
-				m_SectionLineRenderer.SpeedMuti = speed;
-				m_SectionLineRenderer.Scale = Vector3.one;
-				m_SectionLineRenderer.TimeGap = 60f * BeatPerSection / Beatmap.BPM;
-				m_SectionLineRenderer.TimeOffset = Beatmap.Shift;
-				m_SectionLineRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder() + 1);
+			active = ShowGrid && trackActive && !MusicPlaying;
+			m_SectionRenderer.RendererEnable = active;
+			if (active) {
+				m_SectionRenderer.MusicTime = MusicTime;
+				m_SectionRenderer.SpeedMuti = speed;
+				m_SectionRenderer.TimeGap = 60f / Beatmap.BPM;
+				m_SectionRenderer.TimeOffset = Beatmap.Shift;
+				m_SectionRenderer.BeatPerSection = BeatPerSection;
+				m_SectionRenderer.Scale = MainRenderer.Scale;
+				m_SectionRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder() + 1);
 			}
 
 		}
@@ -236,7 +233,7 @@
 			base.RefreshRendererZone();
 			RefreshRendererZoneFor(m_TrackTintRenderer);
 			RefreshRendererZoneFor(m_TrayRenderer);
-			RefreshRendererZoneFor(m_SectionLineRenderer);
+			RefreshRendererZoneFor(m_SectionRenderer);
 		}
 
 

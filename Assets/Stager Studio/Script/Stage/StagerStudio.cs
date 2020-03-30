@@ -536,6 +536,8 @@
 			ProgressUI.GetSnapTime = (time, step) => Game.SnapTime(time, step);
 			GridRenderer.GetAreaBetween = Game.AreaBetween;
 			GridRenderer.GetSnapedTime = Game.SnapTime;
+			TrackSectionRenderer.GetAreaBetween = Game.AreaBetween;
+			TrackSectionRenderer.GetSnapedTime = Game.SnapTime;
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
 			SetNavigationInteractable(true);
 		}

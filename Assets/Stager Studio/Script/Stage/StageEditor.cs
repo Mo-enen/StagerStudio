@@ -232,7 +232,7 @@
 						pos = target.position;
 						rot = target.rotation;
 						scl = target.GetChild(0).localScale;
-						speed = layerIndex == ItemLayers[2] ? GetNoteSpeedMuti(map, itemIndex) : 1f;
+						speed = layerIndex == ItemLayers[1] ? GetTrackSpeedMuti(map, itemIndex) : 1f;
 					}
 					m_Grid.Mode = layerIndex == ItemLayers[0] ? 1 : 2;
 				} else {
@@ -543,11 +543,10 @@
 		}
 
 
-		private float GetNoteSpeedMuti (Beatmap map, int index) {
-			if (index >= 0 && index < map.Notes.Count) {
-				int tIndex = map.Notes[index].TrackIndex;
-				if (tIndex >= 0 && tIndex < map.Tracks.Count) {
-					int sIndex = map.Tracks[tIndex].StageIndex;
+		private float GetTrackSpeedMuti (Beatmap map, int index) {
+			if (index >= 0 && index < map.Tracks.Count) {
+				if (index >= 0 && index < map.Tracks.Count) {
+					int sIndex = map.Tracks[index].StageIndex;
 					if (sIndex >= 0 && sIndex < map.Stages.Count) {
 						return map.Stages[sIndex].Speed;
 					}

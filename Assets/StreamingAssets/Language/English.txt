@@ -1,5 +1,5 @@
-﻿SkinEditor.Item.Pixel
-Pixel
+﻿UI.SkinEditor.Highlight
+Highlight
 
 Author
 Stager Official
@@ -390,6 +390,9 @@ Link Pole
 
 SkinEditor.Item.Luminous
 Luminous
+
+SkinEditor.Item.Pixel
+Pixel
 
 SkinEditor.Item.Slide
 Slide
