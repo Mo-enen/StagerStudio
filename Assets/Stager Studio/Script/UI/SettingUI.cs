@@ -4,8 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Stage;
-	using Saving;
-
+	using UnityEngine.Events;
 
 
 	public class SettingUI : MonoBehaviour {
@@ -17,42 +16,78 @@
 
 
 
+		// handler
 		public delegate void VoidHandler ();
-		public delegate void VoidStringHandler (string value);
 		public delegate string StringStringHandler (string value);
-		public delegate string StringVoidHandler ();
-		public delegate void VoidIntHandler (int value);
-		public delegate int IntVoidHandler ();
-		public delegate void VoidBoolHandler (bool value);
-		public delegate bool BoolVoidHandler ();
-		public delegate void VoidBoolIntHandler (bool value, int index);
-		public delegate bool BoolIntHandler (int index);
-		public delegate void VoidFloatHandler (float value);
-		public delegate float FloatVoidHandler ();
 
 
+		// Com Data
 		[System.Serializable]
-		public struct ComppnentData {
-			// General
-			public InputField Framerate;
-			public Toggle UIScale_0;
-			public Toggle UIScale_1;
-			public Toggle UIScale_2;
-			public Slider MusicVolume;
-			public Slider SfxVolume;
-			public Slider BgBright;
-			public Toggle ShowZone;
-			public Toggle ShowWave;
-			public Toggle ShowPreview;
-			public Toggle ShowTip;
-			public Toggle ShowWelcome;
-			// Editor
-			public Toggle SnapProgress;
-			public Toggle PositiveScroll;
-			public Toggle ShowIndexLabel;
+		public struct ComponentData {
 
-			// Language
-			public Text LanguageHint;
+
+
+			[System.Serializable]
+			public class InputData {
+				public StagerStudio.InputType Type;
+				public InputField Item;
+				[System.NonSerialized] public System.Func<string> GetHandler;
+				public void InitItem (UnityAction<string> setHandler) => Item.onEndEdit.AddListener(setHandler);
+			}
+
+
+			[System.Serializable]
+			public class ToggleData {
+				public StagerStudio.ToggleType Type;
+				public Toggle Item;
+				[System.NonSerialized] public System.Func<bool> GetHandler;
+				public void InitItem (UnityAction<bool> setHandler) => Item.onValueChanged.AddListener(setHandler);
+			}
+
+
+			[System.Serializable]
+			public class SliderData {
+				public StagerStudio.SliderType Type;
+				public Slider Item;
+				[System.NonSerialized] public System.Func<float> GetHandler;
+				public void InitItem (UnityAction<float> setHandler) => Item.onValueChanged.AddListener(setHandler);
+			}
+
+
+			// Items
+			public InputData[] Inputs;
+			public ToggleData[] Toggles;
+			public SliderData[] Sliders;
+
+
+			public void RefreshAllUI () {
+				foreach (var i in Inputs) {
+					i.Item.text = i.GetHandler();
+				}
+				foreach (var t in Toggles) {
+					t.Item.isOn = t.GetHandler();
+				}
+				foreach (var s in Sliders) {
+					s.Item.value = s.GetHandler();
+				}
+			}
+
+
+			public void ForAllInputs (System.Action<InputData> action) {
+				foreach (var i in Inputs) {
+					action(i);
+				}
+			}
+			public void ForAllToggles (System.Action<ToggleData> action) {
+				foreach (var t in Toggles) {
+					action(t);
+				}
+			}
+			public void ForAllSliders (System.Action<SliderData> action) {
+				foreach (var s in Sliders) {
+					action(s);
+				}
+			}
 
 		}
 
@@ -68,39 +103,16 @@
 		// Const
 		private const string RESET_CONFIRM_KEY = "Setting.ResetConfirm";
 
-		// Handler
+		// Api
 		public StringStringHandler GetLanguage { get; set; } = null;
 		public VoidHandler ResetAllSettings { get; set; } = null;
-		public VoidIntHandler SetFramerate { get; set; } = null;
-		public IntVoidHandler GetFramerate { get; set; } = null;
-		public VoidIntHandler SetUIScale { get; set; } = null;
-		public IntVoidHandler GetUIScale { get; set; } = null;
-		public VoidFloatHandler SetMusicVolume { get; set; } = null;
-		public FloatVoidHandler GetMusicVolume { get; set; } = null;
-		public VoidFloatHandler SetSfxVolume { get; set; } = null;
-		public FloatVoidHandler GetSfxVolume { get; set; } = null;
-		public VoidFloatHandler SetBgBright { get; set; } = null;
-		public FloatVoidHandler GetBgBright { get; set; } = null;
-		public VoidBoolHandler SetShowZone { get; set; } = null;
-		public BoolVoidHandler GetShowZone { get; set; } = null;
-		public VoidBoolHandler SetShowWave { get; set; } = null;
-		public BoolVoidHandler GetShowWave { get; set; } = null;
-		public VoidBoolHandler SetShowPreview { get; set; } = null;
-		public BoolVoidHandler GetShowPreview { get; set; } = null;
-		public VoidBoolHandler SetShowTip { get; set; } = null;
-		public BoolVoidHandler GetShowTip { get; set; } = null;
-		public VoidBoolHandler SetShowWelcome { get; set; } = null;
-		public BoolVoidHandler GetShowWelcome { get; set; } = null;
-		public VoidBoolHandler SetSnapProgress { get; set; } = null;
-		public BoolVoidHandler GetSnapProgress { get; set; } = null;
-		public VoidBoolHandler SetPositiveScroll { get; set; } = null;
-		public BoolVoidHandler GetPositiveScroll { get; set; } = null;
-		public VoidBoolHandler SetShowIndexLabel { get; set; } = null;
-		public BoolVoidHandler GetShowIndexLabel { get; set; } = null;
+		public bool UIReady { get; private set; } = true;
+		public ComponentData Component => m_Component;
 
 		// Short
 		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
 		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
+		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
 
 		// Ser
 		[SerializeField] private Grabber m_LanguageItemPrefab = null;
@@ -108,13 +120,14 @@
 		[SerializeField] private RectTransform m_GeneralContent = null;
 		[SerializeField] private RectTransform m_LanguageContent = null;
 		[SerializeField] private RectTransform m_SkinContent = null;
-		[SerializeField] private ComppnentData m_Component = default;
+		[SerializeField] private Text m_LanguageHint = null;
+		[SerializeField] private ComponentData m_Component = default;
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
 		// Data
 		private StageLanguage _Language = null;
 		private StageSkin _Skin = null;
-		private bool UIReady = true;
+		private StageMenu _Menu = null;
 
 
 		#endregion
@@ -133,172 +146,33 @@
 			// Content
 			m_GeneralContent.gameObject.SetActive(true);
 			m_LanguageContent.gameObject.SetActive(false);
+			m_SkinContent.gameObject.SetActive(false);
 
-			// Callback
-			m_Component.Framerate.onEndEdit.AddListener((str) => {
-				if (UIReady && int.TryParse(str, out int result)) {
-					SetFramerate(result);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.UIScale_0.onValueChanged.AddListener((isOn) => {
-				if (UIReady && isOn) {
-					SetUIScale(0);
-				}
-			});
-			m_Component.UIScale_1.onValueChanged.AddListener((isOn) => {
-				if (UIReady && isOn) {
-					SetUIScale(1);
-				}
-			});
-			m_Component.UIScale_2.onValueChanged.AddListener((isOn) => {
-				if (UIReady && isOn) {
-					SetUIScale(2);
-				}
-			});
-			m_Component.MusicVolume.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetMusicVolume((value - m_Component.MusicVolume.minValue) / (m_Component.MusicVolume.maxValue - m_Component.MusicVolume.minValue));
-					RefreshLogic(false);
-				}
-			});
-			m_Component.SfxVolume.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetSfxVolume((value - m_Component.SfxVolume.minValue) / (m_Component.SfxVolume.maxValue - m_Component.SfxVolume.minValue));
-					RefreshLogic(false);
-				}
-			});
-			m_Component.BgBright.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetBgBright((value - m_Component.SfxVolume.minValue) / (m_Component.SfxVolume.maxValue - m_Component.SfxVolume.minValue));
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowZone.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowZone(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowWave.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowWave(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowPreview.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowPreview(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowTip.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowTip(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowWelcome.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowWelcome(value);
-					RefreshLogic(false);
-				}
-			});
-			// Editor
-			m_Component.SnapProgress.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetSnapProgress(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.PositiveScroll.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetPositiveScroll(value);
-					RefreshLogic(false);
-				}
-			});
-			m_Component.ShowIndexLabel.onValueChanged.AddListener((value) => {
-				if (UIReady) {
-					SetShowIndexLabel(value);
-					RefreshLogic(false);
-				}
-			});
 			// Refresh
-			RefreshLogic();
+			RefreshLogic(true);
 		}
 
 
 		public void Refresh () {
 			Skin.RefreshAllSkinNames();
-			RefreshLogic();
+			RefreshLogic(true);
 		}
 
 
-		public void ResetSettings () => DialogUtil.Dialog_OK_Cancel(RESET_CONFIRM_KEY, DialogUtil.MarkType.Warning, () => {
-			ResetAllSettings();
-			RefreshLogic();
-		});
-
-
-		// UI
-		public void Close () {
-			transform.parent.gameObject.SetActive(false);
-			transform.parent.parent.InactiveIfNoChildActive();
-			transform.parent.DestroyAllChildImmediately();
-		}
-
-
-		public void OpenLanguageFolder () {
-			var path = Util.CombinePaths(Application.streamingAssetsPath, "Language");
-			if (!Util.DirectoryExists(path)) { return; }
-			Util.ShowInExplorer(path);
-		}
-
-
-		public void OpenSkinFolder () {
-			var path = Util.CombinePaths(Application.streamingAssetsPath, "Skins");
-			if (!Util.DirectoryExists(path)) { return; }
-			Util.ShowInExplorer(path);
-		}
-
-
-		public void UI_NewSkin () => FindObjectOfType<StageSkin>().UI_NewSkin();
-
-
-		#endregion
-
-
-
-
-		#region --- LGC ---
-
-
-		private void RefreshLogic (bool refreshDynamic = true) {
+		public void RefreshLogic (bool refreshDynamic) {
 
 			// General
 			UIReady = false;
-			m_Component.Framerate.text = GetFramerate().ToString();
-			int uiScale = GetUIScale();
-			m_Component.UIScale_0.isOn = uiScale == 0;
-			m_Component.UIScale_1.isOn = uiScale == 1;
-			m_Component.UIScale_2.isOn = uiScale == 2;
-			m_Component.MusicVolume.value = Mathf.Lerp(m_Component.MusicVolume.minValue, m_Component.MusicVolume.maxValue, Mathf.Clamp01(GetMusicVolume()));
-			m_Component.SfxVolume.value = Mathf.Lerp(m_Component.SfxVolume.minValue, m_Component.SfxVolume.maxValue, Mathf.Clamp01(GetSfxVolume()));
-			m_Component.BgBright.value = Mathf.Lerp(m_Component.BgBright.minValue, m_Component.BgBright.maxValue, Mathf.Clamp01(GetBgBright()));
-			m_Component.ShowZone.isOn = GetShowZone();
-			m_Component.ShowWave.isOn = GetShowWave();
-			m_Component.ShowPreview.isOn = GetShowPreview();
-			m_Component.ShowTip.isOn = GetShowTip();
-			m_Component.ShowWelcome.isOn = GetShowWelcome();
-			m_Component.SnapProgress.isOn = GetSnapProgress();
-			m_Component.PositiveScroll.isOn = GetPositiveScroll();
-			m_Component.ShowIndexLabel.isOn = GetShowIndexLabel();
+			try {
+				m_Component.RefreshAllUI();
+			} catch { }
 			UIReady = true;
 
+			// Dynamic
 			if (refreshDynamic) {
 				// Language
 				ClearLanguageLogic();
-				m_Component.LanguageHint.text = Language.GetDisplayName() + " - " + Language.Get("Author");
+				m_LanguageHint.text = Language.GetDisplayName() + " - " + Language.Get("Author");
 				foreach (var lan in Language.AllLanguages) {
 					var graber = Instantiate(m_LanguageItemPrefab, m_LanguageContent);
 					var rt = graber.transform as RectTransform;
@@ -339,6 +213,48 @@
 				}
 			}
 		}
+
+
+		public void ResetSettings () => DialogUtil.Dialog_OK_Cancel(RESET_CONFIRM_KEY, DialogUtil.MarkType.Warning, () => {
+			ResetAllSettings();
+			RefreshLogic(true);
+		});
+
+
+		// UI
+		public void Close () {
+			transform.parent.gameObject.SetActive(false);
+			transform.parent.parent.InactiveIfNoChildActive();
+			transform.parent.DestroyAllChildImmediately();
+		}
+
+
+		public void OpenLanguageFolder () {
+			var path = Util.CombinePaths(Application.streamingAssetsPath, "Language");
+			if (!Util.DirectoryExists(path)) { return; }
+			Util.ShowInExplorer(path);
+		}
+
+
+		public void OpenSkinFolder () {
+			var path = Util.CombinePaths(Application.streamingAssetsPath, "Skins");
+			if (!Util.DirectoryExists(path)) { return; }
+			Util.ShowInExplorer(path);
+		}
+
+
+		public void UI_NewSkin () => FindObjectOfType<StageSkin>().UI_NewSkin();
+
+
+		public void UI_OpenMenu (string key) => Menu.OpenMenu(key);
+
+
+		#endregion
+
+
+
+
+		#region --- LGC ---
 
 
 		private void RefreshLanguageTexts () {

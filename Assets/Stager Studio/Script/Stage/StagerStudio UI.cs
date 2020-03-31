@@ -11,6 +11,50 @@
 	public partial class StagerStudio { /// --- Spawn UI ---
 
 
+
+		[System.Serializable]
+		public enum InputType {
+			Frame,
+
+		}
+
+
+		[System.Serializable]
+		public enum ToggleType {
+			UIScale_0,
+			UIScale_1,
+			UIScale_2,
+			UseSFX,
+			ShowZone,
+			ShowWave,
+			ShowPreview,
+			ShowTip,
+			ShowWelcome,
+			SnapProgressbar,
+			PositiveScroll,
+			ShowIndexLabel,
+			ShowGrid,
+
+		}
+
+
+		[System.Serializable]
+		public enum SliderType {
+			MusicVolume,
+			SoundVolume,
+			BgBrightness,
+
+		}
+
+
+		// Const
+		private readonly static Dictionary<InputType, (System.Action<string> setHandler, System.Func<string> getHandler, SavingString saving, bool refreshUI)> InputItemMap = new Dictionary<InputType, (System.Action<string>, System.Func<string>, SavingString, bool)>();
+		private readonly static Dictionary<ToggleType, (System.Action<bool> setHandler, System.Func<bool> getHandler, SavingBool saving, bool refreshUI)> ToggleItemMap = new Dictionary<ToggleType, (System.Action<bool>, System.Func<bool>, SavingBool, bool)>();
+		private readonly static Dictionary<SliderType, (System.Action<float> setHandler, System.Func<float> getHandler, SavingFloat saving, bool refreshUI)> SliderItemMap = new Dictionary<SliderType, (System.Action<float>, System.Func<float>, SavingFloat, bool)>();
+
+		// Short
+		private bool ShowWelcome => ToggleItemMap[ToggleType.ShowWelcome].saving.Value;
+
 		// Ser
 		[Header("Spawn Prefab")]
 		[SerializeField] private SettingUI m_SettingPrefab = null;
@@ -39,20 +83,113 @@
 		[SerializeField] private RectTransform m_LoadingRoot = null;
 		[SerializeField] private RectTransform m_ProjectCreatorRoot = null;
 
-		// Saving
-		private SavingInt FrameRate = new SavingInt("SS.FrameRate", 120);
-		private SavingInt UIScale = new SavingInt("SS.UIScale", 1);
-		private SavingFloat MusicVolume = new SavingFloat("SS.MusicVolume", 0.5f);
-		private SavingFloat SfxVolume = new SavingFloat("SS.SfxVolume", 0.5f);
-		private SavingFloat BgBrightness = new SavingFloat("SS.BgBrightness", 0.309f);
-		private SavingBool ShowZone = new SavingBool("SS.ShowZone", true);
-		private SavingBool ShowWave = new SavingBool("SS.ShowWave", true);
-		private SavingBool ShowPreview = new SavingBool("SS.ShowPreview", true);
-		private SavingBool ShowTip = new SavingBool("SS.ShowTip", true);
-		private SavingBool ShowWelcome = new SavingBool("SS.ShowWelcome", true);
-		private SavingBool SnapProgress = new SavingBool("SS.SnapProgress", true);
-		private SavingBool PositiveScroll = new SavingBool("StageGame.PositiveScroll", true);
-		private SavingBool ShowIndexLabel = new SavingBool("StageGame.ShowIndexLabel", false);
+
+		// MSG
+		private void Awake_Setting () {
+
+			// Input
+			InputItemMap.Add(InputType.Frame, ((str) => {
+				if (int.TryParse(str, out int result)) {
+					Application.targetFrameRate = Mathf.Clamp(result, 12, 1200);
+					InputItemMap[InputType.Frame].saving.Value = result.ToString();
+				}
+			}, () => Application.targetFrameRate.ToString(), new SavingString("SS.FrameRate", "120"), true));
+
+			// Toggle
+			ToggleItemMap.Add(ToggleType.UIScale_0, ((isOn) => {
+				if (isOn) {
+					SetUIScale(0);
+					ToggleItemMap[ToggleType.UIScale_0].saving.Value = true;
+					ToggleItemMap[ToggleType.UIScale_1].saving.Value = false;
+					ToggleItemMap[ToggleType.UIScale_2].saving.Value = false;
+				}
+			}, null, new SavingBool("SS.UIScale0", false), false));
+
+			ToggleItemMap.Add(ToggleType.UIScale_1, ((isOn) => {
+				if (isOn) {
+					SetUIScale(1);
+					ToggleItemMap[ToggleType.UIScale_0].saving.Value = false;
+					ToggleItemMap[ToggleType.UIScale_1].saving.Value = true;
+					ToggleItemMap[ToggleType.UIScale_2].saving.Value = false;
+				}
+			}, null, new SavingBool("SS.UIScale1", true), false));
+
+			ToggleItemMap.Add(ToggleType.UIScale_2, ((isOn) => {
+				if (isOn) {
+					SetUIScale(2);
+					ToggleItemMap[ToggleType.UIScale_0].saving.Value = false;
+					ToggleItemMap[ToggleType.UIScale_1].saving.Value = false;
+					ToggleItemMap[ToggleType.UIScale_2].saving.Value = true;
+				}
+			}, null, new SavingBool("SS.UIScale2", false), false));
+
+			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
+				ToggleItemMap[ToggleType.UseSFX].saving.Value = isOn;
+			}, null, SFX.UseFX, true));
+
+			ToggleItemMap.Add(ToggleType.ShowZone, ((isOn) => {
+				m_Zone.ShowZone(isOn);
+				ToggleItemMap[ToggleType.ShowZone].saving.Value = isOn;
+			}, () => m_Zone.IsShowing, new SavingBool("SS.ShowZone", true), true));
+
+			ToggleItemMap.Add(ToggleType.ShowWave, ((isOn) => {
+				m_Wave.enabled = isOn;
+				ToggleItemMap[ToggleType.ShowWave].saving.Value = isOn;
+			}, null, new SavingBool("SS.ShowWave", true), true));
+
+			ToggleItemMap.Add(ToggleType.ShowPreview, ((isOn) => {
+				m_Preview.Show(isOn);
+				ToggleItemMap[ToggleType.ShowPreview].saving.Value = isOn;
+			}, () => m_Preview.gameObject.activeSelf, new SavingBool("SS.ShowPreview", true), true));
+
+			ToggleItemMap.Add(ToggleType.ShowTip, ((isOn) => {
+				m_TipLabel.gameObject.SetActive(isOn);
+				ToggleItemMap[ToggleType.ShowTip].saving.Value = isOn;
+			}, () => m_TipLabel.gameObject.activeSelf, new SavingBool("SS.ShowTip", true), true));
+
+			ToggleItemMap.Add(ToggleType.ShowWelcome, ((isOn) => {
+				ToggleItemMap[ToggleType.ShowWelcome].saving.Value = isOn;
+			}, null, new SavingBool("SS.ShowWelcome", true), true));
+
+			ToggleItemMap.Add(ToggleType.SnapProgressbar, ((isOn) => {
+				m_Progress.Snap = isOn;
+				ToggleItemMap[ToggleType.SnapProgressbar].saving.Value = isOn;
+			}, () => m_Progress.Snap, new SavingBool("SS.SnapProgress", true), true));
+
+			ToggleItemMap.Add(ToggleType.PositiveScroll, ((isOn) => {
+				Game.PositiveScroll = isOn;
+				ToggleItemMap[ToggleType.PositiveScroll].saving.Value = isOn;
+			}, () => Game.PositiveScroll, new SavingBool("StageGame.PositiveScroll", true), true));
+
+			ToggleItemMap.Add(ToggleType.ShowIndexLabel, ((isOn) => {
+				Object.StageObject.ShowIndexLabel = isOn;
+				ToggleItemMap[ToggleType.ShowIndexLabel].saving.Value = isOn;
+			}, () => Object.StageObject.ShowIndexLabel, new SavingBool("StageGame.ShowIndexLabel", false), true));
+
+			ToggleItemMap.Add(ToggleType.ShowGrid, ((isOn) => {
+				Game.SetShowGrid(isOn);
+			}, () => Game.ShowGrid, Game.ShowGrid, true));
+
+			// Slider
+			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
+				value = Mathf.Clamp01(value / 12f);
+				Music.Volume = value;
+				SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
+			}, () => Music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
+
+			SliderItemMap.Add(SliderType.SoundVolume, ((value) => {
+				value = Mathf.Clamp01(value / 12f);
+				Music.SfxVolume = value;
+				SliderItemMap[SliderType.SoundVolume].saving.Value = value * 12f;
+			}, () => Music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
+
+			SliderItemMap.Add(SliderType.BgBrightness, ((value) => {
+				value = Mathf.Clamp01(value / 12f);
+				m_Background.SetBrightness(value);
+				SliderItemMap[SliderType.BgBrightness].saving.Value = value * 12f;
+			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
+
+		}
 
 
 		// UI
@@ -69,33 +206,41 @@
 				ResetAllSettings();
 				LoadAllSettings();
 			};
-			setting.GetFramerate = () => Application.targetFrameRate;
-			setting.SetFramerate = SetFramerate;
-			setting.GetUIScale = () => UIScale;
-			setting.SetUIScale = SetUIScale;
-			setting.GetMusicVolume = () => Music.Volume;
-			setting.SetMusicVolume = SetMusicVolume;
-			setting.GetSfxVolume = () => Music.SfxVolume;
-			setting.SetSfxVolume = SetSfxVolume;
-			setting.GetBgBright = () => m_Background.Brightness;
-			setting.SetBgBright = SetBgBrightness;
-			setting.GetShowZone = () => m_Zone.IsShowing;
-			setting.SetShowZone = SetShowZone;
-			setting.GetShowWave = () => ShowWave;
-			setting.SetShowWave = SetShowWave;
-			setting.GetShowPreview = () => m_Preview.gameObject.activeSelf;
-			setting.SetShowPreview = SetShowPreview;
-			setting.GetShowTip = () => m_TipLabel.gameObject.activeSelf;
-			setting.SetShowTip = SetShowTip;
-			setting.GetShowWelcome = () => ShowWelcome;
-			setting.SetShowWelcome = SetShowWelcome;
-			setting.GetSnapProgress = () => SnapProgress;
-			setting.SetSnapProgress = SetSnapProgress;
-			setting.GetPositiveScroll = () => Game.PositiveScroll;
-			setting.SetPositiveScroll = SetPositiveScroll;
-			setting.GetShowIndexLabel = () => Object.StageObject.ShowIndexLabel;
-			setting.SetShowIndexLabel = SetShowIndexLabel;
 
+			// Init Components
+			setting.Component.ForAllInputs((item) => {
+				var (set, get, saving, refreshUI) = InputItemMap[item.Type];
+				item.InitItem((str) => {
+					if (!setting.UIReady) { return; }
+					set(str);
+					if (refreshUI) {
+						setting.RefreshLogic(false);
+					}
+				});
+				item.GetHandler = get ?? (() => saving);
+			});
+			setting.Component.ForAllToggles((item) => {
+				var (set, get, saving, refreshUI) = ToggleItemMap[item.Type];
+				item.InitItem((isOn) => {
+					if (!setting.UIReady) { return; }
+					set(isOn);
+					if (refreshUI) {
+						setting.RefreshLogic(false);
+					}
+				});
+				item.GetHandler = get ?? (() => saving);
+			});
+			setting.Component.ForAllSliders((item) => {
+				var (set, get, saving, refreshUI) = SliderItemMap[item.Type];
+				item.InitItem((value) => {
+					if (!setting.UIReady) { return; }
+					set(value);
+					if (refreshUI) {
+						setting.RefreshLogic(false);
+					}
+				});
+				item.GetHandler = get ?? (() => saving);
+			});
 			setting.Init();
 		}
 
@@ -239,94 +384,41 @@
 
 		// LGC
 		private void LoadAllSettings () {
-			SetFramerate(FrameRate);
-			SetUIScale(UIScale);
-			SetMusicVolume(MusicVolume);
-			SetSfxVolume(SfxVolume);
-			SetBgBrightness(BgBrightness);
-			SetShowZone(ShowZone);
-			SetShowWave(ShowWave);
-			SetShowPreview(ShowPreview);
-			SetShowTip(ShowTip);
-			SetShowWelcome(ShowWelcome);
-			SetSnapProgress(SnapProgress);
-			SetPositiveScroll(PositiveScroll);
-			SetShowIndexLabel(ShowIndexLabel);
+			foreach (var pair in InputItemMap) {
+				pair.Value.setHandler(pair.Value.saving);
+			}
+			foreach (var pair in ToggleItemMap) {
+				pair.Value.setHandler(pair.Value.saving);
+			}
+			foreach (var pair in SliderItemMap) {
+				pair.Value.setHandler(pair.Value.saving);
+			}
 		}
+
+
 		private void ResetAllSettings () {
-			FrameRate.Reset();
-			UIScale.Reset();
-			MusicVolume.Reset();
-			SfxVolume.Reset();
-			BgBrightness.Reset();
-			ShowZone.Reset();
-			ShowWave.Reset();
-			ShowPreview.Reset();
-			ShowTip.Reset();
-			SnapProgress.Reset();
-			PositiveScroll.Reset();
-			ShowIndexLabel.Reset();
+			foreach (var pair in InputItemMap) {
+				pair.Value.saving.Reset();
+			}
+			foreach (var pair in ToggleItemMap) {
+				pair.Value.saving.Reset();
+			}
+			foreach (var pair in SliderItemMap) {
+				pair.Value.saving.Reset();
+			}
 		}
-		private void SetFramerate (int fRate) {
-			fRate = Mathf.Clamp(fRate, 12, 1200);
-			FrameRate.Value = fRate;
-			Application.targetFrameRate = fRate;
-		}
+
+
+		// Setting Logic
 		private void SetUIScale (int uiScale) {
 			uiScale = Mathf.Clamp(uiScale, 0, 2);
-			UIScale.Value = uiScale;
 			var scalers = m_CanvasRoot.GetComponentsInChildren<CanvasScaler>(true);
 			float height = uiScale == 0 ? 1000 : uiScale == 1 ? 800 : 600;
 			foreach (var scaler in scalers) {
 				scaler.referenceResolution = new Vector2(scaler.referenceResolution.x, height);
 			}
 		}
-		private void SetMusicVolume (float volume) {
-			volume = Mathf.Clamp01(volume);
-			MusicVolume.Value = volume;
-			Music.Volume = volume;
-		}
-		private void SetSfxVolume (float volume) {
-			volume = Mathf.Clamp01(volume);
-			SfxVolume.Value = volume;
-			Music.SfxVolume = volume;
-		}
-		private void SetBgBrightness (float value) {
-			value = Mathf.Clamp01(value);
-			BgBrightness.Value = value;
-			m_Background.SetBrightness(value);
-		}
-		private void SetShowZone (bool show) {
-			ShowZone.Value = show;
-			m_Zone.ShowZone(show);
-		}
-		private void SetShowWave (bool show) {
-			ShowWave.Value = show;
-			m_Wave.enabled = show;
-		}
-		private void SetShowPreview (bool show) {
-			ShowPreview.Value = show;
-			m_Preview.Show(show);
-		}
-		private void SetShowTip (bool show) {
-			ShowTip.Value = show;
-			m_TipLabel.gameObject.SetActive(show);
-		}
-		private void SetShowWelcome (bool show) {
-			ShowWelcome.Value = show;
-		}
-		private void SetSnapProgress (bool snap) {
-			SnapProgress.Value = snap;
-			m_Progress.Snap = snap;
-		}
-		private void SetPositiveScroll (bool positive) {
-			PositiveScroll.Value = positive;
-			Game.PositiveScroll = positive;
-		}
-		private void SetShowIndexLabel (bool show) {
-			ShowIndexLabel.Value = show;
-			Object.StageObject.ShowIndexLabel = show;
-		}
+
 
 	}
 }

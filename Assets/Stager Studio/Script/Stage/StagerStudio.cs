@@ -53,6 +53,7 @@
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageGame Game => _Game != null ? _Game : (_Game = FindObjectOfType<StageGame>());
+		private StageSoundFX SFX => _SFX != null ? _SFX : (_SFX = FindObjectOfType<StageSoundFX>());
 		private StageEditor Editor => _Editor != null ? _Editor : (_Editor = FindObjectOfType<StageEditor>());
 		private StageLibrary Library => _Library != null ? _Library : (_Library = FindObjectOfType<StageLibrary>());
 		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
@@ -68,7 +69,6 @@
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Toggle m_UseDynamicSpeed = null;
 		[SerializeField] private Toggle m_UseAbreastView = null;
-		[SerializeField] private Toggle m_GridTG = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
@@ -90,6 +90,7 @@
 		private StageMusic _Music = null;
 		private StageProject _Project = null;
 		private StageGame _Game = null;
+		private StageSoundFX _SFX = null;
 		private StageEditor _Editor = null;
 		private StageLibrary _Library = null;
 		private StageLanguage _Language = null;
@@ -109,9 +110,9 @@
 
 		private void Awake () {
 			Awake_Message();
+			Awake_Setting();
 			Awake_Menu();
 			Awake_Object();
-			Awake_Setting();
 			Awake_Project();
 			Awake_Game();
 			Awake_Music();
@@ -126,6 +127,7 @@
 
 
 		private void Start () {
+			LoadAllSettings();
 			UI_RemoveUI();
 			if (Screen.fullScreen) {
 				Screen.fullScreen = false;
@@ -201,14 +203,14 @@
 
 		private void Awake_Menu () {
 			// Grid
-			Menu.AddCheckerFunc("Menu.Grid.x0", () => Game.GridX == 1);
-			Menu.AddCheckerFunc("Menu.Grid.x1", () => Game.GridX == 3);
-			Menu.AddCheckerFunc("Menu.Grid.x2", () => Game.GridX == 7);
-			Menu.AddCheckerFunc("Menu.Grid.x3", () => Game.GridX == 15);
-			Menu.AddCheckerFunc("Menu.Grid.y0", () => Game.GridY == 1);
-			Menu.AddCheckerFunc("Menu.Grid.y1", () => Game.GridY == 2);
-			Menu.AddCheckerFunc("Menu.Grid.y2", () => Game.GridY == 4);
-			Menu.AddCheckerFunc("Menu.Grid.y3", () => Game.GridY == 8);
+			Menu.AddCheckerFunc("Menu.Grid.x0", () => Game.GridCountX == 1);
+			Menu.AddCheckerFunc("Menu.Grid.x1", () => Game.GridCountX == 3);
+			Menu.AddCheckerFunc("Menu.Grid.x2", () => Game.GridCountX == 7);
+			Menu.AddCheckerFunc("Menu.Grid.x3", () => Game.GridCountX == 15);
+			Menu.AddCheckerFunc("Menu.Grid.y0", () => Game.GridCountY == 1);
+			Menu.AddCheckerFunc("Menu.Grid.y1", () => Game.GridCountY == 2);
+			Menu.AddCheckerFunc("Menu.Grid.y2", () => Game.GridCountY == 4);
+			Menu.AddCheckerFunc("Menu.Grid.y3", () => Game.GridCountY == 8);
 			// Auto Save
 			Menu.AddCheckerFunc("Menu.AutoSave.0", () => Mathf.Abs(Project.UI_AutoSaveTime - 30f) < 1f);
 			Menu.AddCheckerFunc("Menu.AutoSave.1", () => Mathf.Abs(Project.UI_AutoSaveTime - 120f) < 1f);
@@ -216,12 +218,9 @@
 			Menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(Project.UI_AutoSaveTime - 600f) < 1f);
 			Menu.AddCheckerFunc("Menu.AutoSave.Off", () => Project.UI_AutoSaveTime < 0f);
 			// Beat per Section
-			Menu.AddCheckerFunc("Menu.Grid.bps0", () => Game.TheBeatPerSection == 3);
-			Menu.AddCheckerFunc("Menu.Grid.bps1", () => Game.TheBeatPerSection == 4);
+			Menu.AddCheckerFunc("Menu.Grid.bps0", () => Game.BeatPerSection == 3);
+			Menu.AddCheckerFunc("Menu.Grid.bps1", () => Game.BeatPerSection == 4);
 		}
-
-
-		private void Awake_Setting () => LoadAllSettings();
 
 
 		private void Awake_Object () {
@@ -368,10 +367,9 @@
 				RefreshGridRenderer();
 			};
 			StageGame.OnGridChanged = () => {
-				m_GridTG.isOn = Game.TheShowGrid;
-				m_GridRenderer.SetShow(Game.TheShowGrid);
-				Track.BeatPerSection = Game.TheBeatPerSection;
-				StageObject.ShowGrid = Game.TheShowGrid;
+				m_GridRenderer.SetShow(Game.ShowGrid);
+				Track.BeatPerSection = Game.BeatPerSection;
+				StageObject.ShowGrid = Game.ShowGrid;
 				RefreshGridRenderer();
 			};
 			StageGame.OnRatioChanged = (ratio) => {
@@ -613,8 +611,8 @@
 
 
 		private void RefreshGridRenderer () {
-			m_GridRenderer.CountX = Game.GridX;
-			m_GridRenderer.TimeGap = 60f / Game.BPM / Game.GridY;
+			m_GridRenderer.CountX = Game.GridCountX;
+			m_GridRenderer.TimeGap = 60f / Game.BPM / Game.GridCountY;
 			m_GridRenderer.TimeGap_Main = 60f / Game.BPM;
 			m_GridRenderer.TimeOffset = Game.Shift;
 			m_GridRenderer.SpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;

@@ -1,5 +1,5 @@
-﻿UI.SkinEditor.Highlight
-Highlight
+﻿Tip.DynamicDropSpeed
+Use dynamic note drop speed
 
 Author
 Stager Official
@@ -442,12 +442,6 @@ Select beatmap and open
 Tip.CancelFocus
 Cancel focus mode
 
-Tip.DynamicDropSpeed
-Use dynamic drop speed
-
-Tip.Grid
-Show grid (right click to show menu)
-
 Tip.Lib.Motion
 Motion brush
 
@@ -540,6 +534,9 @@ Show preview of the beatmap on the progress bar or not
 
 Tip.Setting.Reset
 Reset all settings
+
+Tip.Setting.SFX
+Use sound effects or not, turning this off will reduce CPU load
 
 Tip.Setting.ShowIndexLabel
 Show the index label or not
@@ -754,8 +751,8 @@ Use Positive Mouse Scroll
 UI.Setting.Preview
 Show Beatmap Preview
 
-UI.Setting.SfxVolume
-Sound Volume
+UI.Setting.ShowGrid
+Show Auxiliary Grid for Brushs and Tracks
 
 UI.Setting.ShowIndexLabelIndexLabel
 Show Index Label for Stage,Track and Note
@@ -769,6 +766,9 @@ Show Welcome Panel
 UI.Setting.SnapProgress
 Snap When Setting Music Time with Progressbar
 
+UI.Setting.SoundVolume
+Sound Volume
+
 UI.Setting.UIScale
 UI Scale
 
@@ -780,6 +780,9 @@ Normal
 
 UI.Setting.UIScale.2
 Large
+
+UI.Setting.UseSFX
+Sound FX
 
 UI.Setting.Wave
 Show Sound Wave
@@ -801,6 +804,9 @@ Fixed Ratio
 
 UI.SkinEditor.Forward
 Forward
+
+UI.SkinEditor.Highlight
+Highlight
 
 UI.SkinEditor.ImportImage
 Import Image

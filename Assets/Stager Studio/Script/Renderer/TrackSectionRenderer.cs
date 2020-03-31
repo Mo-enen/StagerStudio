@@ -64,6 +64,7 @@
 		[SerializeField] private Sprite m_SpriteH = null;
 		[SerializeField] private Sprite m_SectionBody = null;
 		[SerializeField] private ushort m_Thickness = 1;
+		[SerializeField] private ushort m_Width = 40;
 		[SerializeField] private Color m_SectionColor = default;
 		[SerializeField] private Color[] m_RulerColors = default;
 
@@ -119,10 +120,10 @@
 					float nextY01 = y01 + GetAreaBetween(time, time + TimeGap, SpeedMuti);
 					if (time >= MusicTime - TimeGap) {
 						AddQuad01(
-							0f, 0.008f / Scale.x,
+							0f, m_Width / 1000f / Scale.x,
 							Mathf.Max(y01, 0f),
 							Mathf.Min(nextY01, 1f),
-							uvMin0.x, uvMin0.x, uvMin0.y, uvMin0.y, Vector3.zero
+							uvMin0.x, uvMax0.x, uvMin0.y, uvMax0.y, Vector3.zero
 						);
 					}
 					y01 = nextY01;

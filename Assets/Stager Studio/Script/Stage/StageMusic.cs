@@ -69,11 +69,6 @@
 			get => Mathf.Sqrt(_SfxVolume);
 			set {
 				_SfxVolume = value * value;
-				if (!(ClickSoundSources is null)) {
-					foreach (var source in ClickSoundSources) {
-						source.volume = _SfxVolume;
-					}
-				}
 			}
 		}
 
@@ -238,7 +233,7 @@
 			if (len == 0) { return; }
 			index = Mathf.Clamp(index, 0, len - 1);
 			var source = ClickSoundSources[index];
-			source.volume = volume;
+			source.volume = volume * SfxVolume;
 			source.PlayDelayed(0);
 		}
 

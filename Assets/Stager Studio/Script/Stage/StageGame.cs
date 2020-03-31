@@ -64,10 +64,6 @@
 		public bool UseAbreast { get; private set; } = false;
 		public bool AllStageAbreast { get; private set; } = false;
 		public int AbreastIndex => Mathf.Max(_AbreastIndex, 0);
-		public bool TheShowGrid => ShowGrid;
-		public int GridX => GridCountX;
-		public int GridY => GridCountY;
-		public int TheBeatPerSection => BeatPerSection;
 		public bool PositiveScroll { get; set; } = true;
 		public float AbreastWidth { get; private set; } = 1f;
 
@@ -96,13 +92,14 @@
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
 		private float MouseDownMusicTime = -1f;
+		private bool MusicPlayingForMouseDrag = false;
 
 		// Saving
-		private SavingBool ShowGrid = new SavingBool("StageGame.ShowGrid", true);
-		private SavingInt GridCountX = new SavingInt("StageGame.GridCountX", 3);
-		private SavingInt GridCountY = new SavingInt("StageGame.GridCountY", 1);
-		private SavingInt BeatPerSection = new SavingInt("StageGame.BeatPerSection", 4);
-		private SavingInt AbreastWidthIndex = new SavingInt("StageGame.AbreastWidthIndex", 0);
+		public SavingBool ShowGrid { get; private set; } = new SavingBool("StageGame.ShowGrid", true);
+		public SavingInt GridCountX { get; private set; } = new SavingInt("StageGame.GridCountX", 3);
+		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 1);
+		public SavingInt BeatPerSection { get; private set; } = new SavingInt("StageGame.BeatPerSection", 4);
+		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 0);
 
 
 		#endregion
@@ -243,7 +240,7 @@
 						// Zoom
 						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
 						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.0"), false);
-					} else if (!Music.IsPlaying) {
+					} else {
 						// Seek
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
 						if (Input.GetKey(KeyCode.LeftAlt)) {
@@ -257,10 +254,12 @@
 			}
 			// Right
 			if (Input.GetMouseButton(1)) {
-				if (MouseDownMusicTime < 0.5f) {
+				if (MouseDownMusicTime < -0.5f) {
 					// Right Down
 					if (MouseDownMusicTime > -1.5f) {
 						MouseDownMusicTime = CheckAntiMouse() ? GetMusicTimeAt(Input.mousePosition) : -2f;
+						MusicPlayingForMouseDrag = Music.IsPlaying;
+						Music.Pause();
 					}
 				} else {
 					// Right Drag
@@ -272,6 +271,12 @@
 					));
 				}
 			} else {
+				if (MouseDownMusicTime > -0.5f) {
+					// Up
+					if (MusicPlayingForMouseDrag) {
+						Music.Play();
+					}
+				}
 				MouseDownMusicTime = -1f;
 			}
 			// Func
@@ -329,13 +334,15 @@
 		public void SetSpeedCurveDirty () => SpeedCurveDirty = true;
 
 
-		public float FillDropTime (float time, float fill, float muti) => UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
+		public float FillDropTime (float time, float fill, float muti) =>
+			UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
 
 
 		public float AreaBetweenDrop (float time, float muti) => AreaBetween(0f, time, muti);
 
 
-		public float AreaBetween (float timeA, float timeB, float muti) => UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : timeB * muti;
+		public float AreaBetween (float timeA, float timeB, float muti) =>
+			UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
 
 
 		// Grid

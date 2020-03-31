@@ -361,7 +361,8 @@
 			public int TrackIndex = -1;
 			public int LinkedNoteIndex = -1;
 			public short ClickSoundIndex = -1;
-			public int SoundFxIndex = -1;
+			public byte SoundFxIndex = 0;
+			public byte SoundFxParam = 0;
 			public bool Tap = true;
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
