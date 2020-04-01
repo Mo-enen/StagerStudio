@@ -1,7 +1,4 @@
-﻿Tip.DynamicDropSpeed
-Use dynamic note drop speed
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -346,6 +343,99 @@ Can not have more than 256 tweens.
 Setting.ResetConfirm
 Reset all settings back to default?
 
+Shortcut.AbreastView
+Panorama View
+
+Shortcut.Brush.Motion
+Motion Brush
+
+Shortcut.Brush.Note
+Note Brush
+
+Shortcut.Brush.Speed
+Speed Brush
+
+Shortcut.Brush.Stage
+Stage Brush
+
+Shortcut.Brush.Track
+Track Brush
+
+Shortcut.CancelZone
+Cancel
+
+Shortcut.DynamicDrop
+Dynamic Drop Speed
+
+Shortcut.Eye.Motion
+Hide Motion Note
+
+Shortcut.Eye.Note
+Hide Note
+
+Shortcut.Eye.Speed
+Hide Speed Note
+
+Shortcut.Eye.Stage
+Hide Stage
+
+Shortcut.Eye.Track
+Hide Track
+
+Shortcut.Lock.Motion
+Lock Motion Note
+
+Shortcut.Lock.Note
+Lock Note
+
+Shortcut.Lock.Speed
+Lock Speed Note
+
+Shortcut.Lock.Stage
+Lock Stage
+
+Shortcut.LockTrack
+Lock Track
+
+Shortcut.OpenProjectInfo
+Open Project Info
+
+Shortcut.OpenSetting
+Open Setting
+
+Shortcut.PitchDown
+Music Slower
+
+Shortcut.PitchUp
+Music Faster
+
+Shortcut.PlayPause
+Play / Pause
+
+Shortcut.PlayRepause
+Play / Repause
+
+Shortcut.Redo
+Redo
+
+Shortcut.SaveProject
+Save
+
+Shortcut.Seek.Negative
+Rewind
+
+Shortcut.Seek.Positive
+Fast Forward
+
+Shortcut.ShowGrid
+Show Grid
+
+Shortcut.SwitchFocus
+Focus Mode
+
+Shortcut.Undo
+Undo
+
 Skin.Confirm.DeleteSkinConfirm
 Delete skin {0}?
 
@@ -441,6 +531,9 @@ Select beatmap and open
 
 Tip.CancelFocus
 Cancel focus mode
+
+Tip.DynamicDropSpeed
+Use dynamic note drop speed
 
 Tip.Lib.Motion
 Motion brush
@@ -660,6 +753,9 @@ New
 
 UI.OpenLanguageFolder
 Open Language Folder
+
+UI.OpenShortcutFolder
+Open Shortcut Folder
 
 UI.OpenSkinFolder
 Open Skin Folder
@@ -891,6 +987,9 @@ Language
 
 UI.Tab.Palette
 Palette
+
+UI.Tab.Shortcut
+Shortcut
 
 UI.Tab.Skin
 Skin

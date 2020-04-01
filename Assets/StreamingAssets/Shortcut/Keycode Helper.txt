@@ -1,43 +1,43 @@
 ﻿Format of Shortcut.txt in StagerStudio v0.1.0:
 
 	Action,	Key,	Ctrl,	Shift,	Alt#
+	Action,	Key,	Ctrl,	Shift,	Alt#
+	Action,	Key,	Ctrl,	Shift,	Alt#
+	...
 
 Available Actions:
 
-	Play/Pause
-	Play/Repause
-	SaveProject
-	CancelStage
-	OpenProjectInfo
-	OpenSetting
-	DynamicDrop
-	AbreastView
-	OpenCloud
-	BrushStage
-	BrushTrack
-	BrushNote
-	BrushSpeed
-	BrushMotion
-	UndoStage
-	RedoStage
-	EyeStage
-	EyeTrack
-	EyeNote
-	EyeSpeed
-	EyeMotion
-	EyeLuminous
-	ShowGrid
-	LockStage
-	LockTrack
-	LockNote
-	LockSpeed
-	LockMotion
-	LockLuminous
-	SwitchFocus
-	SeekBPM+1
-	SeekBPM-1
-	PitchUp
-	PitchDown
+	Shortcut.PlayPause
+	Shortcut.PlayRepause
+	Shortcut.SaveProject
+	Shortcut.CancelZone
+	Shortcut.OpenProjectInfo
+	Shortcut.OpenSetting
+	Shortcut.DynamicDrop
+	Shortcut.AbreastView
+	Shortcut.Brush.Stage
+	Shortcut.Brush.Track
+	Shortcut.Brush.Note
+	Shortcut.Brush.Speed
+	Shortcut.Brush.Motion
+	Shortcut.Undo
+	Shortcut.Redo
+	Shortcut.Eye.Stage
+	Shortcut.Eye.Track
+	Shortcut.Eye.Note
+	Shortcut.Eye.Speed
+	Shortcut.Eye.Motion
+	Shortcut.ShowGrid
+	Shortcut.Lock.Stage
+	Shortcut.LockTrack
+	Shortcut.Lock.Note
+	Shortcut.Lock.Speed
+	Shortcut.Lock.Motion
+	Shortcut.SwitchFocus
+	Shortcut.Seek.Positive
+	Shortcut.Seek.Negative
+	Shortcut.PitchUp
+	Shortcut.PitchDown
 
 Available Keys:
 

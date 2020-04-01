@@ -182,6 +182,7 @@ MonoBehaviour:
   m_SectionBody: {fileID: -666367858726670617, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Thickness: 1
+  m_Width: 4
   m_SectionColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.2}
   m_RulerColors:
   - {r: 0.851, g: 0.21819638, b: 0.120841965, a: 0.7019608}

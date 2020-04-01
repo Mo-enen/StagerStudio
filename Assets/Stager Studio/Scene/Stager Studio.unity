@@ -2198,7 +2198,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting
-  m_HotKey: OpenSetting
+  m_HotKey: Shortcut.OpenSetting
 --- !u!114 &245646869
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3031,7 +3031,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.AbreastView
-  m_HotKey: AbreastView
+  m_HotKey: Shortcut.AbreastView
 --- !u!114 &338648238
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3184,7 +3184,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Lib.Stage
-  m_HotKey: BrushStage
+  m_HotKey: Shortcut.Brush.Stage
 --- !u!114 &343902377
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3568,7 +3568,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.Stage
-  m_HotKey: EyeStage
+  m_HotKey: Shortcut.Eye.Stage
 --- !u!114 &378928411
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5068,7 +5068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.Pause
-  m_HotKey: Play/Pause
+  m_HotKey: Shortcut.PlayPause
 --- !u!114 &632332115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5672,7 +5672,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Lib.Speed
-  m_HotKey: BrushSpeed
+  m_HotKey: Shortcut.Brush.Speed
 --- !u!114 &707793162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6279,7 +6279,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Datas:
-  - Name: Play/Pause
+  - Name: Shortcut.PlayPause
     Key: 32
     Ctrl: 0
     Shift: 0
@@ -6301,7 +6301,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: Play/Repause
+  - Name: Shortcut.PlayRepause
     Key: 8
     Ctrl: 0
     Shift: 0
@@ -6323,7 +6323,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: SaveProject
+  - Name: Shortcut.SaveProject
     Key: 115
     Ctrl: 1
     Shift: 0
@@ -6344,16 +6344,14 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: CancelStage
+  - Name: Shortcut.CancelZone
     Key: 27
     Ctrl: 0
     Shift: 0
     Alt: 0
     AntiTFs:
     - {fileID: 213184611}
-    - {fileID: 1091387902}
-    - {fileID: 827280940}
-    - {fileID: 827863065}
+    - {fileID: 1820277924}
     Action:
       m_PersistentCalls:
         m_Calls:
@@ -6366,17 +6364,6 @@ MonoBehaviour:
             m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: Menu.NavigationHome
-            m_BoolArgument: 0
-          m_CallState: 2
-        - m_Target: {fileID: 1488624210}
-          m_MethodName: UI_RemoveUI
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
         - m_Target: {fileID: 150025562}
@@ -6423,7 +6410,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: OpenProjectInfo
+  - Name: Shortcut.OpenProjectInfo
     Key: 112
     Ctrl: 1
     Shift: 1
@@ -6444,7 +6431,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: OpenSetting
+  - Name: Shortcut.OpenSetting
     Key: 115
     Ctrl: 1
     Shift: 1
@@ -6465,7 +6452,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: DynamicDrop
+  - Name: Shortcut.DynamicDrop
     Key: 109
     Ctrl: 0
     Shift: 0
@@ -6487,7 +6474,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: AbreastView
+  - Name: Shortcut.AbreastView
     Key: 9
     Ctrl: 0
     Shift: 0
@@ -6509,27 +6496,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: OpenCloud
-    Key: 104
-    Ctrl: 1
-    Shift: 1
-    Alt: 0
-    AntiTFs: []
-    Action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1488624210}
-          m_MethodName: UI_SpawnCloudHub
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Name: BrushStage
+  - Name: Shortcut.Brush.Stage
     Key: 49
     Ctrl: 0
     Shift: 0
@@ -6551,7 +6518,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: BrushTrack
+  - Name: Shortcut.Brush.Track
     Key: 50
     Ctrl: 0
     Shift: 0
@@ -6573,7 +6540,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: BrushNote
+  - Name: Shortcut.Brush.Note
     Key: 51
     Ctrl: 0
     Shift: 0
@@ -6595,7 +6562,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: BrushSpeed
+  - Name: Shortcut.Brush.Speed
     Key: 52
     Ctrl: 0
     Shift: 0
@@ -6617,7 +6584,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: BrushMotion
+  - Name: Shortcut.Brush.Motion
     Key: 53
     Ctrl: 0
     Shift: 0
@@ -6639,7 +6606,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: UndoStage
+  - Name: Shortcut.Undo
     Key: 122
     Ctrl: 1
     Shift: 0
@@ -6661,7 +6628,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: RedoStage
+  - Name: Shortcut.Redo
     Key: 121
     Ctrl: 1
     Shift: 0
@@ -6683,7 +6650,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeStage
+  - Name: Shortcut.Eye.Stage
     Key: 49
     Ctrl: 1
     Shift: 0
@@ -6705,7 +6672,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeTrack
+  - Name: Shortcut.Eye.Track
     Key: 50
     Ctrl: 1
     Shift: 0
@@ -6727,7 +6694,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeNote
+  - Name: Shortcut.Eye.Note
     Key: 51
     Ctrl: 1
     Shift: 0
@@ -6749,7 +6716,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeSpeed
+  - Name: Shortcut.Eye.Speed
     Key: 52
     Ctrl: 1
     Shift: 0
@@ -6771,7 +6738,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeMotion
+  - Name: Shortcut.Eye.Motion
     Key: 53
     Ctrl: 1
     Shift: 0
@@ -6793,29 +6760,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 1
           m_CallState: 2
-  - Name: EyeLuminous
-    Key: 54
-    Ctrl: 1
-    Shift: 0
-    Alt: 0
-    AntiTFs:
-    - {fileID: 1820277924}
-    - {fileID: 213184611}
-    Action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1688303050}
-          m_MethodName: UI_SwitchContainerActive
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 5
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 1
-          m_CallState: 2
-  - Name: ShowGrid
+  - Name: Shortcut.ShowGrid
     Key: 103
     Ctrl: 0
     Shift: 0
@@ -6837,7 +6782,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockStage
+  - Name: Shortcut.Lock.Stage
     Key: 49
     Ctrl: 0
     Shift: 0
@@ -6859,7 +6804,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockTrack
+  - Name: Shortcut.LockTrack
     Key: 50
     Ctrl: 0
     Shift: 0
@@ -6881,7 +6826,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockNote
+  - Name: Shortcut.Lock.Note
     Key: 51
     Ctrl: 0
     Shift: 0
@@ -6903,7 +6848,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockSpeed
+  - Name: Shortcut.Lock.Speed
     Key: 52
     Ctrl: 0
     Shift: 0
@@ -6925,7 +6870,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockMotion
+  - Name: Shortcut.Lock.Motion
     Key: 53
     Ctrl: 0
     Shift: 0
@@ -6947,29 +6892,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: LockLuminous
-    Key: 54
-    Ctrl: 0
-    Shift: 0
-    Alt: 1
-    AntiTFs:
-    - {fileID: 1820277924}
-    - {fileID: 213184611}
-    Action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1688303050}
-          m_MethodName: UI_SwitchLock
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 5
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Name: SwitchFocus
+  - Name: Shortcut.SwitchFocus
     Key: 102
     Ctrl: 0
     Shift: 0
@@ -6991,7 +6914,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: SeekBPM+1
+  - Name: Shortcut.Seek.Positive
     Key: 275
     Ctrl: 0
     Shift: 0
@@ -7013,7 +6936,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: SeekBPM-1
+  - Name: Shortcut.Seek.Negative
     Key: 276
     Ctrl: 0
     Shift: 0
@@ -7035,7 +6958,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: PitchUp
+  - Name: Shortcut.PitchUp
     Key: 273
     Ctrl: 1
     Shift: 0
@@ -7057,7 +6980,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Name: PitchDown
+  - Name: Shortcut.PitchDown
     Key: 274
     Ctrl: 1
     Shift: 0
@@ -8311,7 +8234,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.PitchDown
-  m_HotKey: PitchDown
+  m_HotKey: Shortcut.PitchDown
 --- !u!114 &836490918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8621,7 +8544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ProjectInfo
-  m_HotKey: OpenProjectInfo
+  m_HotKey: Shortcut.OpenProjectInfo
 --- !u!114 &848241077
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9179,7 +9102,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Lib.Note
-  m_HotKey: BrushNote
+  m_HotKey: Shortcut.Brush.Note
 --- !u!114 &950759066
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10057,7 +9980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.Play
-  m_HotKey: Play/Pause
+  m_HotKey: Shortcut.PlayPause
 --- !u!114 &1155274600
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10418,7 +10341,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.Track
-  m_HotKey: EyeTrack
+  m_HotKey: Shortcut.Eye.Track
 --- !u!114 &1257152343
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10720,7 +10643,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.NoteLock
-  m_HotKey: LockNote
+  m_HotKey: Shortcut.Lock.Note
 --- !u!1 &1297916549
 GameObject:
   m_ObjectHideFlags: 0
@@ -10846,7 +10769,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.Note
-  m_HotKey: EyeNote
+  m_HotKey: Shortcut.Eye.Note
 --- !u!114 &1297916555
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10998,7 +10921,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.SpeedLock
-  m_HotKey: LockSpeed
+  m_HotKey: Shortcut.Lock.Speed
 --- !u!1 &1320186992
 GameObject:
   m_ObjectHideFlags: 0
@@ -12206,7 +12129,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.DynamicDropSpeed
-  m_HotKey: DynamicDrop
+  m_HotKey: Shortcut.DynamicDrop
 --- !u!114 &1491978203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13540,7 +13463,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Lib.Track
-  m_HotKey: BrushTrack
+  m_HotKey: Shortcut.Brush.Track
 --- !u!114 &1626019290
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14340,7 +14263,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.StageLock
-  m_HotKey: LockStage
+  m_HotKey: Shortcut.Lock.Stage
 --- !u!114 &1744806075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14611,7 +14534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.MotionLock
-  m_HotKey: LockMotion
+  m_HotKey: Shortcut.Lock.Motion
 --- !u!1 &1796458039
 GameObject:
   m_ObjectHideFlags: 0
@@ -14924,7 +14847,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.Motion
-  m_HotKey: EyeMotion
+  m_HotKey: Shortcut.Eye.Motion
 --- !u!114 &1824977521
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15094,7 +15017,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.Replay
-  m_HotKey: Play/Repause
+  m_HotKey: Shortcut.PlayRepause
 --- !u!114 &1837989321
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15246,7 +15169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.TrackLock
-  m_HotKey: LockTrack
+  m_HotKey: Shortcut.Lock.Track
 --- !u!1 &1858595814
 GameObject:
   m_ObjectHideFlags: 0
@@ -15470,7 +15393,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Save
-  m_HotKey: SaveProject
+  m_HotKey: Shortcut.SaveProject
 --- !u!114 &1861407129
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15655,7 +15578,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Lib.Motion
-  m_HotKey: BrushMotion
+  m_HotKey: Shortcut.Brush.Motion
 --- !u!114 &1862773118
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15760,7 +15683,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.55, g: 0.55, b: 0.55, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -16112,7 +16035,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.Speed
-  m_HotKey: EyeSpeed
+  m_HotKey: Shortcut.Eye.Speed
 --- !u!114 &1894157462
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16632,8 +16555,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Tip.DynamicDropSpeed
-  - Use dynamic note drop speed
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -16871,6 +16792,68 @@ MonoBehaviour:
   - Can not have more than 256 tweens.
   - Setting.ResetConfirm
   - Reset all settings back to default?
+  - Shortcut.AbreastView
+  - Panorama View
+  - Shortcut.Brush.Motion
+  - Motion Brush
+  - Shortcut.Brush.Note
+  - Note Brush
+  - Shortcut.Brush.Speed
+  - Speed Brush
+  - Shortcut.Brush.Stage
+  - Stage Brush
+  - Shortcut.Brush.Track
+  - Track Brush
+  - Shortcut.CancelZone
+  - Cancel
+  - Shortcut.DynamicDrop
+  - Dynamic Drop Speed
+  - Shortcut.Eye.Motion
+  - Hide Motion Note
+  - Shortcut.Eye.Note
+  - Hide Note
+  - Shortcut.Eye.Speed
+  - Hide Speed Note
+  - Shortcut.Eye.Stage
+  - Hide Stage
+  - Shortcut.Eye.Track
+  - Hide Track
+  - Shortcut.Lock.Motion
+  - Lock Motion Note
+  - Shortcut.Lock.Note
+  - Lock Note
+  - Shortcut.Lock.Speed
+  - Lock Speed Note
+  - Shortcut.Lock.Stage
+  - Lock Stage
+  - Shortcut.LockTrack
+  - Lock Track
+  - Shortcut.OpenProjectInfo
+  - Open Project Info
+  - Shortcut.OpenSetting
+  - Open Setting
+  - Shortcut.PitchDown
+  - Music Slower
+  - Shortcut.PitchUp
+  - Music Faster
+  - Shortcut.PlayPause
+  - Play / Pause
+  - Shortcut.PlayRepause
+  - Play / Repause
+  - Shortcut.Redo
+  - Redo
+  - Shortcut.SaveProject
+  - Save
+  - Shortcut.Seek.Negative
+  - Rewind
+  - Shortcut.Seek.Positive
+  - Fast Forward
+  - Shortcut.ShowGrid
+  - Show Grid
+  - Shortcut.SwitchFocus
+  - Focus Mode
+  - Shortcut.Undo
+  - Undo
   - Skin.Confirm.DeleteSkinConfirm
   - Delete skin {0}?
   - Skin.Confirm.NewSkinConfirm
@@ -16935,6 +16918,8 @@ MonoBehaviour:
   - Select beatmap and open
   - Tip.CancelFocus
   - Cancel focus mode
+  - Tip.DynamicDropSpeed
+  - Use dynamic note drop speed
   - Tip.Lib.Motion
   - Motion brush
   - Tip.Lib.Note
@@ -17082,6 +17067,8 @@ MonoBehaviour:
   - New
   - UI.OpenLanguageFolder
   - Open Language Folder
+  - UI.OpenShortcutFolder
+  - Open Shortcut Folder
   - UI.OpenSkinFolder
   - Open Skin Folder
   - UI.P-Manager.ImportProject
@@ -17236,6 +17223,8 @@ MonoBehaviour:
   - Language
   - UI.Tab.Palette
   - Palette
+  - UI.Tab.Shortcut
+  - Shortcut
   - UI.Tab.Skin
   - Skin
   - UI.Tab.Tween
@@ -18185,7 +18174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.Repause
-  m_HotKey: Play/Repause
+  m_HotKey: Shortcut.PlayRepause
 --- !u!114 &2073134910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -18571,7 +18560,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Music.PitchUp
-  m_HotKey: PitchUp
+  m_HotKey: Shortcut.PitchUp
 --- !u!114 &2141747449
 MonoBehaviour:
   m_ObjectHideFlags: 0

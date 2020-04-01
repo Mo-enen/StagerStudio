@@ -11,22 +11,6 @@
 		// SUB
 		[System.Serializable]
 		public class ShortcutData {
-			private readonly static Dictionary<KeyCode, string> SpecialKeyNames = new Dictionary<KeyCode, string> {
-				{ KeyCode.Alpha0, "0" },
-				{ KeyCode.Alpha1, "1" },
-				{ KeyCode.Alpha2, "2" },
-				{ KeyCode.Alpha3, "3" },
-				{ KeyCode.Alpha4, "4" },
-				{ KeyCode.Alpha5, "5" },
-				{ KeyCode.Alpha6, "6" },
-				{ KeyCode.Alpha7, "7" },
-				{ KeyCode.Alpha8, "8" },
-				{ KeyCode.Alpha9, "9" },
-				{ KeyCode.UpArrow, "↑" },
-				{ KeyCode.DownArrow, "↓" },
-				{ KeyCode.LeftArrow, "←" },
-				{ KeyCode.RightArrow, "→" },
-			};
 			public string Name = "";
 			public KeyCode Key = KeyCode.None;
 			public bool Ctrl = false;
@@ -53,50 +37,41 @@
 		}
 
 
+		// Api
+		public ShortcutData[] Datas => m_Datas;
+
+		// Short
+		private string DataFilePath => Util.CombinePaths(Application.streamingAssetsPath, "Shortcut", "Shortcut.txt");
+
 		// Ser
 		[SerializeField] private ShortcutData[] m_Datas = null;
 
 		// Data
 		private Dictionary<(KeyCode code, bool ctrl, bool shift, bool alt), (UnityEvent action, Transform[] antiTFs)> Map { get; } = new Dictionary<(KeyCode, bool, bool, bool), (UnityEvent, Transform[])>();
+		private readonly static Dictionary<KeyCode, string> SpecialKeyNames = new Dictionary<KeyCode, string> {
+			{ KeyCode.None, "" },
+			{ KeyCode.Alpha0, "0" },
+			{ KeyCode.Alpha1, "1" },
+			{ KeyCode.Alpha2, "2" },
+			{ KeyCode.Alpha3, "3" },
+			{ KeyCode.Alpha4, "4" },
+			{ KeyCode.Alpha5, "5" },
+			{ KeyCode.Alpha6, "6" },
+			{ KeyCode.Alpha7, "7" },
+			{ KeyCode.Alpha8, "8" },
+			{ KeyCode.Alpha9, "9" },
+			{ KeyCode.UpArrow, "↑" },
+			{ KeyCode.DownArrow, "↓" },
+			{ KeyCode.LeftArrow, "←" },
+			{ KeyCode.RightArrow, "→" },
+		};
+
 
 
 		// MSG
 		private void Awake () {
-			// Load From File
-			string path = Util.CombinePaths(Application.streamingAssetsPath, "Shortcut", "Shortcut.txt");
-			if (Util.FileExists(path)) {
-				var strs = Util.FileToText(path).Replace("\t", "").Replace("\r", "").Replace("\n", "").Split('#');
-				foreach (var str in strs) {
-					if (string.IsNullOrEmpty(str)) { continue; }
-					var s = str.Split(',');
-					if (s.Length < 5) { continue; }
-					string name = s[0];
-					foreach (var data in m_Datas) {
-						if (data.Name == name) {
-							if (System.Enum.TryParse(s[1], out KeyCode key)) {
-								data.Key = key;
-							}
-							if (bool.TryParse(s[2], out bool ctrl)) {
-								data.Ctrl = ctrl;
-							}
-							if (bool.TryParse(s[3], out bool shift)) {
-								data.Shift = shift;
-							}
-							if (bool.TryParse(s[4], out bool alt)) {
-								data.Alt = alt;
-							}
-							break;
-						}
-					}
-				}
-			}
-			// Get Map
-			Map.Clear();
-			foreach (var data in m_Datas) {
-				var key = (data.Key, data.Ctrl, data.Shift, data.Alt);
-				if (Map.ContainsKey(key)) { continue; }
-				Map.Add(key, (data.Action, data.AntiTFs));
-			}
+			LoadFromFile();
+			ReloadMap();
 		}
 
 
@@ -131,6 +106,66 @@
 		}
 
 
+		public string GetKeyName (KeyCode key) => SpecialKeyNames.ContainsKey(key) ? SpecialKeyNames[key] : key.ToString();
+
+
+		public void LoadFromFile () {
+			string path = DataFilePath;
+			if (Util.FileExists(path)) {
+				var strs = Util.FileToText(path).Replace("\t", "").Replace("\r", "").Replace("\n", "").Split('#');
+				foreach (var str in strs) {
+					if (string.IsNullOrEmpty(str)) { continue; }
+					var s = str.Split(',');
+					if (s.Length < 5) { continue; }
+					string name = s[0];
+					foreach (var data in m_Datas) {
+						if (data.Name == name) {
+							if (System.Enum.TryParse(s[1], out KeyCode key)) {
+								data.Key = key;
+							}
+							if (bool.TryParse(s[2], out bool ctrl)) {
+								data.Ctrl = ctrl;
+							}
+							if (bool.TryParse(s[3], out bool shift)) {
+								data.Shift = shift;
+							}
+							if (bool.TryParse(s[4], out bool alt)) {
+								data.Alt = alt;
+							}
+							break;
+						}
+					}
+				}
+			}
+		}
+
+
+		public void SaveToFile () {
+			string str = "";
+			for (int i = 0; i < m_Datas.Length; i++) {
+				var data = m_Datas[i];
+				string name = data.Name;
+				string key = data.Key.ToString();
+				bool ctrl = data.Ctrl;
+				bool shift = data.Shift;
+				bool alt = data.Alt;
+				str += $"{name},\t{key},\t{ctrl},\t{shift},\t{alt}#\r\n";
+			}
+			Util.TextToFile(str, DataFilePath);
+		}
+
+
+		public void ReloadMap () {
+			Map.Clear();
+			foreach (var data in m_Datas) {
+				var key = (data.Key, data.Ctrl, data.Shift, data.Alt);
+				if (Map.ContainsKey(key)) { continue; }
+				Map.Add(key, (data.Action, data.AntiTFs));
+			}
+		}
+
+
+
 	}
 }
 
@@ -150,22 +185,15 @@ namespace StagerStudio.Editor {
 
 		private void OnDisable () {
 			// Shortcut
+			(target as StageShortcut).SaveToFile();
+			// Helper
 			var p_Datas = serializedObject.FindProperty("m_Datas");
 			var keyCodes = System.Enum.GetValues(typeof(KeyCode));
-			string str = "";
-			for (int i = 0; i < p_Datas.arraySize; i++) {
-				var p_Data = p_Datas.GetArrayElementAtIndex(i);
-				string name = p_Data.FindPropertyRelative("Name").stringValue;
-				string key = ((KeyCode)p_Data.FindPropertyRelative("Key").intValue).ToString();
-				bool ctrl = p_Data.FindPropertyRelative("Ctrl").boolValue;
-				bool shift = p_Data.FindPropertyRelative("Shift").boolValue;
-				bool alt = p_Data.FindPropertyRelative("Alt").boolValue;
-				str += $"{name},\t{key},\t{ctrl},\t{shift},\t{alt}#\r\n";
-			}
-			Util.TextToFile(str, Util.CombinePaths(Application.streamingAssetsPath, "Shortcut", "Shortcut.txt"));
-			// Helper
-			str = $"Format of Shortcut.txt in StagerStudio v{Application.version}:\r\n\r\n";
-			str += "\tAction,\tKey,\tCtrl,\tShift,\tAlt#\r\n\r\n";
+			string str = $"Format of Shortcut.txt in StagerStudio v{Application.version}:\r\n\r\n";
+			str += "\tAction,\tKey,\tCtrl,\tShift,\tAlt#\r\n";
+			str += "\tAction,\tKey,\tCtrl,\tShift,\tAlt#\r\n";
+			str += "\tAction,\tKey,\tCtrl,\tShift,\tAlt#\r\n";
+			str += "\t...\r\n\r\n";
 			str += "Available Actions:\r\n\r\n";
 			for (int i = 0; i < p_Datas.arraySize; i++) {
 				var p_Data = p_Datas.GetArrayElementAtIndex(i);

@@ -1,7 +1,4 @@
-﻿Tip.DynamicDropSpeed
-使用动态的音符下落速度
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -346,6 +343,99 @@ ProjectInfo.Dialog.TweenFull
 Setting.ResetConfirm
 是否将所有设置恢复为默认值？
 
+Shortcut.AbreastView
+全景模式
+
+Shortcut.Brush.Motion
+运动笔刷
+
+Shortcut.Brush.Note
+音符笔刷
+
+Shortcut.Brush.Speed
+速度笔刷
+
+Shortcut.Brush.Stage
+舞台笔刷
+
+Shortcut.Brush.Track
+轨道笔刷
+
+Shortcut.CancelZone
+取消
+
+Shortcut.DynamicDrop
+打开/关闭动态下落速度
+
+Shortcut.Eye.Motion
+隐藏运动音符
+
+Shortcut.Eye.Note
+隐藏音符
+
+Shortcut.Eye.Speed
+隐藏速度音符
+
+Shortcut.Eye.Stage
+隐藏舞台
+
+Shortcut.Eye.Track
+隐藏轨道
+
+Shortcut.Lock.Motion
+锁定运动音符
+
+Shortcut.Lock.Note
+锁定音符
+
+Shortcut.Lock.Speed
+锁定速度音符
+
+Shortcut.Lock.Stage
+锁定舞台
+
+Shortcut.LockTrack
+锁定轨道
+
+Shortcut.OpenProjectInfo
+打开工程信息
+
+Shortcut.OpenSetting
+打开设置
+
+Shortcut.PitchDown
+减慢播放速度
+
+Shortcut.PitchUp
+加快播放速度
+
+Shortcut.PlayPause
+播放/暂停
+
+Shortcut.PlayRepause
+播放/暂停到上次播放的位置
+
+Shortcut.Redo
+反撤销
+
+Shortcut.SaveProject
+保存
+
+Shortcut.Seek.Negative
+快退
+
+Shortcut.Seek.Positive
+快进
+
+Shortcut.ShowGrid
+显示辅助线网格
+
+Shortcut.SwitchFocus
+专注模式
+
+Shortcut.Undo
+撤销
+
 Skin.Confirm.DeleteSkinConfirm
 确认删除皮肤{0}吗？
 
@@ -441,6 +531,9 @@ Tip.BeatmapSwiper
 
 Tip.CancelFocus
 取消专注模式
+
+Tip.DynamicDropSpeed
+使用动态的音符下落速度
 
 Tip.Lib.Motion
 运动笔刷
@@ -660,6 +753,9 @@ UI.NewBeatmap
 
 UI.OpenLanguageFolder
 打开语言文件夹
+
+UI.OpenShortcutFolder
+打开快捷键文件夹
 
 UI.OpenSkinFolder
 打开皮肤文件夹
@@ -891,6 +987,9 @@ UI.Tab.Language
 
 UI.Tab.Palette
 调色板
+
+UI.Tab.Shortcut
+快捷键
 
 UI.Tab.Skin
 皮肤
