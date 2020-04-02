@@ -364,7 +364,7 @@ TextureImporter:
     second: Arcaea Icon
   - first:
       213: 4436141162012384539
-    second: UI_B_1
+    second: Char Down
   - first:
       213: -2338392107245704997
     second: Note ZLine
@@ -374,6 +374,48 @@ TextureImporter:
   - first:
       213: -7542968635621079157
     second: Disk
+  - first:
+      213: -1594603514020522003
+    second: Char Up
+  - first:
+      213: -2969344939086894487
+    second: Char Left
+  - first:
+      213: -3425546701939670655
+    second: Char Right
+  - first:
+      213: -493092987849242760
+    second: Char Plus
+  - first:
+      213: 7488998958756415923
+    second: Char ,
+  - first:
+      213: 5531609754015537313
+    second: Char .
+  - first:
+      213: -3825302241828971716
+    second: Char ;
+  - first:
+      213: -5417613229504409119
+    second: Char '
+  - first:
+      213: -7080430576880679323
+    second: Char [
+  - first:
+      213: 6802646420786539590
+    second: Char ]
+  - first:
+      213: -934712760583246286
+    second: Char -
+  - first:
+      213: -8388953541855041654
+    second: Char =
+  - first:
+      213: 5732731209298118423
+    second: Char BackSlash
+  - first:
+      213: -8468744333947902202
+    second: Char `
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -718,9 +760,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4
-        y: 77
-        width: 39
-        height: 56
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -738,10 +780,10 @@ TextureImporter:
       name: Char 1
       rect:
         serializedVersion: 2
-        x: 44
-        y: 77
-        width: 39
-        height: 56
+        x: 28
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -759,10 +801,10 @@ TextureImporter:
       name: Char 2
       rect:
         serializedVersion: 2
-        x: 84
-        y: 77
-        width: 39
-        height: 56
+        x: 52
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -780,10 +822,10 @@ TextureImporter:
       name: Char 3
       rect:
         serializedVersion: 2
-        x: 124
-        y: 77
-        width: 39
-        height: 56
+        x: 76
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -801,10 +843,10 @@ TextureImporter:
       name: Char 4
       rect:
         serializedVersion: 2
-        x: 164
-        y: 77
-        width: 39
-        height: 56
+        x: 100
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -822,10 +864,10 @@ TextureImporter:
       name: Char 5
       rect:
         serializedVersion: 2
-        x: 204
-        y: 77
-        width: 39
-        height: 56
+        x: 124
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -843,10 +885,10 @@ TextureImporter:
       name: Char 6
       rect:
         serializedVersion: 2
-        x: 244
-        y: 77
-        width: 39
-        height: 56
+        x: 148
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -864,10 +906,10 @@ TextureImporter:
       name: Char 7
       rect:
         serializedVersion: 2
-        x: 284
-        y: 77
-        width: 39
-        height: 56
+        x: 172
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -885,10 +927,10 @@ TextureImporter:
       name: Char 8
       rect:
         serializedVersion: 2
-        x: 324
-        y: 77
-        width: 39
-        height: 56
+        x: 196
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -906,10 +948,10 @@ TextureImporter:
       name: Char 9
       rect:
         serializedVersion: 2
-        x: 364
-        y: 77
-        width: 39
-        height: 56
+        x: 220
+        y: 56
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -970,9 +1012,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4
-        y: 134
-        width: 39
-        height: 56
+        y: 103
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -990,10 +1032,10 @@ TextureImporter:
       name: Char V
       rect:
         serializedVersion: 2
-        x: 44
-        y: 134
-        width: 39
-        height: 56
+        x: 28
+        y: 103
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1011,10 +1053,10 @@ TextureImporter:
       name: Char W
       rect:
         serializedVersion: 2
-        x: 84
-        y: 134
-        width: 39
-        height: 56
+        x: 52
+        y: 103
+        width: 35
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1032,10 +1074,10 @@ TextureImporter:
       name: Char X
       rect:
         serializedVersion: 2
-        x: 124
-        y: 134
-        width: 39
-        height: 56
+        x: 100
+        y: 103
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1053,10 +1095,10 @@ TextureImporter:
       name: Char Y
       rect:
         serializedVersion: 2
-        x: 164
-        y: 134
-        width: 39
-        height: 56
+        x: 124
+        y: 103
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1074,10 +1116,10 @@ TextureImporter:
       name: Char Z
       rect:
         serializedVersion: 2
-        x: 204
-        y: 134
-        width: 39
-        height: 56
+        x: 148
+        y: 103
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1096,9 +1138,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4
-        y: 191
-        width: 39
-        height: 56
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1116,10 +1158,10 @@ TextureImporter:
       name: Char L
       rect:
         serializedVersion: 2
-        x: 44
-        y: 191
-        width: 39
-        height: 56
+        x: 28
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1137,10 +1179,10 @@ TextureImporter:
       name: Char M
       rect:
         serializedVersion: 2
-        x: 84
-        y: 191
-        width: 39
-        height: 56
+        x: 52
+        y: 150
+        width: 33
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1158,10 +1200,10 @@ TextureImporter:
       name: Char N
       rect:
         serializedVersion: 2
-        x: 124
-        y: 191
-        width: 39
-        height: 56
+        x: 100
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1179,10 +1221,10 @@ TextureImporter:
       name: Char O
       rect:
         serializedVersion: 2
-        x: 164
-        y: 191
-        width: 39
-        height: 56
+        x: 124
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1200,10 +1242,10 @@ TextureImporter:
       name: Char P
       rect:
         serializedVersion: 2
-        x: 204
-        y: 191
-        width: 39
-        height: 56
+        x: 148
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1221,10 +1263,10 @@ TextureImporter:
       name: Char Q
       rect:
         serializedVersion: 2
-        x: 244
-        y: 191
-        width: 39
-        height: 56
+        x: 172
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1242,10 +1284,10 @@ TextureImporter:
       name: Char R
       rect:
         serializedVersion: 2
-        x: 284
-        y: 191
-        width: 39
-        height: 56
+        x: 196
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1263,10 +1305,10 @@ TextureImporter:
       name: Char S
       rect:
         serializedVersion: 2
-        x: 324
-        y: 191
-        width: 39
-        height: 56
+        x: 220
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1284,10 +1326,10 @@ TextureImporter:
       name: Char T
       rect:
         serializedVersion: 2
-        x: 364
-        y: 191
-        width: 39
-        height: 56
+        x: 244
+        y: 150
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1305,10 +1347,10 @@ TextureImporter:
       name: Char J
       rect:
         serializedVersion: 2
-        x: 364
-        y: 248
-        width: 39
-        height: 56
+        x: 220
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1326,10 +1368,10 @@ TextureImporter:
       name: Char I
       rect:
         serializedVersion: 2
-        x: 324
-        y: 248
-        width: 39
-        height: 56
+        x: 196
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1347,10 +1389,10 @@ TextureImporter:
       name: Char H
       rect:
         serializedVersion: 2
-        x: 284
-        y: 248
-        width: 39
-        height: 56
+        x: 172
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1368,10 +1410,10 @@ TextureImporter:
       name: Char G
       rect:
         serializedVersion: 2
-        x: 244
-        y: 248
-        width: 39
-        height: 56
+        x: 148
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1389,10 +1431,10 @@ TextureImporter:
       name: Char F
       rect:
         serializedVersion: 2
-        x: 204
-        y: 248
-        width: 39
-        height: 56
+        x: 124
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1410,10 +1452,10 @@ TextureImporter:
       name: Char E
       rect:
         serializedVersion: 2
-        x: 164
-        y: 248
-        width: 39
-        height: 56
+        x: 100
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1431,10 +1473,10 @@ TextureImporter:
       name: Char D
       rect:
         serializedVersion: 2
-        x: 124
-        y: 248
-        width: 39
-        height: 56
+        x: 76
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1452,10 +1494,10 @@ TextureImporter:
       name: Char C
       rect:
         serializedVersion: 2
-        x: 84
-        y: 248
-        width: 39
-        height: 56
+        x: 52
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1473,10 +1515,10 @@ TextureImporter:
       name: Char B
       rect:
         serializedVersion: 2
-        x: 44
-        y: 248
-        width: 39
-        height: 56
+        x: 28
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1495,9 +1537,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4
-        y: 248
-        width: 39
-        height: 56
+        y: 197
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1515,10 +1557,10 @@ TextureImporter:
       name: Char Empty
       rect:
         serializedVersion: 2
-        x: 244
-        y: 134
-        width: 39
-        height: 56
+        x: 86
+        y: 150
+        width: 13
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1536,10 +1578,10 @@ TextureImporter:
       name: Char Slash
       rect:
         serializedVersion: 2
-        x: 284
-        y: 134
-        width: 39
-        height: 56
+        x: 52
+        y: 244
+        width: 23
+        height: 46
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1633,6 +1675,321 @@ TextureImporter:
       bones: []
       spriteID: b8784e18dfdf15790800000000000000
       internalID: -7542968635621079157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char Up
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 103
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de797357d84ded9e0800000000000000
+      internalID: -1594603514020522003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char Down
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 103
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1d9c3712e6509d30800000000000000
+      internalID: 4436141162012384539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char Left
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 103
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96a2f1a9284cac6d0800000000000000
+      internalID: -2969344939086894487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char Right
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 103
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 18100658c630670d0800000000000000
+      internalID: -3425546701939670655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char Plus
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 197
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 87782024a8e2829f0800000000000000
+      internalID: -493092987849242760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char ,
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3b942f3efd44ee760800000000000000
+      internalID: 7488998958756415923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char .
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1a89e2873c934cc40800000000000000
+      internalID: 5531609754015537313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char ;
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3b574dd0ebc9eac0800000000000000
+      internalID: -3825302241828971716
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char '
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1e1dee4b875c0d4b0800000000000000
+      internalID: -5417613229504409119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char [
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 566863077e14dbd90800000000000000
+      internalID: -7080430576880679323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char ]
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64c6093b0ead76e50800000000000000
+      internalID: 6802646420786539590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char -
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 23e296252bb3703f0800000000000000
+      internalID: -934712760583246286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char =
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a87a9744333749b80800000000000000
+      internalID: -8388953541855041654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char BackSlash
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 717820b59a0ce8f40800000000000000
+      internalID: 5732731209298118423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Char `
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 244
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 607ee69c5e9f87a80800000000000000
+      internalID: -8468744333947902202
       vertices: []
       indices: 
       edges: []

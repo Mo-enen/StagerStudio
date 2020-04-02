@@ -14,6 +14,42 @@
 
 
 
+		private readonly static Dictionary<KeyCode, string> SpecialKeyNames = new Dictionary<KeyCode, string> {
+			{ KeyCode.None, "" },
+			{ KeyCode.Alpha0, "0" },
+			{ KeyCode.Alpha1, "1" },
+			{ KeyCode.Alpha2, "2" },
+			{ KeyCode.Alpha3, "3" },
+			{ KeyCode.Alpha4, "4" },
+			{ KeyCode.Alpha5, "5" },
+			{ KeyCode.Alpha6, "6" },
+			{ KeyCode.Alpha7, "7" },
+			{ KeyCode.Alpha8, "8" },
+			{ KeyCode.Alpha9, "9" },
+			{ KeyCode.UpArrow, "↑" },
+			{ KeyCode.DownArrow, "↓" },
+			{ KeyCode.LeftArrow, "←" },
+			{ KeyCode.RightArrow, "→" },
+			{ KeyCode.Escape, "ESC" },
+			{ KeyCode.Comma, "," },
+			{ KeyCode.Period, "." },
+			{ KeyCode.Slash, "/" },
+			{ KeyCode.Backslash, "\\" },
+			{ KeyCode.LeftBracket, "[" },
+			{ KeyCode.RightBracket, "]" },
+			{ KeyCode.Return, "Enter" },
+			{ KeyCode.KeypadEnter, "Enter" },
+			{ KeyCode.Semicolon, ";" },
+			{ KeyCode.Equals, "=" },
+			{ KeyCode.Minus, "-" },
+			{ KeyCode.Quote, "\'" },
+			{ KeyCode.BackQuote, "`" },
+
+
+		};
+
+
+
 		#region --- File ---
 
 
@@ -626,6 +662,9 @@
 			}
 			return null;
 		}
+
+
+		public static string GetKeyName (KeyCode key) => SpecialKeyNames.ContainsKey(key) ? SpecialKeyNames[key] : key.ToString();
 
 
 		#endregion

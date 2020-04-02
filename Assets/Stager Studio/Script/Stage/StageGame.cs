@@ -120,7 +120,7 @@
 
 
 		private void Awake () {
-			// Layer ID
+			// Sorting Layer ID
 			Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
 			Stage.SortingLayerID_Judge = SortingLayer.NameToID("Judge");
 			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
@@ -132,10 +132,10 @@
 			Note.LayerID_Note = LayerMask.NameToLayer("Note");
 			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
 			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
-			StageObject.LayerID_UI = SortingLayer.NameToID("UI");
-			SpeedNote.LayerID_Speed = SortingLayer.NameToID("Speed");
-			MotionNote.LayerID_Motion = SortingLayer.NameToID("Motion");
-			Luminous.LayerID_Lum = SortingLayer.NameToID("Luminous");
+			StageObject.SortingLayerID_UI = SortingLayer.NameToID("UI");
+			SpeedNote.SortingLayerID_Speed = SortingLayer.NameToID("Speed");
+			MotionNote.SortingLayerID_Motion = SortingLayer.NameToID("Motion");
+			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
 			// Misc
 			const int CONTAINER_COUNT = 6;
 			Containers = new Transform[CONTAINER_COUNT];

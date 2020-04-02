@@ -34,6 +34,7 @@
 			PositiveScroll,
 			ShowIndexLabel,
 			ShowGrid,
+			ShowKeypress,
 
 		}
 
@@ -87,6 +88,8 @@
 		// MSG
 		private void Awake_Setting () {
 
+
+
 			// Input
 			InputItemMap.Add(InputType.Frame, ((str) => {
 				if (int.TryParse(str, out int result)) {
@@ -94,6 +97,8 @@
 					InputItemMap[InputType.Frame].saving.Value = result.ToString();
 				}
 			}, () => Application.targetFrameRate.ToString(), new SavingString("SS.FrameRate", "120"), true));
+
+
 
 			// Toggle
 			ToggleItemMap.Add(ToggleType.UIScale_0, ((isOn) => {
@@ -169,6 +174,13 @@
 			ToggleItemMap.Add(ToggleType.ShowGrid, ((isOn) => {
 				Game.SetShowGrid(isOn);
 			}, () => Game.ShowGrid, Game.ShowGrid, true));
+
+			ToggleItemMap.Add(ToggleType.ShowKeypress, ((isOn) => {
+				m_Keypress.gameObject.SetActive(isOn);
+				ToggleItemMap[ToggleType.ShowKeypress].saving.Value = isOn;
+			}, () => m_Keypress.gameObject.activeSelf, new SavingBool("StageGame.ShowKeypress", false), true));
+
+
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {

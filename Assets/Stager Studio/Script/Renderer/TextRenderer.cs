@@ -27,10 +27,6 @@
 
 
 
-		private void Awake () {
-			Pivot = new Vector3(0.5f, Pivot.y, Pivot.z);
-		}
-
 
 		private void OnEnable () {
 			SetDirty();
@@ -47,7 +43,7 @@
 				if (sprite == null) { continue; }
 				var uvMin = sprite.uv[2];
 				var uvMax = sprite.uv[1];
-				var offset = new Vector3((1 - textLength) / 2f, 0f, 0f);
+				var offset = new Vector3(Pivot.x - Pivot.x * textLength, 0f, 0f);
 				AddQuad01(
 					i, i + 1f, 0f, Scale.y,
 					uvMin.x, uvMax.x, uvMin.y, uvMax.y,

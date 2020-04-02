@@ -19,6 +19,9 @@ Dialog.Library.ImportPrefabTitle
 Dialog.Library.PrefabExported
 笔刷已导出
 
+Dialog.OpenWebMSG
+正在尝试打开 {0} 请查看您的浏览器
+
 Dialog.TweenEditor.CancelConfirm
 关闭补间编辑器吗？修改将不会被保存
 
@@ -535,6 +538,9 @@ Tip.CancelFocus
 Tip.DynamicDropSpeed
 使用动态的音符下落速度
 
+Tip.GotoWeb
+打开官网 www.stager.studio
+
 Tip.Lib.Motion
 运动笔刷
 
@@ -609,6 +615,9 @@ Tip.Setting.Done
 
 Tip.Setting.Framerate
 目标帧频率，帧频率尽可能达到的值
+
+Tip.Setting.Keypress
+将一段时间内按过的按键展示在屏幕上
 
 Tip.Setting.LargeUI
 较大的界面，适合物理尺寸较小的显示器
@@ -852,6 +861,9 @@ UI.Setting.ShowGrid
 
 UI.Setting.ShowIndexLabelIndexLabel
 显示舞台、轨道、音符的编号
+
+UI.Setting.ShowKeypress
+显示按键历史
 
 UI.Setting.ShowTip
 显示工具提示

@@ -42,13 +42,13 @@
 		public static (Vector2 min, Vector3 max) ScreenZoneMinMax { get; set; } = (default, default);
 		public static Beatmap Beatmap { get; set; } = null;
 		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
-		public static int LayerID_UI { get; set; } = -1;
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;
 		public static int MaterialZoneID { get; set; } = 0;
+		public static int SortingLayerID_UI { get; set; } = -1;
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
@@ -77,7 +77,7 @@
 
 		protected virtual void Awake () {
 			if (m_Label != null) {
-				m_Label.GetComponent<MeshRenderer>().sortingLayerID = LayerID_UI;
+				m_Label.SetSortingLayer(SortingLayerID_UI, 0);
 			}
 			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 0f;
 		}

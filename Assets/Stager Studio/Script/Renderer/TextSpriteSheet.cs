@@ -13,10 +13,13 @@
 		public Sprite this[int index] => m_Sprites[index];
 
 
-		[SerializeField] private Sprite[] m_Sprites = null; // 0-9 a-z A-Z
-		[SerializeField] private Sprite m_Empty = null;
-		[SerializeField] private Sprite m_Slash = null;
 
+		[SerializeField] private Sprite[] m_Sprites = null;     // 0-9 a-z A-Z
+		[SerializeField] private Sprite m_Empty = null;
+		[SerializeField] private Sprite m_Plus = null;          // +
+		[SerializeField] private Sprite[] m_Arrows = null;      // u d l r
+		[SerializeField] private Sprite[] m_KeyChars = null;    //,./;\'[]-=\\`
+		[SerializeField] private bool m_LowerOnly = false;
 
 
 		public Sprite Char_to_Sprite (char c) {
@@ -25,12 +28,43 @@
 					return m_Sprites[c - '0'];
 				case char _ when c - 'a' + 10 < m_Sprites.Length && c >= 'a' && c <= 'z':
 					return m_Sprites[c - 'a' + 10];
-				case char _ when c - 'A' + 36 < m_Sprites.Length && c >= 'A' && c <= 'Z':
-					return m_Sprites[c - 'A' + 36];
+				case char _ when c - 'A' + (m_LowerOnly ? 10 : 36) < m_Sprites.Length && c >= 'A' && c <= 'Z':
+					return m_Sprites[c - 'A' + (m_LowerOnly ? 10 : 36)];
 				case ' ':
 					return m_Empty;
+				case '↑':
+					return m_Arrows[0];
+				case '↓':
+					return m_Arrows[1];
+				case '←':
+					return m_Arrows[2];
+				case '→':
+					return m_Arrows[3];
+				case '+':
+					return m_Plus;
+
+				case ',':
+					return m_KeyChars[0];
+				case '.':
+					return m_KeyChars[1];
 				case '/':
-					return m_Slash;
+					return m_KeyChars[2];
+				case ';':
+					return m_KeyChars[3];
+				case '\'':
+					return m_KeyChars[4];
+				case '[':
+					return m_KeyChars[5];
+				case ']':
+					return m_KeyChars[6];
+				case '-':
+					return m_KeyChars[7];
+				case '=':
+					return m_KeyChars[8];
+				case '\\':
+					return m_KeyChars[9];
+				case '`':
+					return m_KeyChars[10];
 
 
 				default:

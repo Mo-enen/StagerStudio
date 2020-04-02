@@ -179,8 +179,7 @@ MonoBehaviour:
   m_Scale: {x: 1, y: 1}
   m_SpriteH: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_SectionBody: {fileID: -666367858726670617, guid: da7f946bf2fc8f84f95134f233c99156,
-    type: 3}
+  m_SectionBody: {fileID: 21300016, guid: 7a27da5dc56b4574ba3d0d5a3102e617, type: 3}
   m_Thickness: 1
   m_Width: 4
   m_SectionColor: {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.2}
@@ -516,7 +515,7 @@ Transform:
   m_GameObject: {fileID: 8025662354069641130}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.02125, y: 0.03375, z: 1}
+  m_LocalScale: {x: 0.0128, y: 0.0264, z: 1}
   m_Children: []
   m_Father: {fileID: 1137431301675393543}
   m_RootOrder: 4

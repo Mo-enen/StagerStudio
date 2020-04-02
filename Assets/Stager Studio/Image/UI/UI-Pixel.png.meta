@@ -62,6 +62,9 @@ TextureImporter:
   - first:
       213: -7746448090056230874
     second: Rect Frame
+  - first:
+      213: 9025415919998567879
+    second: Pixel Rect H a2
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -502,6 +505,27 @@ TextureImporter:
       bones: []
       spriteID: 628f13921861f7490800000000000000
       internalID: -7746448090056230874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pixel Rect H a2
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 1
+        width: 5
+        height: 3
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 2, z: 2, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7c58ba5e5f7b04d70800000000000000
+      internalID: 9025415919998567879
       vertices: []
       indices: 
       edges: []

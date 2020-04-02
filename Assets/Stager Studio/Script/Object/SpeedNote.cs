@@ -9,7 +9,7 @@
 
 
 		// Api
-		public static int LayerID_Speed { get; set; } = -1;
+		public static int SortingLayerID_Speed { get; set; } = -1;
 
 
 

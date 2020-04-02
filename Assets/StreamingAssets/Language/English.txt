@@ -19,6 +19,9 @@ Import Prefabs
 Dialog.Library.PrefabExported
 Prefabs exported
 
+Dialog.OpenWebMSG
+Opening {0} Please check your web browser
+
 Dialog.TweenEditor.CancelConfirm
 Close tween editor? Changes will not be save.
 
@@ -535,6 +538,9 @@ Cancel focus mode
 Tip.DynamicDropSpeed
 Use dynamic note drop speed
 
+Tip.GotoWeb
+Open offical website www.stager.studio
+
 Tip.Lib.Motion
 Motion brush
 
@@ -609,6 +615,9 @@ Save and close the setting window
 
 Tip.Setting.Framerate
 Target framerate
+
+Tip.Setting.Keypress
+Show the keys pressed on the screen for seconds
 
 Tip.Setting.LargeUI
 Large UI, for small physical size display
@@ -852,6 +861,9 @@ Show Auxiliary Grid for Brushs and Tracks
 
 UI.Setting.ShowIndexLabelIndexLabel
 Show Index Label for Stage,Track and Note
+
+UI.Setting.ShowKeypress
+Show Keypress History
 
 UI.Setting.ShowTip
 Show Tooltip

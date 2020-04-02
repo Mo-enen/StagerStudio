@@ -257,7 +257,7 @@
 				if (ShowIndexLabel && !MusicPlaying && active) {
 					bool hasComment = !string.IsNullOrEmpty(noteData.Comment);
 					Label.gameObject.SetActive(true);
-					Label.Text = hasComment ? $"{noteIndex} /{noteData.Comment.ToLower()}" : noteIndex.ToString();
+					Label.Text = hasComment ? $"{noteIndex} {noteData.Comment}" : noteIndex.ToString();
 					Label.transform.localRotation = MainRenderer.transform.localRotation;
 				} else {
 					Label.gameObject.SetActive(false);

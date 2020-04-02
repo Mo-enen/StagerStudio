@@ -41,7 +41,7 @@
 			public PrefabData (Beatmap.Stage stage) : this(DataType.Stage, stage, null, null, 0f) { }
 			public PrefabData (Beatmap.Track track) : this(DataType.Track, null, track, null, 0f) { }
 			public PrefabData (List<Beatmap.Note> notes, float bpm) : this(DataType.Note, null, null, notes, bpm) { }
-			public void SetThumbnail (RectUI thumb, Color stageColor, Color trackColor, Color noteColor) {
+			public void SetThumbnail (RectUI thumb, Color tint) {
 				if (thumb is null) { return; }
 				thumb.Clear();
 				switch (Type) {
@@ -56,7 +56,7 @@
 								ratio > 1f ? 1f : ratio,
 								ratio > 1f ? 1f / ratio : 1f
 							));
-							thumb.color = stageColor;
+							thumb.color = tint;
 							break;
 						}
 					case DataType.Track: {
@@ -67,7 +67,7 @@
 								ratio > 1f ? 1f : ratio,
 								ratio > 1f ? 1f / ratio : 1f
 							));
-							thumb.color = trackColor;
+							thumb.color = tint;
 							break;
 						}
 					case DataType.Note: {
@@ -99,7 +99,7 @@
 									)
 								));
 							}
-							thumb.color = noteColor;
+							thumb.color = tint;
 							break;
 						}
 				}
@@ -182,9 +182,9 @@
 		[SerializeField] private EventTrigger m_AddPrefab = null;
 		[SerializeField] private RectTransform m_LibraryView = null;
 		[SerializeField] private RectTransform m_BrushContainer = null;
-		[SerializeField] private Color m_StagePrefabColor = Color.white;
-		[SerializeField] private Color m_TrackPrefabColor = Color.white;
-		[SerializeField] private Color m_NotePrefabColor = Color.white;
+		[SerializeField] private Color[] m_ItemColors = default;
+		[SerializeField] private Sprite[] m_ItemSprites = default;
+		[SerializeField] private float[] m_ItemSpritePPUs = default;
 
 		// Data
 		private const string DIALOG_DeletePrefabConfirm = "Dialog.Library.DeletePrefabConfirm";
@@ -395,7 +395,10 @@
 				// Menu
 				grab.Grab<TriggerUI>().CallbackRight.AddListener(() => OpenMenu(PREFAB_MENU_KEY, rt));
 				// Thumbnail
-				prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"), m_StagePrefabColor, m_TrackPrefabColor, m_NotePrefabColor);
+				var thumb = grab.Grab<RectUI>("Thumbnail");
+				prefabData.SetThumbnail(thumb, m_ItemColors[(int)prefabData.Type]);
+				thumb.sprite = m_ItemSprites[(int)prefabData.Type];
+				thumb.pixelsPerUnitMultiplier = m_ItemSpritePPUs[(int)prefabData.Type];
 			}
 			SetSelectionLogic(SelectingItemTypeIndex.index);
 			// Add Button

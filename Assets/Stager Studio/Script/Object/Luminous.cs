@@ -15,7 +15,7 @@
 
 
 		// Api
-		public static int LayerID_Lum { get; set; } = -1;
+		public static int SortingLayerID_Lum { get; set; } = -1;
 
 		// Data
 		private static Vector2 LuminousAppend = Vector2.zero;
@@ -129,7 +129,7 @@
 			// Renderer
 			MainRenderer.RendererEnable = true;
 			MainRenderer.Scale = new Vector2(scaleX, scaleY);
-			MainRenderer.SetSortingLayer(LayerID_Lum, GetSortingOrder());
+			MainRenderer.SetSortingLayer(SortingLayerID_Lum, GetSortingOrder());
 
 			// Final
 			MovementDirtyTime = MusicTime;

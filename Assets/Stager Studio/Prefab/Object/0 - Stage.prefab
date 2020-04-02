@@ -80,7 +80,7 @@ Transform:
   m_GameObject: {fileID: 1225454915215906052}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.02125, y: 0.03375, z: 1}
+  m_LocalScale: {x: 0.0128, y: 0.0264, z: 1}
   m_Children: []
   m_Father: {fileID: 303450346128465511}
   m_RootOrder: 3
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4291559168
-  m_Pivot: {x: 0.5, y: 0, z: 0}
+  m_Pivot: {x: 0.5, y: 1, z: 0}
   m_Scale: {x: 1, y: 1}
   m_SpriteSheet: {fileID: 11400000, guid: 3c69f1aab24836240a36801417379693, type: 2}
   m_Text: 

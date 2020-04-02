@@ -149,8 +149,8 @@
 			RefreshLanguageTexts();
 
 			// Content
-			m_GeneralContent.gameObject.SetActive(true);
-			m_EditorContent.gameObject.SetActive(false);
+			m_GeneralContent.parent.parent.gameObject.SetActive(true);
+			m_EditorContent.parent.parent.gameObject.SetActive(false);
 			m_SkinContent.parent.parent.gameObject.SetActive(false);
 			m_LanguageContent.parent.parent.gameObject.SetActive(false);
 			m_ShortcutContent.parent.parent.gameObject.SetActive(false);
@@ -264,7 +264,7 @@
 								Shortcut.ReloadMap();
 							}
 						});
-						keySetter.Label = Shortcut.GetKeyName(data.Key);
+						keySetter.Label = Util.GetKeyName(data.Key);
 						keySetter.OnSetStart = () => {
 							var setters = m_ShortcutContent.GetComponentsInChildren<KeySetterUI>(false);
 							foreach (var setter in setters) {
@@ -291,7 +291,7 @@
 							// Set Key
 							if (data.Key != key) {
 								data.Key = key;
-								keySetter.Label = Shortcut.GetKeyName(key);
+								keySetter.Label = Util.GetKeyName(key);
 								Shortcut.SaveToFile();
 								Shortcut.ReloadMap();
 							}

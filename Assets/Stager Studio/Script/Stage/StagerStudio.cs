@@ -19,6 +19,7 @@
 
 		private static class LanguageData {
 			public const string UI_QuitConfirm = "Menu.UI.QuitConfirm";
+			public const string UI_OpenWebMSG = "Dialog.OpenWebMSG";
 			public const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 			public const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 			public const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
@@ -70,8 +71,10 @@
 		[SerializeField] private Toggle m_UseDynamicSpeed = null;
 		[SerializeField] private Toggle m_UseAbreastView = null;
 		[SerializeField] private Text m_AuthorLabel = null;
+		[SerializeField] private Text m_VersionLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
+		[SerializeField] private RectTransform m_Keypress = null;
 		[Header("UI")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
@@ -537,6 +540,7 @@
 			TrackSectionRenderer.GetAreaBetween = Game.AreaBetween;
 			TrackSectionRenderer.GetSnapedTime = Game.SnapTime;
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
+			m_VersionLabel.text = $"v{Application.version}";
 			SetNavigationInteractable(true);
 		}
 
@@ -553,6 +557,16 @@
 
 
 		public void About () => DialogUtil.Open($"Stager Studio v{Application.version} by 楠瓜Moenen\nEmail moenenn@163.com\nTwitter @_Moenen\nQQ 754100943", DialogUtil.MarkType.Info, () => { });
+
+
+		public void GotoWeb () {
+			Application.OpenURL("http://www.stager.studio");
+			DialogUtil.Open(
+				string.Format(Language.Get(LanguageData.UI_OpenWebMSG), "www.stager.studio"),
+				DialogUtil.MarkType.Info,
+				() => { }, null, null, null, null
+			);
+		}
 
 
 		public void Undo () => StageUndo.Undo();

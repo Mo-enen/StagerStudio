@@ -9,7 +9,7 @@
 
 
 		// Api
-		public static int LayerID_Motion { get; set; } = -1;
+		public static int SortingLayerID_Motion { get; set; } = -1;
 
 
 
