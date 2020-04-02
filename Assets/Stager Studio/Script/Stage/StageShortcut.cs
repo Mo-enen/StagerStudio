@@ -60,7 +60,7 @@
 		private void OnGUI () {
 			if (Util.IsTypeing || Event.current.type != EventType.KeyDown) { return; }
 			var key = (Event.current.keyCode, Event.current.control, Event.current.shift, Event.current.alt);
-			if (Map.ContainsKey(key)) {
+			if (key.keyCode != KeyCode.None && Map.ContainsKey(key)) {
 				var (action, antiTFs) = Map[key];
 				if (CheckAnti(antiTFs)) {
 					action.Invoke();
@@ -144,6 +144,21 @@
 		}
 
 
+		public int CheckShortcut (int ignoreIndex, KeyCode key, bool ctrl, bool shift, bool alt) {
+			for (int i = 0; i < m_Datas.Length; i++) {
+				var d = m_Datas[i];
+				if (
+					i != ignoreIndex &&
+					d.Key == key &&
+					d.Ctrl == ctrl &&
+					d.Shift == shift &&
+					d.Alt == alt
+				) {
+					return i;
+				}
+			}
+			return -1;
+		}
 
 	}
 }

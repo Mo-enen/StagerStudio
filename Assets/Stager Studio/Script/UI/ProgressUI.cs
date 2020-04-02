@@ -4,7 +4,6 @@
 	using UnityEngine;
 	using UnityEngine.EventSystems;
 	using UnityEngine.UI;
-	using Stage;
 	using Saving;
 
 
@@ -13,14 +12,20 @@
 
 		// SUB
 		public delegate float FloatFloatIntHandler (float musicTime, int step);
+		public delegate float FloatHandler ();
+		public delegate (bool isReady, bool isPlaying) ReadyPlayHandler ();
+		public delegate void VoidHandler ();
+		public delegate void VoidFloatHandler (float value);
 
 
 		// API
 		public static FloatFloatIntHandler GetSnapTime { get; set; } = null;
+		public static FloatHandler GetDuration { get; set; } = null;
+		public static ReadyPlayHandler GetReadyPlay { get; set; } = null;
+		public static VoidHandler PlayMusic { get; set; } = null;
+		public static VoidHandler PauseMusic { get; set; } = null;
+		public static VoidFloatHandler SeekMusic { get; set; } = null;
 		public bool Snap { get; set; } = true;
-
-		// Short
-		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 
 		// Ser
 		[SerializeField] private TimeLabelUI m_TimeLabel = null;
@@ -41,7 +46,6 @@
 
 
 		// Data
-		private StageMusic _Music = null;
 		private bool WasPlaying = false;
 
 
@@ -53,7 +57,7 @@
 
 		// API
 		public void SetProgress (float time, float bpm = -1f) {
-			m_Bar.fillAmount = Mathf.Clamp01(time / Music.Duration);
+			m_Bar.fillAmount = Mathf.Clamp01(time / GetDuration());
 			if (bpm > 0f) {
 				m_TimeLabel.BPM = bpm;
 			}
@@ -62,8 +66,7 @@
 
 
 		public void RefreshControlUI () {
-			bool isReady = Music.IsReady;
-			bool isPlaying = Music.IsPlaying;
+			var (isReady, isPlaying) = GetReadyPlay();
 			m_NoMusicHint.gameObject.SetActive(!isReady);
 			m_Play.gameObject.SetActive(!isPlaying);
 			m_Pause.gameObject.SetActive(isPlaying);
@@ -87,8 +90,8 @@
 
 
 		public void OnPointerDown (PointerEventData e) {
-			WasPlaying = Music.IsPlaying;
-			Music.Pause();
+			WasPlaying = GetReadyPlay().isPlaying;
+			PauseMusic();
 			OnDrag(e);
 		}
 
@@ -96,17 +99,17 @@
 		public void OnDrag (PointerEventData e) {
 			var rt = transform as RectTransform;
 			RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, e.pressEventCamera, out Vector2 localPoint);
-			float time = Mathf.Clamp01(localPoint.x / rt.rect.width) * Music.Duration;
+			float time = Mathf.Clamp01(localPoint.x / rt.rect.width) * GetDuration();
 			if (Snap) {
 				time = GetSnapTime(time, 1);
 			}
-			Music.Seek(time);
+			SeekMusic(time);
 			SetProgress(time);
 		}
 
 
 		public void OnPointerUp (PointerEventData e) {
-			if (WasPlaying) { Music.Play(); }
+			if (WasPlaying) { PlayMusic(); }
 		}
 
 

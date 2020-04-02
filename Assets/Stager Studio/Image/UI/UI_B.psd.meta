@@ -416,6 +416,9 @@ TextureImporter:
   - first:
       213: -8468744333947902202
     second: Char `
+  - first:
+      213: -7542968635621079157
+    second: Pixel B
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1659,27 +1662,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Disk
-      rect:
-        serializedVersion: 2
-        x: 404
-        y: 3
-        width: 65
-        height: 65
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b8784e18dfdf15790800000000000000
-      internalID: -7542968635621079157
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Char Up
       rect:
         serializedVersion: 2
@@ -1990,6 +1972,27 @@ TextureImporter:
       bones: []
       spriteID: 607ee69c5e9f87a80800000000000000
       internalID: -8468744333947902202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pixel B
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 18
+        width: 1
+        height: 1
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b8784e18dfdf15790800000000000000
+      internalID: -7542968635621079157
       vertices: []
       indices: 
       edges: []

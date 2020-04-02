@@ -3,11 +3,11 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using Stage;
+	using Data;
 
 
 	public class BeatmapSwiperUI : MonoBehaviour {
-		
+
 
 		// SUB
 		private class TransformComparer : IComparer<Transform> {
@@ -18,7 +18,13 @@
 				return x.name.CompareTo(y.name);
 			}
 		}
+		public delegate Dictionary<string, Beatmap> BeatmapMapHandler ();
+		public delegate void VoidStringHandler (string str);
 
+
+		// Api
+		public static BeatmapMapHandler GetBeatmapMap { get; set; } = null;
+		public static VoidStringHandler TriggerSwitcher { get; set; } = null;
 
 		// Ser
 		[SerializeField] private RectTransform m_Content = null;
@@ -26,8 +32,9 @@
 
 
 		// API
-		public void Init (StageProject project) {
-			foreach (var pair in project.BeatmapMap) {
+		public void Init () {
+			var mapMap = GetBeatmapMap();
+			foreach (var pair in mapMap) {
 				if (pair.Value == null) { continue; }
 				var graber = Instantiate(m_BeatmapItemPrefab, m_Content);
 				var rt = graber.transform as RectTransform;
@@ -41,8 +48,7 @@
 				graber.Grab<Button>().onClick.AddListener(OnClick);
 				void OnClick () {
 					Close();
-					project.SaveProject();
-					project.OpenBeatmap(pair.Key);
+					TriggerSwitcher(pair.Key);
 				}
 			}
 			SortContent();

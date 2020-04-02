@@ -1,5 +1,4 @@
 ﻿namespace StagerStudio.UI {
-	using global::StagerStudio.Stage;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
@@ -61,7 +60,7 @@
 		private void Update () {
 			// Hover
 			if (Input.mousePosition != PrevMousePosition) {
-				var hoverIndex = GetHoveringPoint(GetPos01(Input.mousePosition, _Camera ?? (_Camera = Camera.main)));
+				var hoverIndex = GetHoveringPoint(GetPos01(Input.mousePosition, _Camera != null ? _Camera : (_Camera = Camera.main)));
 				bool show = hoverIndex >= 0 && hoverIndex != SelectingIndex;
 				if (show != m_HoverPoint.gameObject.activeSelf) {
 					m_HoverPoint.gameObject.SetActive(show);

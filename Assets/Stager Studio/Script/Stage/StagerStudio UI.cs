@@ -86,8 +86,7 @@
 
 
 		// MSG
-		private void Awake_Setting () {
-
+		private void Awake_Setting_UI () {
 
 
 			// Input
@@ -206,18 +205,12 @@
 
 		// UI
 		public void UI_SpawnSetting () {
+
 			UI_RemoveUI();
+
 			var setting = Util.SpawnUI(m_SettingPrefab, m_SettingRoot, "Setting");
-			var language = FindObjectOfType<StageLanguage>();
 
 			LoadAllSettings();
-
-			// Handler
-			setting.GetLanguage = language.Get;
-			setting.ResetAllSettings = () => {
-				ResetAllSettings();
-				LoadAllSettings();
-			};
 
 			// Init Components
 			setting.Component.ForAllInputs((item) => {
@@ -271,13 +264,13 @@
 
 		public void UI_SpawnBeatmapSwiper () {
 			UI_RemoveUI();
-			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init(Project);
+			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init();
 		}
 
 
 		public void UI_SpawnSkinSwiper () {
 			UI_RemoveUI();
-			Util.SpawnUI(m_SkinSwiperPrefab, m_SkinSwiperRoot, "Skin Swiper").Init(Skin);
+			Util.SpawnUI(m_SkinSwiperPrefab, m_SkinSwiperRoot, "Skin Swiper").Init();
 		}
 
 

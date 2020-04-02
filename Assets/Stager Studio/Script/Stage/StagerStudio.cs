@@ -61,6 +61,7 @@
 		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
 		private StageShortcut Short => _Short != null ? _Short : (_Short = FindObjectOfType<StageShortcut>());
 		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
+		private StageState State => _State != null ? _State : (_State = FindObjectOfType<StageState>());
 
 		// Ser
 		[SerializeField] private Transform m_CanvasRoot = null;
@@ -100,6 +101,7 @@
 		private StageSkin _Skin = null;
 		private StageShortcut _Short = null;
 		private StageMenu _Menu = null;
+		private StageState _State = null;
 		private bool WillQuit = false;
 
 
@@ -114,6 +116,7 @@
 		private void Awake () {
 			Awake_Message();
 			Awake_Setting();
+			Awake_Setting_UI();
 			Awake_Menu();
 			Awake_Object();
 			Awake_Project();
@@ -124,8 +127,7 @@
 			Awake_Skin();
 			Awake_Undo();
 			Awake_ProjectInfo();
-			Awake_Preview();
-			Awake_Misc();
+			Awake_UI();
 		}
 
 
@@ -166,6 +168,7 @@
 			TweenEditorUI.GetLanguage = Language.Get;
 			ProjectCreatorUI.GetLanguage = Language.Get;
 			SkinEditorUI.GetLanguage = Language.Get;
+			SettingUI.GetLanguage = Language.Get;
 			// Misc
 			TooltipUI.TipLabel = m_TipLabel;
 			HomeUI.LogHint = m_Hint.SetHint;
@@ -505,6 +508,125 @@
 
 
 		private void Awake_ProjectInfo () {
+
+			ProjectInfoUI.MusicStopClickSounds = Music.StopClickSounds;
+			ProjectInfoUI.MusicPlayClickSound = Music.PlayClickSound;
+			ProjectInfoUI.OpenMenu = Menu.OpenMenu;
+			ProjectInfoUI.ProjectImportPalette = Project.UI_ImportPalette;
+			ProjectInfoUI.ProjectSaveProject = Project.SaveProject;
+			ProjectInfoUI.ProjectSetDirty = Project.SetDirty;
+			ProjectInfoUI.ProjectNewBeatmap = Project.NewBeatmap;
+			ProjectInfoUI.ProjectImportBeatmap = Project.UI_ImportBeatmap;
+			ProjectInfoUI.ProjectAddPaletteColor = Project.UI_AddPaletteColor;
+			ProjectInfoUI.ProjectExportPalette = Project.UI_ExportPalette;
+			ProjectInfoUI.ProjectImportClickSound = Project.ImportClickSound;
+			ProjectInfoUI.ProjectAddTween = Project.UI_AddTween;
+			ProjectInfoUI.ProjectImportTween = Project.UI_ImportTween;
+			ProjectInfoUI.ProjectExportTween = Project.UI_ExportTween;
+			ProjectInfoUI.GetBeatmapMap = () => Project.BeatmapMap;
+			ProjectInfoUI.ProjectSetPaletteColor = Project.SetPaletteColor;
+			ProjectInfoUI.GetProjectPalette = () => Project.Palette;
+			ProjectInfoUI.GetProjectTweens = () => Project.Tweens;
+			ProjectInfoUI.SetProjectTweenCurve = Project.SetTweenCurve;
+			ProjectInfoUI.GetProjectClickSounds = () => Project.ClickSounds;
+			ProjectInfoUI.GetProjectInfo = () => (
+				Project.ProjectName, Project.ProjectDescription,
+				Project.BeatmapAuthor, Project.MusicAuthor, Project.BackgroundAuthor,
+				Project.Background.sprite, Project.FrontCover.sprite, Project.Music.data
+			);
+			ProjectInfoUI.GetBeatmapKey = () => Project.BeatmapKey;
+			ProjectInfoUI.ProjectImportBackground = Project.ImportBackground;
+			ProjectInfoUI.ProjectImportCover = Project.ImportCover;
+			ProjectInfoUI.ProjectImportMusic = Project.ImportMusic;
+			ProjectInfoUI.ProjectRemoveBackground = Project.RemoveBackground;
+			ProjectInfoUI.ProjectRemoveCover = Project.RemoveCover;
+			ProjectInfoUI.ProjectRemoveMusic = Project.RemoveMusic;
+			ProjectInfoUI.SetProjectInfo_Name = (name) => Project.ProjectName = name;
+			ProjectInfoUI.SetProjectInfo_Description = (des) => Project.ProjectDescription = des;
+			ProjectInfoUI.SetProjectInfo_BgAuthor = (author) => Project.BackgroundAuthor = author;
+			ProjectInfoUI.SetProjectInfo_MusicAuthor = (author) => Project.MusicAuthor = author;
+			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => Project.BeatmapAuthor = author;
+
+		}
+
+
+		private void Awake_Setting () {
+			SettingUI.ResetAllSettings = () => {
+				ResetAllSettings();
+				LoadAllSettings();
+			};
+			SettingUI.SkinRefreshAllSkinNames = Skin.RefreshAllSkinNames;
+			SettingUI.LanguageGetDisplayName = Language.GetDisplayName;
+			SettingUI.LanguageGetDisplayName_Language = Language.GetDisplayName;
+			SettingUI.GetAllLanguages = () => Language.AllLanguages;
+			SettingUI.GetAllSkinNames = () => Skin.AllSkinNames;
+			SettingUI.GetSkinName = () => StageSkin.Data.Name;
+			SettingUI.SkinLoadSkin = Skin.LoadSkin;
+			SettingUI.SkinDeleteSkin = Skin.UI_DeleteSkin;
+			SettingUI.SkinNewSkin = Skin.UI_NewSkin;
+			SettingUI.OpenMenu = Menu.OpenMenu;
+			SettingUI.ShortcutCount = () => Short.Datas.Length;
+			SettingUI.GetShortcutAt = (i) => {
+				var data = Short.Datas[i];
+				return (data.Name, data.Key, data.Ctrl, data.Shift, data.Alt);
+			};
+			SettingUI.SaveShortcut = () => {
+				Short.SaveToFile();
+				Short.ReloadMap();
+			};
+			SettingUI.CheckShortcut = Short.CheckShortcut;
+			SettingUI.SetShortcut = (index, key, ctrl, shift, alt) => {
+				var data = Short.Datas[index];
+				data.Key = key;
+				data.Ctrl = ctrl;
+				data.Shift = shift;
+				data.Alt = alt;
+				return index;
+			};
+
+		}
+
+
+		private void Awake_UI () {
+
+			CursorUI.GetCursorTexture = (index) => (
+				index >= 0 ? m_Cursors[index].Cursor : null,
+				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
+			);
+
+			ProgressUI.GetSnapTime = (time, step) => Game.SnapTime(time, step);
+
+			GridRenderer.GetAreaBetween = Game.AreaBetween;
+			GridRenderer.GetSnapedTime = Game.SnapTime;
+
+			TrackSectionRenderer.GetAreaBetween = Game.AreaBetween;
+			TrackSectionRenderer.GetSnapedTime = Game.SnapTime;
+
+			BeatmapSwiperUI.GetBeatmapMap = () => Project.BeatmapMap;
+			BeatmapSwiperUI.TriggerSwitcher = (key) => {
+				Project.SaveProject();
+				Project.OpenBeatmap(key);
+			};
+
+			HomeUI.GotoEditor = State.GotoEditor;
+			HomeUI.GetWorkspace = () => Project.Workspace;
+			HomeUI.OpenMenu = Menu.OpenMenu;
+
+			ProgressUI.GetDuration = () => Music.Duration;
+			ProgressUI.GetReadyPlay = () => (Music.IsReady, Music.IsPlaying);
+			ProgressUI.PlayMusic = Music.Play;
+			ProgressUI.PauseMusic = Music.Pause;
+			ProgressUI.SeekMusic = Music.Seek;
+
+			AbreastSwitcherUI.SetAbreastIndex = Game.SetAbreastIndex;
+			AbreastSwitcherUI.SetAllStageAbreast = Game.SetAllStageAbreast;
+			AbreastSwitcherUI.GetAbreastIndex = () => Game.AbreastIndex;
+			AbreastSwitcherUI.GetAllStageAbreast = () => Game.AllStageAbreast;
+			AbreastSwitcherUI.GetUseAbreast = () => Game.UseAbreast;
+
+			PreviewUI.GetMusicTime01 = (time) => time / Music.Duration;
+			PreviewUI.GetBeatmap = () => Project.Beatmap;
+
 			ProjectInfoUI.OnBeatmapInfoChanged = (map) => {
 				if (Project.Beatmap) {
 					Game.BPM = Project.Beatmap.BPM;
@@ -517,28 +639,28 @@
 			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
 				RefreshAuthorLabel();
-
-
 			};
-		}
+
+			ProjectCreatorUI.ImportMusic = () => {
+				Project.ImportMusic((data, _) => {
+					if (data is null) { return; }
+					ProjectCreatorUI.MusicData = data;
+					ProjectCreatorUI.SetMusicSizeDirty();
+				});
+			};
+			ProjectCreatorUI.GotoEditor = State.GotoEditor;
+
+			SkinEditorUI.MusicSeek_Add = (add) => Music.Seek(Music.Time + add);
+			SkinEditorUI.SkinReloadSkin = Skin.ReloadSkin;
+			SkinEditorUI.OpenMenu = Menu.OpenMenu;
+			SkinEditorUI.SkinGetPath = Skin.GetPath;
+			SkinEditorUI.SkinSaveSkin = Skin.SaveSkin;
+
+			SkinSwiperUI.GetAllSkinNames = () => Skin.AllSkinNames;
+			SkinSwiperUI.SkinLoadSkin = Skin.LoadSkin;
 
 
-		private void Awake_Preview () {
-			PreviewUI.GetMusicTime01 = (time) => time / Music.Duration;
-			PreviewUI.GetBeatmap = () => Project.Beatmap;
-		}
 
-
-		private void Awake_Misc () {
-			CursorUI.GetCursorTexture = (index) => (
-				index >= 0 ? m_Cursors[index].Cursor : null,
-				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
-			);
-			ProgressUI.GetSnapTime = (time, step) => Game.SnapTime(time, step);
-			GridRenderer.GetAreaBetween = Game.AreaBetween;
-			GridRenderer.GetSnapedTime = Game.SnapTime;
-			TrackSectionRenderer.GetAreaBetween = Game.AreaBetween;
-			TrackSectionRenderer.GetSnapedTime = Game.SnapTime;
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
 			SetNavigationInteractable(true);

@@ -3,9 +3,10 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using Data;
-	using global::StagerStudio.Stage;
 	using UnityEngine.EventSystems;
+	using Data;
+
+
 
 	public class StageLibrary : MonoBehaviour {
 

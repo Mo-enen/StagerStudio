@@ -2,10 +2,7 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
-	using UnityEngine.EventSystems;
 	using UnityEngine.UI;
-	using Object;
-	using Stage;
 	using Data;
 
 
@@ -18,7 +15,11 @@
 
 
 		// Handler
-		public delegate string LanguageHandler (string key);
+		public delegate string StringStringHandler (string key);
+		public delegate void VoidFloatHandler (float value);
+		public delegate void VoidHandler ();
+		public delegate void VoidStringHandler (string str);
+		public delegate string PathSkinStringHandler (SkinData skin, string name);
 
 		// Const
 		private const string HINT_Saved = "SkinEditor.Saved";
@@ -30,8 +31,13 @@
 		private const int TEXTURE_MAX_SIZE = 1024;
 
 		// API
-		public static LanguageHandler GetLanguage { get; set; } = null;
 		public SkinData Data { get; private set; } = new SkinData();
+		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static VoidFloatHandler MusicSeek_Add { get; set; } = null;
+		public static VoidHandler SkinReloadSkin { get; set; } = null;
+		public static VoidStringHandler OpenMenu { get; set; } = null;
+		public static StringStringHandler SkinGetPath { get; set; } = null;
+		public static PathSkinStringHandler SkinSaveSkin { get; set; } = null;
 
 		// Short
 		private SkinEditorPainterUI Painter => m_Painter;
@@ -57,10 +63,6 @@
 
 		// Data
 		private StagerStudio SS = null;
-		private StageSkin Skin = null;
-		private StageMenu Menu = null;
-		private StageMusic Music = null;
-		private StageLanguage Language = null;
 		private HintBarUI Hint = null;
 		private bool UIReady = true;
 		private bool OpenSettingAfterClose = false;
@@ -79,7 +81,7 @@
 			if (transform.localScale.x < 0.5f) {
 				if (Input.GetMouseButton(0)) {
 					// Viewing
-					Music.Seek(Music.Time + Input.GetAxis("Mouse X") * 0.1f);
+					MusicSeek_Add(Input.GetAxis("Mouse X") * 0.1f);
 				} else {
 					// View Cancel
 					transform.localScale = Vector3.one;
@@ -99,22 +101,18 @@
 		public void Init (SkinData skinData, string skinName, bool openSettingAfterClose) {
 
 			if (skinData == null || string.IsNullOrEmpty(skinName)) {
-				Skin.ReloadSkin();
+				SkinReloadSkin();
 				StagerStudio.Main.UI_SpawnSetting();
 				return;
 			}
 
 			// Stuffs...
 			Hint = FindObjectOfType<HintBarUI>();
-			Language = FindObjectOfType<StageLanguage>();
-			Menu = FindObjectOfType<StageMenu>();
-			Music = FindObjectOfType<StageMusic>();
-			Skin = FindObjectOfType<StageSkin>();
 			SS = FindObjectOfType<StagerStudio>();
 
 			// Language
 			foreach (var text in m_LanguageTexts) {
-				text.text = Language.Get(text.name);
+				text.text = GetLanguage(text.name);
 			}
 
 			// Skin
@@ -217,14 +215,14 @@
 		public void Save () {
 			if (Data is null) { return; }
 			Data.Author = SkinAuthor;
-			var newPath = Skin.SaveSkin(Data, SkinName);
-			Skin.ReloadSkin();
-			Hint?.SetHint(Language.Get(HINT_Saved));
+			var newPath = SkinSaveSkin(Data, SkinName);
+			SkinReloadSkin();
+			Hint?.SetHint(GetLanguage(HINT_Saved));
 			Resources.UnloadUnusedAssets();
 			// Delete Old when Rename
 			if (SkinName != SavedName) {
 				if (Util.FileExists(newPath)) {
-					Util.DeleteFile(Skin.GetPath(SavedName));
+					Util.DeleteFile(SkinGetPath(SavedName));
 				}
 				SavedName = SkinName;
 			}
@@ -287,9 +285,7 @@
 		}
 
 
-		public void ShowPainterMenu () {
-			Menu.OpenMenu(PAINTER_MENU_KEY);
-		}
+		public void ShowPainterMenu () => OpenMenu(PAINTER_MENU_KEY);
 
 
 		// UI

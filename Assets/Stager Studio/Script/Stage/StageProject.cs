@@ -66,6 +66,20 @@
 			public const string UI_ProjectSaveMSG = "Project.UI.ProjectSaveMSG";
 			public const string UI_BeatmapDuplicateTag = "Project.UI.BeatmapDuplicateTag";
 
+			public const string UI_NoBackgroundHint = "ProjectInfo.UI.NoBackgroundHint";
+			public const string UI_NoCoverHint = "ProjectInfo.UI.NoCoverHint";
+			public const string UI_NoMusicHint = "ProjectInfo.UI.NoMusicHint";
+			public const string UI_ImportPalette = "ProjectInfo.Dialog.ImportPalette";
+			public const string UI_ImportPaletteTitle = "ProjectInfo.Dialog.ImportPaletteTitle";
+			public const string UI_ExportPaletteTitle = "ProjectInfo.Dialog.ExportPaletteTitle";
+			public const string UI_PaletteFull = "ProjectInfo.Dialog.PaletteFull";
+			public const string UI_PaletteExported = "ProjectInfo.Dialog.PaletteExported";
+
+			public const string UI_ImportTween = "ProjectInfo.Dialog.ImportTween";
+			public const string UI_ImportTweenTitle = "ProjectInfo.Dialog.ImportTweenTitle";
+			public const string UI_ExportTweenTitle = "ProjectInfo.Dialog.ExportTweenTitle";
+			public const string UI_TweenFull = "ProjectInfo.Dialog.TweenFull";
+			public const string UI_TweenExported = "ProjectInfo.Dialog.TweenExported";
 		}
 
 
@@ -76,7 +90,7 @@
 
 		#region --- VAR ---
 
-		
+
 		// Handler
 		public static VoidFloatStringHandler OnLoadProgress { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
@@ -409,17 +423,13 @@
 
 
 		// Beatmap
-		public string NewBeatmap () {
+		public void NewBeatmap () {
 			var key = System.Guid.NewGuid().ToString();
 			var map = Beatmap.NewBeatmap();
 			BeatmapMap.Add(key, map);
 			SetDirty();
 			OnBeatmapCreated();
-			return key;
 		}
-
-
-		public void UI_NewBeatmap () => NewBeatmap();
 
 
 		public void OpenBeatmap (object itemRT) {
@@ -443,7 +453,7 @@
 		}
 
 
-		public void ImportBeatmap () {
+		public void UI_ImportBeatmap (System.Action done) {
 			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportBeatmapTitle, "Stager Beatmap", "json");
 			try {
 				if (string.IsNullOrEmpty(path) || !Util.FileExists(path)) { return; }
@@ -453,6 +463,7 @@
 					BeatmapMap.Add(key, map);
 					SetDirty();
 					OnBeatmapCreated();
+					done();
 				}
 			} catch (System.Exception ex) {
 				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
@@ -508,57 +519,74 @@
 
 
 		// Import Asset
-		public string ImportMusic () => ImportMusic((data, clip) => {
+		public void ImportMusic () => ImportMusic((data, clip) => {
 			Music = (data, clip);
 			OnMusicLoaded.Invoke(clip);
 		});
 
 
-		public string ImportMusic (System.Action<Project.FileData, AudioClip> callBack) {
+		public void ImportMusic (System.Action<Project.FileData, AudioClip> callBack) {
 			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportMusicTitle, "", "mp3", "wav", "ogg");
-			if (!Util.FileExists(path)) { return path; }
+			if (!Util.FileExists(path)) { return; }
 			ImportAudioLogic(path, callBack);
-			return path;
 		}
 
 
-		public string ImportBackground () => ImportBackground((data, sprite) => {
+		public void ImportBackground () => ImportBackground((data, sprite) => {
 			Background = (data, sprite);
-			OnBackgroundLoaded.Invoke(sprite);
+			OnBackgroundLoaded(sprite);
 		}, 256);
 
 
-		public string ImportBackground (System.Action<Project.FileData, Sprite> callBack, int maxPixelSize = int.MaxValue) {
+		public void ImportBackground (System.Action<Project.FileData, Sprite> callBack, int maxPixelSize = int.MaxValue) {
 			var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportBGTitle), "", "png", "jpg");
-			if (!Util.FileExists(path)) { return path; }
+			if (!Util.FileExists(path)) { return; }
 			ImportImageFileLogic(path, callBack, maxPixelSize);
-			return path;
 		}
 
 
-		public string ImportCover () => ImportCover((data, sprite) => {
+		public void ImportCover () => ImportCover((data, sprite) => {
 			FrontCover = (data, sprite);
 			OnCoverLoaded.Invoke(sprite);
 		}, 256);
 
 
-		public string ImportCover (System.Action<Project.ImageData, Sprite> callBack, int maxPixelSize = int.MaxValue) {
-			var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportCoverTitle), "", "png", "jpg");
-			if (!Util.FileExists(path)) { return ""; }
+		public void ImportCover (System.Action<Project.ImageData, Sprite> callBack, int maxPixelSize = int.MaxValue) {
+			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportCoverTitle, "", "png", "jpg");
+			if (!Util.FileExists(path)) { return; }
 			ImportImageLogic(path, callBack, false, maxPixelSize);
-			return path;
 		}
 
 
-		public string ImportClickSound () {
-			var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportClickSoundTitle), "", "mp3", "wav", "ogg");
-			if (!Util.FileExists(path)) { return path; }
+		public void UI_ImportPalette (System.Action done) {
+			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportPalette, DialogUtil.MarkType.Warning, () => {
+				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportPaletteTitle), "images", "png", "jpg");
+				if (string.IsNullOrEmpty(path)) { return; }
+				try {
+					var colors = Util.ImageToPixels(path, false).pixels;
+					if (colors is null) { throw new System.Exception("Error on import image."); }
+					Palette.Clear();
+					Palette.AddRange(colors);
+					SetDirty();
+					if (Palette.Count > 256) {
+						Palette.RemoveRange(256, Palette.Count - 256);
+					}
+					done();
+				} catch (System.Exception ex) {
+					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+				}
+			});
+		}
+
+
+		public void ImportClickSound () {
+			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportClickSoundTitle, "", "mp3", "wav", "ogg");
+			if (!Util.FileExists(path)) { return; }
 			ImportAudioLogic(path, (data, clip) => {
 				ClickSounds.Add((data, clip));
 				LogClickSoundCallback();
 				SetDirty();
 			});
-			return path;
 		}
 
 
@@ -837,6 +865,34 @@
 		}
 
 
+		public void UI_AddPaletteColor () {
+			if (Palette.Count >= 256) {
+				DialogUtil.Dialog_OK(LanguageData.UI_PaletteFull, DialogUtil.MarkType.Warning, () => { });
+				return;
+			}
+			AddPaletteColor(Color.white);
+		}
+
+
+		public void UI_ExportPalette () {
+			var path = DialogUtil.CreateFileDialog(LanguageData.UI_ExportPaletteTitle, "Pal", "png");
+			if (string.IsNullOrEmpty(path)) { return; }
+			try {
+				var texture = new Texture2D(Palette.Count, 1);
+				var colors = new List<Color>();
+				foreach (var c in Palette) {
+					colors.Add(c);
+				}
+				texture.SetPixels(colors.ToArray());
+				texture.Apply();
+				Util.ByteToFile(texture.EncodeToPNG(), path);
+				DialogUtil.Dialog_OK(LanguageData.UI_PaletteExported, DialogUtil.MarkType.Success, () => { });
+			} catch (System.Exception ex) {
+				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+			}
+		}
+
+
 		// Tween
 		public void RemoveTweenAt (int index) {
 			if (index < 0 || index >= Tweens.Count) { return; }
@@ -890,6 +946,49 @@
 			}
 			Tweens[index] = (projectTween, projectColor);
 			SetDirty();
+		}
+
+
+		public void UI_AddTween () {
+			if (Tweens.Count >= 256) {
+				DialogUtil.Dialog_OK(LanguageData.UI_TweenFull, DialogUtil.MarkType.Warning, () => { });
+				return;
+			}
+			AddTweenCurve(AnimationCurve.Linear(0, 0, 1, 1), Color.white);
+		}
+
+
+
+		public void UI_ImportTween (System.Action done) {
+			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportTween, DialogUtil.MarkType.Warning, () => {
+				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportTweenTitle), "json", "json");
+				if (string.IsNullOrEmpty(path) || !Util.FileExists(path)) { return; }
+				try {
+					var tArray = JsonUtility.FromJson<Data.Project.TweenArray>(Util.FileToText(path));
+					Tweens.Clear();
+					Tweens.AddRange(tArray.GetAnimationTweens());
+					SetDirty();
+					if (Tweens.Count > 256) {
+						Tweens.RemoveRange(256, Tweens.Count - 256);
+					}
+					done();
+				} catch (System.Exception ex) {
+					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+				}
+			});
+		}
+
+
+		public void UI_ExportTween () {
+			var path = DialogUtil.CreateFileDialog((LanguageData.UI_ExportTweenTitle), "json", "json");
+			if (string.IsNullOrEmpty(path)) { return; }
+			try {
+				var json = JsonUtility.ToJson(new Data.Project.TweenArray(Tweens), true);
+				Util.TextToFile(json, path);
+				DialogUtil.Dialog_OK(LanguageData.UI_TweenExported, DialogUtil.MarkType.Success, () => { });
+			} catch (System.Exception ex) {
+				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+			}
 		}
 
 

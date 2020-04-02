@@ -4,7 +4,6 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using UnityEngine.Events;
-	using Stage;
 
 
 	public class SettingUI : MonoBehaviour {
@@ -13,12 +12,6 @@
 
 
 		#region --- SUB ---
-
-
-
-		// handler
-		public delegate void VoidHandler ();
-		public delegate string StringStringHandler (string value);
 
 
 		// Com Data
@@ -92,6 +85,21 @@
 		}
 
 
+		// Handler
+		public delegate void VoidHandler ();
+		public delegate string StringStringHandler (string value);
+		public delegate string StringHandler ();
+		public delegate void VoidStringHandler (string str);
+		public delegate string StringSystemLanguageHandler (SystemLanguage language);
+		public delegate List<SystemLanguage> LanguagesHandler ();
+		public delegate string[] StringsHandler ();
+		public delegate void VoidRtHandler (RectTransform rt);
+		public delegate int IntHandler ();
+		public delegate (string name, KeyCode key, bool ctrl, bool shift, bool alt) ShortcutItemIntHandler (int index);
+		public delegate int ShortcutHandler (int index, KeyCode key, bool ctrl, bool shift, bool alt);
+
+
+
 		#endregion
 
 
@@ -104,16 +112,27 @@
 		private const string RESET_CONFIRM_KEY = "Setting.ResetConfirm";
 
 		// Api
-		public StringStringHandler GetLanguage { get; set; } = null;
-		public VoidHandler ResetAllSettings { get; set; } = null;
+		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static VoidHandler ResetAllSettings { get; set; } = null;
+		public static VoidHandler SkinRefreshAllSkinNames { get; set; } = null;
+		public static StringHandler LanguageGetDisplayName { get; set; } = null;
+		public static StringSystemLanguageHandler LanguageGetDisplayName_Language { get; set; } = null;
+		public static LanguagesHandler GetAllLanguages { get; set; } = null;
+		public static StringsHandler GetAllSkinNames { get; set; } = null;
+		public static StringHandler GetSkinName { get; set; } = null;
+		public static VoidStringHandler SkinLoadSkin { get; set; } = null;
+		public static VoidRtHandler SkinDeleteSkin { get; set; } = null;
+		public static VoidHandler SkinNewSkin { get; set; } = null;
+		public static VoidStringHandler OpenMenu { get; set; } = null;
+		public static IntHandler ShortcutCount { get; set; } = null;
+		public static ShortcutItemIntHandler GetShortcutAt { get; set; } = null;
+		public static VoidHandler SaveShortcut { get; set; } = null;
+		public static ShortcutHandler CheckShortcut { get; set; } = null;
+		public static ShortcutHandler SetShortcut { get; set; } = null;
+
+
 		public bool UIReady { get; private set; } = true;
 		public ComponentData Component => m_Component;
-
-		// Short
-		private StageLanguage Language => _Language != null ? _Language : (_Language = FindObjectOfType<StageLanguage>());
-		private StageSkin Skin => _Skin != null ? _Skin : (_Skin = FindObjectOfType<StageSkin>());
-		private StageMenu Menu => _Menu != null ? _Menu : (_Menu = FindObjectOfType<StageMenu>());
-		private StageShortcut Shortcut => _Shortcut != null ? _Shortcut : (_Shortcut = FindObjectOfType<StageShortcut>());
 
 		// Ser
 		[SerializeField] private Grabber m_LanguageItemPrefab = null;
@@ -127,12 +146,6 @@
 		[SerializeField] private Text m_LanguageHint = null;
 		[SerializeField] private ComponentData m_Component = default;
 		[SerializeField] private Text[] m_LanguageLabels = null;
-
-		// Data
-		private StageLanguage _Language = null;
-		private StageSkin _Skin = null;
-		private StageMenu _Menu = null;
-		private StageShortcut _Shortcut = null;
 
 
 		#endregion
@@ -161,7 +174,7 @@
 
 
 		public void Refresh () {
-			Skin.RefreshAllSkinNames();
+			SkinRefreshAllSkinNames();
 			RefreshLogic(true);
 		}
 
@@ -181,8 +194,9 @@
 				if (refreshDynamic) {
 					// Language
 					m_LanguageContent.DestroyAllChildImmediately();
-					m_LanguageHint.text = Language.GetDisplayName() + " - " + Language.Get("Author");
-					foreach (var lan in Language.AllLanguages) {
+					m_LanguageHint.text = LanguageGetDisplayName() + " - " + GetLanguage("Author");
+					var allLanguages = GetAllLanguages();
+					foreach (var lan in allLanguages) {
 						var graber = Instantiate(m_LanguageItemPrefab, m_LanguageContent);
 						var rt = graber.transform as RectTransform;
 						rt.name = lan.ToString();
@@ -191,17 +205,18 @@
 						rt.localScale = Vector3.one;
 						rt.SetAsLastSibling();
 						graber.Grab<Button>().onClick.AddListener(OnClick);
-						graber.Grab<Text>("Text").text = Language.GetDisplayName(lan);
+						graber.Grab<Text>("Text").text = LanguageGetDisplayName_Language(lan);
 						// Func
 						void OnClick () {
-							Language.LoadLanguage(lan);
+							LanguageGetDisplayName_Language(lan);
 							RefreshLanguageTexts();
 						}
 					}
 					// Skin
 					m_SkinContent.DestroyAllChildImmediately();
 					int uiLayerID = SortingLayer.NameToID("UI");
-					foreach (var _name in Skin.AllSkinNames) {
+					var allSkinNames = GetAllSkinNames();
+					foreach (var _name in allSkinNames) {
 						string skinName = _name;
 						var graber = Instantiate(m_SkinItemPrefab, m_SkinContent);
 						var rt = graber.transform as RectTransform;
@@ -214,25 +229,27 @@
 						graber.Grab<Button>("Edit").onClick.AddListener(OnEdit);
 						graber.Grab<Button>("Delete").onClick.AddListener(OnDelete);
 						graber.Grab<Text>("Name").text = skinName;
-						graber.Grab<RectTransform>("Mark").gameObject.SetActive(skinName == StageSkin.Data.Name);
+						graber.Grab<RectTransform>("Mark").gameObject.SetActive(skinName == GetSkinName());
 						// Func
-						void OnClick () => Skin.LoadSkin(skinName);
+						void OnClick () => SkinLoadSkin(skinName);
 						void OnEdit () => StagerStudio.Main.SpawnSkinEditor(skinName, true);
-						void OnDelete () => Skin.UI_DeleteSkin(rt);
+						void OnDelete () => SkinDeleteSkin(rt);
 					}
 					// Shortcut
 					m_ShortcutContent.DestroyAllChildImmediately();
-					for (int i = 0; i < Shortcut.Datas.Length; i++) {
-						var data = Shortcut.Datas[i];
+					int shortcutCount = ShortcutCount();
+					for (int i = 0; i < shortcutCount; i++) {
+						int index = i;
+						var data = GetShortcutAt(index);
 						var graber = Instantiate(m_ShortcutItemPrefab, m_ShortcutContent);
 						var rt = graber.transform as RectTransform;
-						rt.name = data.Name;
+						rt.name = data.name;
 						rt.anchoredPosition3D = rt.anchoredPosition;
 						rt.localRotation = Quaternion.identity;
 						rt.localScale = Vector3.one;
 						rt.SetAsLastSibling();
-						graber.Grab<Text>("Name").text = GetLanguage(data.Name);
-						if (i % 2 == 1) {
+						graber.Grab<Text>("Name").text = GetLanguage(data.name);
+						if (index % 2 == 1) {
 							graber.Grab<Image>().color = Color.clear;
 						}
 						var ctrlTG = graber.Grab<Toggle>("Ctrl");
@@ -240,31 +257,31 @@
 						var altTG = graber.Grab<Toggle>("Alt");
 						var keySetter = graber.Grab<KeySetterUI>("Key");
 						var clearBtn = graber.Grab<Button>("Clear");
-						ctrlTG.isOn = data.Ctrl;
-						shiftTG.isOn = data.Shift;
-						altTG.isOn = data.Alt;
+						ctrlTG.isOn = data.ctrl;
+						shiftTG.isOn = data.shift;
+						altTG.isOn = data.alt;
 						ctrlTG.onValueChanged.AddListener((isOn) => {
-							if (isOn != data.Ctrl) {
-								data.Ctrl = isOn;
-								Shortcut.SaveToFile();
-								Shortcut.ReloadMap();
+							if (isOn != data.ctrl) {
+								data.ctrl = isOn;
+								SetShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+								SaveShortcut();
 							}
 						});
 						shiftTG.onValueChanged.AddListener((isOn) => {
-							if (isOn != data.Shift) {
-								data.Shift = isOn;
-								Shortcut.SaveToFile();
-								Shortcut.ReloadMap();
+							if (isOn != data.shift) {
+								data.shift = isOn;
+								SetShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+								SaveShortcut();
 							}
 						});
 						altTG.onValueChanged.AddListener((isOn) => {
-							if (isOn != data.Alt) {
-								data.Alt = isOn;
-								Shortcut.SaveToFile();
-								Shortcut.ReloadMap();
+							if (isOn != data.alt) {
+								data.alt = isOn;
+								SetShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+								SaveShortcut();
 							}
 						});
-						keySetter.Label = Util.GetKeyName(data.Key);
+						keySetter.Label = Util.GetKeyName(data.key);
 						keySetter.OnSetStart = () => {
 							var setters = m_ShortcutContent.GetComponentsInChildren<KeySetterUI>(false);
 							foreach (var setter in setters) {
@@ -275,36 +292,28 @@
 						};
 						keySetter.OnSetDone = (key) => {
 							// Check Key
-							bool needRefreshUI = false;
-							foreach (var d in Shortcut.Datas) {
-								if (
-									d != data &&
-									d.Key == key &&
-									d.Ctrl == data.Ctrl &&
-									d.Shift == data.Shift &&
-									d.Alt == data.Alt
-								) {
-									d.Key = KeyCode.None;
-									needRefreshUI = true;
-								}
+							int checkIndex = CheckShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+							if (checkIndex >= 0) {
+								var checkData = GetShortcutAt(checkIndex);
+								SetShortcut(checkIndex, KeyCode.None, checkData.ctrl, checkData.shift, checkData.alt);
 							}
 							// Set Key
-							if (data.Key != key) {
-								data.Key = key;
+							if (data.key != key) {
+								data.key = key;
+								SetShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+								SaveShortcut();
 								keySetter.Label = Util.GetKeyName(key);
-								Shortcut.SaveToFile();
-								Shortcut.ReloadMap();
 							}
-							if (needRefreshUI) {
+							if (checkIndex >= 0) {
 								RefreshLogic(true);
 							}
 						};
 						clearBtn.onClick.AddListener(() => {
-							if (data.Key != KeyCode.None) {
-								data.Key = KeyCode.None;
+							if (data.key != KeyCode.None) {
+								data.key = KeyCode.None;
+								SetShortcut(index, data.key, data.ctrl, data.shift, data.alt);
+								SaveShortcut();
 								keySetter.Label = "";
-								Shortcut.SaveToFile();
-								Shortcut.ReloadMap();
 							}
 						});
 					}
@@ -349,10 +358,10 @@
 		}
 
 
-		public void UI_NewSkin () => FindObjectOfType<StageSkin>().UI_NewSkin();
+		public void UI_NewSkin () => SkinNewSkin();
 
 
-		public void UI_OpenMenu (string key) => Menu.OpenMenu(key);
+		public void UI_OpenMenu (string key) => OpenMenu(key);
 
 
 		#endregion

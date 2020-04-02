@@ -1,10 +1,9 @@
 ﻿namespace StagerStudio.UI {
-	using global::StagerStudio.Data;
-	using Object;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using Data;
 
 
 	public class PreviewUI : Image {

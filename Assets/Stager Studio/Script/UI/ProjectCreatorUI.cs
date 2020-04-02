@@ -4,7 +4,6 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Data;
-	using Stage;
 
 
 	public class ProjectCreatorUI : MonoBehaviour {
@@ -33,7 +32,14 @@
 
 		// Handler
 		public delegate string StringStringHandler (string key);
+		public delegate void VoidStringHandler (string str);
+		public delegate void VoidHandler ();
+
+		// Api
 		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static VoidStringHandler GotoEditor { get; set; } = null;
+		public static VoidHandler ImportMusic { get; set; } = null;
+		public static Project.FileData MusicData { get; set; } = null;
 
 		// Ser
 		[SerializeField] private RectTransform[] m_Containers = null;
@@ -71,8 +77,9 @@
 		private ProjectType CurrentProjectType = ProjectType.StagerStudio;
 
 		// Project
-		private Project.FileData MusicData = null;
+		private static bool MusicSizeDirty = true;
 		private string RootPath = "";
+
 
 		// MSG
 		private void Update () {
@@ -102,35 +109,31 @@
 					UIMoving = false;
 				}
 			}
+			// Music Size
+			if (MusicSizeDirty) {
+				m_MusicSizeLabel.text = MusicData != null ? (MusicData.Data.Length / 1024f / 1024f).ToString("0.0") + " MB" : "0 MB";
+				MusicSizeDirty = false;
+			}
 		}
 
 
 		// API
 		public void Init (string rootPath) {
 			// Project Info
-			var project = FindObjectOfType<StageProject>();
 			m_ProjectName.text = "New Project";
 			m_ProjectDescription.text = "";
 			m_MusicAuthor.text = "";
 			m_BeatmapAuthor.text = "";
-			m_MusicBrowse.onClick.AddListener(BrowseMusic);
+			m_MusicBrowse.onClick.AddListener(() => ImportMusic());
 			// Language
 			foreach (var tx in m_LanguageTexts) {
 				tx.text = GetLanguage?.Invoke(tx.name);
 			}
 			// Final
+			MusicSizeDirty = true;
 			RootPath = rootPath;
 			GotoStep(0);
 			UI_SetProjectType((int)ProjectType.StagerStudio);
-			// --- Func ---
-			void BrowseMusic () {
-				project.ImportMusic((data, _) => {
-					if (data is null) { return; }
-					MusicData = data;
-					m_MusicSizeLabel.text = data != null ?
-						(data.Data.Length / 1024f / 1024f).ToString("0.0") + " MB" : "0 MB";
-				});
-			}
 		}
 
 
@@ -150,8 +153,6 @@
 				DialogUtil.Dialog_OK(DIALOG_NoMusic, DialogUtil.MarkType.Warning);
 				return;
 			}
-			// Create
-			var state = FindObjectOfType<StageState>();
 			// Create Project
 			var result = new Project() {
 				LastEditTime = Util.GetLongTime(),
@@ -202,7 +203,7 @@
 					}
 				}
 				UI_Close();
-				state.GotoEditor(path);
+				GotoEditor(path);
 			} catch (System.Exception ex) {
 				DialogUtil.Open(GetLanguage(DIALOG_ErrorOnCreateProject) + "\n" + ex.Message, DialogUtil.MarkType.Warning, () => { });
 			}
@@ -220,6 +221,9 @@
 			CurrentProjectType = (ProjectType)type;
 			m_GeneHintLabel.text = GetLanguage(PROJECT_TYPE_HINT_KEYS[type]);
 		}
+
+
+		public static void SetMusicSizeDirty () => MusicSizeDirty = true;
 
 
 		// LGC

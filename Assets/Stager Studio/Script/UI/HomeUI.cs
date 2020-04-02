@@ -4,7 +4,6 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using UnityEngine.EventSystems;
-	using Stage;
 	using Saving;
 
 
@@ -19,7 +18,9 @@
 
 		public delegate void LogHintHandler (string key, bool flash);
 		public delegate string LanguageHandler (string key);
-
+		public delegate void VoidStringHandler (string str);
+		public delegate string StringHandler ();
+		public delegate void StringRtHandler (string str, RectTransform obj);
 
 
 		public static class LanguageData {
@@ -86,10 +87,11 @@
 		// Handler
 		public static LogHintHandler LogHint { get; set; } = null;
 		public static LanguageHandler GetLanguage { get; set; } = null;
+		public static VoidStringHandler GotoEditor { get; set; } = null;
+		public static StringHandler GetWorkspace { get; set; } = null;
+		public static StringRtHandler OpenMenu { get; set; } = null;
 
 		// Short
-		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
-
 		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Trashbin");
 		private ProjectSortMode ProjectSort {
 			get => (ProjectSortMode)ProjectSortIndex.Value;
@@ -108,11 +110,6 @@
 		[SerializeField] private Color m_ChapterNameNormal = Color.white;
 		[SerializeField] private Color m_ChapterNameHighlight = Color.white;
 
-		// Data
-		private StageMenu Menu { get; set; } = null;
-		private StageState State { get; set; } = null;
-		private StageProject _Project { get; set; } = null;
-
 		// Saving
 		private SavingString OpeningChapter = new SavingString("HomeUI.OpeningChapter", "");
 		private SavingInt ProjectSortIndex = new SavingInt("HomeUI.ProjectSortIndex", 1);
@@ -127,8 +124,6 @@
 
 
 		private void Awake () {
-			Menu = FindObjectOfType<StageMenu>();
-			State = FindObjectOfType<StageState>();
 			Util.CreateFolder(Trashbin);
 		}
 
@@ -196,7 +191,7 @@
 		public void OpenProjectFromMenu (object itemRT) {
 			if (itemRT == null || !(itemRT is RectTransform)) { return; }
 			var rt = itemRT as RectTransform;
-			State.GotoEditor(rt.name);
+			GotoEditor(rt.name);
 		}
 
 
@@ -233,8 +228,8 @@
 
 
 		public void ShowWorkspaceInExplorer () {
-			if (!Util.DirectoryExists(Project.Workspace)) { return; }
-			Util.ShowInExplorer(Project.Workspace);
+			if (!Util.DirectoryExists(GetWorkspace())) { return; }
+			Util.ShowInExplorer(GetWorkspace());
 		}
 
 
@@ -284,7 +279,7 @@
 			m_NoProjectHint.gameObject.SetActive(false);
 			// Load Chapters
 			bool openFlag = false;
-			var dirs = Util.GetDirectsIn(Project.Workspace, true);
+			var dirs = Util.GetDirectsIn(GetWorkspace(), true);
 			foreach (var dir in dirs) {
 				string name = dir.Name;
 				if (string.IsNullOrEmpty(OpeningChapter)) {
@@ -332,7 +327,7 @@
 					}
 					InvokeOpen();
 				}
-				void OnTrigger () => Menu.OpenMenu(CHAPTER_ITEM_MENU_KEY, rt);
+				void OnTrigger () => OpenMenu(CHAPTER_ITEM_MENU_KEY, rt);
 			}
 			if (!openFlag) {
 				OpenChapterAt(0);
@@ -348,7 +343,7 @@
 		}
 
 
-		private void OpenChapterLogic (string name) => OpenChapterLogic(Util.CombinePaths(Project.Workspace, name), name);
+		private void OpenChapterLogic (string name) => OpenChapterLogic(Util.CombinePaths(GetWorkspace(), name), name);
 
 
 		private void OpenTrashbinLogic (bool ignoreEmptyDialog = false) {
@@ -405,10 +400,10 @@
 				item.Load(projectPath);
 				void OpenProject () {
 					CancelInvoke();
-					State.GotoEditor(projectPath);
+					GotoEditor(projectPath);
 				}
 				void ShowHint () => Invoke("Invoke_ShowDoubleClickHint", 0.618f);
-				void OnMenuTriggerClick () => Menu.OpenMenu(PROJECT_ITEM_MENU_KEY, rt);
+				void OnMenuTriggerClick () => OpenMenu(PROJECT_ITEM_MENU_KEY, rt);
 			}
 			SortProjectLogic();
 		}
@@ -417,7 +412,7 @@
 		private void OpenMoveProjectWindowLogic (string projectPath) {
 			ClearMoveProjectContent();
 			m_MoveProjectRoot.gameObject.SetActive(true);
-			var dirs = Util.GetDirectsIn(Project.Workspace, true);
+			var dirs = Util.GetDirectsIn(GetWorkspace(), true);
 			foreach (var dir in dirs) {
 				string name = dir.Name;
 				// Spawn Chapter Item
@@ -452,8 +447,8 @@
 		private bool RenameChapterLogic (string chapterName, string newName) {
 			if (chapterName == newName) { return false; }
 			try {
-				var from = Util.CombinePaths(Project.Workspace, chapterName);
-				var to = Util.CombinePaths(Project.Workspace, newName);
+				var from = Util.CombinePaths(GetWorkspace(), chapterName);
+				var to = Util.CombinePaths(GetWorkspace(), newName);
 				if (!Util.DirectoryExists(from)) { return false; }
 				if (Util.DirectoryExists(to)) {
 					DialogUtil.Dialog_OK(LanguageData.Error_ChapterAlreadyExists, DialogUtil.MarkType.Warning);
@@ -468,7 +463,7 @@
 
 
 		private bool MoveProjectItemLogic (string projectPath, string chapterName) {
-			string aimPath = Util.CombinePaths(Project.Workspace, chapterName);
+			string aimPath = Util.CombinePaths(GetWorkspace(), chapterName);
 			string aimFile = Util.CombinePaths(aimPath, Util.GetNameWithExtension(projectPath));
 			if (projectPath == aimFile || !Util.FileExists(projectPath) || !Util.DirectoryExists(aimPath)) { return false; }
 			if (Util.FileExists(aimFile)) {
@@ -485,7 +480,7 @@
 
 
 		private void ShowChapterInExplorerLogic (string chapterName) {
-			string path = Util.CombinePaths(Project.Workspace, chapterName);
+			string path = Util.CombinePaths(GetWorkspace(), chapterName);
 			if (!Util.DirectoryExists(path)) { return; }
 			Util.ShowInExplorer(Util.GetFullPath(path));
 		}
@@ -502,12 +497,12 @@
 			// Get Path
 			string basicName = GetLanguage?.Invoke(LanguageData.NewChapterName);
 			string chapterName = basicName;
-			string path = Util.CombinePaths(Project.Workspace, chapterName);
+			string path = Util.CombinePaths(GetWorkspace(), chapterName);
 			int index = 0;
 			while (Util.DirectoryExists(path)) {
 				chapterName = basicName + "_" + index;
 				index++;
-				path = Util.CombinePaths(Project.Workspace, chapterName);
+				path = Util.CombinePaths(GetWorkspace(), chapterName);
 			}
 			// Create Folder
 			Util.CreateFolder(path);
@@ -528,14 +523,14 @@
 
 
 		private void NewProjectLogic () {
-			StagerStudio.Main.SpawnProjectCreator(Util.CombinePaths(Project.Workspace, OpeningChapter));
+			StagerStudio.Main.SpawnProjectCreator(Util.CombinePaths(GetWorkspace(), OpeningChapter));
 		}
 
 
 		private void ImportProjectLogic (string path) {
 			if (!Util.FileExists(path)) { return; }
 			string fileName = Util.GetNameWithExtension(path);
-			string aimPath = Util.CombinePaths(Project.Workspace, OpeningChapter, fileName);
+			string aimPath = Util.CombinePaths(GetWorkspace(), OpeningChapter, fileName);
 			if (Util.FileExists(aimPath)) {
 				DialogUtil.Open(string.Format(GetLanguage.Invoke(LanguageData.UI_OverlapProjectConfirm), fileName), DialogUtil.MarkType.Warning,
 					() => {

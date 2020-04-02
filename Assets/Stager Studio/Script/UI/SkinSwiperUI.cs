@@ -3,7 +3,6 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using Stage;
 
 
 	public class SkinSwiperUI : MonoBehaviour {
@@ -19,6 +18,13 @@
 			}
 		}
 
+		public delegate string[] StringsHandler ();
+		public delegate void VoidStringHandler (string str);
+
+
+		// Api
+		public static StringsHandler GetAllSkinNames { get; set; } = null;
+		public static VoidStringHandler SkinLoadSkin { get; set; } = null;
 
 		// Ser
 		[SerializeField] private RectTransform m_Content = null;
@@ -26,8 +32,9 @@
 
 
 		// API
-		public void Init (StageSkin stageSkin) {
-			foreach (var skinName in stageSkin.AllSkinNames) {
+		public void Init () {
+			var allSkinNames = GetAllSkinNames();
+			foreach (var skinName in allSkinNames) {
 				var sName = skinName;
 				if (string.IsNullOrEmpty(sName)) { continue; }
 				var graber = Instantiate(m_SkinItemPrefab, m_Content);
@@ -42,7 +49,7 @@
 				graber.Grab<Button>().onClick.AddListener(OnClick);
 				void OnClick () {
 					Close();
-					stageSkin.LoadSkin(sName);
+					SkinLoadSkin(sName);
 				}
 			}
 			SortContent();
