@@ -65,6 +65,14 @@
 		#region --- MSG ---
 
 
+
+		protected override void Awake () {
+			base.Awake();
+			m_ArrowRenderer.SkinData = Skin;
+			m_PoleRenderer.SkinData = Skin;
+		}
+
+
 		private void Update () {
 
 			Late_Note = null;
@@ -109,7 +117,7 @@
 			}
 
 			// Cache
-			Update_Cache(noteData, GetGameSpeedMuti() * linkedStage.Speed);
+			Update_Cache(noteData, GameSpeedMuti * linkedStage.Speed);
 
 			// Linked
 			var linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteData.LinkedNoteIndex] : null;
@@ -414,13 +422,6 @@
 
 
 		public static void SetCacheDirty () => CacheDirtyID++;
-
-
-		public override void SetSkinData (SkinData skin) {
-			base.SetSkinData(skin);
-			m_ArrowRenderer.SkinData = skin;
-			m_PoleRenderer.SkinData = skin;
-		}
 
 
 		protected override void RefreshRendererZone () {

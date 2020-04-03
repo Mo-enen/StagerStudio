@@ -45,6 +45,8 @@
 			MainRenderer.Tint = Color.white;
 			m_TrackTintRenderer.Type = SkinType.TrackTint;
 			m_TrayRenderer.Type = SkinType.Tray;
+			m_TrayRenderer.SkinData = Skin;
+			m_TrackTintRenderer.SkinData = Skin;
 		}
 
 
@@ -72,7 +74,7 @@
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
 
-			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GetGameSpeedMuti() * linkedStage.Speed);
+			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * linkedStage.Speed);
 
 			if (!active) { return; }
 			trackData.Selecting = oldSelecting;
@@ -219,13 +221,6 @@
 				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
 				trackRotX, rotZ
 			);
-		}
-
-
-		public override void SetSkinData (SkinData skin) {
-			base.SetSkinData(skin);
-			m_TrayRenderer.SkinData = skin;
-			m_TrackTintRenderer.SkinData = skin;
 		}
 
 

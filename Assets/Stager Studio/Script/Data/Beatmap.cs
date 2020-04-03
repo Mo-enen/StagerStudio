@@ -397,6 +397,13 @@
 			public int m_Time = 0;
 			public int m_Speed = 0;
 
+			// Cache
+			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public float AppearTime = -1f;
+			[System.NonSerialized] public float SpeedMuti = -1f;
+			[System.NonSerialized] public float NoteDropPos = -1f;
+
+			// API
 			public SpeedNote (float time, float speed) {
 				Time = time;
 				Speed = speed;

@@ -307,9 +307,9 @@
 
 
 		private void RemoveLoading () {
-			Main.m_LoadingRoot.DestroyAllChildImmediately();
-			Main.m_LoadingRoot.gameObject.SetActive(false);
-			Main.m_LoadingRoot.parent.InactiveIfNoChildActive();
+			m_LoadingRoot.DestroyAllChildImmediately();
+			m_LoadingRoot.gameObject.SetActive(false);
+			m_LoadingRoot.parent.InactiveIfNoChildActive();
 		}
 
 
@@ -318,7 +318,7 @@
 			m_ColorPickerRoot.gameObject.SetActive(true);
 			m_ColorPickerRoot.parent.gameObject.SetActive(true);
 			Music.Pause();
-			Util.SpawnUI(Main.m_ColorPickerPrefab, Main.m_ColorPickerRoot, "Color Picker").Init(color, done);
+			Util.SpawnUI(m_ColorPickerPrefab, m_ColorPickerRoot, "Color Picker").Init(color, done);
 		}
 
 
@@ -327,7 +327,7 @@
 			m_TweenEditorRoot.gameObject.SetActive(true);
 			m_TweenEditorRoot.parent.gameObject.SetActive(true);
 			Music.Pause();
-			Util.SpawnUI(Main.m_TweenEditorPrefab, Main.m_TweenEditorRoot, "Tween Editor").Init(curve, done);
+			Util.SpawnUI(m_TweenEditorPrefab, m_TweenEditorRoot, "Tween Editor").Init(curve, done);
 		}
 
 
@@ -338,8 +338,8 @@
 		public void SpawnSkinEditor (string skinName, bool openSettingAfterClose) {
 			if (string.IsNullOrEmpty(skinName)) { return; }
 			UI_RemoveUI();
-			Util.SpawnUI(Main.m_SkinEditorPrefab, Main.m_SkinEditorRoot, "Skin Editor").Init(
-				Main.Skin.GetSkinFromDisk(skinName), skinName, openSettingAfterClose
+			Util.SpawnUI(m_SkinEditorPrefab, m_SkinEditorRoot, "Skin Editor").Init(
+				Skin.GetSkinFromDisk(skinName), skinName, openSettingAfterClose
 			);
 		}
 

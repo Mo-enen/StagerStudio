@@ -5,7 +5,6 @@
 	using Curve;
 	using Saving;
 	using Data;
-	using Object;
 
 
 	public class StageGame : MonoBehaviour {
@@ -73,20 +72,19 @@
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private StageObject m_Prefab_Stage = null;
-		[SerializeField] private StageObject m_Prefab_Track = null;
-		[SerializeField] private StageObject m_Prefab_Note = null;
+		[SerializeField] private Transform m_Prefab_Stage = null;
+		[SerializeField] private Transform m_Prefab_Track = null;
+		[SerializeField] private Transform m_Prefab_Note = null;
 		[SerializeField] private Transform m_Prefab_Speed = null;
 		[SerializeField] private Transform m_Prefab_Motion = null;
-		[SerializeField] private StageObject m_Prefab_Luminous = null;
-		[SerializeField] private Transform[] m_AntiMouseTF = null;
-		[SerializeField] private Transform m_Level = null;
+		[SerializeField] private Transform m_Prefab_Luminous = null;
 		[SerializeField] private RectTransform m_ZoneRT = null;
+		[SerializeField] private Transform[] m_AntiMouseTF = null;
+		[SerializeField] private Transform[] m_Containers = null;
 
 		// Data
 		private StageMusic _Music = null;
 		private Camera _Camera = null;
-		private Transform[] Containers = null;
 		private float _Ratio = 1.5f;
 		private int _AbreastIndex = 0;
 		private float _GameDropSpeed = 1f;
@@ -119,32 +117,6 @@
 		#region --- MSG ---
 
 
-		private void Awake () {
-			// Sorting Layer ID
-			Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
-			Stage.SortingLayerID_Judge = SortingLayer.NameToID("Judge");
-			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
-			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
-			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
-			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
-			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");
-			Note.SortingLayerID_Note = SortingLayer.NameToID("Note");
-			Note.LayerID_Note = LayerMask.NameToLayer("Note");
-			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
-			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
-			StageObject.SortingLayerID_UI = SortingLayer.NameToID("UI");
-			SpeedNote.SortingLayerID_Speed = SortingLayer.NameToID("Speed");
-			MotionNote.SortingLayerID_Motion = SortingLayer.NameToID("Motion");
-			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
-			// Misc
-			const int CONTAINER_COUNT = 6;
-			Containers = new Transform[CONTAINER_COUNT];
-			for (int i = 0; i < CONTAINER_COUNT; i++) {
-				Containers[i] = m_Level.GetChild(i);
-			}
-		}
-
-
 		private void Start () {
 			SetShowGrid(ShowGrid);
 			SetGridCountX(GridCountX);
@@ -167,13 +139,13 @@
 			if (!(map is null)) {
 				// Has Beatmap
 				bool changed = false;
-				changed = FixObject(m_Prefab_Stage, null, Containers[0], map.Stages.Count) || changed;
-				changed = FixObject(m_Prefab_Track, null, Containers[1], map.Tracks.Count) || changed;
-				changed = FixObject(m_Prefab_Note, null, Containers[2], map.Notes.Count) || changed;
-				changed = FixObject(null, m_Prefab_Speed, Containers[3], map.SpeedNotes.Count) || changed;
-				changed = FixStageMotionObject(m_Prefab_Motion, Containers[4].GetChild(0), map.Stages) || changed;
-				changed = FixTrackMotionObject(m_Prefab_Motion, Containers[4].GetChild(1), map.Tracks) || changed;
-				changed = FixObject(m_Prefab_Luminous, null, Containers[5], map.Notes.Count) || changed;
+				changed = FixObject(m_Prefab_Stage, null, m_Containers[0], map.Stages.Count) || changed;
+				changed = FixObject(m_Prefab_Track, null, m_Containers[1], map.Tracks.Count) || changed;
+				changed = FixObject(m_Prefab_Note, null, m_Containers[2], map.Notes.Count) || changed;
+				changed = FixObject(null, m_Prefab_Speed, m_Containers[3], map.SpeedNotes.Count) || changed;
+				changed = FixStageMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(0), map.Stages) || changed;
+				changed = FixTrackMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(1), map.Tracks) || changed;
+				changed = FixObject(m_Prefab_Luminous, null, m_Containers[5], map.Notes.Count) || changed;
 				if (changed) {
 					OnStageObjectChanged();
 				}
@@ -306,8 +278,8 @@
 
 
 		public void ClearAllContainers () {
-			for (int i = 0; i < Containers.Length; i++) {
-				var container = Containers[i];
+			for (int i = 0; i < m_Containers.Length; i++) {
+				var container = m_Containers[i];
 				if (i == 4) {
 					container.GetChild(0).DestroyAllChildImmediately();
 					container.GetChild(1).DestroyAllChildImmediately();
@@ -318,7 +290,7 @@
 		}
 
 
-		public int GetItemCount (int index) => Containers[index].childCount;
+		public int GetItemCount (int index) => m_Containers[index].childCount;
 
 
 		// Speed
@@ -458,7 +430,7 @@
 
 
 		// Beatmap Update
-		private bool FixObject (StageObject prefab, Transform subPrefab, Transform container, int count) {
+		private bool FixObject (Transform prefab, Transform subPrefab, Transform container, int count) {
 			bool changed = false;
 			int conCount = container.childCount;
 			if (conCount > count) {
@@ -476,7 +448,7 @@
 				} else if (!(prefab is null)) {
 					// Spawn Stage Object
 					for (int i = 0; i < count; i++) {
-						Instantiate(prefab, container).SetSkinData(StageSkin.Data.Data);
+						Instantiate(prefab, container);
 					}
 				} else {
 					// Spawn Transform Object

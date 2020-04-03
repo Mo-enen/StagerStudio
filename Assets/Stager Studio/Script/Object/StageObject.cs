@@ -17,7 +17,6 @@
 
 		public delegate float FloatFloatIntHandler (float time, int index);
 		public delegate Color ColorIntHandler (int index);
-		public delegate float SpeedMutiHandler ();
 
 
 		#endregion
@@ -33,7 +32,6 @@
 		protected readonly static Color32 WHITE_32 = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 
 		// Handler
-		public static SpeedMutiHandler GetGameSpeedMuti { get; set; } = null;
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorIntHandler PaletteColor { get; set; } = null;
 
@@ -44,6 +42,7 @@
 		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
+		public static float GameSpeedMuti { get; set; } = 1f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;
@@ -66,6 +65,7 @@
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 
 		// Data
+		protected static SkinData Skin = null;
 		private static (Vector3 size, bool fixedRatio)[] RectSizes = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
@@ -80,6 +80,8 @@
 				m_Label.SetSortingLayer(SortingLayerID_UI, 0);
 			}
 			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 0f;
+			MainRenderer.SkinData = Skin;
+			VanishDuration = Skin != null ? Skin.VanishDuration : 0f;
 		}
 
 
@@ -206,9 +208,11 @@
 
 
 		public static void LoadSkin (SkinData skin) {
+			Skin = skin;
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
 			RectSizes = new (Vector3, bool)[typeCount];
 			HighlightTints = new Color32[typeCount];
+			if (skin == null) { return; }
 			for (int i = 0; i < RectSizes.Length; i++) {
 				// Sizes
 				var size = skin.TryGetItemSize(i) / skin.ScaleMuti;
@@ -238,12 +242,6 @@
 
 
 		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);
-
-
-		public virtual void SetSkinData (SkinData skin) {
-			MainRenderer.SkinData = skin;
-			VanishDuration = skin != null ? skin.VanishDuration : 0f;
-		}
 
 
 		protected virtual void RefreshRendererZone () => RefreshRendererZoneFor(m_MainRenderer);

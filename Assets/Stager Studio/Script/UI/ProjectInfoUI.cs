@@ -92,6 +92,8 @@
 		public delegate (string name, string description, string mapAuthor, string musicAuthor, string bgAuthor, Sprite bg, Sprite cover, Project.FileData music) ProjectInfoHandler ();
 		public delegate string StringHandler ();
 		public delegate void VoidStringHandler (string str);
+		public delegate void ColorPickerHandler (Color color, System.Action<Color> done);
+		public delegate void TweenEditorHandler (AnimationCurve curve, System.Action<AnimationCurve> done);
 
 
 		#endregion
@@ -145,7 +147,8 @@
 		public static VoidStringHandler SetProjectInfo_BgAuthor { get; set; } = null;
 		public static VoidStringHandler SetProjectInfo_MusicAuthor { get; set; } = null;
 		public static VoidStringHandler SetProjectInfo_MapAuthor { get; set; } = null;
-
+		public static ColorPickerHandler SpawnColorPicker { get; set; } = null;
+		public static TweenEditorHandler SpawnTweenEditor { get; set; } = null;
 
 
 		// Short
@@ -473,7 +476,7 @@
 					item.Grab<Text>("Index").text = rtIndex.ToString();
 					var trigger = item.Grab<TriggerUI>();
 					trigger.CallbackLeft.AddListener(() => {
-						StagerStudio.Main.SpawnColorPicker(palColor, (_color) => {
+						SpawnColorPicker(palColor, (_color) => {
 							ProjectSetPaletteColor(_color, rtIndex);
 							RefreshPaletteUI();
 						});
@@ -497,7 +500,7 @@
 					item.Grab<Text>("Index").text = rtIndex.ToString();
 					item.Grab<CurveUI>("Renderer").Curve = curve;
 					var trigger = item.Grab<TriggerUI>();
-					trigger.CallbackLeft.AddListener(() => StagerStudio.Main.SpawnTweenEditor(curve, (resultCurve) => {
+					trigger.CallbackLeft.AddListener(() => SpawnTweenEditor(curve, (resultCurve) => {
 						SetProjectTweenCurve(resultCurve, null, rtIndex);
 						RefreshTweenUI();
 					}));
@@ -505,7 +508,7 @@
 					var oldColor = color;
 					item.Grab<Image>("Color").color = oldColor;
 					item.Grab<Button>("Color").onClick.AddListener(() => {
-						StagerStudio.Main.SpawnColorPicker(oldColor, (resultColor) => {
+						SpawnColorPicker(oldColor, (resultColor) => {
 							SetProjectTweenCurve(null, resultColor, rtIndex);
 							RefreshTweenUI();
 						});

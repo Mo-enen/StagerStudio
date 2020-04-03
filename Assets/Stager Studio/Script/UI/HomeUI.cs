@@ -90,6 +90,7 @@
 		public static VoidStringHandler GotoEditor { get; set; } = null;
 		public static StringHandler GetWorkspace { get; set; } = null;
 		public static StringRtHandler OpenMenu { get; set; } = null;
+		public static VoidStringHandler SpawnProjectCreator { get; set; } = null;
 
 		// Short
 		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Trashbin");
@@ -522,9 +523,8 @@
 		}
 
 
-		private void NewProjectLogic () {
-			StagerStudio.Main.SpawnProjectCreator(Util.CombinePaths(GetWorkspace(), OpeningChapter));
-		}
+		private void NewProjectLogic () => SpawnProjectCreator(Util.CombinePaths(GetWorkspace(), OpeningChapter));
+
 
 
 		private void ImportProjectLogic (string path) {

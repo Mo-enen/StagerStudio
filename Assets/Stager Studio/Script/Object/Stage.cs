@@ -36,6 +36,7 @@
 		protected override void Awake () {
 			base.Awake();
 			ColRot = null;
+			m_JudgelineRenderer.SkinData = Skin;
 		}
 
 
@@ -131,12 +132,6 @@
 
 
 		#region --- API ---
-
-
-		public override void SetSkinData (SkinData skin) {
-			base.SetSkinData(skin);
-			m_JudgelineRenderer.SkinData = skin;
-		}
 
 
 		protected override void RefreshRendererZone () {

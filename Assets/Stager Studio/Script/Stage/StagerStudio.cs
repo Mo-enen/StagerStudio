@@ -2,11 +2,12 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
-	using UI;
 	using UnityEngine.UI;
+	using UI;
 	using Stage;
 	using Object;
 	using Rendering;
+
 
 
 	public partial class StagerStudio : MonoBehaviour {
@@ -50,7 +51,6 @@
 
 
 		// Short
-		public static StagerStudio Main => _Main != null ? _Main : (_Main = FindObjectOfType<StagerStudio>());
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private StageProject Project => _Project != null ? _Project : (_Project = FindObjectOfType<StageProject>());
 		private StageGame Game => _Game != null ? _Game : (_Game = FindObjectOfType<StageGame>());
@@ -90,7 +90,6 @@
 		[SerializeField] private CursorData[] m_Cursors = null;
 
 		// Data
-		private static StagerStudio _Main = null;
 		private StageMusic _Music = null;
 		private StageProject _Project = null;
 		private StageGame _Game = null;
@@ -147,6 +146,10 @@
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (Game.AbreastIndex, Game.UseAbreast, Game.AllStageAbreast);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
+			StageObject.GameSpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
+			StageObject.MusicTime = Music.Time;
+			SpeedNote.GameSpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
+			SpeedNote.MusicTime = Music.Time;
 			Object.Stage.StageCount = Game.GetItemCount(0);
 			Object.Stage.AbreastWidth = Game.AbreastWidth;
 		}
@@ -233,11 +236,25 @@
 			StageObject.TweenEvaluate = (x, index) => Project.Tweens[Mathf.Clamp(index, 0, Project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : Project.Palette[Mathf.Min(index, Project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
-			StageObject.GetGameSpeedMuti = () => Game.GameDropSpeed * Game.MapDropSpeed;
 			Note.GetFilledTime = Game.FillDropTime;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
 			Note.GetDropOffset = Game.AreaBetweenDrop;
 			Note.PlayClickSound = Music.PlayClickSound;
+			// Sorting Layer ID
+			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
+			Object.Stage.SortingLayerID_Judge = SortingLayer.NameToID("Judge");
+			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
+			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
+			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
+			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
+			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");
+			Note.SortingLayerID_Note = SortingLayer.NameToID("Note");
+			Note.LayerID_Note = LayerMask.NameToLayer("Note");
+			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
+			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
+			StageObject.SortingLayerID_UI = SortingLayer.NameToID("UI");
+			MotionNote.SortingLayerID_Motion = SortingLayer.NameToID("Motion");
+			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
 		}
 
 
@@ -250,7 +267,7 @@
 				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
-				StageObject.Beatmap = null;
+				StageObject.Beatmap = SpeedNote.Beatmap = null;
 				Game.SetAbreastIndex(0);
 				Game.SetUseAbreastView(false);
 				Game.SetUseDynamicSpeed(true);
@@ -280,7 +297,7 @@
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
 				Editor.ClearSelection();
-				StageObject.Beatmap = null;
+				StageObject.Beatmap = SpeedNote.Beatmap = null;
 			};
 
 			// Beatmap
@@ -291,7 +308,7 @@
 					Game.MapDropSpeed = map.DropSpeed;
 					Game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
-					StageObject.Beatmap = map;
+					StageObject.Beatmap = SpeedNote.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
@@ -370,6 +387,7 @@
 				m_UseDynamicSpeed.isOn = Game.UseDynamicSpeed;
 				m_Wave.gameObject.SetActive(Game.UseAbreast && !Game.UseDynamicSpeed);
 				Note.SetCacheDirty();
+				SpeedNote.SetCacheDirty();
 				RefreshGridRenderer();
 			};
 			StageGame.OnGridChanged = () => {
@@ -397,7 +415,6 @@
 				m_Progress.SetProgress(time, Game.BPM);
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
-				StageObject.MusicTime = time;
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
@@ -465,10 +482,10 @@
 		private void Awake_Skin () {
 			StageSkin.OnSkinLoaded = (data) => {
 				TryRefreshSetting();
-				Game.ClearAllContainers();
 				StageObject.LoadSkin(data);
 				Luminous.SetLuminousSkin(data);
 				Resources.UnloadUnusedAssets();
+				Game.ClearAllContainers();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
 			};
 			StageSkin.OnSkinDeleted = () => {
@@ -546,6 +563,11 @@
 			ProjectInfoUI.SetProjectInfo_BgAuthor = (author) => Project.BackgroundAuthor = author;
 			ProjectInfoUI.SetProjectInfo_MusicAuthor = (author) => Project.MusicAuthor = author;
 			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => Project.BeatmapAuthor = author;
+			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
+			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
+
+
+
 
 		}
 
@@ -583,6 +605,8 @@
 				data.Alt = alt;
 				return index;
 			};
+			SettingUI.SpawnSkinEditor = SpawnSkinEditor;
+
 
 		}
 
@@ -611,6 +635,7 @@
 			HomeUI.GotoEditor = State.GotoEditor;
 			HomeUI.GetWorkspace = () => Project.Workspace;
 			HomeUI.OpenMenu = Menu.OpenMenu;
+			HomeUI.SpawnProjectCreator = SpawnProjectCreator;
 
 			ProgressUI.GetDuration = () => Music.Duration;
 			ProgressUI.GetReadyPlay = () => (Music.IsReady, Music.IsPlaying);
@@ -655,11 +680,11 @@
 			SkinEditorUI.OpenMenu = Menu.OpenMenu;
 			SkinEditorUI.SkinGetPath = Skin.GetPath;
 			SkinEditorUI.SkinSaveSkin = Skin.SaveSkin;
+			SkinEditorUI.SpawnSetting = UI_SpawnSetting;
+			SkinEditorUI.RemoveUI = UI_RemoveUI;
 
 			SkinSwiperUI.GetAllSkinNames = () => Skin.AllSkinNames;
 			SkinSwiperUI.SkinLoadSkin = Skin.LoadSkin;
-
-
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

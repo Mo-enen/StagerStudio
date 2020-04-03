@@ -38,6 +38,8 @@
 		public static VoidStringHandler OpenMenu { get; set; } = null;
 		public static StringStringHandler SkinGetPath { get; set; } = null;
 		public static PathSkinStringHandler SkinSaveSkin { get; set; } = null;
+		public static VoidHandler SpawnSetting { get; set; } = null;
+		public static VoidHandler RemoveUI { get; set; } = null;
 
 		// Short
 		private SkinEditorPainterUI Painter => m_Painter;
@@ -102,7 +104,7 @@
 
 			if (skinData == null || string.IsNullOrEmpty(skinName)) {
 				SkinReloadSkin();
-				StagerStudio.Main.UI_SpawnSetting();
+				SpawnSetting();
 				return;
 			}
 
@@ -233,9 +235,9 @@
 			DialogUtil.Dialog_OK_Cancel(DIALOG_CloseConfirm, DialogUtil.MarkType.Warning, () => {
 				Save();
 				if (OpenSettingAfterClose) {
-					StagerStudio.Main.UI_SpawnSetting();
+					SpawnSetting();
 				} else {
-					StagerStudio.Main.UI_RemoveUI();
+					RemoveUI();
 				}
 			});
 		}

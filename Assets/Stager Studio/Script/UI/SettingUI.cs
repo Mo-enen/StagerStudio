@@ -97,7 +97,7 @@
 		public delegate int IntHandler ();
 		public delegate (string name, KeyCode key, bool ctrl, bool shift, bool alt) ShortcutItemIntHandler (int index);
 		public delegate int ShortcutHandler (int index, KeyCode key, bool ctrl, bool shift, bool alt);
-
+		public delegate void StringBoolHandler (string str, bool b);
 
 
 		#endregion
@@ -129,6 +129,7 @@
 		public static VoidHandler SaveShortcut { get; set; } = null;
 		public static ShortcutHandler CheckShortcut { get; set; } = null;
 		public static ShortcutHandler SetShortcut { get; set; } = null;
+		public static StringBoolHandler SpawnSkinEditor { get; set; } = null;
 
 
 		public bool UIReady { get; private set; } = true;
@@ -232,7 +233,7 @@
 						graber.Grab<RectTransform>("Mark").gameObject.SetActive(skinName == GetSkinName());
 						// Func
 						void OnClick () => SkinLoadSkin(skinName);
-						void OnEdit () => StagerStudio.Main.SpawnSkinEditor(skinName, true);
+						void OnEdit () => SpawnSkinEditor(skinName, true);
 						void OnDelete () => SkinDeleteSkin(rt);
 					}
 					// Shortcut
