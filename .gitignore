@@ -1,8 +1,4 @@
-﻿################################################################################
-# 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
-################################################################################
-
-/.vs
+﻿/.vs
 /Library
 /Logs
 /obj/Debug
@@ -17,3 +13,4 @@
 /_Built/Stager Studio
 /_BackUp
 Projects
+QuickAccess Config.json
