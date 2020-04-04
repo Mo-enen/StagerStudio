@@ -52,7 +52,7 @@
 				var obj = GetObjectData();
 				RedoSteps.Clear();
 				UndoSteps.Push(new StepData() {
-					UndoData = obj is null ? new byte[0] : Util.ObjectToBytes(obj),
+					UndoData = obj is null ? null : Util.ObjectToBytes(obj),
 				});
 			}
 		}

@@ -306,6 +306,9 @@
 		public void SetSpeedCurveDirty () => SpeedCurveDirty = true;
 
 
+		public float GetDropSpeedAt (float time) => UseDynamicSpeed ? SpeedCurve.Evaluate(time) : 1f;
+
+
 		public float FillDropTime (float time, float fill, float muti) =>
 			UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
 

@@ -107,7 +107,7 @@
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
 			}
-			if (m_Highlight.enabled) {
+			if (ColSize.HasValue && m_Highlight.enabled) {
 				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 		}

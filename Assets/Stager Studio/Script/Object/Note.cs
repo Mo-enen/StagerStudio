@@ -15,6 +15,7 @@
 
 
 		public delegate float GameDropOffsetHandler (float muti);
+		public delegate float DropSpeedHandler (float time);
 		public delegate float DropOffsetHandler (float time, float muti);
 		public delegate float FilledTimeHandler (float time, float fill, float muti);
 		public delegate void VoidIntFloatHandler (int i, float f);
@@ -30,6 +31,7 @@
 
 		// Handler
 		public static GameDropOffsetHandler GetGameDropOffset { get; set; } = null;
+		public static DropSpeedHandler GetDropSpeedAt { get; set; } = null;
 		public static DropOffsetHandler GetDropOffset { get; set; } = null;
 		public static FilledTimeHandler GetFilledTime { get; set; } = null;
 		public static VoidIntFloatHandler PlayClickSound { get; set; } = null;
@@ -85,7 +87,10 @@
 			// Get NoteData
 			int noteIndex = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && noteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteIndex] : null;
-			if (noteData is null) { return; }
+			if (noteData is null) {
+				Update_Gizmos(null, false, noteIndex);
+				return;
+			}
 			bool oldSelecting = noteData.Selecting;
 			noteData.Active = false;
 			noteData.Selecting = false;
@@ -99,7 +104,7 @@
 			}
 
 			// Click Sound
-			if (string.IsNullOrEmpty(noteData.Comment)) {
+			if (string.IsNullOrEmpty(noteData.Comment) && noteData.SpeedOnDrop >= 0f) {
 				// Main Click Sound
 				bool clicked = MusicTime > noteData.Time;
 				if (MusicPlaying && clicked && !PrevClicked && noteData.ClickSoundIndex >= 0) {
@@ -177,8 +182,8 @@
 					speedMuti
 				);
 				noteData.NoteDropStart = -1f;
+				noteData.SpeedOnDrop = GetDropSpeedAt(noteData.Time);
 			}
-
 			float duration = Mathf.Max(noteData.Duration, 0f);
 			if (Duration != duration) {
 				Duration = duration;
@@ -439,13 +444,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) {
-			if (linkedNote is null) {
-				return MusicTime >= appearTime && MusicTime <= data.Time + data.Duration;
-			} else {
-				return MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || MusicTime <= linkedNote.Time);
-			}
-		}
+		private static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) => data.SpeedOnDrop >= 0f && MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
 
 
 		#endregion

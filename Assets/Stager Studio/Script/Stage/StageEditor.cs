@@ -294,6 +294,9 @@
 					}
 					break;
 				case int l when l == ItemLayers[3]:
+					if (index >= 0 && index < map.SpeedNotes.Count) {
+						return map.SpeedNotes[index].Selecting;
+					}
 					break;
 				case int l when l == ItemLayers[4]:
 					break;
@@ -335,6 +338,9 @@
 					}
 					break;
 				case int l when l == ItemLayers[3]:
+					if (index >= 0 && index < map.SpeedNotes.Count) {
+						map.SpeedNotes[index].Selecting = select;
+					}
 					break;
 				case int l when l == ItemLayers[4]:
 					break;
@@ -349,22 +355,25 @@
 				foreach (var (layer, index) in SelectingObjectsIndex) {
 					switch (layer) {
 						case int l when l == ItemLayers[0]:
-							if (!(map.Stages is null) && index >= 0 && index < map.Stages.Count) {
+							if (index >= 0 && index < map.Stages.Count) {
 								map.Stages[index].Selecting = false;
 							}
 							break;
 						case int l when l == ItemLayers[1]:
-							if (!(map.Tracks is null) && index >= 0 && index < map.Tracks.Count) {
+							if (index >= 0 && index < map.Tracks.Count) {
 								map.Tracks[index].Selecting = false;
 							}
 							break;
 						case int l when l == ItemLayers[2]:
 						case int hl when hl == HoldNoteLayer:
-							if (!(map.Notes is null) && index >= 0 && index < map.Notes.Count) {
+							if (index >= 0 && index < map.Notes.Count) {
 								map.Notes[index].Selecting = false;
 							}
 							break;
 						case int l when l == ItemLayers[3]:
+							if (index >= 0 && index < map.SpeedNotes.Count) {
+								map.SpeedNotes[index].Selecting = false;
+							}
 							break;
 						case int l when l == ItemLayers[4]:
 							break;

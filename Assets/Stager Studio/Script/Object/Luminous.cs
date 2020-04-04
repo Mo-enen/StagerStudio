@@ -40,7 +40,7 @@
 
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
-			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment)) { return; }
+			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) { return; }
 			float noteEndTime = noteData.Time + noteData.Duration;
 			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;

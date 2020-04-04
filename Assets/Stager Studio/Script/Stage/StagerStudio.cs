@@ -148,6 +148,7 @@
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.GameSpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
 			StageObject.MusicTime = Music.Time;
+			SpeedNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
 			SpeedNote.GameSpeedMuti = Game.GameDropSpeed * Game.MapDropSpeed;
 			SpeedNote.MusicTime = Music.Time;
 			Object.Stage.StageCount = Game.GetItemCount(0);
@@ -237,6 +238,7 @@
 			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : Project.Palette[Mathf.Min(index, Project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
 			Note.GetFilledTime = Game.FillDropTime;
+			Note.GetDropSpeedAt = Game.GetDropSpeedAt;
 			Note.GetGameDropOffset = (muti) => Game.AreaBetweenDrop(Music.Time, muti);
 			Note.GetDropOffset = Game.AreaBetweenDrop;
 			Note.PlayClickSound = Music.PlayClickSound;
@@ -409,7 +411,7 @@
 				m_Progress.RefreshControlUI();
 				SetNavigationInteractable(!playing);
 				StageObject.MusicPlaying = playing;
-
+				SpeedNote.MusicPlaying = playing;
 			};
 			StageMusic.OnMusicTimeChanged = (time, duration) => {
 				m_Progress.SetProgress(time, Game.BPM);
@@ -508,6 +510,7 @@
 				},
 			};
 			StageUndo.OnUndo = (bytes) => {
+				if (bytes == null) { return; }
 				var step = Util.BytesToObject(bytes) as UndoData;
 				if (step is null || step.Beatmap is null) { return; }
 				// Map
@@ -703,7 +706,7 @@
 		public void Quit () => Application.Quit();
 
 
-		public void About () => DialogUtil.Open($"Stager Studio v{Application.version} by 楠瓜Moenen\nEmail moenenn@163.com\nTwitter @_Moenen\nQQ 754100943", DialogUtil.MarkType.Info, () => { });
+		public void About () => DialogUtil.Open($"Stager Studio v{Application.version} by 楠瓜Moenen\nEmail moenen6@gmail.com\nTwitter @_Moenen\nQQ 754100943\nwww.stager.studio", DialogUtil.MarkType.Info, () => { });
 
 
 		public void GotoWeb () {
