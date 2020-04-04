@@ -17,8 +17,9 @@
 		[SerializeField] private Sprite[] m_Sprites = null;     // 0-9 a-z A-Z
 		[SerializeField] private Sprite m_Empty = null;
 		[SerializeField] private Sprite m_Plus = null;          // +
+		[SerializeField] private Sprite m_Percentage = null;    // %
 		[SerializeField] private Sprite[] m_Arrows = null;      // u d l r
-		[SerializeField] private Sprite[] m_KeyChars = null;    //,./;\'[]-=\\`
+		[SerializeField] private Sprite[] m_KeyChars = null;    //,./;'[]-=\`
 		[SerializeField] private bool m_LowerOnly = false;
 
 
@@ -42,6 +43,8 @@
 					return m_Arrows[3];
 				case '+':
 					return m_Plus;
+				case '%':
+					return m_Percentage;
 
 				case ',':
 					return m_KeyChars[0];

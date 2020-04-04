@@ -13847,9 +13847,9 @@ MonoBehaviour:
     rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
-  m_SpriteV: {fileID: 4824580782819576835, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_SpriteV: {fileID: 4824580782819576835, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
-  m_SpriteH: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_SpriteH: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
   m_Tints:
   - {r: 1, g: 1, b: 1, a: 0.14117648}
@@ -16166,11 +16166,15 @@ MonoBehaviour:
   m_Pause: {fileID: 632332111}
   m_Replay: {fileID: 1837989317}
   m_Repause: {fileID: 2073134906}
+  m_PitchUp: {fileID: 2141747449}
+  m_PitchDown: {fileID: 836490918}
   m_NoMusicHint: {fileID: 67460139}
-  m_PlayIcon: {fileID: 1525078795}
-  m_PauseIcon: {fileID: 370406007}
-  m_ReplayIcon: {fileID: 721014282}
-  m_RepauseIcon: {fileID: 472277101}
+  m_ControlIcons:
+  - {fileID: 1956498543}
+  - {fileID: 1525078795}
+  - {fileID: 370406007}
+  - {fileID: 721014282}
+  - {fileID: 472277101}
   m_Bar: {fileID: 2044312212}
   m_Highlight: {fileID: 917908985}
 --- !u!114 &1876790201

@@ -177,9 +177,9 @@ MonoBehaviour:
     rgba: 864059520
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
-  m_SpriteH: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_SpriteH: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
-  m_SectionBody: {fileID: -7542968635621079157, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_SectionBody: {fileID: -7542968635621079157, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
   m_Thickness: 1
   m_RulerColors:

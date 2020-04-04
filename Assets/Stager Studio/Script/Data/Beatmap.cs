@@ -390,8 +390,8 @@
 				set => m_Time = (int)(value * 1000f);
 			}
 			public float Speed {
-				get => m_Speed / 1000f;
-				set => m_Speed = (int)(value * 1000f);
+				get => m_Speed / 100f;
+				set => m_Speed = (int)(value * 100f);
 			}
 
 			// SER

@@ -289,7 +289,7 @@
 			BackgroundData = null;
 			BeatmapMap.Clear();
 			// Get New Data
-			//short dataVersion = -1;
+			short dataVersion = -1;
 			int count = reader.ReadInt32();
 			for (int i = 0; i < count && i < 1024; i++) {
 				try {
@@ -306,7 +306,7 @@
 								BackgroundAuthor = chunk.GetString("BackgroundAuthor");
 								OpeningBeatmap = chunk.GetString("OpeningBeatmap");
 								LastEditTime = chunk.GetLong("LastSaveTime");
-								//dataVersion = chunk.GetShort("DataVersion");
+								dataVersion = chunk.GetShort("DataVersion");
 								break;
 							}
 						case ChunkType.Cover: {

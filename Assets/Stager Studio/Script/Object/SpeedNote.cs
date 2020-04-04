@@ -1,8 +1,9 @@
 ﻿namespace StagerStudio.Object {
-	using global::StagerStudio.Data;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
+	using Data;
+	using Rendering;
 
 
 
@@ -16,11 +17,12 @@
 
 
 		// Const
-		private const float HEIGHT = 0.618f;
+		private const float HEIGHT = 0.8f;
 		private const float WIDTH_MIN = 0.2f;
-		private const float WIDTH_MAX = 4f;
+		private const float WIDTH_MAX = 6f;
 
 		// Api
+		public static int SortingLayerID_UI { get; set; } = -1;
 		public static Beatmap Beatmap { get; set; } = null;
 		public static float GameSpeedMuti { get; set; } = 1f;
 		public static float MusicTime { get; set; } = 0f;
@@ -29,13 +31,14 @@
 
 		// Short
 		private float Time { get; set; } = 0f;
-		private int Speed { get; set; } = 1000;
+		private int Speed { get; set; } = 100;
 		private Vector2? ColSize { get; set; } = null;
 		private Quaternion? ColRot { get; set; } = null;
 
 		// Ser
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
+		[SerializeField] private TextRenderer m_LabelRenderer = null;
 		[SerializeField] private BoxCollider m_Col = null;
 		[SerializeField] private Transform m_Scaler = null;
 		[SerializeField] private Color m_PositiveTint = Color.white;
@@ -50,6 +53,7 @@
 		private Vector3 RendererScale = Vector3.one;
 		private Beatmap.SpeedNote LateNote = null;
 
+
 		#endregion
 
 
@@ -61,6 +65,8 @@
 		private void Awake () {
 			RendererScale = m_MainRenderer.transform.localScale;
 			ColRot = Quaternion.identity;
+			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 0);
+			m_LabelRenderer.transform.localPosition = new Vector3(0f, RendererScale.y * HEIGHT * 0.5f, 0f);
 		}
 
 
@@ -133,8 +139,17 @@
 			bool active = !(noteData is null) && noteData.Active;
 
 			// Highlight
-			if (m_Highlight != null) {
-				m_Highlight.enabled = !MusicPlaying && active && selecting;
+			bool hEnabled = !MusicPlaying && active && selecting;
+			if (m_Highlight.enabled != hEnabled) {
+				m_Highlight.enabled = hEnabled;
+			}
+
+			// Label
+			if (m_LabelRenderer.gameObject.activeSelf != active) {
+				m_LabelRenderer.gameObject.SetActive(active);
+			}
+			if (active) {
+				m_LabelRenderer.Text = $"{Speed}%";
 			}
 
 		}
@@ -149,7 +164,7 @@
 			);
 			m_MainRenderer.size = size;
 			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01) +
-				(Vector3)(RendererScale * size * 0.5f);
+				new Vector3(RendererScale.x * size.x * 0.5f, 0f, 0f);
 			ColSize = RendererScale * size;
 			m_Scaler.localScale = ColSize.Value;
 			var tint = Speed >= 0 ? m_PositiveTint : m_NegativeTint;
@@ -193,12 +208,12 @@
 
 		public static float Speed_to_UI01 (int speed) {
 			speed = Mathf.Abs(speed);
-			if (speed < 2000) {
-				return speed / 4000f;
-			} else if (speed < 16000) {
-				return Util.Remap(2000, 16000, 0.5f, 0.75f, speed);
+			if (speed < 200) {
+				return speed / 400f;
+			} else if (speed < 1600) {
+				return Util.Remap(200, 1600, 0.5f, 0.75f, speed);
 			} else {
-				return Util.Remap(16000, 128000, 0.75f, 1f, speed);
+				return Util.Remap(1600, 12800, 0.75f, 1f, speed);
 			}
 		}
 
@@ -206,11 +221,11 @@
 		public static int UI01_to_Speed (float uiSpeed) {
 			uiSpeed = Mathf.Max(uiSpeed, 0f);
 			if (uiSpeed < 0.5f) {
-				return Mathf.RoundToInt(uiSpeed * 4000f);
+				return Mathf.RoundToInt(uiSpeed * 400f);
 			} else if (uiSpeed < 0.75f) {
-				return Mathf.RoundToInt(Util.Remap(0.5f, 0.75f, 2000f, 16000f, uiSpeed));
+				return Mathf.RoundToInt(Util.Remap(0.5f, 0.75f, 200f, 1600f, uiSpeed));
 			} else {
-				return Mathf.RoundToInt(Util.Remap(0.75f, 1f, 16000f, 128000f, uiSpeed));
+				return Mathf.RoundToInt(Util.Remap(0.75f, 1f, 1600f, 12800f, uiSpeed));
 			}
 		}
 

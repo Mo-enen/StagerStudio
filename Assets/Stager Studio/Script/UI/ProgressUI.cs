@@ -33,11 +33,10 @@
 		[SerializeField] private Button m_Pause = null;
 		[SerializeField] private Button m_Replay = null;
 		[SerializeField] private Button m_Repause = null;
+		[SerializeField] private Button m_PitchUp = null;
+		[SerializeField] private Button m_PitchDown = null;
 		[SerializeField] private RectTransform m_NoMusicHint = null;
-		[SerializeField] private Image m_PlayIcon = null;
-		[SerializeField] private Image m_PauseIcon = null;
-		[SerializeField] private Image m_ReplayIcon = null;
-		[SerializeField] private Image m_RepauseIcon = null;
+		[SerializeField] private Image[] m_ControlIcons = null;
 		[SerializeField] private Image m_Bar = null;
 		[SerializeField] private Image m_Highlight = null;
 
@@ -76,10 +75,11 @@
 			m_Pause.interactable = isReady;
 			m_Replay.interactable = isReady;
 			m_Repause.interactable = isReady;
-			m_PlayIcon.color = isReady ? Color.white : Color.grey;
-			m_PauseIcon.color = isReady ? Color.white : Color.grey;
-			m_ReplayIcon.color = isReady ? Color.white : Color.grey;
-			m_RepauseIcon.color = isReady ? Color.white : Color.grey;
+			m_PitchUp.interactable = isReady && !isPlaying;
+			m_PitchDown.interactable = isReady && !isPlaying;
+			foreach (var icon in m_ControlIcons) {
+				icon.color = isReady ? Color.white : Color.grey;
+			}
 		}
 
 

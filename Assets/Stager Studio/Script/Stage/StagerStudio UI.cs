@@ -88,6 +88,9 @@
 		// MSG
 		private void Awake_Setting_UI () {
 
+			var sfx = FindObjectOfType<StageSoundFX>();
+			var music = FindObjectOfType<StageMusic>();
+			var game = FindObjectOfType<StageGame>();
 
 			// Input
 			InputItemMap.Add(InputType.Frame, ((str) => {
@@ -129,7 +132,7 @@
 
 			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
 				ToggleItemMap[ToggleType.UseSFX].saving.Value = isOn;
-			}, null, SFX.UseFX, true));
+			}, null, sfx.UseFX, true));
 
 			ToggleItemMap.Add(ToggleType.ShowZone, ((isOn) => {
 				m_Zone.ShowZone(isOn);
@@ -161,9 +164,9 @@
 			}, () => m_Progress.Snap, new SavingBool("SS.SnapProgress", true), true));
 
 			ToggleItemMap.Add(ToggleType.PositiveScroll, ((isOn) => {
-				Game.PositiveScroll = isOn;
+				game.PositiveScroll = isOn;
 				ToggleItemMap[ToggleType.PositiveScroll].saving.Value = isOn;
-			}, () => Game.PositiveScroll, new SavingBool("StageGame.PositiveScroll", true), true));
+			}, () => game.PositiveScroll, new SavingBool("StageGame.PositiveScroll", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowIndexLabel, ((isOn) => {
 				Object.StageObject.ShowIndexLabel = isOn;
@@ -171,8 +174,8 @@
 			}, () => Object.StageObject.ShowIndexLabel, new SavingBool("StageGame.ShowIndexLabel", false), true));
 
 			ToggleItemMap.Add(ToggleType.ShowGrid, ((isOn) => {
-				Game.SetShowGrid(isOn);
-			}, () => Game.ShowGrid, Game.ShowGrid, true));
+				game.SetShowGrid(isOn);
+			}, () => game.ShowGrid, game.ShowGrid, true));
 
 			ToggleItemMap.Add(ToggleType.ShowKeypress, ((isOn) => {
 				m_Keypress.gameObject.SetActive(isOn);
@@ -184,15 +187,15 @@
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
 				value = Mathf.Clamp01(value / 12f);
-				Music.Volume = value;
+				music.Volume = value;
 				SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
-			}, () => Music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
+			}, () => music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.SoundVolume, ((value) => {
 				value = Mathf.Clamp01(value / 12f);
-				Music.SfxVolume = value;
+				music.SfxVolume = value;
 				SliderItemMap[SliderType.SoundVolume].saving.Value = value * 12f;
-			}, () => Music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
+			}, () => music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.BgBrightness, ((value) => {
 				value = Mathf.Clamp01(value / 12f);
@@ -258,7 +261,8 @@
 
 		public void SpawnWelcome () {
 			UI_RemoveUI();
-			Util.SpawnUI(m_WelcomePrefab, m_WelcomeRoot, "Welcome").Init(Project.ProjectName, Project.BackgroundAuthor, Project.MusicAuthor, Project.BeatmapAuthor, Project.ProjectDescription, Project.FrontCover.sprite);
+			var info = ProjectInfoUI.GetProjectInfo();
+			Util.SpawnUI(m_WelcomePrefab, m_WelcomeRoot, "Welcome").Init(info.name, info.bgAuthor, info.musicAuthor, info.mapAuthor, info.description, info.cover);
 		}
 
 
@@ -302,7 +306,7 @@
 
 			m_Root.InactiveIfNoChildActive();
 
-			Music.Pause();
+			MusicPause();
 		}
 
 
@@ -317,7 +321,7 @@
 		public void SpawnColorPicker (Color color, System.Action<Color> done) {
 			m_ColorPickerRoot.gameObject.SetActive(true);
 			m_ColorPickerRoot.parent.gameObject.SetActive(true);
-			Music.Pause();
+			MusicPause();
 			Util.SpawnUI(m_ColorPickerPrefab, m_ColorPickerRoot, "Color Picker").Init(color, done);
 		}
 
@@ -326,7 +330,7 @@
 		public void SpawnTweenEditor (AnimationCurve curve, System.Action<AnimationCurve> done) {
 			m_TweenEditorRoot.gameObject.SetActive(true);
 			m_TweenEditorRoot.parent.gameObject.SetActive(true);
-			Music.Pause();
+			MusicPause();
 			Util.SpawnUI(m_TweenEditorPrefab, m_TweenEditorRoot, "Tween Editor").Init(curve, done);
 		}
 
@@ -339,7 +343,7 @@
 			if (string.IsNullOrEmpty(skinName)) { return; }
 			UI_RemoveUI();
 			Util.SpawnUI(m_SkinEditorPrefab, m_SkinEditorRoot, "Skin Editor").Init(
-				Skin.GetSkinFromDisk(skinName), skinName, openSettingAfterClose
+				GetSkinFromDisk(skinName), skinName, openSettingAfterClose
 			);
 		}
 
@@ -349,9 +353,9 @@
 			if (palRT is null || !(palRT is RectTransform)) { return; }
 			int index = (palRT as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(Language.Get(LanguageData.Confirm_DeleteProjectPal), index),
+				string.Format(GetLanguage(Confirm_DeleteProjectPal), index),
 				DialogUtil.MarkType.Warning, null, null, () => {
-					Project.RemovePaletteAt(index);
+					ProjectRemovePaletteAt(index);
 					TryRefreshProjectInfo();
 					StageUndo.ClearUndo();
 				}, null, () => { }
@@ -363,9 +367,9 @@
 			if (rtObj is null || !(rtObj is RectTransform)) { return; }
 			int index = (rtObj as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(Language.Get(LanguageData.Confirm_DeleteProjectSound), index),
+				string.Format(GetLanguage(Confirm_DeleteProjectSound), index),
 				DialogUtil.MarkType.Warning, null, null, () => {
-					Project.RemoveClickSound(index);
+					ProjectRemoveClickSound(index);
 					TryRefreshProjectInfo();
 					StageUndo.ClearUndo();
 				}, null, () => { }
@@ -377,9 +381,9 @@
 			if (rtObj is null || !(rtObj is RectTransform)) { return; }
 			int index = (rtObj as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(Language.Get(LanguageData.Confirm_DeleteProjectTween), index),
+				string.Format(GetLanguage(Confirm_DeleteProjectTween), index),
 				DialogUtil.MarkType.Warning, null, null, () => {
-					Project.RemoveTweenAt(index);
+					ProjectRemoveTweenAt(index);
 					TryRefreshProjectInfo();
 					StageUndo.ClearUndo();
 				}, null, () => { }
