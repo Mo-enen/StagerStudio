@@ -94,9 +94,10 @@
 				trackX, trackWidth, trackRotX
 			);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			if (noteData.Z != 0f) {
+			float noteZ = Note.GetNoteZ(noteData);
+			if (noteZ != 0f) {
 				var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
+				noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
 			}
 
 			// Movement

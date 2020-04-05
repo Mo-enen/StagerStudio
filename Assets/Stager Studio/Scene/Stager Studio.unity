@@ -2684,8 +2684,8 @@ RectTransform:
   - {fileID: 848241072}
   - {fileID: 245646864}
   - {fileID: 1861407124}
-  - {fileID: 338648233}
   - {fileID: 1491978201}
+  - {fileID: 338648233}
   m_Father: {fileID: 1038822264}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -2925,11 +2925,11 @@ RectTransform:
   - {fileID: 1366522817}
   - {fileID: 131394978}
   m_Father: {fileID: 298888817}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: -47.999992}
+  m_AnchoredPosition: {x: 32, y: -47.999992}
   m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &338648234
@@ -3789,7 +3789,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8697557011540468700, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+  m_Sprite: {fileID: 4433516547596728504, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -5428,7 +5428,7 @@ RectTransform:
   - {fileID: 720862355}
   - {fileID: 268875061}
   m_Father: {fileID: 1866341393}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6537,28 +6537,6 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1488624210}
           m_MethodName: UI_SpawnSetting
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Name: Shortcut.DynamicDrop
-    Key: 109
-    Ctrl: 0
-    Shift: 0
-    Alt: 0
-    AntiTFs:
-    - {fileID: 1820277924}
-    - {fileID: 213184611}
-    Action:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1340495427}
-          m_MethodName: SwitchUseDynamicSpeed
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -8125,7 +8103,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 8697557011540468700, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+  m_Sprite: {fileID: 4433516547596728504, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -8212,7 +8190,7 @@ RectTransform:
   - {fileID: 74834896}
   - {fileID: 1730779712}
   m_Father: {fileID: 1866341393}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10270,7 +10248,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1866341393}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -11446,6 +11424,30 @@ MonoBehaviour:
   m_Prefab_Luminous: {fileID: 5072620095770586249, guid: f649f02e0e1e88b408695e5d26d11fe9,
     type: 3}
   m_ZoneRT: {fileID: 1866341393}
+  m_AbreastCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.0024414062
+      inSlope: 9.531116
+      outSlope: 9.531116
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.28022668
+    - serializedVersion: 3
+      time: 0.4
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   m_AntiMouseTF:
   - {fileID: 1820277924}
   - {fileID: 213184611}
@@ -12315,13 +12317,14 @@ MonoBehaviour:
   m_TipLabel: {fileID: 1870758065}
   m_BeatmapSwiperLabel: {fileID: 1999224471}
   m_SkinSwiperLabel: {fileID: 566941160}
-  m_UseDynamicSpeed: {fileID: 1491978203}
   m_UseAbreastView: {fileID: 338648234}
   m_AuthorLabel: {fileID: 495282314}
+  m_InfoLabel: {fileID: 1854070859}
   m_VersionLabel: {fileID: 1759727198}
   m_GridRenderer: {fileID: 1637691684}
   m_PitchWarningBlock: {fileID: 1885491280}
   m_Keypress: {fileID: 1191655087}
+  m_CameraTF: {fileID: 513021336}
   m_LanguageTexts:
   - {fileID: 1796458040}
   - {fileID: 1149638195}
@@ -12392,8 +12395,9 @@ GameObject:
   - component: {fileID: 1491978203}
   - component: {fileID: 1491978202}
   - component: {fileID: 1491978206}
+  - component: {fileID: 1491978207}
   m_Layer: 0
-  m_Name: Drop Speed
+  m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12413,11 +12417,11 @@ RectTransform:
   - {fileID: 406509618}
   - {fileID: 827695870}
   m_Father: {fileID: 298888817}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 32.00006, y: -47.999992}
+  m_AnchoredPosition: {x: 0, y: -47.999992}
   m_SizeDelta: {x: 32, y: 32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1491978202
@@ -12432,8 +12436,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1ac56bf05699194f95b513302ec4dcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_TipKey: Tip.DynamicDropSpeed
-  m_HotKey: Shortcut.DynamicDrop
+  m_TipKey: Tip.Grid
+  m_HotKey: Shortcut.ShowGrid
 --- !u!114 &1491978203
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12481,7 +12485,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1340495427}
-        m_MethodName: SetUseDynamicSpeed
+        m_MethodName: SetShowGrid
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -12542,6 +12546,38 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &1491978207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1491978200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a1526a234b264d4f983705361dd81fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_CallbackLeft:
+    m_PersistentCalls:
+      m_Calls: []
+  m_CallbackRight:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 826612610}
+        m_MethodName: OpenMenu
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Menu.Grid
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_CallbackDoubleClick:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1493720384
 GameObject:
   m_ObjectHideFlags: 0
@@ -15567,6 +15603,83 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.ViewContainer.TrackLock
   m_HotKey: Shortcut.Lock.Track
+--- !u!1 &1854070857
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1854070858}
+  - component: {fileID: 1854070860}
+  - component: {fileID: 1854070859}
+  m_Layer: 0
+  m_Name: Info
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1854070858
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854070857}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1866341393}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 128, y: 24}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &1854070859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854070857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.36078432}
+  m_RaycastTarget: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
+    m_FontSize: 12
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 3
+    m_AlignByGeometry: 1
+    m_RichText: 0
+    m_HorizontalOverflow: 1
+    m_VerticalOverflow: 1
+    m_LineSpacing: 1
+  m_Text: "stage \xD7 0 | track \xD7 0 | note \xD7 0 | speed \xD7 0"
+--- !u!222 &1854070860
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1854070857}
+  m_CullTransparentMesh: 0
 --- !u!1 &1858595814
 GameObject:
   m_ObjectHideFlags: 0
@@ -16018,6 +16131,7 @@ RectTransform:
   m_Children:
   - {fileID: 485550561}
   - {fileID: 495282313}
+  - {fileID: 1854070858}
   - {fileID: 1870758064}
   - {fileID: 690629580}
   - {fileID: 833786739}
@@ -16060,7 +16174,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1866341393}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
@@ -16986,10 +17100,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.Setting.ShowKeypress
-  - Show Keypress History
-  - Tip.Setting.Keypress
-  - Show the keys pressed on the screen for seconds
+  - UI.InfoLabel
+  - "stage \xD7 {0} | track \xD7 {1} | note \xD7 {2} | speed \xD7 {3}"
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17243,8 +17355,6 @@ MonoBehaviour:
   - Track Brush
   - Shortcut.CancelZone
   - Cancel
-  - Shortcut.DynamicDrop
-  - Dynamic Drop Speed
   - Shortcut.Eye.Motion
   - Hide Motion Note
   - Shortcut.Eye.Note
@@ -17355,10 +17465,10 @@ MonoBehaviour:
   - Select beatmap and open
   - Tip.CancelFocus
   - Cancel focus mode
-  - Tip.DynamicDropSpeed
-  - Use dynamic note drop speed
   - Tip.GotoWeb
   - Open offical website www.stager.studio
+  - Tip.Grid
+  - Show grid (right click to open menu)
   - Tip.Lib.Motion
   - Motion brush
   - Tip.Lib.Note
@@ -17410,6 +17520,8 @@ MonoBehaviour:
   - Save and close the setting window
   - Tip.Setting.Framerate
   - Target framerate
+  - Tip.Setting.Keypress
+  - Show the keys pressed on the screen for seconds
   - Tip.Setting.LargeUI
   - Large UI, for small physical size display
   - Tip.Setting.MusicVolume
@@ -17572,6 +17684,8 @@ MonoBehaviour:
   - Show Auxiliary Grid for Brushs and Tracks
   - UI.Setting.ShowIndexLabelIndexLabel
   - Show Index Label for Stage,Track and Note
+  - UI.Setting.ShowKeypress
+  - Show Keypress History
   - UI.Setting.ShowTip
   - Show Tooltip
   - UI.Setting.ShowWelcome

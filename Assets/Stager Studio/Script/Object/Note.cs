@@ -43,6 +43,7 @@
 		public static int SortingLayerID_Note_Hold { get; set; } = -1;
 		public static int SortingLayerID_Pole { get; set; } = -1;
 		public static int SortingLayerID_Arrow { get; set; } = -1;
+		public static Vector3 CameraWorldPos { get; set; } = default;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_ArrowRenderer = null;
@@ -65,7 +66,6 @@
 
 
 		#region --- MSG ---
-
 
 
 		protected override void Awake () {
@@ -122,7 +122,7 @@
 			}
 
 			// Cache
-			Update_Cache(noteData, GameSpeedMuti * linkedStage.Speed);
+			Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
 			// Linked
 			var linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteData.LinkedNoteIndex] : null;
@@ -223,6 +223,7 @@
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
 			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			bool highlighing = (type == SkinType.HoldNote || type == SkinType.Comment || type == SkinType.SlideNote) && MusicTime > Time && MusicTime < Time + Duration;
+			float noteZ = GetNoteZ(noteData);
 
 			// Movement
 			var (noteZonePos, rotX, rotZ) = Track.Inside(
@@ -233,8 +234,8 @@
 			var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y);
 			noteWorldPos.z += noteZonePos.z * zoneSize;
-			if (Mathf.Abs(noteData.Z) > 0.0005f) {
-				noteWorldPos += noteData.Z * zoneSize * (noteRot * Vector3.back);
+			if (Mathf.Abs(noteZ) > 0.0005f) {
+				noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
 			}
 			var noteSize = GetRectSize(type == SkinType.HoldNote ? SkinType.TapNote : type);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
@@ -286,7 +287,7 @@
 			TrySetColliderLayer(Duration <= DURATION_GAP ? LayerID_Note : LayerID_Note_Hold);
 
 			// ZLine
-			bool zlineActive = ShowGrid && active && noteData.Z > 0.0005f;
+			bool zlineActive = ShowGrid && active && Abreast.value < 0.5f && noteData.Z > 0.0005f;
 			if (m_ZLineRenderer.gameObject.activeSelf != zlineActive) {
 				m_ZLineRenderer.gameObject.SetActive(zlineActive);
 			}
@@ -352,9 +353,10 @@
 			// Linked Note World Pos
 			var linkedNoteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedZonePos.x, linkedZonePos.y);
 			linkedNoteWorldPos.z += linkedZonePos.z * zoneSize;
-			if (Mathf.Abs(linkedNote.Z) > 0.0005f) {
+			float linkedZ = GetNoteZ(linkedNote);
+			if (Mathf.Abs(linkedZ) > 0.0005f) {
 				var linkedRot = Quaternion.Euler(0f, 0f, linkedStageRotZ) * Quaternion.Euler(linkedTrackAngle, 0f, 0f);
-				linkedNoteWorldPos += linkedNote.Z * zoneSize * (linkedRot * Vector3.back);
+				linkedNoteWorldPos += linkedZ * zoneSize * (linkedRot * Vector3.back);
 			}
 
 			// Sub Pole World Pos
@@ -385,7 +387,7 @@
 			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
 			var poleSize = GetRectSize(poleType, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
-				linkedNoteWorldPos - subWorldPos, Vector3.back
+				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward//CameraWorldPos - subWorldPos
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
@@ -427,6 +429,9 @@
 
 
 		public static void SetCacheDirty () => CacheDirtyID++;
+
+
+		public static float GetNoteZ (Beatmap.Note data) => Mathf.LerpUnclamped(data.Z, 0f, Abreast.value);
 
 
 		protected override void RefreshRendererZone () {

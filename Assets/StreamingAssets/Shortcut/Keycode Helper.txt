@@ -13,7 +13,6 @@ Available Actions:
 	Shortcut.CancelZone
 	Shortcut.OpenProjectInfo
 	Shortcut.OpenSetting
-	Shortcut.DynamicDrop
 	Shortcut.AbreastView
 	Shortcut.Brush.Stage
 	Shortcut.Brush.Track

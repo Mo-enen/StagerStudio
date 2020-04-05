@@ -4,7 +4,6 @@ Shortcut.SaveProject,	S,	True,	False,	False#
 Shortcut.CancelZone,	Escape,	False,	False,	False#
 Shortcut.OpenProjectInfo,	P,	True,	True,	False#
 Shortcut.OpenSetting,	S,	True,	True,	False#
-Shortcut.DynamicDrop,	M,	False,	False,	False#
 Shortcut.AbreastView,	Tab,	False,	False,	False#
 Shortcut.Brush.Stage,	Alpha1,	False,	False,	False#
 Shortcut.Brush.Track,	Alpha2,	False,	False,	False#

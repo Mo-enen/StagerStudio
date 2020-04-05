@@ -5,6 +5,7 @@
 	using Curve;
 	using Saving;
 	using Data;
+	using Object;
 
 
 	public class StageGame : MonoBehaviour {
@@ -35,7 +36,7 @@
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";
-		private readonly static float[] ABREAST_WIDTHS = { 1f, 0.75f, 0.618f, 0.5f, };
+		private readonly static float[] ABREAST_WIDTHS = { 0.5f, 0.618f, 0.75f, 1f, };
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -59,10 +60,11 @@
 		public float Shift { get; set; } = 0f;
 		public float MapDropSpeed { get; set; } = 1f;
 		public float GameDropSpeed => Mathf.Clamp(_GameDropSpeed, 0.1f, 10f);
-		public bool UseDynamicSpeed { get; private set; } = true;
-		public bool UseAbreast { get; private set; } = false;
-		public bool AllStageAbreast { get; private set; } = false;
-		public int AbreastIndex => Mathf.Max(_AbreastIndex, 0);
+		public bool UseDynamicSpeed => !UseAbreast;
+		public bool UseAbreast => AbreastValue > 0.5f;
+		public float AbreastValue { get; private set; } = 0f;
+		public bool AllStageAbreast { get; private set; } = true;
+		public int AbreastIndex => Mathf.Max(_AbreastIndex, 1);
 		public bool PositiveScroll { get; set; } = true;
 		public float AbreastWidth { get; private set; } = 1f;
 
@@ -79,12 +81,15 @@
 		[SerializeField] private Transform m_Prefab_Motion = null;
 		[SerializeField] private Transform m_Prefab_Luminous = null;
 		[SerializeField] private RectTransform m_ZoneRT = null;
+		[SerializeField] private AnimationCurve m_AbreastCurve = null;
 		[SerializeField] private Transform[] m_AntiMouseTF = null;
 		[SerializeField] private Transform[] m_Containers = null;
 
 		// Data
 		private StageMusic _Music = null;
 		private Camera _Camera = null;
+		private Coroutine AbreastValueCor = null;
+		private Coroutine AbreastWidthCor = null;
 		private float _Ratio = 1.5f;
 		private int _AbreastIndex = 0;
 		private float _GameDropSpeed = 1f;
@@ -327,26 +332,35 @@
 		public float SnapTime (float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
 
 
-		// UI
-		public void SwitchUseDynamicSpeed () => SetUseDynamicSpeed(!UseDynamicSpeed);
+		// Abreast
+		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreast, true);
 
 
-		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreast);
-
-
-		public void SwitchShowGrid () => SetShowGrid(!ShowGrid);
-
-
-		public void SetUseDynamicSpeed (bool use) {
-			UseDynamicSpeed = use;
-			OnSpeedChanged();
-		}
-
-
-		public void SetUseAbreastView (bool abreast) {
-			UseAbreast = abreast;
-			Camera.orthographic = abreast;
-			OnAbreastChanged();
+		public void SetUseAbreastView (bool abreast, bool animation = false) {
+			if (AbreastValueCor != null) {
+				StopCoroutine(AbreastValueCor);
+			}
+			var items = m_Containers[0].parent.GetComponentsInChildren<StageObject>();
+			var speedNotes = m_Containers[3].GetComponentsInChildren<SpeedNote>();
+			AbreastValueCor = StartCoroutine(AbreastValueing());
+			// === Func ===
+			IEnumerator AbreastValueing () {
+				if (animation) {
+					float duration = m_AbreastCurve.keys[m_AbreastCurve.length - 1].time;
+					for (float t = 0f; t < duration; t += Time.deltaTime) {
+						AbreastValue = Mathf.LerpUnclamped(
+							abreast ? 0f : 1f,
+							abreast ? 1f : 0f,
+							m_AbreastCurve.Evaluate(t)
+						);
+						yield return new WaitForEndOfFrame();
+					}
+				}
+				AbreastValue = abreast ? 1f : 0f;
+				OnAbreastChanged();
+				OnSpeedChanged();
+				AbreastValueCor = null;
+			}
 		}
 
 
@@ -356,7 +370,6 @@
 		public void SetAllStageAbreast (bool abreast) {
 			AllStageAbreast = abreast;
 			OnAbreastChanged();
-
 		}
 
 
@@ -364,6 +377,46 @@
 			_AbreastIndex = Mathf.Max(newIndex, 0);
 			OnAbreastChanged();
 		}
+
+
+		public void SetAbreastWidth (int index, bool animation = false) {
+			index = Mathf.Clamp(index, 0, ABREAST_WIDTHS.Length - 1);
+			AbreastWidthIndex.Value = index;
+			if (AbreastWidthCor != null) {
+				StopCoroutine(AbreastWidthCor);
+			}
+			AbreastWidthCor = StartCoroutine(AbreastWidthing());
+			// === Func ===
+			IEnumerator AbreastWidthing () {
+				if (animation) {
+					float duration = m_AbreastCurve.keys[m_AbreastCurve.length - 1].time;
+					float from = AbreastWidth;
+					float to = ABREAST_WIDTHS[index];
+					for (float t = 0f; t < duration; t += Time.deltaTime) {
+						AbreastWidth = Mathf.LerpUnclamped(from, to, m_AbreastCurve.Evaluate(t));
+						yield return new WaitForEndOfFrame();
+					}
+				}
+				AbreastWidth = ABREAST_WIDTHS[index];
+				OnAbreastChanged();
+				AbreastWidthCor = null;
+			}
+		}
+
+
+		public void SwitchAbreastWidth () {
+			SetAbreastWidth((AbreastWidthIndex + 1) % ABREAST_WIDTHS.Length, true);
+			// Hint
+			string str = "% ";
+			for (int i = 0; i < ABREAST_WIDTHS.Length; i++) {
+				str += i == AbreastWidthIndex ? '■' : '□';
+			}
+			LogGameHint_Key(ABREAST_WIDTH_HINT, (ABREAST_WIDTHS[AbreastWidthIndex] * 100f).ToString("0") + str, false);
+		}
+
+
+		// Grid
+		public void SwitchShowGrid () => SetShowGrid(!ShowGrid);
 
 
 		public void SetShowGrid (bool show) {
@@ -384,6 +437,7 @@
 		}
 
 
+		// Music
 		public void SeekMusic_BPM (float muti) => Music.Seek(Music.Time + 60f / BPM * muti);
 
 
@@ -402,25 +456,6 @@
 		public void SetBeatPerSection (int bps) {
 			BeatPerSection.Value = Mathf.Clamp(bps, 1, 16);
 			OnGridChanged();
-		}
-
-
-		public void SwitchAbreastWidth () {
-			SetAbreastWidth((AbreastWidthIndex + 1) % ABREAST_WIDTHS.Length);
-			// Hint
-			string str = "% ";
-			for (int i = 0; i < ABREAST_WIDTHS.Length; i++) {
-				str += i == AbreastWidthIndex ? '■' : '□';
-			}
-			LogGameHint_Key(ABREAST_WIDTH_HINT, (AbreastWidth * 100f).ToString("0") + str, false);
-		}
-
-
-		public void SetAbreastWidth (int index) {
-			index = Mathf.Clamp(index, 0, ABREAST_WIDTHS.Length - 1);
-			AbreastWidthIndex.Value = index;
-			AbreastWidth = ABREAST_WIDTHS[index];
-			OnAbreastChanged();
 		}
 
 

@@ -9,7 +9,7 @@
 
 	public abstract class StageObject : MonoBehaviour {
 
-
+		
 
 
 		#region --- SUB ---
@@ -39,7 +39,7 @@
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
 		public static (Vector2 min, Vector3 max) ScreenZoneMinMax { get; set; } = (default, default);
 		public static Beatmap Beatmap { get; set; } = null;
-		public static (int index, bool active, bool all) Abreast { get; set; } = (0, false, false);
+		public static (int index, float value, bool all) Abreast { get; set; } = (0, 0f, false);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static float GameSpeedMuti { get; set; } = 1f;
@@ -241,7 +241,7 @@
 		}
 
 
-		protected int GetSortingOrder () => (int)Mathf.Lerp(-32760, 32760, Time / MusicDuration);
+		protected int GetSortingOrder () => (int)Mathf.Lerp(32760, -32760, Time / MusicDuration);
 
 
 		protected virtual void RefreshRendererZone () => RefreshRendererZoneFor(m_MainRenderer);

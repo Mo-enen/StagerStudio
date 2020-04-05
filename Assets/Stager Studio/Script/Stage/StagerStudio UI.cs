@@ -86,11 +86,7 @@
 
 
 		// MSG
-		private void Awake_Setting_UI () {
-
-			var sfx = FindObjectOfType<StageSoundFX>();
-			var music = FindObjectOfType<StageMusic>();
-			var game = FindObjectOfType<StageGame>();
+		private void Awake_Setting_UI (StageSoundFX sfx, StageMusic music, StageGame game) {
 
 			// Input
 			InputItemMap.Add(InputType.Frame, ((str) => {

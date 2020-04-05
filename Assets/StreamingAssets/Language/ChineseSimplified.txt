@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.InfoLabel
+舞台 × {0} | 轨道 × {1} | 音符 × {2} | 速度 × {3}
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -367,9 +370,6 @@ Shortcut.Brush.Track
 Shortcut.CancelZone
 取消
 
-Shortcut.DynamicDrop
-打开/关闭动态下落速度
-
 Shortcut.Eye.Motion
 隐藏运动音符
 
@@ -535,11 +535,11 @@ Tip.BeatmapSwiper
 Tip.CancelFocus
 取消专注模式
 
-Tip.DynamicDropSpeed
-使用动态的音符下落速度
-
 Tip.GotoWeb
 打开官网 www.stager.studio
+
+Tip.Grid
+显示网格、辅助线（右键点击显示菜单）
 
 Tip.Lib.Motion
 运动笔刷

@@ -425,6 +425,9 @@ TextureImporter:
   - first:
       213: 4529159082027229867
     second: Char %
+  - first:
+      213: 4824580782819576835
+    second: Grid
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -789,19 +792,40 @@ TextureImporter:
       name: Speed Note
       rect:
         serializedVersion: 2
-        x: 358
-        y: 4
-        width: 64
-        height: 32
+        x: 351
+        y: 3
+        width: 27
+        height: 27
       alignment: 7
       pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 17, w: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
       spriteID: 4bb66dfb0b6e232f0800000000000000
       internalID: -994478920888325196
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grid
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 2
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30c032609aa54f240800000000000000
+      internalID: 4824580782819576835
       vertices: []
       indices: 
       edges: []

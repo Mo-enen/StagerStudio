@@ -50,6 +50,7 @@
 						grab.Grab<Button>().onClick.AddListener(() => {
 							int sIndex = grab.transform.GetSiblingIndex();
 							SetAbreastIndex(sIndex);
+							SetAllStageAbreast(false);
 							if (allA) {
 								SetAllStageAbreast(false);
 							}

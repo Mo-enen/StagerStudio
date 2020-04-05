@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.InfoLabel
+stage × {0} | track × {1} | note × {2} | speed × {3}
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -367,9 +370,6 @@ Track Brush
 Shortcut.CancelZone
 Cancel
 
-Shortcut.DynamicDrop
-Dynamic Drop Speed
-
 Shortcut.Eye.Motion
 Hide Motion Note
 
@@ -535,11 +535,11 @@ Select beatmap and open
 Tip.CancelFocus
 Cancel focus mode
 
-Tip.DynamicDropSpeed
-Use dynamic note drop speed
-
 Tip.GotoWeb
 Open offical website www.stager.studio
+
+Tip.Grid
+Show grid (right click to open menu)
 
 Tip.Lib.Motion
 Motion brush

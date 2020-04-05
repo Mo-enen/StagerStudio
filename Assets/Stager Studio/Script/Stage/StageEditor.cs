@@ -37,6 +37,7 @@
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
+		public static BoolHandler GetUseDynamicSpeed { get; set; } = null;
 
 		// Api
 		public int SelectingCount => SelectingObjectsIndex.Count;
@@ -232,7 +233,7 @@
 						pos = target.position;
 						rot = target.rotation;
 						scl = target.GetChild(0).localScale;
-						speed = layerIndex == ItemLayers[1] ? GetTrackSpeedMuti(map, itemIndex) : 1f;
+						speed = layerIndex == ItemLayers[1] && GetUseDynamicSpeed() ? GetTrackSpeedMuti(map, itemIndex) : 1f;
 					}
 					m_Grid.Mode = layerIndex == ItemLayers[0] ? 1 : 2;
 				} else {

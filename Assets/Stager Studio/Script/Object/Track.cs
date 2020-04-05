@@ -74,7 +74,7 @@
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
 
-			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * linkedStage.Speed);
+			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
 			if (!active) { return; }
 			trackData.Selecting = oldSelecting;
@@ -208,7 +208,11 @@
 		);
 
 
-		public static float GetTrackAngle (Beatmap.Track data) => Abreast.active ? 0f : data.Angle + Evaluate(data.Angles, MusicTime - data.Time);
+		public static float GetTrackAngle (Beatmap.Track data) => Mathf.LerpUnclamped(
+			data.Angle + Evaluate(data.Angles, MusicTime - data.Time),
+			0f,
+			Abreast.value
+		);
 
 
 		public static (Vector3 pos, float rotX, float rotZ) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float trackX, float trackWidth, float trackRotX) {

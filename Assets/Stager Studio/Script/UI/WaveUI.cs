@@ -28,18 +28,20 @@
 			}
 		}
 
+
 		// Data
-		private float[] Waves { get; set; } = null;
+		private readonly UIVertex[] VertexCache = new UIVertex[4] { default, default, default, default };
+		private Coroutine AlphaCor = null;
+		private float[] Waves = null;
 		private float _Length = 1f / 600f;
 		private float _Time = 0f;
 		private float MaxWave = 0f;
-		private readonly UIVertex[] VertexCache = new UIVertex[4] { default, default, default, default };
 
 
 		// MSG
 		protected override void OnPopulateMesh (VertexHelper toFill) {
 			toFill.Clear();
-			if (Waves == null || Waves.Length == 0 || MaxWave <= 0f) { return; }
+			if (Waves == null || Waves.Length == 0 || MaxWave <= 0f || Length01 <= 0f) { return; }
 			var rect = GetPixelAdjustedRect();
 			int len = Waves.Length;
 			VertexCache[0].color = color;
@@ -100,6 +102,43 @@
 					max = Mathf.Max(max, oWaves[i]);
 				}
 				return (max - min) * 0.5f;
+			}
+		}
+
+
+		public void SetAlpha (float a) {
+			const float NORMAL_ALPHA = 0.12f;
+			if (AlphaCor != null) {
+				StopCoroutine(AlphaCor);
+			}
+			if (!gameObject.activeSelf) {
+				gameObject.SetActive(a > 0.01f);
+			}
+			if (gameObject.activeInHierarchy) {
+				AlphaCor = StartCoroutine(Alphaing());
+			} else {
+				var c = color;
+				c.a = Mathf.Lerp(0f, NORMAL_ALPHA, a);
+				color = c;
+				gameObject.SetActive(a > 0.01f);
+			}
+			// === Func ===
+			IEnumerator Alphaing () {
+				a = Mathf.Lerp(0f, NORMAL_ALPHA, a);
+				var c = color;
+				float from = c.a;
+				if (a > 0.01f) {
+					gameObject.SetActive(true);
+				}
+				for (float t = 0f; t < 0.4f; t += Time.deltaTime) {
+					c.a = Mathf.Lerp(from, a, t / 0.4f);
+					color = c;
+					yield return new WaitForEndOfFrame();
+				}
+				c.a = a;
+				color = c;
+				gameObject.SetActive(a > 0.01f);
+				AlphaCor = null;
 			}
 		}
 

@@ -186,6 +186,8 @@
 			if (is3D) {
 				float uvL3d = uvL - ani.Thickness3D / tWidth;
 				float uvD3d = uvD - ani.Thickness3D / tHeight;
+				// B
+				AddQuad01(0f, 1f, 1f, 0f, uvL, uvR, uvD, uvU, new Vector3(0f, 0f, 0f));
 				// L
 				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D), false);
 				// R
