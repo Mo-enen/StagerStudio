@@ -18,8 +18,8 @@
 
 		// Const
 		private const float HEIGHT = 0.8f;
-		private const float WIDTH_MIN = 0.2f;
-		private const float WIDTH_MAX = 6f;
+		private const float WIDTH_MIN = 0.6f;
+		private const float WIDTH_MAX = 6.4f;
 
 		// Api
 		public static int SortingLayerID_UI { get; set; } = -1;

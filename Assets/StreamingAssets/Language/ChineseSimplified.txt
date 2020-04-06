@@ -1,7 +1,4 @@
-﻿UI.InfoLabel
-舞台 × {0} | 轨道 × {1} | 音符 × {2} | 速度 × {3}
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -756,6 +753,9 @@ UI.GoHomeDirtyConfirmMsg
 
 UI.ImportBeatmap
 导入
+
+UI.InfoLabel
+舞台 × {0} | 轨道 × {1} | 音符 × {2} | 速度 × {3}
 
 UI.NewBeatmap
 新建

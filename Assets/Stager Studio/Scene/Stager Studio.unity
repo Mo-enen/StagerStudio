@@ -1879,7 +1879,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &232281033
 Transform:
   m_ObjectHideFlags: 0
@@ -1901,7 +1901,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 232281032}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -3789,7 +3789,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4433516547596728504, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -8103,7 +8103,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4433516547596728504, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -9442,6 +9442,7 @@ Transform:
   m_Children:
   - {fileID: 1637691683}
   - {fileID: 232281033}
+  - {fileID: 1035960595}
   - {fileID: 1916363260}
   m_Father: {fileID: 315509731}
   m_RootOrder: 6
@@ -9538,6 +9539,89 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000148126}
   m_CullTransparentMesh: 0
+--- !u!1 &1035960594
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1035960595}
+  - component: {fileID: 1035960596}
+  m_Layer: 0
+  m_Name: Ghost
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1035960595
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035960594}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 1}
+  m_LocalScale: {x: 0.16, y: 0.16, z: 1}
+  m_Children:
+  - {fileID: 1505890988}
+  m_Father: {fileID: 999004253}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1035960596
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1035960594}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 778191249
+  m_SortingLayer: 1
+  m_SortingOrder: 32766
+  m_Sprite: {fileID: 4433516547596728504, guid: da7f946bf2fc8f84f95134f233c99156,
+    type: 3}
+  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 1
+  m_Size: {x: 0, y: 0}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1038822263
 GameObject:
   m_ObjectHideFlags: 0
@@ -12318,6 +12402,7 @@ MonoBehaviour:
   m_BeatmapSwiperLabel: {fileID: 1999224471}
   m_SkinSwiperLabel: {fileID: 566941160}
   m_UseAbreastView: {fileID: 338648234}
+  m_GridTG: {fileID: 1491978203}
   m_AuthorLabel: {fileID: 495282314}
   m_InfoLabel: {fileID: 1854070859}
   m_VersionLabel: {fileID: 1759727198}
@@ -12325,11 +12410,6 @@ MonoBehaviour:
   m_PitchWarningBlock: {fileID: 1885491280}
   m_Keypress: {fileID: 1191655087}
   m_CameraTF: {fileID: 513021336}
-  m_LanguageTexts:
-  - {fileID: 1796458040}
-  - {fileID: 1149638195}
-  - {fileID: 1969733948}
-  - {fileID: 798280413}
   m_NavigationItems:
   - {fileID: 1861407127}
   - {fileID: 848241073}
@@ -12362,6 +12442,11 @@ MonoBehaviour:
   m_Zone: {fileID: 690629584}
   m_Preview: {fileID: 1433018270}
   m_Wave: {fileID: 268875062}
+  m_LanguageTexts:
+  - {fileID: 1796458040}
+  - {fileID: 1149638195}
+  - {fileID: 1969733948}
+  - {fileID: 798280413}
   m_Cursors:
   - Cursor: {fileID: 2800000, guid: 01635c49f9e1159469d4f4fb0c1f3a16, type: 3}
     Offset: {x: 16, y: 7}
@@ -12841,6 +12926,88 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502126993}
   m_CullTransparentMesh: 0
+--- !u!1 &1505890987
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1505890988}
+  - component: {fileID: 1505890989}
+  m_Layer: 0
+  m_Name: Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1505890988
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505890987}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.012, z: 0}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1035960595}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &1505890989
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1505890987}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: -1173555823
+  m_SortingLayer: 13
+  m_SortingOrder: 32766
+  m_Sprite: {fileID: -3120261747380468746, guid: da7f946bf2fc8f84f95134f233c99156,
+    type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 0.14, y: 0.27}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
 --- !u!1 &1525078793
 GameObject:
   m_ObjectHideFlags: 0
@@ -13989,6 +14156,12 @@ MonoBehaviour:
   - Note
   - Speed
   - Motion
+  m_ItemSortingLayerNames:
+  - Stage
+  - Track
+  - Note
+  - Speed
+  - Motion
   m_EyeTGs:
   - {fileID: 378928407}
   - {fileID: 1257152339}
@@ -14014,6 +14187,7 @@ MonoBehaviour:
   m_FocusAni: {fileID: 703012816}
   m_Grid: {fileID: 1637691684}
   m_Hover: {fileID: 232281034}
+  m_Ghost: {fileID: 1035960596}
   m_NoteHoldLayerName: HoldNote
   m_FocusKey: Focus
   m_UnfocusKey: Unfocus
@@ -16723,7 +16897,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 999004253}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1928218902
 GameObject:
@@ -17100,8 +17274,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.InfoLabel
-  - "stage \xD7 {0} | track \xD7 {1} | note \xD7 {2} | speed \xD7 {3}"
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -17614,6 +17786,8 @@ MonoBehaviour:
   - Save project and back to home page?
   - UI.ImportBeatmap
   - Import
+  - UI.InfoLabel
+  - "stage \xD7 {0} | track \xD7 {1} | note \xD7 {2} | speed \xD7 {3}"
   - UI.NewBeatmap
   - New
   - UI.OpenLanguageFolder

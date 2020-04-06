@@ -1,7 +1,4 @@
-﻿UI.InfoLabel
-stage × {0} | track × {1} | note × {2} | speed × {3}
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -756,6 +753,9 @@ Save project and back to home page?
 
 UI.ImportBeatmap
 Import
+
+UI.InfoLabel
+stage × {0} | track × {1} | note × {2} | speed × {3}
 
 UI.NewBeatmap
 New

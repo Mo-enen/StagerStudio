@@ -184,7 +184,7 @@ TextureImporter:
     second: Menu
   - first:
       213: 4433516547596728504
-    second: Grid
+    second: Ghost
   - first:
       213: 9024382940211215174
     second: Voez Icon
@@ -427,7 +427,22 @@ TextureImporter:
     second: Char %
   - first:
       213: 4824580782819576835
+    second: Ghost
+  - first:
+      213: 4824580782819576835
+    second: Ghost
+  - first:
+      213: 4824580782819576835
+    second: Ghost
+  - first:
+      213: 1959211095122329946
     second: Grid
+  - first:
+      213: 4824580782819576835
+    second: Ghost
+  - first:
+      213: -3120261747380468746
+    second: Pivot Ring
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -810,6 +825,27 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
+      name: Ghost
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 3
+        width: 36
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30c032609aa54f240800000000000000
+      internalID: 4824580782819576835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
       name: Grid
       rect:
         serializedVersion: 2
@@ -824,8 +860,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 30c032609aa54f240800000000000000
-      internalID: 4824580782819576835
+      spriteID: a5145c45c14803b10800000000000000
+      internalID: 1959211095122329946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Pivot Ring
+      rect:
+        serializedVersion: 2
+        x: 420
+        y: 2
+        width: 42
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f3c52df87a92b4d0800000000000000
+      internalID: -3120261747380468746
       vertices: []
       indices: 
       edges: []

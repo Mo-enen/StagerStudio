@@ -82,6 +82,7 @@
 		[SerializeField] private Text m_BeatmapSwiperLabel = null;
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Toggle m_UseAbreastView = null;
+		[SerializeField] private Toggle m_GridTG = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
@@ -90,7 +91,6 @@
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[Header("UI")]
-		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private Selectable[] m_NavigationItems = null;
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -100,6 +100,7 @@
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
 		[Header("Data")]
+		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
 
 
@@ -424,6 +425,7 @@
 				RefreshGridRenderer(game);
 			};
 			StageGame.OnGridChanged = () => {
+				m_GridTG.isOn = game.ShowGrid;
 				m_GridRenderer.SetShow(game.ShowGrid);
 				Track.BeatPerSection = game.BeatPerSection;
 				StageObject.ShowGrid = game.ShowGrid;
@@ -472,6 +474,10 @@
 			StageEditor.GetBeatmap = () => project.Beatmap;
 			StageEditor.GetEditorActive = () => project.Beatmap && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
+			StageEditor.GetUseAbreast = () => game.UseAbreast;
+			StageEditor.GetStageAt = library.GetStageAt;
+			StageEditor.GetTrackAt = library.GetTrackAt;
+			StageEditor.GetNotesAt = library.GetNotesAt;
 		}
 
 

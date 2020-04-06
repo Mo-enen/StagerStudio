@@ -248,6 +248,30 @@
 		#region --- API ---
 
 
+		public Beatmap.Stage GetStageAt (int index) {
+			if (index < 0 || index >= PrefabDatas.Count) { return null; }
+			var prefab = PrefabDatas[index];
+			if (prefab.Type != 0) { return null; }
+			return prefab.Stage;
+		}
+
+
+		public Beatmap.Track GetTrackAt (int index) {
+			if (index < 0 || index >= PrefabDatas.Count) { return null; }
+			var prefab = PrefabDatas[index];
+			if (prefab.Type != 0) { return null; }
+			return prefab.Track;
+		}
+
+
+		public List<Beatmap.Note> GetNotesAt (int index) {
+			if (index < 0 || index >= PrefabDatas.Count) { return null; }
+			var prefab = PrefabDatas[index];
+			if (prefab.Type != 0) { return null; }
+			return prefab.Notes;
+		}
+
+
 		public void UI_SetSelection (int index) {
 			if (UIReady) {
 				SetSelectionLogic(index);

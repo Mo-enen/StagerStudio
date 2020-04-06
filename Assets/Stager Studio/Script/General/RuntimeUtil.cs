@@ -516,6 +516,13 @@
 		);
 
 
+		public static float Snap (float value, float count, float min, float max) {
+			if (count <= 0f || max <= min) { return value; }
+			count /= max - min;
+			return Mathf.Round(value * count) / count;
+		}
+
+
 		public static Texture2D TrimTexture (Texture2D texture, float alpha = 0.01f, int gap = 0) {
 			int width = texture.width;
 			int height = texture.height;
