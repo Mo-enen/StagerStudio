@@ -36,6 +36,7 @@
 
 		// Handler
 		public delegate SkinData SkinDataStringHandler (string name);
+		public delegate Beatmap BeatmapHandler ();
 		public delegate void VoidHandler ();
 		public delegate float FloatHandler ();
 		public delegate string StringStringHandler (string str);
@@ -43,7 +44,6 @@
 		public delegate void VoidIntHandler (int i);
 		public delegate (float value, float index, float width) AbreastHandler ();
 		public delegate (float a, float b) FloatFloatHandler ();
-		public delegate Beatmap BeatmapHandler ();
 
 
 		#endregion
@@ -76,13 +76,15 @@
 		private BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// Ser
-		[Header("Misc"), SerializeField] private Transform m_CanvasRoot = null;
+		[Header("Misc")]
+		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
 		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private Text m_BeatmapSwiperLabel = null;
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
+		[SerializeField] private Text m_FpsLabel = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
@@ -101,6 +103,9 @@
 		[Header("Data")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
+
+		// Data
+		private float LastFpsTime = float.MinValue;
 
 
 		#endregion
@@ -148,6 +153,7 @@
 			Awake_Editor(editor, game, library, project, music);
 			Awake_Library(project, editor, menu, game, music);
 			Awake_Skin(game);
+			Awake_Tutorial(state);
 			Awake_Undo(project, editor, music);
 			Awake_ProjectInfo(project, game, music, menu);
 			Awake_UI(project, game, skin, state, menu, music);
@@ -180,6 +186,10 @@
 			SpeedNote.GameSpeedMuti = dropSpeed * mapSpeed;
 			SpeedNote.MusicTime = GetMusicTime();
 			Object.Stage.StageCount = GetGameItemCount(0);
+			if (Time.time > LastFpsTime + 0.618f) {
+				m_FpsLabel.text = (int)(1f / Time.smoothDeltaTime) > 999 ? "999+" : ((int)(1f / Time.smoothDeltaTime)).ToString();
+				LastFpsTime = Time.time;
+			}
 		}
 
 
@@ -271,7 +281,7 @@
 			Note.GetDropOffset = game.AreaBetweenDrop;
 			Note.PlayClickSound = music.PlayClickSound;
 			// Sorting Layer ID
-			StageObject.SortingLayerID_UI = SortingLayer.NameToID("UI");
+			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
 			Object.Stage.SortingLayerID_Judge = SortingLayer.NameToID("Judge");
 			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
@@ -540,6 +550,12 @@
 		}
 
 
+		private void Awake_Tutorial (StageState state) {
+			StageTutorial.OpenProjectAt = state.GotoEditor;
+
+		}
+
+
 		private void Awake_Undo (StageProject project, StageEditor editor, StageMusic music) {
 			StageUndo.GetObjectData = () => new UndoData() {
 				Beatmap = Util.ObjectToBytes(project.Beatmap),
@@ -726,7 +742,7 @@
 			SkinSwiperUI.GetAllSkinNames = () => skin.AllSkinNames;
 			SkinSwiperUI.SkinLoadSkin = skin.LoadSkin;
 
-			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
+			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
 		}
 

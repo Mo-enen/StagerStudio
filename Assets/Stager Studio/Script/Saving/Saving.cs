@@ -12,7 +12,7 @@
 				return _Value;
 			}
 			set {
-				if (_Value != null && !_Value.Equals(value)) {
+				if (!Loaded || (_Value != null && !_Value.Equals(value))) {
 					_Value = value;
 					Loaded = true;
 					SetValueToPref();

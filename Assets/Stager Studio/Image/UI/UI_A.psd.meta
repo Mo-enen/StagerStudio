@@ -220,7 +220,7 @@ TextureImporter:
     second: Grid Line
   - first:
       213: -3374395645584494972
-    second: UI_A_1
+    second: Book
   - first:
       213: -3692427623992186823
     second: Pixel
@@ -230,6 +230,9 @@ TextureImporter:
   - first:
       213: -8080841097035478247
     second: Treble Clef
+  - first:
+      213: 1098643313922838400
+    second: Save
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -691,27 +694,6 @@ TextureImporter:
       bones: []
       spriteID: 98f1e1677d7a328488d0d216efb56da0
       internalID: 414770563722757972
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Dynamic Speed
-      rect:
-        serializedVersion: 2
-        x: 174
-        y: 101
-        width: 35
-        height: 45
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ca353d4a0c700c844bc116385d402e33
-      internalID: 8697557011540468700
       vertices: []
       indices: 
       edges: []
@@ -1300,6 +1282,27 @@ TextureImporter:
       bones: []
       spriteID: 91b82dc16d51bdf80800000000000000
       internalID: -8080841097035478247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Book
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 103
+        width: 44
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48eaf45e90dbb21d0800000000000000
+      internalID: -3374395645584494972
       vertices: []
       indices: 
       edges: []

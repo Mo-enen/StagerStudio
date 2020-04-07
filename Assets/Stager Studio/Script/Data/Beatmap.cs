@@ -232,6 +232,7 @@
 			// Cache
 			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public bool Selecting = false;
+			[System.NonSerialized] public float SpeedMuti = 1f;
 
 			// API
 			public int GetMotionCount (MotionType type) {
@@ -376,6 +377,10 @@
 			[System.NonSerialized] public float SpeedOnDrop = 1f;
 			[System.NonSerialized] public float NoteDropStart = float.MinValue;
 			[System.NonSerialized] public float NoteDropEnd = float.MinValue;
+			[System.NonSerialized] public float CacheTime = float.MinValue;
+			[System.NonSerialized] public float CacheDuration = float.MinValue;
+			[System.NonSerialized] public static byte CacheDirtyID = 1;
+			[System.NonSerialized] public byte LocalCacheDirtyID = 0;
 
 		}
 
@@ -535,6 +540,9 @@
 			var track = index >= 0 && index < Tracks.Count ? Tracks[index] : null;
 			return track is null ? DEFAULT_TRACK : track;
 		}
+
+
+		public Note GetNoteAt (int index) => index >= 0 && index < Notes.Count ? Notes[index] : null;
 
 
 		public static implicit operator bool (Beatmap map) => map != null;

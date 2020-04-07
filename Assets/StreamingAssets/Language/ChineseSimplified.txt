@@ -1,11 +1,11 @@
-﻿Dialog.Library.CannotSelectStage
-全景模式下不能选择舞台笔刷
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
 创建工程时发生错误
+
+Dialog.Library.CannotSelectStage
+全景模式下不能选择舞台笔刷
 
 Dialog.Library.DeletePrefabConfirm
 删除笔刷吗？本操作不能撤销
@@ -24,6 +24,12 @@ Dialog.Library.PrefabExported
 
 Dialog.OpenWebMSG
 正在尝试打开 {0} 请查看您的浏览器
+
+Dialog.Tutorial.CanNotFindProject
+找不到教学工程文件
+
+Dialog.Tutorial.FirstTutorialMSG
+是否开始教程？
 
 Dialog.TweenEditor.CancelConfirm
 关闭补间编辑器吗？修改将不会被保存
@@ -1008,6 +1014,9 @@ UI.Tab.Skin
 
 UI.Tab.Tween
 补间
+
+UI.Tutorial.BoardMSG
+点击此处打开教程
 
 UI.TweenEditor.Snap
 紧贴

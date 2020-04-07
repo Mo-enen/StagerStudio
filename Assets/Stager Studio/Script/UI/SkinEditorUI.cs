@@ -292,14 +292,13 @@
 
 		// UI
 		public void UI_ImportImage () {
-			if (Data is null) { return; }
+			if (Data != null) { return; }
 			var path = DialogUtil.PickFileDialog(DIALOG_ImportImageTitle, "image", "png", "jpg");
 			if (string.IsNullOrEmpty(path)) { return; }
 			var (pixels32, width, height) = Util.ImageToPixels(path);
 			if (pixels32 is null || width == 0 || height == 0) { return; }
 			var texture = new Texture2D(width, height, TextureFormat.RGBA32, false) {
 				filterMode = FilterMode.Point,
-				alphaIsTransparency = true,
 				wrapMode = TextureWrapMode.Clamp,
 			};
 			texture.SetPixels32(pixels32);

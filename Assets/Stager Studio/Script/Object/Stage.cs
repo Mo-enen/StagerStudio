@@ -56,6 +56,7 @@
 			bool oldSelecting = stageData.Selecting;
 			stageData.Active = false;
 			stageData.Selecting = false;
+			stageData.SpeedMuti = GetStageSpeed(stageData);
 			Time = stageData.Time;
 			Duration = stageData.Duration;
 
@@ -120,10 +121,10 @@
 			}
 
 			// Highlight
-			if (Highlight != null) {
-				Highlight.enabled = !MusicPlaying && stageActive && selecting;
+			bool highlighting = !MusicPlaying && stageActive && selecting;
+			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
+				Highlight.gameObject.SetActive(highlighting);
 			}
-
 
 		}
 
@@ -180,6 +181,9 @@
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) {
+			if (StageCount <= 1) {
+				return new Vector2(0.5f, 0f);
+			}
 			if (Abreast.value < 0.0001f) {
 				return GetNormalPos();
 			} else if (Abreast.value > 0.9999f) {

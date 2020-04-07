@@ -1,11 +1,11 @@
-﻿Dialog.Library.CannotSelectStage
-Can not select stage brush in panoramic mode
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
 Error on creating project
+
+Dialog.Library.CannotSelectStage
+Can not select stage brush in panoramic mode
 
 Dialog.Library.DeletePrefabConfirm
 Delete prefab? This will not be undo
@@ -24,6 +24,12 @@ Prefabs exported
 
 Dialog.OpenWebMSG
 Opening {0} Please check your web browser
+
+Dialog.Tutorial.CanNotFindProject
+Can not find tutorial project file
+
+Dialog.Tutorial.FirstTutorialMSG
+Start tutorial now?
 
 Dialog.TweenEditor.CancelConfirm
 Close tween editor? Changes will not be save.
@@ -1008,6 +1014,9 @@ Skin
 
 UI.Tab.Tween
 Tween
+
+UI.Tutorial.BoardMSG
+Click Here to Start Tutorial
 
 UI.TweenEditor.Snap
 Snap

@@ -679,52 +679,14 @@
 			LoadingCor = StartCoroutine(LoadImage(callBack, useAlpha));
 
 			IEnumerator LoadImage (System.Action<Project.ImageData, Sprite> cBack, bool alpha) {
-				UnityWebRequest request;
-				Texture2D texture = null;
-				string name;
-				try {
-					request = UnityWebRequestTexture.GetTexture(Util.GetUrl(path), false);
-					name = Util.GetNameWithoutExtension(path);
-					if (request == null) {
-						LogMessageLogic(LanguageData.Error_FailLoadImage, true);
-						LoadingCor = null;
-						yield break;
+				yield return LoadImageLogic(path, (texture, sprite) => {
+					var tData = ProjectUtil.Texture_to_ImageData(texture, texture.width, texture.height, alpha);
+					if (tData != null && sprite != null) {
+						cBack.Invoke(tData, sprite);
 					}
-				} catch (System.Exception ex) {
-					LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-					Debug.LogWarning(ex);
+					SetDirty();
 					LoadingCor = null;
-					yield break;
-				}
-				yield return request.SendWebRequest();
-				try {
-					// Object >> Stage
-					if (!request.isNetworkError && !request.isHttpError) {
-						var handler = (DownloadHandlerTexture)request.downloadHandler;
-						if (handler.isDone) {
-							texture = handler.texture;
-						}
-					}
-					if (texture) {
-						texture.name = name;
-						texture.filterMode = FilterMode.Bilinear;
-						if (texture.width > maxPixelSize || texture.height > maxPixelSize) {
-							texture = Util.ResizeTexture(texture, maxPixelSize);
-						}
-						var tData = ProjectUtil.Texture_to_ImageData(texture, texture.width, texture.height, alpha);
-						var sp = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-						sp.name = name;
-						if (tData != null && sp != null) {
-							cBack.Invoke(tData, sp);
-						}
-					} else {
-						LogMessageLogic(LanguageData.Error_FailLoadImage, true);
-					}
-				} catch (System.Exception ex) {
-					LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-				}
-				SetDirty();
-				LoadingCor = null;
+				}, maxPixelSize);
 			}
 		}
 
@@ -741,53 +703,14 @@
 			LoadingCor = StartCoroutine(LoadImage(callBack));
 
 			IEnumerator LoadImage (System.Action<Project.FileData, Sprite> cBack) {
-				UnityWebRequest request;
-				Texture2D texture = null;
-				string name;
-				try {
-					request = UnityWebRequestTexture.GetTexture(Util.GetUrl(path), false);
-					name = Util.GetNameWithoutExtension(path);
-					if (request == null) {
-						LogMessageLogic(LanguageData.Error_FailLoadImage, true);
-						LoadingCor = null;
-						yield break;
+				yield return LoadImageLogic(path, (texture, sprite) => {
+					var tData = ProjectUtil.Texture_to_FileData(texture, Util.GetExtension(path));
+					if (tData != null && sprite != null) {
+						cBack.Invoke(tData, sprite);
 					}
-				} catch (System.Exception ex) {
-					LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-					Debug.LogWarning(ex);
+					SetDirty();
 					LoadingCor = null;
-					yield break;
-				}
-				yield return request.SendWebRequest();
-				try {
-					// Object >> Stage
-					if (!request.isNetworkError && !request.isHttpError) {
-						var handler = (DownloadHandlerTexture)request.downloadHandler;
-						if (handler.isDone) {
-							texture = handler.texture;
-						}
-					}
-					if (texture) {
-						texture.name = name;
-						texture.filterMode = FilterMode.Bilinear;
-						if (texture.width > maxPixelSize || texture.height > maxPixelSize) {
-							texture = Util.ResizeTexture(texture, maxPixelSize);
-						}
-						var sp = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
-						sp.name = name;
-						var tData = ProjectUtil.Texture_to_FileData(texture, Util.GetExtension(path));
-						if (tData != null && sp != null) {
-							cBack.Invoke(tData, sp);
-						}
-					} else {
-						LogMessageLogic(LanguageData.Error_FailLoadImage, true);
-					}
-				} catch (System.Exception ex) {
-					LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-					Debug.LogWarning(ex);
-				}
-				SetDirty();
-				LoadingCor = null;
+				}, maxPixelSize);
 			}
 		}
 
@@ -958,7 +881,6 @@
 		}
 
 
-
 		public void UI_ImportTween (System.Action done) {
 			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportTween, DialogUtil.MarkType.Warning, () => {
 				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportTweenTitle), "json", "json");
@@ -1002,7 +924,8 @@
 
 		// Project
 		private async void SaveProjectLogic (string projectPath) {
-			if (SavingProject || LoadingCor != null) { return; }
+
+			if (SavingProject || LoadingCor != null || !Util.IsChildPath(projectPath, Workspace)) { return; }
 
 			SavingProject = true;
 			IsDirty = false;
@@ -1222,6 +1145,53 @@
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
 				Debug.LogWarning(ex);
+			}
+		}
+
+
+		private IEnumerator LoadImageLogic (string path, System.Action<Texture2D, Sprite> cBack, int maxPixelSize) {
+			UnityWebRequest request;
+			Texture2D texture = null;
+			string name;
+			try {
+				request = UnityWebRequestTexture.GetTexture(Util.GetUrl(path), false);
+				name = Util.GetNameWithoutExtension(path);
+				if (request == null) {
+					LogMessageLogic(LanguageData.Error_FailLoadImage, true);
+					LoadingCor = null;
+					yield break;
+				}
+			} catch (System.Exception ex) {
+				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
+				Debug.LogWarning(ex);
+				LoadingCor = null;
+				yield break;
+			}
+			yield return request.SendWebRequest();
+			try {
+				// Object >> Stage
+				if (!request.isNetworkError && !request.isHttpError) {
+					var handler = (DownloadHandlerTexture)request.downloadHandler;
+					if (handler.isDone) {
+						texture = handler.texture;
+					}
+				}
+				if (texture) {
+					texture.name = name;
+					texture.filterMode = FilterMode.Bilinear;
+					if (texture.width > maxPixelSize || texture.height > maxPixelSize) {
+						texture = Util.ResizeTexture(texture, maxPixelSize);
+					}
+					var sp = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.one * 0.5f);
+					if (sp != null) {
+						sp.name = name;
+						cBack.Invoke(texture, sp);
+					}
+				} else {
+					LogMessageLogic(LanguageData.Error_FailLoadImage, true);
+				}
+			} catch (System.Exception ex) {
+				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
 			}
 		}
 

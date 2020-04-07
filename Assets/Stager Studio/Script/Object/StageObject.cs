@@ -47,7 +47,8 @@
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;
 		public static int MaterialZoneID { get; set; } = 0;
-		public static int SortingLayerID_UI { get; set; } = -1;
+		public static int SortingLayerID_Gizmos { get; set; } = -1;
+
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
@@ -77,7 +78,7 @@
 
 		protected virtual void Awake () {
 			if (m_Label != null) {
-				m_Label.SetSortingLayer(SortingLayerID_UI, 0);
+				m_Label.SetSortingLayer(SortingLayerID_Gizmos, 0);
 			}
 			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 0f;
 			MainRenderer.SkinData = Skin;
@@ -93,9 +94,10 @@
 
 		private void LateUpdate_Col_Highlight () {
 			if (m_Col == null) { return; }
-			if (m_Col.enabled != ColSize.HasValue) {
-				m_Col.enabled = ColSize.HasValue;
+			if (m_Col.gameObject.activeSelf != ColSize.HasValue) {
+				m_Col.gameObject.SetActive(ColSize.HasValue);
 			}
+			if (MusicPlaying) { return; }
 			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
 				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.01f);
 				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
@@ -107,7 +109,7 @@
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
 			}
-			if (ColSize.HasValue && m_Highlight.enabled) {
+			if (ColSize.HasValue && m_Highlight.gameObject.activeSelf) {
 				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 		}

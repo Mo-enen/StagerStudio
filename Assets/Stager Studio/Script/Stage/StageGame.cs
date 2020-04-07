@@ -131,6 +131,7 @@
 
 		private void Update () {
 			Update_Beatmap();
+			Update_NoteActive();
 			Update_SpeedCurve();
 			Update_Mouse();
 		}
@@ -139,7 +140,7 @@
 		private void Update_Beatmap () {
 			if (Music.IsPlaying) { return; }
 			var map = GetBeatmap();
-			if (!(map is null)) {
+			if (map != null) {
 				// Has Beatmap
 				bool changed = false;
 				changed = FixObject(m_Prefab_Stage, null, m_Containers[0], map.Stages.Count) || changed;
@@ -155,6 +156,33 @@
 			} else {
 				// No Beatmap
 				ClearAllContainers();
+			}
+		}
+
+
+		private void Update_NoteActive () {
+			var map = GetBeatmap();
+			if (map != null) {
+				int noteCount = map.Notes.Count;
+				var container = m_Containers[2];
+				StageObject.MusicTime = Music.Time;
+				Beatmap.Note linkedNote;
+				Beatmap.Track linkedTrack;
+				Beatmap.Stage linkedStage;
+				float gameSpeedMuti = MapDropSpeed * GameDropSpeed;
+				for (int i = 0; i < noteCount; i++) {
+					var tf = container.GetChild(i);
+					if (!tf.gameObject.activeSelf) {
+						var noteData = map.Notes[i];
+						linkedNote = map.GetNoteAt(noteData.LinkedNoteIndex);
+						linkedTrack = map.GetTrackAt(noteData.TrackIndex);
+						linkedStage = map.GetStageAt(linkedTrack.StageIndex);
+						Note.Update_Cache(noteData, gameSpeedMuti * linkedStage.SpeedMuti);
+						if (Note.GetNoteActive(noteData, linkedNote, noteData.AppearTime)) {
+							tf.gameObject.SetActive(true);
+						}
+					}
+				}
 			}
 		}
 

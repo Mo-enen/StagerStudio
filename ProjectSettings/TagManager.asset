@@ -80,6 +80,9 @@ TagManager:
   - name: Luminous
     uniqueID: 2613986007
     locked: 0
+  - name: Gizmos
+    uniqueID: 1806022187
+    locked: 0
   - name: UI
     uniqueID: 3121411473
     locked: 0

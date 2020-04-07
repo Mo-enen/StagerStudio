@@ -98,7 +98,6 @@
 					if (!(pixels32 is null) && pixels32.Length > 0 && width * height == pixels32.Length) {
 						skin.Texture = new Texture2D(width, height, TextureFormat.RGBA32, false) {
 							filterMode = FilterMode.Point,
-							alphaIsTransparency = true,
 							wrapMode = TextureWrapMode.Clamp,
 						};
 						skin.Texture.SetPixels32(pixels32);

@@ -51,8 +51,6 @@
 		[SerializeField] private SpriteRenderer m_ZLineRenderer = null;
 
 		// Data
-		private static byte CacheDirtyID = 1;
-		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
 		private bool PrevClickedAlt = false;
 		private Beatmap.Note Late_Note = null;
@@ -75,6 +73,12 @@
 		}
 
 
+		private void OnEnable () {
+			Update();
+			LateUpdate();
+		}
+
+
 		private void Update () {
 
 			Late_Note = null;
@@ -86,7 +90,7 @@
 
 			// Get NoteData
 			int noteIndex = transform.GetSiblingIndex();
-			var noteData = !(Beatmap is null) && noteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteIndex] : null;
+			var noteData = Beatmap?.GetNoteAt(noteIndex);
 			if (noteData is null) {
 				Update_Gizmos(null, false, noteIndex);
 				return;
@@ -102,6 +106,12 @@
 				Update_Gizmos(null, false, noteIndex);
 				return;
 			}
+
+			// Cache
+			Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
+
+			Time = noteData.Time;
+			Duration = noteData.Duration;
 
 			// Click Sound
 			if (string.IsNullOrEmpty(noteData.Comment) && noteData.SpeedOnDrop >= 0f) {
@@ -121,9 +131,6 @@
 				}
 			}
 
-			// Cache
-			Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
-
 			// Linked
 			var linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteData.LinkedNoteIndex] : null;
 
@@ -131,7 +138,12 @@
 			bool active = GetNoteActive(noteData, linkedNote, noteData.AppearTime);
 			noteData.Active = active;
 			Update_Gizmos(noteData, oldSelecting, noteIndex);
-			if (!active) { return; }
+
+			if (!active) {
+				gameObject.SetActive(false);
+				return;
+			}
+
 			noteData.Selecting = oldSelecting;
 
 			// Tray
@@ -143,11 +155,13 @@
 
 			Update_Movement(linkedStage, linkedTrack, noteData, linkedNote);
 
+
 		}
 
 
 		protected override void LateUpdate () {
-			if (Late_Note is null || Beatmap is null) {
+
+			if (Late_Note == null) {
 				base.LateUpdate();
 				return;
 			}
@@ -165,28 +179,24 @@
 		}
 
 
-		private void Update_Cache (Beatmap.Note noteData, float speedMuti) {
-			if (LocalCacheDirtyID != CacheDirtyID) {
-				LocalCacheDirtyID = CacheDirtyID;
-				Time = -1f;
+		public static void Update_Cache (Beatmap.Note noteData, float speedMuti) {
+			if (noteData.LocalCacheDirtyID != Beatmap.Note.CacheDirtyID) {
+				noteData.LocalCacheDirtyID = Beatmap.Note.CacheDirtyID;
+				noteData.CacheTime = -1f;
 			}
 			if (speedMuti != noteData.SpeedMuti) {
 				noteData.SpeedMuti = speedMuti;
-				Time = -1f;
+				noteData.CacheTime = -1f;
 			}
-			if (Time != noteData.Time) {
-				Time = noteData.Time;
-				noteData.AppearTime = GetFilledTime(
-					noteData.Time,
-					-1,
-					speedMuti
-				);
+			if (noteData.CacheTime != noteData.Time) {
+				noteData.CacheTime = noteData.Time;
+				noteData.AppearTime = GetFilledTime(noteData.Time, -1, speedMuti);
 				noteData.NoteDropStart = -1f;
 				noteData.SpeedOnDrop = GetDropSpeedAt(noteData.Time);
 			}
 			float duration = Mathf.Max(noteData.Duration, 0f);
-			if (Duration != duration) {
-				Duration = duration;
+			if (noteData.CacheDuration != duration) {
+				noteData.CacheDuration = duration;
 				noteData.NoteDropStart = -1f;
 			}
 			// Note Drop
@@ -279,8 +289,9 @@
 			}
 
 			// Highlight
-			if (Highlight != null) {
-				Highlight.enabled = !MusicPlaying && active && selecting;
+			bool highlighting = !MusicPlaying && active && selecting;
+			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
+				Highlight.gameObject.SetActive(highlighting);
 			}
 
 			// Col
@@ -428,7 +439,7 @@
 		#region --- API ---
 
 
-		public static void SetCacheDirty () => CacheDirtyID++;
+		public static void SetCacheDirty () => Beatmap.Note.CacheDirtyID++;
 
 
 		public static float GetNoteZ (Beatmap.Note data) => Mathf.LerpUnclamped(data.Z, 0f, Abreast.value);
@@ -449,7 +460,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) => data.SpeedOnDrop >= 0f && MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
+		public static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) => data.SpeedOnDrop >= 0f && MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
 
 
 		#endregion

@@ -152,7 +152,10 @@
 			}
 
 			// Highlight
-			Highlight.enabled = !MusicPlaying && trackActive && selecting;
+			bool highlighting = !MusicPlaying && trackActive && selecting;
+			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
+				Highlight.gameObject.SetActive(highlighting);
+			}
 
 			// Section
 			active = ShowGrid && trackActive && !MusicPlaying;
@@ -164,7 +167,7 @@
 				m_SectionRenderer.TimeOffset = Beatmap.Shift;
 				m_SectionRenderer.BeatPerSection = BeatPerSection;
 				m_SectionRenderer.Scale = MainRenderer.Scale;
-				m_SectionRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder() + 1);
+				m_SectionRenderer.SetSortingLayer(SortingLayerID_Gizmos, GetSortingOrder());
 			}
 
 		}

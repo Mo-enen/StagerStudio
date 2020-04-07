@@ -140,8 +140,8 @@
 
 			// Highlight
 			bool hEnabled = !MusicPlaying && active && selecting;
-			if (m_Highlight.enabled != hEnabled) {
-				m_Highlight.enabled = hEnabled;
+			if (m_Highlight.gameObject.activeSelf != hEnabled) {
+				m_Highlight.gameObject.SetActive(hEnabled);
 			}
 
 			// Label
@@ -189,7 +189,7 @@
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
 			}
-			if (ColSize.HasValue && m_Highlight.enabled) {
+			if (ColSize.HasValue && m_Highlight.gameObject.activeSelf) {
 				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 		}
