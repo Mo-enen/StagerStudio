@@ -153,6 +153,8 @@
 		public delegate int IntHandler ();
 		public delegate float FloatHandler ();
 		public delegate void VoidStringRTHandler (string key, RectTransform rt);
+		public delegate string StringStringHandler (string key);
+		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate (int type, List<object> list) SelectionHandler ();
 
 
@@ -170,6 +172,9 @@
 		public static IntHandler GetSelectionCount { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static VoidStringRTHandler OpenMenu { get; set; } = null;
+		public static FloatHandler GetAbreastValue { get; set; } = null;
+		public static VoidStringBoolHandler LogHint { get; set; } = null;
+		public static StringStringHandler GetLanguage { get; set; } = null;
 
 		// API
 		public (int type, int index) SelectingItemTypeIndex { get; private set; } = (-1, -1);
@@ -191,6 +196,7 @@
 		private const string DIALOG_DeletePrefabConfirm = "Dialog.Library.DeletePrefabConfirm";
 		private const string DIALOG_ImportPrefabConfirm = "Dialog.Library.ImportPrefabConfirm";
 		private const string DIALOG_PrefabExported = "Dialog.Library.PrefabExported";
+		private const string DIALOG_CannotSelectStage = "Dialog.Library.CannotSelectStage";
 		private const string DIALOG_ImportPrefabTitle = "Dialog.Library.ImportPrefabTitle";
 		private const string DIALOG_ExportPrefabTitle = "Dialog.Library.ExportPrefabTitle";
 		private const string PREFAB_MENU_KEY = "Menu.Library.PrefabItem";
@@ -349,15 +355,24 @@
 			UIReady = false;
 			try {
 				// Logic
-				int defaultCount = m_DefaultBrushTGs.Length;
-				int type = -1;
-				int pIndex = index - defaultCount;
-				if (pIndex >= 0 && pIndex < PrefabDatas.Count) {
-					type = (int)PrefabDatas[pIndex].Type;
-				} else if (index >= 0 && index < defaultCount) {
-					type = index;
+				if (index >= 0) {
+					int defaultCount = m_DefaultBrushTGs.Length;
+					int type = -1;
+					int pIndex = index - defaultCount;
+					if (pIndex >= 0 && pIndex < PrefabDatas.Count) {
+						type = (int)PrefabDatas[pIndex].Type;
+					} else if (index >= 0 && index < defaultCount) {
+						type = index;
+					}
+					if (type == 0 && GetAbreastValue() > 0.5f) {
+						index = -1;
+						type = -1;
+						LogHint(GetLanguage(DIALOG_CannotSelectStage), true);
+					}
+					SelectingItemTypeIndex = (type, index);
+				} else {
+					SelectingItemTypeIndex = (-1, index);
 				}
-				SelectingItemTypeIndex = (type, index);
 			} catch { }
 			try {
 				// Default Brush TG

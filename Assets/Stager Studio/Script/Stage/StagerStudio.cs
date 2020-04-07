@@ -41,7 +41,7 @@
 		public delegate string StringStringHandler (string str);
 		public delegate int IntIntHandler (int i);
 		public delegate void VoidIntHandler (int i);
-		public delegate (float value, bool all, int index, float width) AbreastHandler ();
+		public delegate (float value, float index, float width) AbreastHandler ();
 		public delegate (float a, float b) FloatFloatHandler ();
 		public delegate Beatmap BeatmapHandler ();
 
@@ -76,12 +76,12 @@
 		private BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// Ser
-		[SerializeField] private Transform m_CanvasRoot = null;
+		[Header("Misc"), SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
 		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private Text m_BeatmapSwiperLabel = null;
 		[SerializeField] private Text m_SkinSwiperLabel = null;
-		[SerializeField] private Toggle m_UseAbreastView = null;
+		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
@@ -91,7 +91,6 @@
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[Header("UI")]
-		[SerializeField] private Selectable[] m_NavigationItems = null;
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
 		[SerializeField] private HintBarUI m_Hint = null;
@@ -132,7 +131,7 @@
 			ProjectRemoveClickSound = project.RemoveClickSound;
 			ProjectRemoveTweenAt = project.RemoveTweenAt;
 			ProjectRemovePaletteAt = project.RemovePaletteAt;
-			GetAbreastData = () => (game.AbreastValue, game.AllStageAbreast, game.AbreastIndex, game.AbreastWidth);
+			GetAbreastData = () => (game.AbreastValue, game.AbreastIndex, game.AbreastWidth);
 			GetDropMapSpeed = () => (game.GameDropSpeed, game.MapDropSpeed);
 			GetGameItemCount = game.GetItemCount;
 			GetBeatmap = () => project.Beatmap;
@@ -144,10 +143,10 @@
 			Awake_Menu(menu, game, project);
 			Awake_Object(project, game, music);
 			Awake_Project(project, editor, game, music);
-			Awake_Game(project, game, music);
+			Awake_Game(project, game, music, library);
 			Awake_Music(game, music);
 			Awake_Editor(editor, game, library, project, music);
-			Awake_Library(project, editor, menu, game);
+			Awake_Library(project, editor, menu, game, music);
 			Awake_Skin(game);
 			Awake_Undo(project, editor, music);
 			Awake_ProjectInfo(project, game, music, menu);
@@ -167,12 +166,12 @@
 
 
 		private void Update () {
-			var (aValue, allA, aIndex, aWidth) = GetAbreastData();
+			var (aValue, aIndex, aWidth) = GetAbreastData();
 			var (dropSpeed, mapSpeed) = GetDropMapSpeed();
 			CursorUI.GlobalUpdate();
 			StageUndo.GlobalUpdate();
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
-			StageObject.Abreast = (aIndex, aValue, allA);
+			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.GameSpeedMuti = dropSpeed * mapSpeed;
 			StageObject.MusicTime = GetMusicTime();
@@ -181,7 +180,6 @@
 			SpeedNote.GameSpeedMuti = dropSpeed * mapSpeed;
 			SpeedNote.MusicTime = GetMusicTime();
 			Object.Stage.StageCount = GetGameItemCount(0);
-			Object.Stage.AbreastWidth = aWidth;
 		}
 
 
@@ -202,10 +200,12 @@
 			ProjectCreatorUI.GetLanguage = language.Get;
 			SkinEditorUI.GetLanguage = language.Get;
 			SettingUI.GetLanguage = language.Get;
+			StageLibrary.GetLanguage = language.Get;
 			// Misc
 			TooltipUI.TipLabel = m_TipLabel;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
+			StageLibrary.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;
 			StageLanguage.OnLanguageLoaded = () => {
 				TryRefreshSetting();
@@ -405,14 +405,18 @@
 		}
 
 
-		private void Awake_Game (StageProject project, StageGame game, StageMusic music) {
+		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageLibrary library) {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
 			};
 			StageGame.OnAbreastChanged = () => {
-				m_UseAbreastView.isOn = game.UseAbreast;
+				m_AbreastTGMark.enabled = game.UseAbreast;
 				m_Wave.SetAlpha(game.AbreastValue);
-				m_AbreastSwitcherUI.RefreshUI();
+				m_AbreastSwitcherUI.SetBarUIDirty();
+				m_AbreastSwitcherUI.RefreshHighlightUI();
+				if (game.AbreastValue < 0.01f || game.AbreastValue > 0.99f) {
+					library.UI_SetSelection(-1);
+				}
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
@@ -442,7 +446,6 @@
 		private void Awake_Music (StageGame game, StageMusic music) {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
-				SetNavigationInteractable(!playing);
 				StageObject.MusicPlaying = playing;
 				SpeedNote.MusicPlaying = playing;
 			};
@@ -475,16 +478,17 @@
 			StageEditor.GetEditorActive = () => project.Beatmap && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
-			StageEditor.GetStageAt = library.GetStageAt;
-			StageEditor.GetTrackAt = library.GetTrackAt;
-			StageEditor.GetNotesAt = library.GetNotesAt;
+			StageEditor.GetStageBrushAt = library.GetStageAt;
+			StageEditor.GetTrackBrushAt = library.GetTrackAt;
+			StageEditor.GetNotesBrushAt = library.GetNotesAt;
 		}
 
 
-		private void Awake_Library (StageProject project, StageEditor editor, StageMenu menu, StageGame game) {
+		private void Awake_Library (StageProject project, StageEditor editor, StageMenu menu, StageGame game, StageMusic music) {
 			StageLibrary.OnSelectionChanged = (index) => {
 				if (index >= 0) {
 					editor.ClearSelection();
+					music.Pause();
 				}
 			};
 			StageLibrary.GetSelectingObjects = () => {
@@ -516,6 +520,7 @@
 			StageLibrary.GetSelectionCount = () => editor.SelectingCount;
 			StageLibrary.OpenMenu = menu.OpenMenu;
 			StageLibrary.GetBPM = () => game.BPM;
+			StageLibrary.GetAbreastValue = () => game.AbreastValue;
 		}
 
 
@@ -695,15 +700,11 @@
 			ProgressUI.SeekMusic = music.Seek;
 
 			AbreastSwitcherUI.SetAbreastIndex = game.SetAbreastIndex;
-			AbreastSwitcherUI.SetAllStageAbreast = game.SetAllStageAbreast;
 			AbreastSwitcherUI.GetAbreastIndex = () => game.AbreastIndex;
-			AbreastSwitcherUI.GetAllStageAbreast = () => game.AllStageAbreast;
-			AbreastSwitcherUI.GetUseAbreast = () => game.UseAbreast;
+			AbreastSwitcherUI.GetAbreastValue = () => game.AbreastValue;
 
 			PreviewUI.GetMusicTime01 = (time) => time / music.Duration;
 			PreviewUI.GetBeatmap = () => project.Beatmap;
-
-
 
 			ProjectCreatorUI.ImportMusic = () => {
 				project.ImportMusic((data, _) => {
@@ -727,7 +728,6 @@
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("UI"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
-			SetNavigationInteractable(true);
 		}
 
 
@@ -767,13 +767,6 @@
 
 
 		#region --- LGC ---
-
-
-		private void SetNavigationInteractable (bool interactable) {
-			foreach (var item in m_NavigationItems) {
-				item.interactable = interactable;
-			}
-		}
 
 
 		// Try Refresh UI

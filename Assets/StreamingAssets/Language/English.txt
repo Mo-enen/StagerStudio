@@ -1,4 +1,7 @@
-﻿Author
+﻿Dialog.Library.CannotSelectStage
+Can not select stage brush in panoramic mode
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -513,9 +516,6 @@ About
 
 Stager.Quit
 Quit
-
-Tip.AbreastSwitcher.All
-Show all stages
 
 Tip.AbreastSwitcher.Item
 Switch to specified stage

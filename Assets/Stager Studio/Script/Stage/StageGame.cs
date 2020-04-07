@@ -36,7 +36,7 @@
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";
-		private readonly static float[] ABREAST_WIDTHS = { 0.5f, 0.618f, 0.75f, 1f, };
+		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 1f, };
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -63,10 +63,9 @@
 		public bool UseDynamicSpeed => !UseAbreast;
 		public bool UseAbreast => AbreastValue > 0.5f;
 		public float AbreastValue { get; private set; } = 0f;
-		public bool AllStageAbreast { get; private set; } = true;
-		public int AbreastIndex => Mathf.Max(_AbreastIndex, 1);
+		public float AbreastIndex { get; private set; } = 0f;
+		public float AbreastWidth { get; private set; } = 0.618f;
 		public bool PositiveScroll { get; set; } = true;
-		public float AbreastWidth { get; private set; } = 1f;
 
 		// Short
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
@@ -81,7 +80,6 @@
 		[SerializeField] private Transform m_Prefab_Motion = null;
 		[SerializeField] private Transform m_Prefab_Luminous = null;
 		[SerializeField] private RectTransform m_ZoneRT = null;
-		[SerializeField] private AnimationCurve m_AbreastCurve = null;
 		[SerializeField] private Transform[] m_AntiMouseTF = null;
 		[SerializeField] private Transform[] m_Containers = null;
 
@@ -90,8 +88,8 @@
 		private Camera _Camera = null;
 		private Coroutine AbreastValueCor = null;
 		private Coroutine AbreastWidthCor = null;
+		private Coroutine AbreastIndexCor = null;
 		private float _Ratio = 1.5f;
-		private int _AbreastIndex = 0;
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
 		private float MouseDownMusicTime = -1f;
@@ -102,7 +100,7 @@
 		public SavingInt GridCountX { get; private set; } = new SavingInt("StageGame.GridCountX", 3);
 		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 1);
 		public SavingInt BeatPerSection { get; private set; } = new SavingInt("StageGame.BeatPerSection", 4);
-		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 0);
+		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 1);
 
 
 		#endregion
@@ -345,18 +343,18 @@
 			AbreastValueCor = StartCoroutine(AbreastValueing());
 			// === Func ===
 			IEnumerator AbreastValueing () {
+				float aimAbreast = abreast ? 1f : 0f;
+				if (!abreast) {
+					AbreastValue = 0.98f;
+				}
 				if (animation) {
-					float duration = m_AbreastCurve.keys[m_AbreastCurve.length - 1].time;
-					for (float t = 0f; t < duration; t += Time.deltaTime) {
-						AbreastValue = Mathf.LerpUnclamped(
-							abreast ? 0f : 1f,
-							abreast ? 1f : 0f,
-							m_AbreastCurve.Evaluate(t)
-						);
+					for (float t = 0f; t < 4f && Mathf.Abs(AbreastValue - aimAbreast) > 0.005f; t += Time.deltaTime) {
+						AbreastValue = Mathf.Lerp(AbreastValue, aimAbreast, Time.deltaTime * 8f);
+						OnAbreastChanged();
 						yield return new WaitForEndOfFrame();
 					}
 				}
-				AbreastValue = abreast ? 1f : 0f;
+				AbreastValue = aimAbreast;
 				OnAbreastChanged();
 				OnSpeedChanged();
 				AbreastValueCor = null;
@@ -364,18 +362,23 @@
 		}
 
 
-		public void SwitchAllAbreast () => SetAllStageAbreast(!AllStageAbreast);
-
-
-		public void SetAllStageAbreast (bool abreast) {
-			AllStageAbreast = abreast;
-			OnAbreastChanged();
-		}
-
-
-		public void SetAbreastIndex (int newIndex) {
-			_AbreastIndex = Mathf.Max(newIndex, 0);
-			OnAbreastChanged();
+		public void SetAbreastIndex (float newIndex) {
+			if (AbreastIndexCor != null) {
+				StopCoroutine(AbreastIndexCor);
+			}
+			AbreastIndexCor = StartCoroutine(AbreastIndexing());
+			// === Func ===
+			IEnumerator AbreastIndexing () {
+				float aimIndex = Mathf.Max(newIndex, 0);
+				for (float t = 0f; t < 4f && Mathf.Abs(AbreastIndex - aimIndex) > 0.005f; t += Time.deltaTime) {
+					AbreastIndex = Mathf.Lerp(AbreastIndex, aimIndex, Time.deltaTime * 12f);
+					OnAbreastChanged();
+					yield return new WaitForEndOfFrame();
+				}
+				AbreastIndex = aimIndex;
+				OnAbreastChanged();
+				AbreastIndexCor = null;
+			}
 		}
 
 
@@ -389,11 +392,10 @@
 			// === Func ===
 			IEnumerator AbreastWidthing () {
 				if (animation) {
-					float duration = m_AbreastCurve.keys[m_AbreastCurve.length - 1].time;
-					float from = AbreastWidth;
 					float to = ABREAST_WIDTHS[index];
-					for (float t = 0f; t < duration; t += Time.deltaTime) {
-						AbreastWidth = Mathf.LerpUnclamped(from, to, m_AbreastCurve.Evaluate(t));
+					for (float t = 0f; t < 4f && Mathf.Abs(AbreastWidth - to) > 0.005f; t += Time.deltaTime) {
+						AbreastWidth = Mathf.LerpUnclamped(AbreastWidth, to, Time.deltaTime * 12f);
+						OnAbreastChanged();
 						yield return new WaitForEndOfFrame();
 					}
 				}

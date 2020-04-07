@@ -9,7 +9,7 @@
 
 	public abstract class StageObject : MonoBehaviour {
 
-		
+
 
 
 		#region --- SUB ---
@@ -39,7 +39,7 @@
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
 		public static (Vector2 min, Vector3 max) ScreenZoneMinMax { get; set; } = (default, default);
 		public static Beatmap Beatmap { get; set; } = null;
-		public static (int index, float value, bool all) Abreast { get; set; } = (0, 0f, false);
+		public static (float index, float value, float width) Abreast { get; set; } = (0f, 0f, 1f);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
 		public static float GameSpeedMuti { get; set; } = 1f;

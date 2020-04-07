@@ -1,4 +1,7 @@
-﻿Author
+﻿Dialog.Library.CannotSelectStage
+全景模式下不能选择舞台笔刷
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -513,9 +516,6 @@ Stager.About
 
 Stager.Quit
 退出
-
-Tip.AbreastSwitcher.All
-显示所有舞台
 
 Tip.AbreastSwitcher.Item
 切换到指定编号的舞台

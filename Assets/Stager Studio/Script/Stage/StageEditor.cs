@@ -42,9 +42,9 @@
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
 		public static BoolHandler GetUseDynamicSpeed { get; set; } = null;
 		public static BoolHandler GetUseAbreast { get; set; } = null;
-		public static StageIntHandler GetStageAt { get; set; } = null;
-		public static TrackIntHandler GetTrackAt { get; set; } = null;
-		public static NotesIntHandler GetNotesAt { get; set; } = null;
+		public static StageIntHandler GetStageBrushAt { get; set; } = null;
+		public static TrackIntHandler GetTrackBrushAt { get; set; } = null;
+		public static NotesIntHandler GetNotesBrushAt { get; set; } = null;
 
 		// Api
 		public int SelectingCount => SelectingObjectsIndex.Count;
@@ -272,7 +272,7 @@
 				Vector2 ghostPos01 = default;
 				switch (brushType) {
 					case 0: // Stage
-						var stage = GetStageAt(brushIndex);
+						var stage = GetStageBrushAt(brushIndex);
 						if (stage != null && !GetUseAbreast()) {
 							var mousePos01 = GetRayPosition01(ray, true);
 							ghostEnable = mousePos01.HasValue;
@@ -695,7 +695,7 @@
 				// Time Based Y
 
 
-
+				Debug.Log(timeGap + " " + timeOffset);
 
 			}
 			return pos01;

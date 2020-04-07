@@ -208,7 +208,7 @@
 		);
 
 
-		public static float GetTrackAngle (Beatmap.Track data) => Mathf.LerpUnclamped(
+		public static float GetTrackAngle (Beatmap.Track data) => Mathf.LerpAngle(
 			data.Angle + Evaluate(data.Angles, MusicTime - data.Time),
 			0f,
 			Abreast.value
