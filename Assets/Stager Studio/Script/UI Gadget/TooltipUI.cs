@@ -11,12 +11,13 @@
 
 		// SUB
 		public delegate string StringStringHandler (string value);
+		public delegate void VoidStringHandler (string str);
 
 
 		// VAR
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static StringStringHandler GetHotKey { get; set; } = null;
-		public static Text TipLabel { get; set; } = null;
+		public static VoidStringHandler SetTip { get; set; } = null;
 
 		[SerializeField] private string m_TipKey = "";
 		[SerializeField] private string m_HotKey = "";
@@ -29,8 +30,7 @@
 
 
 		// API
-		public static void LogTip (string key, string hotkey = "") =>
-			TipLabel.text = $"{GetLanguage(key)}   {GetHotKey(hotkey)}";
+		public static void LogTip (string key, string hotkey = "") => SetTip($"{GetLanguage(key)}   {GetHotKey(hotkey)}");
 
 
 	}

@@ -129,28 +129,85 @@
 			Tint = m_Tints[(int)m_Mode];
 
 			// X
-			int countX = Mathf.Clamp(CountX + 1, 1, 32);
-			for (int i = 0; i <= countX; i++) {
-				AddQuad01(
-					(float)i / countX - thick / Scale.x,
-					(float)i / countX + thick / Scale.x,
-					0f, 1f,
-					uvMin0.x, uvMax0.x,
-					uvMin0.y, uvMax0.y,
-					Vector3.zero
-				);
-			}
+			ForAllX((x) => AddQuad01(
+				x - thick / Scale.x,
+				x + thick / Scale.x,
+				0f, 1f,
+				uvMin0.x, uvMax0.x,
+				uvMin0.y, uvMax0.y,
+				Vector3.zero
+			));
 
 			// Y
+			ForAllY((y) => AddQuad01(
+				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
+				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
+			));
+
+		}
+
+
+		// API
+		public void SetGridTransform (bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
+			GridEnabled = enable;
+			gameObject.SetActive(GridShowed && GridEnabled);
+			RendererEnable = GridShowed && GridEnabled;
+			if (enable) {
+				TransformDirty = (pos, rot, scale);
+			}
+		}
+
+
+		public void SetShow (bool show) {
+			GridShowed = show;
+			gameObject.SetActive(GridShowed && GridEnabled);
+			RendererEnable = GridShowed && GridEnabled;
+		}
+
+
+		public Vector3 SnapWorld (Vector3 pos, bool groundY = false, bool floorToIntY = false) {
+			if (!RendererEnable) { return pos; }
+			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
+			pos.x = Util.Snap(pos.x, CountX + 1);
+			if (groundY) {
+				pos.y = 0f;
+			} else {
+				float minDis = float.MaxValue;
+				float resY = pos.y;
+				ForAllY((y) => {
+					if ((!floorToIntY || y < pos.y) && Mathf.Abs(pos.y - y) < minDis) {
+						resY = y;
+						minDis = Mathf.Abs(pos.y - y);
+					}
+				}, true);
+				pos.y = resY;
+			}
+			pos.z = 0f;
+			pos = transform.localToWorldMatrix.MultiplyPoint3x4(pos);
+			return pos;
+		}
+
+
+		// LGC
+		private void ForAllX (System.Action<float> action) {
+			int countX = Mathf.Clamp(CountX + 1, 1, 32);
+			for (int i = 0; i <= countX; i++) {
+				action((float)i / countX);
+			}
+		}
+
+
+		private void ForAllY (System.Action<float> action, bool doZero = false) {
 			switch (m_Mode) {
 				case GridMode.XX: {
+						if (doZero) {
+							action(0f);
+						}
 						int countY = Mathf.Clamp(CountX + 1, 1, 32);
 						for (int i = 0; i <= countY; i++) {
-							AddQuad01(0f, 1f, (float)i / countY - thick / Scale.y, (float)i / countY + thick / Scale.y, uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero);
+							action((float)i / countY);
 						}
 					}
-					break;
-				case GridMode.X0:
 					break;
 				case GridMode.XY: {
 						float speedMuti = SpeedMuti * ObjectSpeedMuti;
@@ -160,37 +217,19 @@
 							Mathf.Max(MusicTime, time),
 							speedMuti
 						);
+						if (doZero) {
+							action(0f);
+						}
 						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
-							if (y01 > 0f) {
-								AddQuad01(
-									0f, 1f, y01 - thick / Scale.y, y01 + thick / Scale.y,
-									uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
-								);
-							}
+							if (y01 > 0f) { action(y01); }
 							y01 += GetAreaBetween(time, time + TimeGap, speedMuti);
 							time += TimeGap;
 						}
 					}
 					break;
 			}
-
 		}
 
-
-		// API
-		public void SetGridTransform (bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
-			GridEnabled = enable;
-			enabled = RendererEnable = GridShowed && GridEnabled;
-			if (enable) {
-				TransformDirty = (pos, rot, scale);
-			}
-		}
-
-
-		public void SetShow (bool show) {
-			GridShowed = show;
-			enabled = RendererEnable = GridShowed && GridEnabled;
-		}
 
 
 	}

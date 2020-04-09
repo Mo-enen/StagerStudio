@@ -373,12 +373,12 @@
 			[System.NonSerialized] public bool Active = false;
 			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public float AppearTime = 0f;
-			[System.NonSerialized] public float SpeedMuti = float.MinValue;
+			[System.NonSerialized] public float SpeedMuti = -1f;
 			[System.NonSerialized] public float SpeedOnDrop = 1f;
-			[System.NonSerialized] public float NoteDropStart = float.MinValue;
-			[System.NonSerialized] public float NoteDropEnd = float.MinValue;
-			[System.NonSerialized] public float CacheTime = float.MinValue;
-			[System.NonSerialized] public float CacheDuration = float.MinValue;
+			[System.NonSerialized] public float NoteDropStart = -1f;
+			[System.NonSerialized] public float NoteDropEnd = -1f;
+			[System.NonSerialized] public float CacheTime = -1f;
+			[System.NonSerialized] public float CacheDuration = -1f;
 			[System.NonSerialized] public static byte CacheDirtyID = 1;
 			[System.NonSerialized] public byte LocalCacheDirtyID = 0;
 

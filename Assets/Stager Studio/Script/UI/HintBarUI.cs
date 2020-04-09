@@ -16,35 +16,61 @@
 		[SerializeField] private float m_FlashDuration = 0.5f;
 		[SerializeField] private string m_Keyword = "Flash";
 
+		// Api
+		public bool ShowTip { get; set; } = true;
+
+		// Data
 		private Coroutine VanishCor = null;
+		private Coroutine FlashCor = null;
+		private string Tip = "";
 
 
 		// API
+		public void SetTip (string tip) {
+			Tip = ShowTip ? tip : "";
+			if (VanishCor == null) {
+				SetLabelText("");
+			}
+		}
+
+
 		public void SetHint (string hint = "", bool flash = true) {
-			m_Text.text = hint;
+			SetLabelText(hint);
 			// Flash
 			if (flash && !string.IsNullOrEmpty(hint)) {
-				CancelInvoke();
-				Invoke("FlashLogic", 0f);
-				Invoke("FlashEndLogic", m_FlashDuration);
+				if (FlashCor != null) {
+					StopCoroutine(FlashCor);
+					FlashCor = null;
+				}
+				FlashCor = StartCoroutine(Flash());
 			}
 			// Vanish
 			if (VanishCor != null) {
 				StopCoroutine(VanishCor);
+				SetLabelText("");
 				VanishCor = null;
 			}
 			if (!string.IsNullOrEmpty(hint)) {
 				VanishCor = StartCoroutine(Vanish());
 			}
 			IEnumerator Vanish () {
-				m_Text.gameObject.SetActive(true);
-				var color = m_Text.color;
 				for (float time01 = 0f; time01 < 1f; time01 += Time.deltaTime * 0.1f) {
-					m_Text.color = new Color(color.r, color.g, color.b, 1f - time01);
+					SetLabelText(hint);
+					SetLabelAlpha(1f - time01);
 					yield return new WaitForEndOfFrame();
 				}
-				m_Text.gameObject.SetActive(false);
+				SetLabelText("");
+				SetLabelAlpha(1f);
 				VanishCor = null;
+			}
+			IEnumerator Flash () {
+				m_Ani.enabled = true;
+				m_BG.gameObject.SetActive(true);
+				m_Ani.SetTrigger(m_Keyword);
+				yield return new WaitForSeconds(m_FlashDuration);
+				m_Ani.enabled = false;
+				m_BG.gameObject.SetActive(false);
+				FlashCor = null;
 			}
 		}
 
@@ -56,18 +82,14 @@
 
 
 		// LGC
-		private void FlashLogic () {
-			m_Ani.enabled = true;
-			m_BG.gameObject.SetActive(true);
-			m_Ani.SetTrigger(m_Keyword);
+		private void SetLabelText (string text) => m_Text.text = string.IsNullOrEmpty(text) ? Tip : text;
+
+
+		private void SetLabelAlpha (float a) {
+			var color = m_Text.color;
+			color.a = a;
+			m_Text.color = color;
 		}
-
-
-		private void FlashEndLogic () {
-			m_Ani.enabled = false;
-			m_BG.gameObject.SetActive(false);
-		}
-
 
 
 	}

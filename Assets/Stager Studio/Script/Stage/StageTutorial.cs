@@ -36,11 +36,9 @@
 		private string TutorialProjectPath => Util.CombinePaths(Application.streamingAssetsPath, "Assets", "Tutorial Project.stager");
 
 		// Ser
-		[SerializeField] private RectTransform m_DirtyMark = null;
 		[SerializeField] private RectTransform m_TutorialBoard = null;
 
 		// Saving
-		private SavingBool TutorialTriggered = new SavingBool("StageTutorial.TutorialTriggered", false);
 		private SavingBool BoardClosed = new SavingBool("StageTutorial.BoardClosed", false);
 
 
@@ -53,12 +51,11 @@
 
 
 		private void Start () {
-			if (TutorialTriggered.Value || BoardClosed.Value) {
+			if (BoardClosed.Value) {
 				CloseBoard();
 			} else if (m_TutorialBoard != null) {
 				m_TutorialBoard.gameObject.SetActive(true);
 			}
-			m_DirtyMark.gameObject.SetActive(!TutorialTriggered);
 			enabled = false;
 		}
 
@@ -92,8 +89,6 @@
 
 		private void StartTutorialLogic () {
 
-			TutorialTriggered.Value = true;
-			m_DirtyMark.gameObject.SetActive(false);
 			CloseBoard();
 
 			if (!Util.FileExists(TutorialProjectPath)) {

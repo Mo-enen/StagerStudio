@@ -25,107 +25,46 @@
 		[System.Serializable]
 		public struct PrefabData {
 
-			[System.Serializable]
-			public enum DataType {
-				Stage = 0,
-				Track = 1,
-				Note = 2,
-			}
 
-			// Ser-API
-			public DataType Type;
-			public Beatmap.Stage Stage;
-			public Beatmap.Track Track;
 			public List<Beatmap.Note> Notes;
 
-			// API
-			public PrefabData (Beatmap.Stage stage) : this(DataType.Stage, stage, null, null, 0f) { }
-			public PrefabData (Beatmap.Track track) : this(DataType.Track, null, track, null, 0f) { }
-			public PrefabData (List<Beatmap.Note> notes, float bpm) : this(DataType.Note, null, null, notes, bpm) { }
-			public void SetThumbnail (RectUI thumb, Color tint) {
+			public void SetThumbnail (RectUI thumb) {
 				if (thumb is null) { return; }
 				thumb.Clear();
-				switch (Type) {
-					default:
-					case DataType.Stage: {
-							float ratio =
-								Mathf.Max(Stage.Width, float.Epsilon) /
-								Mathf.Max(Stage.Height, float.Epsilon);
-							thumb.Add(new Rect(
-								ratio > 1f ? 0f : (1f - ratio) / 2f,
-								0,
-								ratio > 1f ? 1f : ratio,
-								ratio > 1f ? 1f / ratio : 1f
-							));
-							thumb.color = tint;
-							break;
-						}
-					case DataType.Track: {
-							float ratio = Mathf.Max(Track.Width, float.Epsilon);
-							thumb.Add(new Rect(
-								ratio > 1f ? 0f : (1f - ratio) / 2f,
-								0,
-								ratio > 1f ? 1f : ratio,
-								ratio > 1f ? 1f / ratio : 1f
-							));
-							thumb.color = tint;
-							break;
-						}
-					case DataType.Note: {
-							float startTime = float.MaxValue;
-							float endTime = float.MinValue;
-							float startX = float.MaxValue;
-							float endX = float.MinValue;
-							foreach (var noteData in Notes) {
-								startTime = Mathf.Min(startTime, noteData.Time);
-								endTime = Mathf.Max(endTime, noteData.Time + noteData.Duration);
-								startX = Mathf.Min(startX, noteData.X - noteData.Width / 2f);
-								endX = Mathf.Max(endX, noteData.X + noteData.Width / 2f);
-							}
-							endX = Mathf.Max(endX, startX + 0.001f);
-							endTime = Mathf.Max(endTime, startTime + 0.001f);
-							foreach (var noteData in Notes) {
-								thumb.Add(Rect.MinMaxRect(
-									Util.RemapUnclamped(startX, endX, 0f, 1f,
-										noteData.X - noteData.Width / 2f
-									),
-									Util.RemapUnclamped(startTime, endTime, 0f, 1f,
-										noteData.Time
-									),
-									Util.RemapUnclamped(startX, endX, 0f, 1f,
-										noteData.X + noteData.Width / 2f
-									),
-									Util.RemapUnclamped(startTime, endTime, 0f, 1f,
-										noteData.Time + noteData.Duration
-									)
-								));
-							}
-							thumb.color = tint;
-							break;
-						}
+
+				float startTime = float.MaxValue;
+				float endTime = float.MinValue;
+				float startX = float.MaxValue;
+				float endX = float.MinValue;
+				foreach (var noteData in Notes) {
+					startTime = Mathf.Min(startTime, noteData.Time);
+					endTime = Mathf.Max(endTime, noteData.Time + noteData.Duration);
+					startX = Mathf.Min(startX, noteData.X - noteData.Width / 2f);
+					endX = Mathf.Max(endX, noteData.X + noteData.Width / 2f);
+				}
+				endX = Mathf.Max(endX, startX + 0.001f);
+				endTime = Mathf.Max(endTime, startTime + 0.001f);
+				foreach (var noteData in Notes) {
+					thumb.Add(Rect.MinMaxRect(
+						Util.RemapUnclamped(startX, endX, 0f, 1f,
+							noteData.X - noteData.Width / 2f
+						),
+						Util.RemapUnclamped(startTime, endTime, 0f, 1f,
+							noteData.Time
+						),
+						Util.RemapUnclamped(startX, endX, 0f, 1f,
+							noteData.X + noteData.Width / 2f
+						),
+						Util.RemapUnclamped(startTime, endTime, 0f, 1f,
+							noteData.Time + noteData.Duration
+						)
+					));
 				}
 			}
 
-			// LGC
-			private PrefabData (DataType type, Beatmap.Stage stage, Beatmap.Track track, List<Beatmap.Note> notes, float bpm) {
-				Type = type;
-				Stage = null;
-				Track = null;
+			public PrefabData (List<Beatmap.Note> notes, float bpm) {
 				Notes = null;
-				if (!(stage is null)) {
-					try {
-						Stage = Util.BytesToObject(Util.ObjectToBytes(stage)) as Beatmap.Stage;
-						Stage.Time = 0f;
-						Stage.X = 0f;
-						Stage.Y = 0f;
-					} catch { }
-				} else if (!(track is null)) {
-					try {
-						Track = Util.BytesToObject(Util.ObjectToBytes(track)) as Beatmap.Track;
-						Track.Time = 0f;
-						Track.X = 0f;
-					} catch { }
-				} else if (!(notes is null) && notes.Count > 0) {
+				if (!(notes is null) && notes.Count > 0) {
 					Notes = new List<Beatmap.Note>();
 					float firstTime = 0f;
 					bpm = Mathf.Max(bpm, float.Epsilon);
@@ -149,8 +88,8 @@
 		}
 
 
-		public delegate void VoidIntHandler (int index);
 		public delegate int IntHandler ();
+		public delegate void VoidHandler ();
 		public delegate float FloatHandler ();
 		public delegate void VoidStringRTHandler (string key, RectTransform rt);
 		public delegate string StringStringHandler (string key);
@@ -166,8 +105,11 @@
 		#region --- VAR ---
 
 
+		// Const
+		private const int DEFAULT_BRUSH_COUNT = 5;
+
 		// Handler
-		public static VoidIntHandler OnSelectionChanged { get; set; } = null;
+		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static SelectionHandler GetSelectingObjects { get; set; } = null;
 		public static IntHandler GetSelectionCount { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
@@ -178,19 +120,22 @@
 
 		// API
 		public (int type, int index) SelectingItemTypeIndex { get; private set; } = (-1, -1);
+		public Beatmap.Stage GetDefaultStage => m_DefaultStage;
+		public Beatmap.Track GetDefaultTrack => m_DefaultTrack;
+		public List<Beatmap.Note> GetDefaultNotes => m_DefaultNotes;
 
 		// Short
 		private string PrefabJsonPath => Util.CombinePaths(Application.streamingAssetsPath, "Library", "Prefabs.json");
 
 		// Ser
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
+		[SerializeField] private Beatmap.Stage m_DefaultStage = null;
+		[SerializeField] private Beatmap.Track m_DefaultTrack = null;
+		[SerializeField] private List<Beatmap.Note> m_DefaultNotes = null;
 		[SerializeField] private Grabber m_BrushPrefab = null;
 		[SerializeField] private EventTrigger m_AddPrefab = null;
 		[SerializeField] private RectTransform m_LibraryView = null;
 		[SerializeField] private RectTransform m_BrushContainer = null;
-		[SerializeField] private Color[] m_ItemColors = default;
-		[SerializeField] private Sprite[] m_ItemSprites = default;
-		[SerializeField] private float[] m_ItemSpritePPUs = default;
 
 		// Data
 		private const string DIALOG_DeletePrefabConfirm = "Dialog.Library.DeletePrefabConfirm";
@@ -254,27 +199,15 @@
 		#region --- API ---
 
 
-		public Beatmap.Stage GetStageAt (int index) {
-			if (index < 0 || index >= PrefabDatas.Count) { return null; }
-			var prefab = PrefabDatas[index];
-			if (prefab.Type != 0) { return null; }
-			return prefab.Stage;
-		}
-
-
-		public Beatmap.Track GetTrackAt (int index) {
-			if (index < 0 || index >= PrefabDatas.Count) { return null; }
-			var prefab = PrefabDatas[index];
-			if (prefab.Type != 0) { return null; }
-			return prefab.Track;
-		}
-
-
 		public List<Beatmap.Note> GetNotesAt (int index) {
+			// Default
+			if (index < DEFAULT_BRUSH_COUNT) {
+				return index == 2 ? m_DefaultNotes : null;
+			}
+			// Custom
+			index -= DEFAULT_BRUSH_COUNT;
 			if (index < 0 || index >= PrefabDatas.Count) { return null; }
-			var prefab = PrefabDatas[index];
-			if (prefab.Type != 0) { return null; }
-			return prefab.Notes;
+			return PrefabDatas[index].Notes;
 		}
 
 
@@ -356,12 +289,13 @@
 			try {
 				// Logic
 				if (index >= 0) {
-					int defaultCount = m_DefaultBrushTGs.Length;
 					int type = -1;
-					int pIndex = index - defaultCount;
+					int pIndex = index - DEFAULT_BRUSH_COUNT;
 					if (pIndex >= 0 && pIndex < PrefabDatas.Count) {
-						type = (int)PrefabDatas[pIndex].Type;
-					} else if (index >= 0 && index < defaultCount) {
+						// Custom
+						type = 2;
+					} else if (index >= 0 && index < DEFAULT_BRUSH_COUNT) {
+						// Default
 						type = index;
 					}
 					if (type == 0 && GetAbreastValue() > 0.5f) {
@@ -376,24 +310,22 @@
 			} catch { }
 			try {
 				// Default Brush TG
-				int defaultCount = m_DefaultBrushTGs.Length;
-				for (int i = 0; i < defaultCount; i++) {
+				for (int i = 0; i < DEFAULT_BRUSH_COUNT; i++) {
 					m_DefaultBrushTGs[i].isOn = i == index;
 				}
 			} catch { }
 			try {
 				// Brush TG
-				int defaultCount = m_DefaultBrushTGs.Length;
 				int prefabCount = m_BrushContainer.childCount;
 				for (int i = 0; i < prefabCount; i++) {
 					var tg = m_BrushContainer.GetChild(i).GetComponent<Toggle>();
 					if (tg is null) { continue; }
-					bool isOn = i + defaultCount == index;
+					bool isOn = i + DEFAULT_BRUSH_COUNT == index;
 					if (tg.isOn != isOn) {
 						tg.isOn = isOn;
 					}
 				}
-				OnSelectionChanged(index);
+				OnSelectionChanged();
 			} catch { }
 			UIReady = true;
 		}
@@ -416,7 +348,6 @@
 			m_BrushContainer.DestroyAllChildImmediately();
 			AddFromSelectionButton = null;
 			// Brushs
-			int defaultCount = m_DefaultBrushTGs.Length;
 			for (int i = 0; i < PrefabDatas.Count; i++) {
 				var prefabData = PrefabDatas[i];
 				var grab = Instantiate(m_BrushPrefab, m_BrushContainer);
@@ -430,15 +361,12 @@
 				tg.isOn = false;
 				tg.onValueChanged.AddListener((isOn) => {
 					if (!UIReady) { return; }
-					SetSelectionLogic(isOn ? index + defaultCount : -1);
+					SetSelectionLogic(isOn ? index + DEFAULT_BRUSH_COUNT : -1);
 				});
 				// Menu
 				grab.Grab<TriggerUI>().CallbackRight.AddListener(() => OpenMenu(PREFAB_MENU_KEY, rt));
 				// Thumbnail
-				var thumb = grab.Grab<RectUI>("Thumbnail");
-				prefabData.SetThumbnail(thumb, m_ItemColors[(int)prefabData.Type]);
-				thumb.sprite = m_ItemSprites[(int)prefabData.Type];
-				thumb.pixelsPerUnitMultiplier = m_ItemSpritePPUs[(int)prefabData.Type];
+				prefabData.SetThumbnail(grab.Grab<RectUI>("Thumbnail"));
 			}
 			SetSelectionLogic(SelectingItemTypeIndex.index);
 			// Add Button
@@ -459,16 +387,8 @@
 					// Add Prefab
 					var (type, selectionList) = GetSelectingObjects();
 					if (selectionList == null || selectionList.Count == 0) { return; }
-					switch (type) {
-						case 0:
-							AddToPrefab(selectionList[0] as Beatmap.Stage);
-							break;
-						case 1:
-							AddToPrefab(selectionList[0] as Beatmap.Track);
-							break;
-						case 2:
-							AddToPrefab(selectionList);
-							break;
+					if (type == 2) {
+						AddToPrefab(selectionList);
 					}
 					// Final
 					SaveToFile(PrefabJsonPath);
@@ -498,18 +418,6 @@
 					Prefabs = PrefabDatas.ToArray(),
 				}, false), path);
 			} catch { }
-		}
-
-
-		private void AddToPrefab (Beatmap.Stage stage) {
-			if (stage == null) { return; }
-			PrefabDatas.Add(new PrefabData(stage));
-		}
-
-
-		private void AddToPrefab (Beatmap.Track track) {
-			if (track == null) { return; }
-			PrefabDatas.Add(new PrefabData(track));
 		}
 
 

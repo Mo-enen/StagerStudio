@@ -172,12 +172,12 @@
 				float gameSpeedMuti = MapDropSpeed * GameDropSpeed;
 				for (int i = 0; i < noteCount; i++) {
 					var tf = container.GetChild(i);
+					var noteData = map.Notes[i];
+					linkedNote = map.GetNoteAt(noteData.LinkedNoteIndex);
+					linkedTrack = map.GetTrackAt(noteData.TrackIndex);
+					linkedStage = map.GetStageAt(linkedTrack.StageIndex);
+					Note.Update_Cache(noteData, gameSpeedMuti * linkedStage.SpeedMuti);
 					if (!tf.gameObject.activeSelf) {
-						var noteData = map.Notes[i];
-						linkedNote = map.GetNoteAt(noteData.LinkedNoteIndex);
-						linkedTrack = map.GetTrackAt(noteData.TrackIndex);
-						linkedStage = map.GetStageAt(linkedTrack.StageIndex);
-						Note.Update_Cache(noteData, gameSpeedMuti * linkedStage.SpeedMuti);
 						if (Note.GetNoteActive(noteData, linkedNote, noteData.AppearTime)) {
 							tf.gameObject.SetActive(true);
 						}

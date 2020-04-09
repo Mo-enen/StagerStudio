@@ -61,6 +61,7 @@
 		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
+		private const string Dialog_SelectingLayerLocked = "Dialog.Library.SelectingLayerLocked";
 
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
@@ -79,12 +80,10 @@
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
-		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private Text m_BeatmapSwiperLabel = null;
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
-		[SerializeField] private Text m_FpsLabel = null;
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
@@ -103,9 +102,6 @@
 		[Header("Data")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
-
-		// Data
-		private float LastFpsTime = float.MinValue;
 
 
 		#endregion
@@ -151,7 +147,7 @@
 			Awake_Game(project, game, music, library);
 			Awake_Music(game, music);
 			Awake_Editor(editor, game, library, project, music);
-			Awake_Library(project, editor, menu, game, music);
+			Awake_Library(project, editor, library, menu, game, music);
 			Awake_Skin(game);
 			Awake_Tutorial(state);
 			Awake_Undo(project, editor, music);
@@ -186,10 +182,6 @@
 			SpeedNote.GameSpeedMuti = dropSpeed * mapSpeed;
 			SpeedNote.MusicTime = GetMusicTime();
 			Object.Stage.StageCount = GetGameItemCount(0);
-			if (Time.time > LastFpsTime + 0.618f) {
-				m_FpsLabel.text = (int)(1f / Time.smoothDeltaTime) > 999 ? "999+" : ((int)(1f / Time.smoothDeltaTime)).ToString();
-				LastFpsTime = Time.time;
-			}
 		}
 
 
@@ -212,7 +204,7 @@
 			SettingUI.GetLanguage = language.Get;
 			StageLibrary.GetLanguage = language.Get;
 			// Misc
-			TooltipUI.TipLabel = m_TipLabel;
+			TooltipUI.SetTip = m_Hint.SetTip;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
 			StageLibrary.LogHint = m_Hint.SetHint;
@@ -418,15 +410,18 @@
 		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageLibrary library) {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
+				RefreshInfoLabel();
 			};
 			StageGame.OnAbreastChanged = () => {
 				m_AbreastTGMark.enabled = game.UseAbreast;
 				m_Wave.SetAlpha(game.AbreastValue);
 				m_AbreastSwitcherUI.SetBarUIDirty();
 				m_AbreastSwitcherUI.RefreshHighlightUI();
-				if (game.AbreastValue < 0.01f || game.AbreastValue > 0.99f) {
+				if (library.SelectingItemTypeIndex.index != -1) {
 					library.UI_SetSelection(-1);
 				}
+				Note.SetCacheDirty();
+				SpeedNote.SetCacheDirty();
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
@@ -437,6 +432,7 @@
 				Note.SetCacheDirty();
 				SpeedNote.SetCacheDirty();
 				RefreshGridRenderer(game);
+				RefreshInfoLabel();
 			};
 			StageGame.OnGridChanged = () => {
 				m_GridTG.isOn = game.ShowGrid;
@@ -488,17 +484,21 @@
 			StageEditor.GetEditorActive = () => project.Beatmap && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
-			StageEditor.GetStageBrushAt = library.GetStageAt;
-			StageEditor.GetTrackBrushAt = library.GetTrackAt;
+			StageEditor.GetDefaultStageBrush = () => library.GetDefaultStage;
+			StageEditor.GetDefaultTrackBrush = () => library.GetDefaultTrack;
 			StageEditor.GetNotesBrushAt = library.GetNotesAt;
 		}
 
 
-		private void Awake_Library (StageProject project, StageEditor editor, StageMenu menu, StageGame game, StageMusic music) {
-			StageLibrary.OnSelectionChanged = (index) => {
+		private void Awake_Library (StageProject project, StageEditor editor, StageLibrary library, StageMenu menu, StageGame game, StageMusic music) {
+			StageLibrary.OnSelectionChanged = () => {
+				var (type, index) = library.SelectingItemTypeIndex;
 				if (index >= 0) {
 					editor.ClearSelection();
 					music.Pause();
+				}
+				if (index >= 0 && editor.GetItemLock(type)) {
+					m_Hint.SetHint(GetLanguage(Dialog_SelectingLayerLocked));
 				}
 			};
 			StageLibrary.GetSelectingObjects = () => {

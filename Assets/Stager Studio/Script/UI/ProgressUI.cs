@@ -75,8 +75,8 @@
 			m_Pause.interactable = isReady;
 			m_Replay.interactable = isReady;
 			m_Repause.interactable = isReady;
-			m_PitchUp.interactable = isReady && !isPlaying;
-			m_PitchDown.interactable = isReady && !isPlaying;
+			m_PitchUp.interactable = isReady;
+			m_PitchDown.interactable = isReady;
 			foreach (var icon in m_ControlIcons) {
 				icon.color = isReady ? Color.white : Color.grey;
 			}

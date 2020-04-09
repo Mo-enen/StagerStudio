@@ -181,9 +181,6 @@
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) {
-			if (StageCount <= 1) {
-				return new Vector2(0.5f, 0f);
-			}
 			if (Abreast.value < 0.0001f) {
 				return GetNormalPos();
 			} else if (Abreast.value > 0.9999f) {
@@ -193,7 +190,13 @@
 			}
 			// === Func ===
 			Vector3 GetNormalPos () => new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time);
-			Vector3 GetAbreastPos () => new Vector2(Util.Remap(0, StageCount - 1, 0.5f - Abreast.index * Abreast.width, 0.5f + (StageCount - Abreast.index - 1f) * Abreast.width, stageIndex), 0f);
+			Vector3 GetAbreastPos () {
+				if (StageCount <= 1) {
+					return new Vector2(0.5f, 0f);
+				} else {
+					return new Vector2(Util.Remap(0, StageCount - 1, 0.5f - (Abreast.index * Abreast.width), 0.5f + ((StageCount - Abreast.index - 1f) * Abreast.width), stageIndex), 0f);
+				}
+			}
 		}
 
 

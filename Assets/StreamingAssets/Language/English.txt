@@ -1,4 +1,7 @@
-﻿Author
+﻿Dialog.Library.SelectingLayerLocked
+Layer locked
+
+Author
 Stager Official
 
 Dialog.Error.FailCreateProject

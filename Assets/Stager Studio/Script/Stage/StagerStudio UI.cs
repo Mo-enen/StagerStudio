@@ -146,9 +146,9 @@
 			}, () => m_Preview.gameObject.activeSelf, new SavingBool("SS.ShowPreview", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowTip, ((isOn) => {
-				m_TipLabel.gameObject.SetActive(isOn);
+				m_Hint.ShowTip = isOn;
 				ToggleItemMap[ToggleType.ShowTip].saving.Value = isOn;
-			}, () => m_TipLabel.gameObject.activeSelf, new SavingBool("SS.ShowTip", true), true));
+			}, () => m_Hint.ShowTip, new SavingBool("SS.ShowTip", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowWelcome, ((isOn) => {
 				ToggleItemMap[ToggleType.ShowWelcome].saving.Value = isOn;

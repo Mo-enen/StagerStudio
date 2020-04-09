@@ -1,4 +1,7 @@
-﻿Author
+﻿Dialog.Library.SelectingLayerLocked
+图层已锁定
+
+Author
 Stager 官方
 
 Dialog.Error.FailCreateProject

@@ -108,7 +108,7 @@
 			}
 
 			// Cache
-			Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
+			//Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
 			Time = noteData.Time;
 			Duration = noteData.Duration;
@@ -391,14 +391,15 @@
 
 			// Reduce Scale Y when Linked Note Not Appear Yet
 			if (MusicTime < linkedNote.AppearTime) {
-				scaleY -= scaleY * (linkedNoteY01 - 1f) / (linkedNoteY01 - noteData.NoteDropEnd + gameOffset);
+				float offset = linkedNoteY01 - noteData.NoteDropEnd + gameOffset;
+				scaleY = offset == 0f ? 0f : scaleY - scaleY * (linkedNoteY01 - 1f) / offset;
 			}
 
 			// Final
 			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
 			var poleSize = GetRectSize(poleType, false, false);
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
-				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward//CameraWorldPos - subWorldPos
+				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
@@ -410,6 +411,8 @@
 			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)poleType] : WHITE_32;
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
 			m_PoleRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
+
+
 		}
 
 
