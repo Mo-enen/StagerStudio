@@ -127,6 +127,7 @@
 			}, null, new SavingBool("SS.UIScale2", false), false));
 
 			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
+				sfx.SetUseFX(isOn);
 				ToggleItemMap[ToggleType.UseSFX].saving.Value = isOn;
 			}, null, sfx.UseFX, true));
 

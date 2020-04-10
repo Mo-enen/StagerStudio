@@ -42,6 +42,11 @@
 		}
 
 
+		private void OnEnable () {
+			Update();
+		}
+
+
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
@@ -51,7 +56,10 @@
 			// Get StageData
 			int stageIndex = transform.GetSiblingIndex();
 			var stageData = !(Beatmap is null) && stageIndex < Beatmap.Stages.Count ? Beatmap.Stages[stageIndex] : null;
-			if (stageData is null) { return; }
+			if (stageData is null) {
+				gameObject.SetActive(false);
+				return;
+			}
 
 			bool oldSelecting = stageData.Selecting;
 			stageData.Active = false;
@@ -66,7 +74,10 @@
 
 			Update_Gizmos(active, oldSelecting, stageIndex);
 
-			if (!active) { return; }
+			if (!active) {
+				gameObject.SetActive(false);
+				return;
+			}
 			stageData.Selecting = oldSelecting;
 
 			// Update

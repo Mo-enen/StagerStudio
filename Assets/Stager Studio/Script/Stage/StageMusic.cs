@@ -3,7 +3,6 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.Audio;
-	using UnityEngine.Events;
 
 
 	public class StageMusic : MonoBehaviour {
@@ -62,7 +61,7 @@
 
 		public float Volume {
 			get => Mathf.Sqrt(Source.volume);
-			set => Source.volume = value * value;
+			set => Source.volume = Mathf.Max(value * value, 0f);
 		}
 
 		public float SfxVolume {
@@ -71,6 +70,16 @@
 				_SfxVolume = value * value;
 			}
 		}
+
+		public bool Mute {
+			get {
+				return Source.mute;
+			}
+			set {
+				Source.mute = value;
+			}
+		}
+
 
 		// Short Cut
 		private AudioSource Source {
@@ -82,7 +91,6 @@
 					_Source = gameObject.AddComponent<AudioSource>();
 					_Source.playOnAwake = false;
 					_Source.loop = false;
-					_Source.outputAudioMixerGroup = m_Mixer;
 				}
 				return _Source;
 			}
@@ -102,7 +110,6 @@
 
 		// Ser
 		[SerializeField] private AudioClip m_DefaultSfx = null;
-		[SerializeField] private AudioMixerGroup m_Mixer = null;
 
 		// Data
 		private const float DURATION_MIN = 0.001f;
@@ -154,6 +161,9 @@
 
 
 		public void SetClip (AudioClip clip) => SetClipLogic(clip);
+
+
+		public void SetMixer (AudioMixerGroup mixer) => Source.outputAudioMixerGroup = mixer;
 
 
 		public void PlayPause () {

@@ -56,6 +56,7 @@
 				OnRatioChanged(_Ratio);
 			}
 		}
+		public float SPB => 60f / Mathf.Max(BPM, 0.001f);
 		public float BPM { get; set; } = 120f;
 		public float Shift { get; set; } = 0f;
 		public float MapDropSpeed { get; set; } = 1f;
@@ -131,7 +132,9 @@
 
 		private void Update () {
 			Update_Beatmap();
-			Update_NoteActive();
+			Update_StageActive();
+			Update_TrackActive();
+			Update_NoteLumActive();
 			Update_SpeedCurve();
 			Update_Mouse();
 		}
@@ -146,7 +149,7 @@
 				changed = FixObject(m_Prefab_Stage, null, m_Containers[0], map.Stages.Count) || changed;
 				changed = FixObject(m_Prefab_Track, null, m_Containers[1], map.Tracks.Count) || changed;
 				changed = FixObject(m_Prefab_Note, null, m_Containers[2], map.Notes.Count) || changed;
-				changed = FixObject(null, m_Prefab_Speed, m_Containers[3], map.SpeedNotes.Count) || changed;
+				changed = FixObject(null, m_Prefab_Speed, m_Containers[3], map.TimingNotes.Count) || changed;
 				changed = FixStageMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(0), map.Stages) || changed;
 				changed = FixTrackMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(1), map.Tracks) || changed;
 				changed = FixObject(m_Prefab_Luminous, null, m_Containers[5], map.Notes.Count) || changed;
@@ -160,30 +163,75 @@
 		}
 
 
-		private void Update_NoteActive () {
+		private void Update_StageActive () {
 			var map = GetBeatmap();
-			if (map != null) {
-				int noteCount = map.Notes.Count;
-				var container = m_Containers[2];
-				StageObject.MusicTime = Music.Time;
-				Beatmap.Note linkedNote;
-				Beatmap.Track linkedTrack;
-				Beatmap.Stage linkedStage;
-				float gameSpeedMuti = MapDropSpeed * GameDropSpeed;
-				for (int i = 0; i < noteCount; i++) {
-					var tf = container.GetChild(i);
-					var noteData = map.Notes[i];
-					linkedNote = map.GetNoteAt(noteData.LinkedNoteIndex);
-					linkedTrack = map.GetTrackAt(noteData.TrackIndex);
-					linkedStage = map.GetStageAt(linkedTrack.StageIndex);
-					Note.Update_Cache(noteData, gameSpeedMuti * linkedStage.SpeedMuti);
-					if (!tf.gameObject.activeSelf) {
-						if (Note.GetNoteActive(noteData, linkedNote, noteData.AppearTime)) {
-							tf.gameObject.SetActive(true);
-						}
+			if (map == null) { return; }
+			int stageCount = map.Stages.Count;
+			var container = m_Containers[0];
+			for (int i = 0; i < stageCount; i++) {
+				var tf = container.GetChild(i);
+				if (!tf.gameObject.activeSelf) {
+					var stageData = map.Stages[i];
+					stageData.Active = Stage.GetStageActive(stageData, i);
+					if (stageData.Active) {
+						tf.gameObject.SetActive(true);
 					}
 				}
 			}
+		}
+
+
+		private void Update_TrackActive () {
+			var map = GetBeatmap();
+			if (map == null) { return; }
+			int trackCount = map.Tracks.Count;
+			var container = m_Containers[1];
+			for (int i = 0; i < trackCount; i++) {
+				var tf = container.GetChild(i);
+				if (!tf.gameObject.activeSelf) {
+					var trackData = map.Tracks[i];
+					trackData.Active = Track.GetTrackActive(trackData);
+					if (trackData.Active) {
+						tf.gameObject.SetActive(true);
+					}
+				}
+			}
+		}
+
+
+		private void Update_NoteLumActive () {
+			var map = GetBeatmap();
+			if (map == null) { return; }
+			int noteCount = map.Notes.Count;
+			var container = m_Containers[2];
+			var lumContainer = m_Containers[5];
+			Beatmap.Note linkedNote;
+			Beatmap.Track linkedTrack;
+			Beatmap.Stage linkedStage;
+			float gameSpeedMuti = MapDropSpeed * GameDropSpeed;
+			for (int i = 0; i < noteCount; i++) {
+				var noteData = map.Notes[i];
+				// Note
+				var tf = container.GetChild(i);
+				linkedNote = map.GetNoteAt(noteData.LinkedNoteIndex);
+				linkedTrack = map.GetTrackAt(noteData.TrackIndex);
+				linkedStage = map.GetStageAt(linkedTrack.StageIndex);
+				Note.Update_Cache(noteData, gameSpeedMuti * linkedStage.SpeedMuti);
+				if (!tf.gameObject.activeSelf) {
+					noteData.Active = Note.GetNoteActive(noteData, linkedNote, noteData.AppearTime);
+					if (linkedStage.Active && linkedTrack.Active && noteData.Active) {
+						tf.gameObject.SetActive(true);
+					}
+				}
+				// Lum
+				tf = lumContainer.GetChild(i);
+				if (!tf.gameObject.activeSelf) {
+					if (linkedStage.Active && linkedTrack.Active && Luminous.GetLumActive(noteData)) {
+						tf.gameObject.SetActive(true);
+					}
+				}
+			}
+
 		}
 
 
@@ -198,7 +246,7 @@
 				}
 			} else {
 				// Has Beatmap
-				var speedNotes = GetBeatmap().SpeedNotes;
+				var speedNotes = GetBeatmap().TimingNotes;
 				if (speedNotes is null || speedNotes.Count == 0) {
 					// No SpeedNote
 					if (SpeedCurve.Count > 0) {
@@ -206,9 +254,9 @@
 					}
 					// Init Speed Note
 					if (speedNotes is null) {
-						GetBeatmap().SpeedNotes = new List<Beatmap.SpeedNote>() { new Beatmap.SpeedNote(0, 1), };
+						GetBeatmap().TimingNotes = new List<Beatmap.TimingNote>() { new Beatmap.TimingNote(0, 1), };
 					} else {
-						speedNotes.Add(new Beatmap.SpeedNote(0, 1));
+						speedNotes.Add(new Beatmap.TimingNote(0, 1));
 					}
 					SpeedCurveDirty = true;
 				} else if (SpeedCurve.Count != speedNotes.Count || SpeedCurveDirty) {
@@ -367,7 +415,7 @@
 				StopCoroutine(AbreastValueCor);
 			}
 			var items = m_Containers[0].parent.GetComponentsInChildren<StageObject>();
-			var speedNotes = m_Containers[3].GetComponentsInChildren<SpeedNote>();
+			var speedNotes = m_Containers[3].GetComponentsInChildren<TimingNote>();
 			AbreastValueCor = StartCoroutine(AbreastValueing());
 			// === Func ===
 			IEnumerator AbreastValueing () {

@@ -23,7 +23,6 @@
 		private static float LuminousDuration_Hold = 0f;
 		private static float LumHeight_Tap = 0f;
 		private static float LumHeight_Hold = 0f;
-		private float MovementDirtyTime = -1f;
 
 
 		#endregion
@@ -34,41 +33,44 @@
 		#region --- MSG ---
 
 
+
+		private void OnEnable () {
+			Update();
+		}
+
+
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
 
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
-			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) { return; }
-			float noteEndTime = noteData.Time + noteData.Duration;
-			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteEndTime ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) {
+				gameObject.SetActive(false);
+				return;
+			}
+			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 			MainRenderer.Type = type;
 
-			if (!MusicPlaying) {
-				// Not Playing
-				MovementDirtyTime = float.MaxValue / 2f;
+			if (MusicPlaying && GetLumActive(noteData)) {
+				// Active
+				Update_Movement(noteData, noteData.Duration <= DURATION_GAP, type);
 			} else {
-				// Playing
-				Update_Movement(noteData, noteEndTime, noteData.Duration <= DURATION_GAP, type);
+				// Inactive
+				gameObject.SetActive(false);
 			}
 
 		}
 
 
-		private void Update_Movement (Beatmap.Note noteData, float noteEndTime, bool tap, SkinType lumType) {
-
-			// Active Check
-			if (MusicTime < noteData.Time || Duration <= DURATION_GAP || MusicTime > noteEndTime + Duration) { return; }
+		private void Update_Movement (Beatmap.Note noteData, bool tap, SkinType lumType) {
 
 			// Life Time
+			float noteEndTime = Time + noteData.Duration;
 			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = MusicTime < noteEndTime ? MusicTime - noteData.Time : MusicTime - noteEndTime;
 			MainRenderer.RendererEnable = true;
-
-			// Movement Dirty Check
-			if (MovementDirtyTime < 0f || Mathf.Abs(MovementDirtyTime - MusicTime) < 0.01f) { return; }
 
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
@@ -132,8 +134,6 @@
 			MainRenderer.Scale = new Vector2(scaleX, scaleY);
 			MainRenderer.SetSortingLayer(SortingLayerID_Lum, GetSortingOrder());
 
-			// Final
-			MovementDirtyTime = MusicTime;
 		}
 
 
@@ -162,6 +162,17 @@
 				float.MinValue, float.MinValue,
 				float.MaxValue, float.MaxValue
 			));
+		}
+
+
+		public static bool GetLumActive (Beatmap.Note noteData) {
+			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+			float duration = (type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold);
+			return
+				MusicPlaying &&
+				MusicTime >= noteData.Time &&
+				duration > DURATION_GAP &&
+				MusicTime <= noteData.Time + noteData.Duration + duration;
 		}
 
 

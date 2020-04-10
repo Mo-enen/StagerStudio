@@ -1,7 +1,4 @@
-﻿Dialog.Library.SelectingLayerLocked
-Layer locked
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Error.FailCreateProject
@@ -24,6 +21,9 @@ Import Prefabs
 
 Dialog.Library.PrefabExported
 Prefabs exported
+
+Dialog.Library.SelectingLayerLocked
+Layer locked
 
 Dialog.OpenWebMSG
 Opening {0} Please check your web browser
@@ -386,7 +386,7 @@ Shortcut.Eye.Note
 Hide Note
 
 Shortcut.Eye.Speed
-Hide Speed Note
+Hide Timing Note
 
 Shortcut.Eye.Stage
 Hide Stage
@@ -401,7 +401,7 @@ Shortcut.Lock.Note
 Lock Note
 
 Shortcut.Lock.Speed
-Lock Speed Note
+Lock Timing Note
 
 Shortcut.Lock.Stage
 Lock Stage
@@ -692,10 +692,10 @@ Tip.ViewContainer.NoteLock
 Lock note
 
 Tip.ViewContainer.Speed
-Show/Hide speed notes
+Show/Hide timing notes
 
 Tip.ViewContainer.SpeedLock
-Lock speed note
+Lock timing note
 
 Tip.ViewContainer.Stage
 Show/Hide stages

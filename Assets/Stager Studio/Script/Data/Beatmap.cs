@@ -20,8 +20,8 @@
 		public class NoteComparer : IComparer<Note> {
 			public int Compare (Note x, Note y) => x.Time.CompareTo(y.Time);
 		}
-		public class SpeedNoteComparer : IComparer<SpeedNote> {
-			public int Compare (SpeedNote x, SpeedNote y) => x.Time.CompareTo(y.Time);
+		public class SpeedNoteComparer : IComparer<TimingNote> {
+			public int Compare (TimingNote x, TimingNote y) => x.Time.CompareTo(y.Time);
 		}
 
 
@@ -362,8 +362,6 @@
 			public int TrackIndex = -1;
 			public int LinkedNoteIndex = -1;
 			public short ClickSoundIndex = -1;
-			public byte SoundFxIndex = 0;
-			public byte SoundFxParam = 0;
 			public bool Tap = true;
 			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
 			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
@@ -387,7 +385,7 @@
 
 
 		[System.Serializable]
-		public class SpeedNote {
+		public class TimingNote {
 
 			// API
 			public float Time {
@@ -402,6 +400,10 @@
 			// SER
 			public int m_Time = 0;
 			public int m_Speed = 0;
+			public byte SoundFxIndex = 0;
+			public int SoundFxDuration = 0;
+			public int SoundFxParamA = 0;
+			public int SoundFxParamB = 0;
 
 			// Cache
 			[System.NonSerialized] public bool Active = false;
@@ -411,7 +413,7 @@
 			[System.NonSerialized] public float NoteDropPos = -1f;
 
 			// API
-			public SpeedNote (float time, float speed) {
+			public TimingNote (float time, float speed) {
 				Time = time;
 				Speed = speed;
 			}
@@ -473,7 +475,7 @@
 		public List<Stage> Stages = new List<Stage>();
 		public List<Track> Tracks = new List<Track>();
 		public List<Note> Notes = new List<Note>();
-		public List<SpeedNote> SpeedNotes = new List<SpeedNote>();
+		public List<TimingNote> TimingNotes = new List<TimingNote>();
 
 		// SER
 		public int m_DropSpeed = 1000;
@@ -500,8 +502,8 @@
 			if (Notes is null) {
 				Notes = new List<Note>();
 			}
-			if (SpeedNotes is null) {
-				SpeedNotes = new List<SpeedNote>();
+			if (TimingNotes is null) {
+				TimingNotes = new List<TimingNote>();
 			}
 		}
 
@@ -526,7 +528,7 @@
 			Stages = map.Stages;
 			Tracks = map.Tracks;
 			Notes = map.Notes;
-			SpeedNotes = map.SpeedNotes;
+			TimingNotes = map.TimingNotes;
 		}
 
 

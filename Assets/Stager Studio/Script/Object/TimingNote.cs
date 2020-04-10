@@ -7,7 +7,7 @@
 
 
 
-	public class SpeedNote : MonoBehaviour {
+	public class TimingNote : MonoBehaviour {
 
 
 
@@ -20,6 +20,10 @@
 		private const float HEIGHT = 0.8f;
 		private const float WIDTH_MIN = 0.6f;
 		private const float WIDTH_MAX = 6.4f;
+
+		// Handler
+		public delegate void SfxHandler (byte type, int duration, int a, int b);
+		public static SfxHandler PlaySfx { get; set; } = null;
 
 		// Api
 		public static int SortingLayerID_UI { get; set; } = -1;
@@ -47,12 +51,12 @@
 		// Data
 		private static byte CacheDirtyID = 1;
 		private byte LocalCacheDirtyID = 0;
+		private bool PrevClicked = false;
 		private float HighlightScaleMuti = 0f;
 		private Vector2 PrevColSize = Vector3.zero;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector3 RendererScale = Vector3.one;
-		private Beatmap.SpeedNote LateNote = null;
-
+		private Beatmap.TimingNote LateNote = null;
 
 		#endregion
 
@@ -77,7 +81,7 @@
 
 			// Get Data
 			int noteIndex = transform.GetSiblingIndex();
-			var noteData = !(Beatmap is null) && noteIndex < Beatmap.SpeedNotes.Count ? Beatmap.SpeedNotes[noteIndex] : null;
+			var noteData = !(Beatmap is null) && noteIndex < Beatmap.TimingNotes.Count ? Beatmap.TimingNotes[noteIndex] : null;
 			if (noteData is null) {
 				SetRendererEnable(false);
 				Update_Gizmos(null, false);
@@ -89,6 +93,7 @@
 
 			// Update
 			Update_Cache(noteData);
+			Update_SoundFx(noteData);
 			Update_Gizmos(noteData, oldSelecting);
 
 			noteData.Active = GetActive(noteData, noteData.AppearTime);
@@ -111,7 +116,7 @@
 		}
 
 
-		private void Update_Cache (Beatmap.SpeedNote noteData) {
+		private void Update_Cache (Beatmap.TimingNote noteData) {
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
@@ -134,7 +139,7 @@
 		}
 
 
-		private void Update_Gizmos (Beatmap.SpeedNote noteData, bool selecting) {
+		private void Update_Gizmos (Beatmap.TimingNote noteData, bool selecting) {
 
 			bool active = !(noteData is null) && noteData.Active;
 
@@ -155,7 +160,16 @@
 		}
 
 
-		private void LateUpdate_Movement (Beatmap.SpeedNote noteData) {
+		private void Update_SoundFx (Beatmap.TimingNote noteData) {
+			bool clicked = MusicTime > noteData.Time;
+			if (MusicPlaying && clicked && !PrevClicked) {
+				PlaySfx(noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+			}
+			PrevClicked = clicked;
+		}
+
+
+		private void LateUpdate_Movement (Beatmap.TimingNote noteData) {
 			if (noteData == null || !noteData.Active) { return; }
 			float noteY01 = noteData.NoteDropPos - MusicTime * noteData.SpeedMuti;
 			var size = new Vector2(
@@ -238,7 +252,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetActive (Beatmap.SpeedNote data, float appearTime) => MusicTime >= appearTime && MusicTime <= data.Time;
+		private static bool GetActive (Beatmap.TimingNote data, float appearTime) => MusicTime >= appearTime && MusicTime <= data.Time;
 
 
 		private void SetRendererEnable (bool enable) {

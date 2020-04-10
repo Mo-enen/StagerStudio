@@ -1,7 +1,4 @@
-﻿Dialog.Library.SelectingLayerLocked
-图层已锁定
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Error.FailCreateProject
@@ -24,6 +21,9 @@ Dialog.Library.ImportPrefabTitle
 
 Dialog.Library.PrefabExported
 笔刷已导出
+
+Dialog.Library.SelectingLayerLocked
+图层已锁定
 
 Dialog.OpenWebMSG
 正在尝试打开 {0} 请查看您的浏览器
@@ -386,7 +386,7 @@ Shortcut.Eye.Note
 隐藏音符
 
 Shortcut.Eye.Speed
-隐藏速度音符
+隐藏时间音符
 
 Shortcut.Eye.Stage
 隐藏舞台
@@ -401,7 +401,7 @@ Shortcut.Lock.Note
 锁定音符
 
 Shortcut.Lock.Speed
-锁定速度音符
+锁定时间音符
 
 Shortcut.Lock.Stage
 锁定舞台
@@ -692,10 +692,10 @@ Tip.ViewContainer.NoteLock
 锁定音符
 
 Tip.ViewContainer.Speed
-显示/隐藏速度音符
+显示/隐藏时间音符
 
 Tip.ViewContainer.SpeedLock
-锁定速度音符
+锁定时间音符
 
 Tip.ViewContainer.Stage
 显示/隐藏舞台

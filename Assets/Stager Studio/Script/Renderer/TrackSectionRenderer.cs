@@ -61,7 +61,6 @@
 		}
 
 		// Ser
-		[SerializeField] private Sprite m_SpriteH = null;
 		[SerializeField] private Sprite m_SectionBody = null;
 		[SerializeField] private ushort m_Thickness = 1;
 		[SerializeField] private Color[] m_RulerColors = default;
@@ -81,10 +80,8 @@
 
 			float thickA = m_Thickness / 618f;
 			float thickB = m_Thickness / 1000f;
-			var uvMin0 = m_SectionBody.uv[2];
-			var uvMax0 = m_SectionBody.uv[1];
-			var uvMin1 = m_SpriteH.uv[2];
-			var uvMax1 = m_SpriteH.uv[1];
+			var uvMin = m_SectionBody.uv[2];
+			var uvMax = m_SectionBody.uv[1];
 			float sectionTimeGap = BeatPerSection * TimeGap;
 
 
@@ -103,7 +100,7 @@
 							0f, 1f,
 							y01 - (j == 0 ? thickA : thickB),
 							y01 + (j == 0 ? thickA : thickB),
-							uvMin0.x, uvMax0.x, uvMin0.y, uvMax0.y, Vector3.zero
+							uvMin.x, uvMax.x, uvMin.y, uvMax.y, Vector3.zero
 						);
 					}
 					y01 += GetAreaBetween(time, time + TimeGap, SpeedMuti);

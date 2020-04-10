@@ -1884,8 +1884,6 @@ MonoBehaviour:
     TrackIndex: 0
     LinkedNoteIndex: -1
     ClickSoundIndex: 0
-    SoundFxIndex: 0
-    SoundFxParam: 0
     Tap: 1
     SwipeX: 1
     SwipeY: 1
@@ -4787,7 +4785,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -49.1}
-  m_SizeDelta: {x: -24, y: 0}
+  m_SizeDelta: {x: -24, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &512796307
 MonoBehaviour:
@@ -4798,16 +4796,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 512796305}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4817,29 +4816,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
-    m_ClearColor: {r: 0.94, g: 0.94, b: 0.94, a: 0}
 --- !u!222 &512796308
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5138,8 +5114,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultSfx: {fileID: 8300000, guid: 4bf25f627b356244bb37f8d9079f188c, type: 3}
-  m_Mixer: {fileID: -8494775019163023536, guid: 6b0f43d36599e3f47a5da521b76e4975,
-    type: 2}
 --- !u!1 &594039035
 GameObject:
   m_ObjectHideFlags: 0
@@ -6483,7 +6457,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -344.1}
-  m_SizeDelta: {x: -24, y: 0}
+  m_SizeDelta: {x: -24, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &756504716
 MonoBehaviour:
@@ -6494,16 +6468,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 756504714}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -6513,29 +6488,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
-    m_ClearColor: {r: 0.94, g: 0.94, b: 0.94, a: 0}
 --- !u!222 &756504717
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -12411,7 +12363,7 @@ MonoBehaviour:
     Stages: []
     Tracks: []
     Notes: []
-    SpeedNotes: []
+    TimingNotes: []
     m_DropSpeed: 1000
     m_Shift: 0
     m_Ratio: 1500
@@ -13417,6 +13369,8 @@ MonoBehaviour:
   m_PitchWarningBlock: {fileID: 1885491280}
   m_Keypress: {fileID: 1191655087}
   m_CameraTF: {fileID: 513021336}
+  m_SfxMixer: {fileID: 1997415650268210482, guid: 6b0f43d36599e3f47a5da521b76e4975,
+    type: 2}
   m_Background: {fileID: 40944130}
   m_Progress: {fileID: 1876790200}
   m_Hint: {fileID: 797034088}
@@ -15163,7 +15117,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -125.1}
-  m_SizeDelta: {x: -24, y: 0}
+  m_SizeDelta: {x: -24, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1693676916
 MonoBehaviour:
@@ -15174,16 +15128,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1693676914}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15193,29 +15148,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
-    m_ClearColor: {r: 0.94, g: 0.94, b: 0.94, a: 0}
 --- !u!222 &1693676917
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -15476,7 +15408,7 @@ RectTransform:
   m_AnchorMin: {x: 0.24, y: 0}
   m_AnchorMax: {x: 0.24, y: 1}
   m_AnchoredPosition: {x: 0, y: -16}
-  m_SizeDelta: {x: 1, y: -32}
+  m_SizeDelta: {x: 2, y: -32}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1727569076
 MonoBehaviour:
@@ -15487,7 +15419,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1727569074}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
@@ -15496,7 +15428,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 4824580782819576835, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15506,29 +15439,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 1
-    m_Right: 1
-    m_Top: 0
-    m_Bottom: 0
-    m_Color: {r: 0.5, g: 0.5, b: 0.5, a: 0.49803922}
-    m_ClearColor: {r: 0.5, g: 0.5, b: 0.5, a: 0}
 --- !u!222 &1727569077
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -17633,7 +17543,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: -299.1}
-  m_SizeDelta: {x: -24, y: 0}
+  m_SizeDelta: {x: -24, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1898957273
 MonoBehaviour:
@@ -17644,16 +17554,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1898957271}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
+  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17663,29 +17574,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 0.2}
-    m_ClearColor: {r: 0.94, g: 0.94, b: 0.94, a: 0}
 --- !u!222 &1898957274
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -18060,8 +17948,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Dialog.Library.SelectingLayerLocked
-  - Layer locked
   - Author
   - Stager Official
   - Dialog.Error.FailCreateProject
@@ -18078,6 +17964,8 @@ MonoBehaviour:
   - Import Prefabs
   - Dialog.Library.PrefabExported
   - Prefabs exported
+  - Dialog.Library.SelectingLayerLocked
+  - Layer locked
   - Dialog.OpenWebMSG
   - Opening {0} Please check your web browser
   - Dialog.Tutorial.CanNotFindProject
@@ -18326,7 +18214,7 @@ MonoBehaviour:
   - Shortcut.Eye.Note
   - Hide Note
   - Shortcut.Eye.Speed
-  - Hide Speed Note
+  - Hide Timing Note
   - Shortcut.Eye.Stage
   - Hide Stage
   - Shortcut.Eye.Track
@@ -18336,7 +18224,7 @@ MonoBehaviour:
   - Shortcut.Lock.Note
   - Lock Note
   - Shortcut.Lock.Speed
-  - Lock Speed Note
+  - Lock Timing Note
   - Shortcut.Lock.Stage
   - Lock Stage
   - Shortcut.LockTrack
@@ -18531,9 +18419,9 @@ MonoBehaviour:
   - Tip.ViewContainer.NoteLock
   - Lock note
   - Tip.ViewContainer.Speed
-  - Show/Hide speed notes
+  - Show/Hide timing notes
   - Tip.ViewContainer.SpeedLock
-  - Lock speed note
+  - Lock timing note
   - Tip.ViewContainer.Stage
   - Show/Hide stages
   - Tip.ViewContainer.StageLock

@@ -329,8 +329,6 @@
 			}
 
 
-
-
 			// --- Normal Select ---
 			if (brushIndex < 0) {
 
@@ -385,8 +383,8 @@
 					}
 					break;
 				case int l when l == ItemLayers[3]:
-					if (index >= 0 && index < map.SpeedNotes.Count) {
-						return map.SpeedNotes[index].Selecting;
+					if (index >= 0 && index < map.TimingNotes.Count) {
+						return map.TimingNotes[index].Selecting;
 					}
 					break;
 				case int l when l == ItemLayers[4]:
@@ -429,8 +427,8 @@
 					}
 					break;
 				case int l when l == ItemLayers[3]:
-					if (index >= 0 && index < map.SpeedNotes.Count) {
-						map.SpeedNotes[index].Selecting = select;
+					if (index >= 0 && index < map.TimingNotes.Count) {
+						map.TimingNotes[index].Selecting = select;
 					}
 					break;
 				case int l when l == ItemLayers[4]:
@@ -462,8 +460,8 @@
 							}
 							break;
 						case int l when l == ItemLayers[3]:
-							if (index >= 0 && index < map.SpeedNotes.Count) {
-								map.SpeedNotes[index].Selecting = false;
+							if (index >= 0 && index < map.TimingNotes.Count) {
+								map.TimingNotes[index].Selecting = false;
 							}
 							break;
 						case int l when l == ItemLayers[4]:

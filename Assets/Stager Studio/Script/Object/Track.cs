@@ -50,6 +50,12 @@
 		}
 
 
+		private void OnEnable () {
+			Update();
+			LateUpdate();
+		}
+
+
 		private void Update () {
 
 			MainRenderer.RendererEnable = false;
@@ -61,7 +67,10 @@
 			// Get TrackData
 			int trackIndex = transform.GetSiblingIndex();
 			var trackData = !(Beatmap is null) && trackIndex < Beatmap.Tracks.Count ? Beatmap.Tracks[trackIndex] : null;
-			if (trackData is null) { return; }
+			if (trackData is null) {
+				gameObject.SetActive(false);
+				return;
+			}
 
 			bool oldSelecting = trackData.Selecting;
 			trackData.Active = false;
@@ -76,7 +85,10 @@
 
 			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
-			if (!active) { return; }
+			if (!active) {
+				gameObject.SetActive(false);
+				return;
+			}
 			trackData.Selecting = oldSelecting;
 
 			LateTrackData = trackData;

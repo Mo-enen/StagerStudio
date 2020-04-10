@@ -12,7 +12,7 @@
 
 		// Clear Console
 		// & alt   % ctrl   # Shift
-		[MenuItem("Tools/Clear Console #&x")]
+		[MenuItem("Tools/Clear Console _F5")]
 		public static void ClearAndReStage () {
 			var assembly = Assembly.GetAssembly(typeof(ActiveEditorTracker));
 			var type = assembly.GetType("UnityEditorInternal.LogEntries");
@@ -35,7 +35,7 @@
 		}
 
 
-		
+
 	}
 
 

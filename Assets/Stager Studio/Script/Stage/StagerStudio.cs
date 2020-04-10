@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using UnityEngine.Audio;
 	using UI;
 	using Stage;
 	using Object;
@@ -91,6 +92,7 @@
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
+		[SerializeField] private AudioMixerGroup m_SfxMixer = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -142,10 +144,11 @@
 			Awake_Setting(skin, language, shortcut, menu);
 			Awake_Setting_UI(sfx, music, game);
 			Awake_Menu(menu, game, project);
-			Awake_Object(project, game, music);
-			Awake_Project(project, editor, game, music);
+			Awake_Object(project, game, music, sfx);
+			Awake_Project(project, editor, game, music, sfx);
 			Awake_Game(project, game, music, library);
-			Awake_Music(game, music);
+			Awake_Music(game, music, sfx);
+			Awake_Sfx(music, game, sfx);
 			Awake_Editor(editor, game, library, project, music);
 			Awake_Library(project, editor, library, menu, game, music);
 			Awake_Skin(game);
@@ -178,9 +181,9 @@
 			StageObject.GameSpeedMuti = dropSpeed * mapSpeed;
 			StageObject.MusicTime = GetMusicTime();
 			Note.CameraWorldPos = m_CameraTF.position;
-			SpeedNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
-			SpeedNote.GameSpeedMuti = dropSpeed * mapSpeed;
-			SpeedNote.MusicTime = GetMusicTime();
+			TimingNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
+			TimingNote.GameSpeedMuti = dropSpeed * mapSpeed;
+			TimingNote.MusicTime = GetMusicTime();
 			Object.Stage.StageCount = GetGameItemCount(0);
 		}
 
@@ -263,7 +266,7 @@
 		}
 
 
-		private void Awake_Object (StageProject project, StageGame game, StageMusic music) {
+		private void Awake_Object (StageProject project, StageGame game, StageMusic music, StageSoundFX sfx) {
 			StageObject.TweenEvaluate = (x, index) => project.Tweens[Mathf.Clamp(index, 0, project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : project.Palette[Mathf.Min(index, project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
@@ -272,6 +275,7 @@
 			Note.GetGameDropOffset = (muti) => game.AreaBetweenDrop(music.Time, muti);
 			Note.GetDropOffset = game.AreaBetweenDrop;
 			Note.PlayClickSound = music.PlayClickSound;
+			TimingNote.PlaySfx = sfx.PlayFX;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
@@ -285,22 +289,23 @@
 			Note.LayerID_Note = LayerMask.NameToLayer("Note");
 			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
 			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
-			SpeedNote.SortingLayerID_UI = SortingLayer.NameToID("UI");
+			TimingNote.SortingLayerID_UI = SortingLayer.NameToID("UI");
 			MotionNote.SortingLayerID_Motion = SortingLayer.NameToID("Motion");
 			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
 		}
 
 
-		private void Awake_Project (StageProject project, StageEditor editor, StageGame game, StageMusic music) {
+		private void Awake_Project (StageProject project, StageEditor editor, StageGame game, StageMusic music, StageSoundFX sfx) {
 
 			// Project
 			StageProject.OnProjectLoadingStart = () => {
 				music.SetClip(null);
+				sfx.SetClip(null);
 				game.SetSpeedCurveDirty();
 				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
-				StageObject.Beatmap = SpeedNote.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = null;
 				game.SetAbreastIndex(0);
 				game.SetUseAbreastView(false);
 				game.SetGameDropSpeed(1f);
@@ -326,10 +331,11 @@
 				game.SetGameDropSpeed(1f);
 				music.Pitch = 1f;
 				music.SetClip(null);
+				sfx.SetClip(null);
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
 				editor.ClearSelection();
-				StageObject.Beatmap = SpeedNote.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = null;
 			};
 
 			// Beatmap
@@ -340,7 +346,7 @@
 					game.MapDropSpeed = map.DropSpeed;
 					game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
-					StageObject.Beatmap = SpeedNote.Beatmap = map;
+					StageObject.Beatmap = TimingNote.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
@@ -366,6 +372,7 @@
 			// Assets
 			StageProject.OnMusicLoaded = (clip) => {
 				music.SetClip(clip);
+				sfx.SetClip(clip);
 				TryRefreshProjectInfo();
 				m_Wave.LoadWave(clip);
 				music.Pitch = 1f;
@@ -421,7 +428,7 @@
 					library.UI_SetSelection(-1);
 				}
 				Note.SetCacheDirty();
-				SpeedNote.SetCacheDirty();
+				TimingNote.SetCacheDirty();
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
@@ -430,7 +437,7 @@
 					0f;
 				}
 				Note.SetCacheDirty();
-				SpeedNote.SetCacheDirty();
+				TimingNote.SetCacheDirty();
 				RefreshGridRenderer(game);
 				RefreshInfoLabel();
 			};
@@ -449,11 +456,12 @@
 		}
 
 
-		private void Awake_Music (StageGame game, StageMusic music) {
+		private void Awake_Music (StageGame game, StageMusic music, StageSoundFX sfx) {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
 				StageObject.MusicPlaying = playing;
-				SpeedNote.MusicPlaying = playing;
+				TimingNote.MusicPlaying = playing;
+				sfx.StopAllFx();
 			};
 			StageMusic.OnMusicTimeChanged = (time, duration) => {
 				m_Progress.SetProgress(time, game.BPM);
@@ -466,6 +474,21 @@
 			};
 			StageMusic.OnPitchChanged = () => {
 				m_PitchWarningBlock.gameObject.SetActive(music.Pitch < 0.05f);
+				sfx.StopAllFx();
+			};
+		}
+
+
+		private void Awake_Sfx (StageMusic music, StageGame game, StageSoundFX sfx) {
+			StageSoundFX.GetMusicPlaying = () => music.IsPlaying;
+			StageSoundFX.GetMusicTime = () => music.Time;
+			StageSoundFX.GetMusicVolume = () => SliderItemMap[SliderType.MusicVolume].saving.Value / 12f;
+			StageSoundFX.SetMusicVolume = (volume) => music.Volume = SliderItemMap[SliderType.MusicVolume].saving.Value / 12f * volume;
+			StageSoundFX.GetMusicPitch = () => music.Pitch;
+			StageSoundFX.SetMusicMute = (mute) => music.Mute = mute;
+			StageSoundFX.GetSecondPerBeat = () => game.SPB;
+			StageSoundFX.OnUseFxChanged = () => {
+				music.SetMixer(sfx.UseFX ? m_SfxMixer : null);
 			};
 		}
 
@@ -833,7 +856,7 @@
 				stageCount = map.Stages.Count;
 				trackCount = map.Tracks.Count;
 				noteCount = map.Notes.Count;
-				speedCount = map.SpeedNotes.Count;
+				speedCount = map.TimingNotes.Count;
 			}
 			try {
 				m_InfoLabel.text = string.Format(GetLanguage(UI_InfoLabel), stageCount, trackCount, noteCount, speedCount);

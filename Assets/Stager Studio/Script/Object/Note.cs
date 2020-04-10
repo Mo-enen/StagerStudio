@@ -93,6 +93,7 @@
 			var noteData = Beatmap?.GetNoteAt(noteIndex);
 			if (noteData is null) {
 				Update_Gizmos(null, false, noteIndex);
+				gameObject.SetActive(false);
 				return;
 			}
 			bool oldSelecting = noteData.Selecting;
@@ -102,37 +103,21 @@
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
 			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
-			if (!Stage.GetStageActive(linkedStage, linkedTrack.StageIndex) || !Track.GetTrackActive(linkedTrack)) {
+			if (!linkedStage.Active || !linkedTrack.Active) {
 				Update_Gizmos(null, false, noteIndex);
+				gameObject.SetActive(false);
 				return;
 			}
 
-			// Cache
-			//Update_Cache(noteData, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
-
+			// Data
 			Time = noteData.Time;
 			Duration = noteData.Duration;
 
-			// Click Sound
-			if (string.IsNullOrEmpty(noteData.Comment) && noteData.SpeedOnDrop >= 0f) {
-				// Main Click Sound
-				bool clicked = MusicTime > noteData.Time;
-				if (MusicPlaying && clicked && !PrevClicked && noteData.ClickSoundIndex >= 0) {
-					PlayClickSound(noteData.ClickSoundIndex, 1f);
-				}
-				PrevClicked = clicked;
-				// Alt Click Sound
-				if (noteData.Duration > DURATION_GAP) {
-					bool altClicked = MusicTime > noteData.Time + noteData.Duration;
-					if (MusicPlaying && altClicked && !PrevClickedAlt) {
-						PlayClickSound(noteData.ClickSoundIndex, 0.618f);
-					}
-					PrevClickedAlt = altClicked;
-				}
-			}
-
 			// Linked
 			var linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < Beatmap.Notes.Count ? Beatmap.Notes[noteData.LinkedNoteIndex] : null;
+
+			// Sound
+			Update_Sound(noteData, linkedNote);
 
 			// Active
 			bool active = GetNoteActive(noteData, linkedNote, noteData.AppearTime);
@@ -324,6 +309,31 @@
 				}
 				// ZLine Rot
 				m_ZLineRenderer.transform.localRotation = MainRenderer.transform.localRotation * Quaternion.Euler(-90f, 0f, 0f);
+			}
+
+		}
+
+
+		private void Update_Sound (Beatmap.Note noteData, Beatmap.Note linkedNote) {
+
+			if (!string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) { return; }
+
+			// Start Trigger
+			bool clicked = MusicTime > noteData.Time;
+			if (MusicPlaying && clicked && !PrevClicked && noteData.ClickSoundIndex >= 0) {
+				// Click Sound
+				PlayClickSound(noteData.ClickSoundIndex, 1f);
+			}
+			PrevClicked = clicked;
+
+			// End Trigger
+			if (noteData.Duration > DURATION_GAP) {
+				// End Click Sound
+				bool altClicked = MusicTime > noteData.Time + noteData.Duration;
+				if (MusicPlaying && altClicked && !PrevClickedAlt) {
+					PlayClickSound(noteData.ClickSoundIndex, 0.618f);
+				}
+				PrevClickedAlt = altClicked;
 			}
 
 		}

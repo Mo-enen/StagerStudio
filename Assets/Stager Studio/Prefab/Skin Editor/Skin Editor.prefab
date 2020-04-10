@@ -7252,7 +7252,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4472983187897866094}
   - component: {fileID: 5598010253739041107}
-  - component: {fileID: 2659355324953938203}
+  - component: {fileID: 1917388041559322070}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -7277,7 +7277,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -6, y: 0}
+  m_SizeDelta: {x: -6, y: 2}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &5598010253739041107
 CanvasRenderer:
@@ -7287,7 +7287,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2795467101716561593}
   m_CullTransparentMesh: 0
---- !u!114 &2659355324953938203
+--- !u!114 &1917388041559322070
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -7296,16 +7296,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 2795467101716561593}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -7315,29 +7316,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0.6
-    m_Bottom: 0.6
-    m_Color: {r: 0.36, g: 0.36, b: 0.36, a: 1}
-    m_ClearColor: {r: 0.36, g: 0.36, b: 0.36, a: 0}
 --- !u!1 &2865400791797200972
 GameObject:
   m_ObjectHideFlags: 0
@@ -7978,7 +7956,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3767011791398492364}
   - component: {fileID: 7706422210706849873}
-  - component: {fileID: 2783328420619087454}
+  - component: {fileID: 487645507020614779}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -8003,7 +7981,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -6}
+  m_SizeDelta: {x: 2, y: -6}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7706422210706849873
 CanvasRenderer:
@@ -8013,7 +7991,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3168007358405487533}
   m_CullTransparentMesh: 0
---- !u!114 &2783328420619087454
+--- !u!114 &487645507020614779
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8022,16 +8000,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 3168007358405487533}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 4824580782819576835, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -8041,29 +8020,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0.6
-    m_Right: 0.6
-    m_Top: 0
-    m_Bottom: 0
-    m_Color: {r: 0.36, g: 0.36, b: 0.36, a: 1}
-    m_ClearColor: {r: 0.36, g: 0.36, b: 0.36, a: 0}
 --- !u!1 &3188349513729861073
 GameObject:
   m_ObjectHideFlags: 0
@@ -12852,7 +12808,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3538673036600438710}
   - component: {fileID: 9054181621573056472}
-  - component: {fileID: 6624159446129694463}
+  - component: {fileID: 1989534637477497335}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -12877,7 +12833,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &9054181621573056472
 CanvasRenderer:
@@ -12887,7 +12843,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5512255884818755357}
   m_CullTransparentMesh: 0
---- !u!114 &6624159446129694463
+--- !u!114 &1989534637477497335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -12896,16 +12852,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 5512255884818755357}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -12915,29 +12872,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 1
-    m_Right: 1
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-    m_ClearColor: {r: 0.7, g: 0.7, b: 0.7, a: 0}
 --- !u!1 &5746483124051553056
 GameObject:
   m_ObjectHideFlags: 0
@@ -15828,7 +15762,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1377417543633573758}
   - component: {fileID: 8042697808535191203}
-  - component: {fileID: 4269816086419979243}
+  - component: {fileID: 647105490551314666}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -15853,7 +15787,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -6, y: 0}
+  m_SizeDelta: {x: -6, y: 2}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &8042697808535191203
 CanvasRenderer:
@@ -15863,7 +15797,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7424591226278529753}
   m_CullTransparentMesh: 0
---- !u!114 &4269816086419979243
+--- !u!114 &647105490551314666
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -15872,16 +15806,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 7424591226278529753}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -15891,29 +15826,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0
-    m_Right: 0
-    m_Top: 0.6
-    m_Bottom: 0.6
-    m_Color: {r: 0.36, g: 0.36, b: 0.36, a: 1}
-    m_ClearColor: {r: 0.36, g: 0.36, b: 0.36, a: 0}
 --- !u!1 &7505121683240688944
 GameObject:
   m_ObjectHideFlags: 0
@@ -16061,7 +15973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 785601960876972145}
   - component: {fileID: 7139596037889413421}
-  - component: {fileID: 4629958656821007334}
+  - component: {fileID: 2599543519529301010}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -16086,7 +15998,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7139596037889413421
 CanvasRenderer:
@@ -16096,7 +16008,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7528026226825529673}
   m_CullTransparentMesh: 0
---- !u!114 &4629958656821007334
+--- !u!114 &2599543519529301010
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -16105,16 +16017,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 7528026226825529673}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0, g: 0, b: 0, a: 0.2}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16124,29 +16037,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 1
-    m_Right: 1
-    m_Top: 1
-    m_Bottom: 1
-    m_Color: {r: 0.7, g: 0.7, b: 0.7, a: 1}
-    m_ClearColor: {r: 0.7, g: 0.7, b: 0.7, a: 0}
 --- !u!1 &7558155082953085160
 GameObject:
   m_ObjectHideFlags: 0
@@ -17422,7 +17312,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2011942718048458417}
   - component: {fileID: 2387083118554928828}
-  - component: {fileID: 1305288355249951230}
+  - component: {fileID: 282454667729351088}
   m_Layer: 0
   m_Name: Line
   m_TagString: Untagged
@@ -17447,7 +17337,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: -6}
+  m_SizeDelta: {x: 2, y: -6}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!222 &2387083118554928828
 CanvasRenderer:
@@ -17457,7 +17347,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8920063523744068120}
   m_CullTransparentMesh: 0
---- !u!114 &1305288355249951230
+--- !u!114 &282454667729351088
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17466,16 +17356,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8920063523744068120}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68754cb7a3adc3644b6e73d050eeeffa, type: 3}
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0}
-  m_RaycastTarget: 1
+  m_Color: {r: 0.4245283, g: 0.4245283, b: 0.4245283, a: 1}
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 4824580782819576835, guid: bb44e351ca6629b4db3834249557bb66,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17485,29 +17376,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
-  m_VertexColorHandler:
-    m_UseVertexColor: 0
-    m_VertexColorFilter: 0
-    m_VertexTopLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexTopRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomLeft: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexBottomRight: {r: 1, g: 1, b: 1, a: 1}
-    m_VertexColorOffset: {x: 0, y: 0}
-  m_PositionOffsetHandler:
-    m_UsePositionOffset: 0
-    m_TopLeft: {x: 0, y: 0}
-    m_TopRight: {x: 0, y: 0}
-    m_BottomLeft: {x: 0, y: 0}
-    m_BottomRight: {x: 0, y: 0}
-  m_ShadowHandler:
-    m_UseShadow: 1
-    m_SharpCorner: 0
-    m_Left: 0.6
-    m_Right: 0.6
-    m_Top: 0
-    m_Bottom: 0
-    m_Color: {r: 0.36, g: 0.36, b: 0.36, a: 1}
-    m_ClearColor: {r: 0.36, g: 0.36, b: 0.36, a: 0}
 --- !u!1 &8939019311657205149
 GameObject:
   m_ObjectHideFlags: 0
