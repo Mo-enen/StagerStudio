@@ -1888,6 +1888,9 @@ MonoBehaviour:
     SwipeX: 1
     SwipeY: 1
     Comment: 
+    SoundFxIndex: 0
+    SoundFxParamA: 0
+    SoundFxParamB: 0
   m_BrushPrefab: {fileID: 3566625496265129375, guid: 5ede1592e7b829b4ebf7721cd9018417,
     type: 3}
   m_AddPrefab: {fileID: 5093649808672166835, guid: 71fa4fc7260dad64190f45c418556ef7,
@@ -19358,7 +19361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MixerGroup: {fileID: 1997415650268210482, guid: 6b0f43d36599e3f47a5da521b76e4975,
     type: 2}
-  Test: 1
+  m_KnobShoot: {fileID: 8300000, guid: 78f8b586cb1782e42bc7e2f99208c5f3, type: 3}
 --- !u!1 &2044312210
 GameObject:
   m_ObjectHideFlags: 0

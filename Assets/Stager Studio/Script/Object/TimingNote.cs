@@ -16,7 +16,7 @@
 
 
 		// Handler
-		public delegate void SfxHandler (int time, byte type, int duration, int a, int b);
+		public delegate void SfxHandler (byte type, int duration, int a, int b);
 		public static SfxHandler PlaySfx { get; set; } = null;
 
 		// Api
@@ -154,7 +154,7 @@
 		private void Update_SoundFx (Beatmap.TimingNote noteData) {
 			bool clicked = MusicTime > noteData.Time;
 			if (MusicPlaying && clicked && !PrevClicked) {
-				PlaySfx(noteData.m_Time, noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+				PlaySfx(noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
 			}
 			PrevClicked = clicked;
 		}

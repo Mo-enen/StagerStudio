@@ -19,7 +19,7 @@
 		public delegate float DropOffsetHandler (float time, float muti);
 		public delegate float FilledTimeHandler (float time, float fill, float muti);
 		public delegate void VoidIntFloatHandler (int i, float f);
-		public delegate void SfxHandler (int time, byte type, int duration, int a, int b);
+		public delegate void SfxHandler (byte type, int duration, int a, int b);
 
 
 		#endregion
@@ -329,7 +329,7 @@
 				}
 				// Fx
 				if (noteData.SoundFxIndex > 0) {
-					PlaySfx(noteData.m_Time, noteData.SoundFxIndex, linkedNote != null ? Mathf.Max(noteData.m_Duration, linkedNote.m_Time - noteData.m_Time) : noteData.m_Duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+					PlaySfx(noteData.SoundFxIndex, linkedNote != null ? Mathf.Max(noteData.m_Duration, linkedNote.m_Time - noteData.m_Time) : noteData.m_Duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
 				}
 			}
 			PrevClicked = clicked;

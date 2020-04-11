@@ -485,6 +485,7 @@
 			StageSoundFX.GetMusicVolume = () => SliderItemMap[SliderType.MusicVolume].saving.Value / 12f;
 			StageSoundFX.SetMusicVolume = (volume) => music.Volume = SliderItemMap[SliderType.MusicVolume].saving.Value / 12f * volume;
 			StageSoundFX.GetMusicPitch = () => music.Pitch;
+			StageSoundFX.GetMusicMute = () => music.Mute;
 			StageSoundFX.SetMusicMute = (mute) => music.Mute = mute;
 			StageSoundFX.GetSecondPerBeat = () => game.SPB;
 			StageSoundFX.OnUseFxChanged = () => music.UseMixer(sfx.UseFX);
