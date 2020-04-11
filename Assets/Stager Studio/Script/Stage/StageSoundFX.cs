@@ -3,8 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using Saving;
-
-
+	using UnityEngine.Audio;
 
 	public class StageSoundFX : MonoBehaviour {
 
@@ -38,6 +37,11 @@
 		#region --- VAR ---
 
 
+		// Const
+		private const string MUSIC_VOLUME_KEYWORD = "Music_Volume";
+		private const string FLANGE_VOLUME_KEYWORD = "Flange_Volume";
+		private const string FLANGE_DEPTH_KEYWORD = "Flange_Depth";
+
 		// Handler
 		public static VoidBoolHandler SetMusicMute { get; set; } = null;
 		public static VoidFloatHandler SetMusicVolume { get; set; } = null;
@@ -54,7 +58,6 @@
 			set => Source.volume = Mathf.Max(value * value, 0f);
 		}
 
-
 		// Short
 		private AudioSource Source {
 			get {
@@ -62,15 +65,21 @@
 					_Source = gameObject.AddComponent<AudioSource>();
 					_Source.playOnAwake = false;
 					_Source.loop = false;
+					_Source.outputAudioMixerGroup = m_MixerGroup;
 				}
 				return _Source;
 			}
 		}
+		private AudioMixer Mixer => _Mixer != null ? _Mixer : (_Mixer = m_MixerGroup.audioMixer);
+
+		// Ser
+		[SerializeField] private AudioMixerGroup m_MixerGroup = null;
 
 		// Data 
 		private readonly static Coroutine[] FxCors = { null, null, null, };
-		private readonly static WaitForEndOfFrame WAIT_FOR_END_OF_FRAME = new WaitForEndOfFrame();
+		private readonly static WaitForSeconds WAIT_FOR_001_SECOND = new WaitForSeconds(0.01f);
 		private AudioSource _Source = null;
+		private AudioMixer _Mixer = null;
 
 		// Saving
 		public SavingBool UseFX { get; private set; } = new SavingBool("StageSoundFX.UseFX", true);
@@ -93,25 +102,34 @@
 		#region --- API ---
 
 
-		public void PlayFX (byte typeByte, int noteDuration, int paramA, int paramB) {
+		public void PlayFX (int time, byte typeByte, int fxDuration, int paramA, int paramB) {
+
 			if (!UseFX || !GetMusicPlaying()) { return; }
+
 			var type = (FxType)typeByte;
 			switch (type) {
 				case FxType.Retrigger:
 					TryStopFx(type);
 					FxCors[(int)FxType.Retrigger] = StartCoroutine(
-						Retrigger(noteDuration / 1000f, paramA * GetSecondPerBeat() / 100f, paramB / 100f)
+						Retrigger(time / 1000f, fxDuration / 1000f, paramA * GetSecondPerBeat() / 100f, paramB / 100f)
 					);
 					break;
 				case FxType.Flange:
-
-
-
+					TryStopFx(type);
+					FxCors[(int)FxType.Flange] = StartCoroutine(
+						Flange(fxDuration / 1000f, paramA / GetSecondPerBeat() / 100f)
+					);
 					break;
+
+
+
 			}
+
 			// === Func ===
-			IEnumerator Retrigger (float duration, float gap, float volume) {
-				float startTime = Source.time = GetMusicTime();
+			IEnumerator Retrigger (float startTime, float duration, float gap, float volume) {
+				duration = Mathf.Min(duration, 128f);
+				gap = Mathf.Max(gap, 0.001f);
+				Source.time = startTime;
 				volume = Mathf.Clamp01(volume);
 				Volume = GetMusicVolume();
 				Source.pitch = GetMusicPitch();
@@ -119,24 +137,35 @@
 				Volume = GetMusicVolume();
 				SetMusicVolume(volume);
 				Source.Play();
-				for (float t = 0f, prevT = 0f; t < duration; t += Time.deltaTime) {
-					if (t > prevT + gap) {
+				float endTime = Time.unscaledTime + duration + gap / 2f;
+				for (float prevT = Time.unscaledTime; Time.unscaledTime < endTime;) {
+					if (Time.unscaledTime > prevT + gap) {
 						Source.time = startTime;
-						prevT += gap;
+						prevT = Time.unscaledTime;
 					}
-					yield return WAIT_FOR_END_OF_FRAME;
+					yield return WAIT_FOR_001_SECOND;
 				}
 				TryStopFx(FxType.Retrigger);
 			}
 
-
+			IEnumerator Flange (float duration, float speed) {
+				duration = Mathf.Min(duration, 128f);
+				float endTime = Time.unscaledTime + duration;
+				Mixer.SetFloat(FLANGE_VOLUME_KEYWORD, 0f);
+				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
+				while (Time.unscaledTime < endTime) {
+					Mixer.SetFloat(FLANGE_DEPTH_KEYWORD, Mathf.PingPong(Time.unscaledTime * speed, 0.5f) + 0.5f);
+					yield return WAIT_FOR_001_SECOND;
+				}
+				TryStopFx(FxType.Flange);
+			}
 
 		}
 
 
-
 		public void SetUseFX (bool use) {
 			UseFX.Value = use;
+			Source.outputAudioMixerGroup = use ? m_MixerGroup : null;
 			StopAllFx();
 			OnUseFxChanged();
 		}
@@ -179,8 +208,8 @@
 					Source.Pause();
 					break;
 				case FxType.Flange:
-
-
+					Mixer.SetFloat(FLANGE_VOLUME_KEYWORD, -80f);
+					Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, 0f);
 					break;
 			}
 			// Stop Cor

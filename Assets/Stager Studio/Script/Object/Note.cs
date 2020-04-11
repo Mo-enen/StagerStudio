@@ -19,6 +19,7 @@
 		public delegate float DropOffsetHandler (float time, float muti);
 		public delegate float FilledTimeHandler (float time, float fill, float muti);
 		public delegate void VoidIntFloatHandler (int i, float f);
+		public delegate void SfxHandler (int time, byte type, int duration, int a, int b);
 
 
 		#endregion
@@ -35,6 +36,7 @@
 		public static DropOffsetHandler GetDropOffset { get; set; } = null;
 		public static FilledTimeHandler GetFilledTime { get; set; } = null;
 		public static VoidIntFloatHandler PlayClickSound { get; set; } = null;
+		public static SfxHandler PlaySfx { get; set; } = null;
 
 		// API
 		public static int LayerID_Note { get; set; } = -1;
@@ -320,9 +322,15 @@
 
 			// Start Trigger
 			bool clicked = MusicTime > noteData.Time;
-			if (MusicPlaying && clicked && !PrevClicked && noteData.ClickSoundIndex >= 0) {
-				// Click Sound
-				PlayClickSound(noteData.ClickSoundIndex, 1f);
+			if (MusicPlaying && clicked && !PrevClicked) {
+				// Click 
+				if (noteData.ClickSoundIndex >= 0) {
+					PlayClickSound(noteData.ClickSoundIndex, 1f);
+				}
+				// Fx
+				if (noteData.SoundFxIndex > 0) {
+					PlaySfx(noteData.m_Time, noteData.SoundFxIndex, linkedNote != null ? Mathf.Max(noteData.m_Duration, linkedNote.m_Time - noteData.m_Time) : noteData.m_Duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+				}
 			}
 			PrevClicked = clicked;
 

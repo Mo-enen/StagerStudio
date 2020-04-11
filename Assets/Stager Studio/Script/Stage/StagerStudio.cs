@@ -92,7 +92,6 @@
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
-		[SerializeField] private AudioMixerGroup m_SfxMixer = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -275,6 +274,7 @@
 			Note.GetGameDropOffset = (muti) => game.AreaBetweenDrop(music.Time, muti);
 			Note.GetDropOffset = game.AreaBetweenDrop;
 			Note.PlayClickSound = music.PlayClickSound;
+			Note.PlaySfx = sfx.PlayFX;
 			TimingNote.PlaySfx = sfx.PlayFX;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
@@ -487,9 +487,8 @@
 			StageSoundFX.GetMusicPitch = () => music.Pitch;
 			StageSoundFX.SetMusicMute = (mute) => music.Mute = mute;
 			StageSoundFX.GetSecondPerBeat = () => game.SPB;
-			StageSoundFX.OnUseFxChanged = () => {
-				music.SetMixer(sfx.UseFX ? m_SfxMixer : null);
-			};
+			StageSoundFX.OnUseFxChanged = () => music.UseMixer(sfx.UseFX);
+
 		}
 
 

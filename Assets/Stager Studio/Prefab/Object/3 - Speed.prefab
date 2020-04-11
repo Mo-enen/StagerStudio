@@ -80,7 +80,6 @@ MonoBehaviour:
   m_MainRenderer: {fileID: 7728667973207816046}
   m_Highlight: {fileID: 583818811190487742}
   m_LabelRenderer: {fileID: 3214920307257600984}
-  m_Col: {fileID: 8489363324775117691}
   m_Scaler: {fileID: 7929924862714505530}
   m_PositiveTint: {r: 1, g: 1, b: 1, a: 1}
   m_NegativeTint: {r: 0.8235294, g: 0.25816992, b: 0.145098, a: 1}
@@ -110,7 +109,7 @@ Transform:
   m_GameObject: {fileID: 3959314893052432644}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
+  m_LocalScale: {x: 0.3, y: 0.075, z: 1}
   m_Children: []
   m_Father: {fileID: 1398407539520907666}
   m_RootOrder: 1
@@ -159,7 +158,7 @@ SpriteRenderer:
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 0
   m_Size: {x: 2, y: 0.5}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -320,7 +319,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7308530671233841364}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.0075, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.021, z: 1}
   m_Children: []
   m_Father: {fileID: 1398407539520907666}
@@ -341,7 +340,7 @@ MonoBehaviour:
   m_Tint:
     serializedVersion: 2
     rgba: 4294967295
-  m_Pivot: {x: 0.5, y: 0.5, z: 0}
+  m_Pivot: {x: 0, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
   m_SpriteSheet: {fileID: 11400000, guid: 3c69f1aab24836240a36801417379693, type: 2}
   m_Text: 

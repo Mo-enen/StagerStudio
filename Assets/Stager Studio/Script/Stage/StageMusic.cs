@@ -91,6 +91,7 @@
 					_Source = gameObject.AddComponent<AudioSource>();
 					_Source.playOnAwake = false;
 					_Source.loop = false;
+					_Source.outputAudioMixerGroup = m_MixerGroup;
 				}
 				return _Source;
 			}
@@ -110,6 +111,7 @@
 
 		// Ser
 		[SerializeField] private AudioClip m_DefaultSfx = null;
+		[SerializeField] private AudioMixerGroup m_MixerGroup = null;
 
 		// Data
 		private const float DURATION_MIN = 0.001f;
@@ -163,7 +165,7 @@
 		public void SetClip (AudioClip clip) => SetClipLogic(clip);
 
 
-		public void SetMixer (AudioMixerGroup mixer) => Source.outputAudioMixerGroup = mixer;
+		public void UseMixer (bool use) => Source.outputAudioMixerGroup = use ? m_MixerGroup : null;
 
 
 		public void PlayPause () {

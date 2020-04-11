@@ -96,6 +96,13 @@
 		}
 
 
+		public static Vector3 Muti (this Vector3 v, Vector3 muti) => new Vector3(
+			v.x * muti.x,
+			v.y * muti.y,
+			v.z * muti.z
+		);
+
+
 		public static void SetPivotWithoutChangePosition (this RectTransform rectTransform, Vector2 pivot) {
 			Vector3 deltaPosition = rectTransform.pivot - pivot;    // get change in pivot
 			deltaPosition.Scale(rectTransform.rect.size);           // apply sizing

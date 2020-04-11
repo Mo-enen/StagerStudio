@@ -15,14 +15,8 @@
 		#region --- VAR ---
 
 
-
-		// Const
-		private const float HEIGHT = 0.8f;
-		private const float WIDTH_MIN = 0.6f;
-		private const float WIDTH_MAX = 6.4f;
-
 		// Handler
-		public delegate void SfxHandler (byte type, int duration, int a, int b);
+		public delegate void SfxHandler (int time, byte type, int duration, int a, int b);
 		public static SfxHandler PlaySfx { get; set; } = null;
 
 		// Api
@@ -36,14 +30,11 @@
 		// Short
 		private float Time { get; set; } = 0f;
 		private int Speed { get; set; } = 100;
-		private Vector2? ColSize { get; set; } = null;
-		private Quaternion? ColRot { get; set; } = null;
 
 		// Ser
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 		[SerializeField] private TextRenderer m_LabelRenderer = null;
-		[SerializeField] private BoxCollider m_Col = null;
 		[SerializeField] private Transform m_Scaler = null;
 		[SerializeField] private Color m_PositiveTint = Color.white;
 		[SerializeField] private Color m_NegativeTint = Color.red;
@@ -52,11 +43,8 @@
 		private static byte CacheDirtyID = 1;
 		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
-		private float HighlightScaleMuti = 0f;
-		private Vector2 PrevColSize = Vector3.zero;
-		private Quaternion PrevColRot = Quaternion.identity;
-		private Vector3 RendererScale = Vector3.one;
 		private Beatmap.TimingNote LateNote = null;
+
 
 		#endregion
 
@@ -67,16 +55,15 @@
 
 
 		private void Awake () {
-			RendererScale = m_MainRenderer.transform.localScale;
-			ColRot = Quaternion.identity;
 			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 0);
-			m_LabelRenderer.transform.localPosition = new Vector3(0f, RendererScale.y * HEIGHT * 0.5f, 0f);
+			m_Scaler.localScale = m_MainRenderer.transform.localScale.Muti(new Vector3(
+				m_MainRenderer.size.x, m_MainRenderer.size.y, 1f
+			));
 		}
 
 
 		private void Update () {
 
-			ColSize = null;
 			LateNote = null;
 
 			// Get Data
@@ -111,8 +98,12 @@
 
 
 		private void LateUpdate () {
-			LateUpdate_Movement(LateNote);
-			LateUpdate_Col_Highlight();
+			if (LateNote == null || !LateNote.Active) { return; }
+			float noteY01 = LateNote.NoteDropPos - MusicTime * LateNote.SpeedMuti;
+			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01);
+			var tint = Speed >= 0 ? m_PositiveTint : m_NegativeTint;
+			tint.a = Mathf.Clamp01(16f - noteY01 * 16f);
+			m_MainRenderer.color = tint;
 		}
 
 
@@ -163,49 +154,9 @@
 		private void Update_SoundFx (Beatmap.TimingNote noteData) {
 			bool clicked = MusicTime > noteData.Time;
 			if (MusicPlaying && clicked && !PrevClicked) {
-				PlaySfx(noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+				PlaySfx(noteData.m_Time, noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
 			}
 			PrevClicked = clicked;
-		}
-
-
-		private void LateUpdate_Movement (Beatmap.TimingNote noteData) {
-			if (noteData == null || !noteData.Active) { return; }
-			float noteY01 = noteData.NoteDropPos - MusicTime * noteData.SpeedMuti;
-			var size = new Vector2(
-				Mathf.LerpUnclamped(WIDTH_MIN, WIDTH_MAX, Speed_to_UI01(Speed)),
-				HEIGHT
-			);
-			m_MainRenderer.size = size;
-			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01) +
-				new Vector3(RendererScale.x * size.x * 0.5f, 0f, 0f);
-			ColSize = RendererScale * size;
-			m_Scaler.localScale = ColSize.Value;
-			var tint = Speed >= 0 ? m_PositiveTint : m_NegativeTint;
-			tint.a = Mathf.Clamp01(16f - noteY01 * 16f);
-			m_MainRenderer.color = tint;
-		}
-
-
-		private void LateUpdate_Col_Highlight () {
-			if (m_Col == null) { return; }
-			if (m_Col.enabled != ColSize.HasValue) {
-				m_Col.enabled = ColSize.HasValue;
-			}
-			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
-				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.01f);
-				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
-				PrevColSize = m_Col.size = size;
-				m_Col.center = offset;
-				m_Highlight.transform.localPosition = offset;
-
-				if (ColRot.HasValue) {
-					PrevColRot = m_Col.transform.rotation = ColRot.Value;
-				}
-			}
-			if (ColSize.HasValue && m_Highlight.gameObject.activeSelf) {
-				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
-			}
 		}
 
 
@@ -218,30 +169,6 @@
 
 
 		public static void SetCacheDirty () => CacheDirtyID++;
-
-
-		public static float Speed_to_UI01 (int speed) {
-			speed = Mathf.Abs(speed);
-			if (speed < 200) {
-				return speed / 400f;
-			} else if (speed < 1600) {
-				return Util.Remap(200, 1600, 0.5f, 0.75f, speed);
-			} else {
-				return Util.Remap(1600, 12800, 0.75f, 1f, speed);
-			}
-		}
-
-
-		public static int UI01_to_Speed (float uiSpeed) {
-			uiSpeed = Mathf.Max(uiSpeed, 0f);
-			if (uiSpeed < 0.5f) {
-				return Mathf.RoundToInt(uiSpeed * 400f);
-			} else if (uiSpeed < 0.75f) {
-				return Mathf.RoundToInt(Util.Remap(0.5f, 0.75f, 200f, 1600f, uiSpeed));
-			} else {
-				return Mathf.RoundToInt(Util.Remap(0.75f, 1f, 1600f, 12800f, uiSpeed));
-			}
-		}
 
 
 		#endregion
