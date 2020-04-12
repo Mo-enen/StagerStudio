@@ -100,6 +100,7 @@
 		[SerializeField] private ZoneUI m_Zone = null;
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
+		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[Header("Data")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
@@ -417,6 +418,7 @@
 		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageLibrary library) {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
+				m_TimingPreview.SetVerticesDirty();
 				RefreshInfoLabel();
 			};
 			StageGame.OnAbreastChanged = () => {
@@ -424,6 +426,7 @@
 				m_Wave.SetAlpha(game.AbreastValue);
 				m_AbreastSwitcherUI.SetBarUIDirty();
 				m_AbreastSwitcherUI.RefreshHighlightUI();
+				m_TimingPreview.SetVerticesDirty();
 				if (library.SelectingItemTypeIndex.index != -1) {
 					library.UI_SetSelection(-1);
 				}
@@ -436,6 +439,7 @@
 						1f / (game.GameDropSpeed * game.MapDropSpeed) / music.Duration :
 					0f;
 				}
+				m_TimingPreview.SetVerticesDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 				RefreshGridRenderer(game);
@@ -444,12 +448,14 @@
 			StageGame.OnGridChanged = () => {
 				m_GridTG.isOn = game.ShowGrid;
 				m_GridRenderer.SetShow(game.ShowGrid);
+				m_TimingPreview.SetVerticesDirty();
 				Track.BeatPerSection = game.BeatPerSection;
 				StageObject.ShowGrid = game.ShowGrid;
 				RefreshGridRenderer(game);
 			};
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
+				m_TimingPreview.SetVerticesDirty();
 				Beatmap.DEFAULT_STAGE.Height = 1f / ratio;
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
@@ -459,6 +465,7 @@
 		private void Awake_Music (StageGame game, StageMusic music, StageSoundFX sfx) {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
+				m_TimingPreview.SetVerticesDirty();
 				StageObject.MusicPlaying = playing;
 				TimingNote.MusicPlaying = playing;
 				sfx.StopAllFx();
@@ -467,10 +474,12 @@
 				m_Progress.SetProgress(time, game.BPM);
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
+				m_TimingPreview.SetVerticesDirty();
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
 				m_Progress.RefreshControlUI();
+				m_TimingPreview.SetVerticesDirty();
 			};
 			StageMusic.OnPitchChanged = () => {
 				m_PitchWarningBlock.gameObject.SetActive(music.Pitch < 0.05f);
@@ -764,6 +773,11 @@
 
 			SkinSwiperUI.GetAllSkinNames = () => skin.AllSkinNames;
 			SkinSwiperUI.SkinLoadSkin = skin.LoadSkin;
+
+			TimingPreviewUI.GetBeatmap = () => project.Beatmap;
+			TimingPreviewUI.GetMusicTime = () => music.Time;
+			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed * game.MapDropSpeed;
+			TimingPreviewUI.ShowGizmos = () => game.ShowGrid;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

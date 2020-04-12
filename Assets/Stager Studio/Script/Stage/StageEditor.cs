@@ -30,6 +30,7 @@
 
 
 
+
 		#region --- VAR ---
 
 
@@ -344,7 +345,7 @@
 				var (_, _, target) = GetCastLayerIndex(ray, UnlockedMask, true);
 				if (target != null) {
 					SetTargetActive(m_Hover.gameObject, true);
-					m_Hover.transform.position = target.position;
+					m_Hover.transform.position = target.GetChild(0).position;
 					m_Hover.transform.rotation = target.GetChild(0).rotation;
 					m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
 				} else {
@@ -702,6 +703,8 @@
 
 
 		#endregion
+
+
 
 	}
 }

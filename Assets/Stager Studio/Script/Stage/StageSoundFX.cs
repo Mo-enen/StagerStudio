@@ -18,17 +18,19 @@
 			None = 0,
 			Glitch = 1,
 			Gate = 2,
-			SideChain = 3,
-			Flange = 4,
-			PitchShift = 5,
-			LowPass = 6,
-			HighPass = 7,
-			Knob = 8,
-			KnobShoot = 9,
-			Wobble = 10,
-			BitCrush = 11,
-			TapeScratch = 12,
-			ShortDelay = 13,
+			ShortDelay = 3,
+			SideChain = 4,
+			BitCrush = 5,
+
+			KnobShoot = 6,
+			TapeScratch = 7,
+
+			Flange = 8,
+			PitchShift = 9,
+			LowPass = 10,
+			HighPass = 11,
+			Knob = 12,
+			Wobble = 13,
 
 		}
 
@@ -49,21 +51,22 @@
 
 
 		// Const
-		private const string MUSIC_VOLUME_KEYWORD = "Music_Volume";
-		private const string FLANGE_VOLUME_KEYWORD = "Flange_Volume";
-		private const string FLANGE_DEPTH_KEYWORD = "Flange_Depth";
-		private const string PITCH_VOLUME_KEYWORD = "Pitch_Volume";
-		private const string LOW_VOLUME_KEYWORD = "Low_Volume";
-		private const string HIGH_VOLUME_KEYWORD = "High_Volume";
-		private const string KNOB_VOLUME_KEYWORD = "Knob_Volume";
-		private const string PITCH_PARAM_KEYWORD = "Pitch_ParamA";
-		private const string LOW_PARAM_KEYWORD = "Low_ParamA";
-		private const string HIGH_PARAM_KEYWORD = "High_ParamA";
-		private const string KNOB_PARAM_KEYWORD = "Knob_ParamA";
-		private const string WOBBLE_VOLUME_KEYWORD = "Wobble_Volume";
-		private const string WOBBLE_DEPTH_KEYWORD = "Wobble_Depth";
-		private const string WOBBLE_PARAM_KEYWORD = "Wobble_ParamA";
+		private const string VOLUME_MUSIC = "Music_Volume";
+		private const string VOLUME_FLANGE = "Flange_Volume";
+		private const string VOLUME_PITCH = "Pitch_Volume";
+		private const string VOLUME_LOW = "Low_Volume";
+		private const string VOLUME_HIGH = "High_Volume";
+		private const string VOLUME_KNOB = "Knob_Volume";
+		private const string VOLUME_WOBBLE = "Wobble_Volume";
 
+		private const string PARAM_PITCH = "Pitch_ParamA";
+		private const string PARAM_LOW = "Low_ParamA";
+		private const string PARAM_HIGH = "High_ParamA";
+		private const string PARAM_KNOB = "Knob_ParamA";
+		private const string PARAM_WOBBLE = "Wobble_ParamA";
+
+		private const string DEPTH_FLANGE = "Flange_Depth";
+		private const string DEPTH_WOBBLE = "Wobble_Depth";
 
 
 		// Handler
@@ -78,7 +81,7 @@
 		public static VoidHandler OnUseFxChanged { get; set; } = null;
 
 		// Api
-		public float Volume {
+		public float SourceVolume {
 			get => Mathf.Sqrt(Source.volume);
 			set => Source.volume = Mathf.Max(value * value, 0f);
 		}
@@ -98,19 +101,33 @@
 		private AudioSource SourceShoot {
 			get {
 				if (!_SourceShoot) {
-					_SourceShoot = gameObject.AddComponent<AudioSource>();
+					var tf = new GameObject("Shoot").transform;
+					tf.SetParent(transform);
+					_SourceShoot = tf.gameObject.AddComponent<AudioSource>();
 					_SourceShoot.playOnAwake = false;
 					_SourceShoot.loop = false;
 				}
 				return _SourceShoot;
 			}
 		}
-
+		private AudioSource SourceTapeScratch {
+			get {
+				if (!_SourceTapeScratch) {
+					var tf = new GameObject("Tape Scratch").transform;
+					tf.SetParent(transform);
+					_SourceTapeScratch = tf.gameObject.AddComponent<AudioSource>();
+					_SourceTapeScratch.playOnAwake = false;
+					_SourceTapeScratch.loop = false;
+				}
+				return _SourceTapeScratch;
+			}
+		}
 		private AudioMixer Mixer => _Mixer != null ? _Mixer : (_Mixer = m_MixerGroup.audioMixer);
 
 		// Ser
 		[SerializeField] private AudioMixerGroup m_MixerGroup = null;
 		[SerializeField] private AudioClip m_KnobShoot = null;
+		[SerializeField] private AudioClip m_TapeScratch = null;
 
 		// Data 
 		private readonly static Coroutine[] FxCors = new Coroutine[FX_COUNT] {
@@ -119,17 +136,16 @@
 		private readonly static WaitForSeconds WAIT_FOR_001_SECOND = new WaitForSeconds(0.01f);
 		private AudioSource _Source = null;
 		private AudioSource _SourceShoot = null;
+		private AudioSource _SourceTapeScratch = null;
 		private AudioMixer _Mixer = null;
-		private float GlitchMusicTime = 0f;
-		private float GlitchEnd = 0f;
-		private float GlitchNext = -1f;
-		private float GlitchGap = -1f;
-		private float GateNext = -1f;
-		private float GateGap = -1f;
-		private float GateEnd = -1f;
-		private float SideChainNext = -1f;
-		private float SideChainEnd = -1f;
-		private float SideChainGap = -1f;
+		private FxType SfxType = FxType.None;
+		private float SfxMusicTime = 0f;
+		private float SfxEnd = 0f;
+		private float SfxNext = -1f;
+		private float SfxGap = -1f;
+		private float BitCrushEnd = -1f;
+		private int BitCrushAmount = 0;
+		private int BitCrushDelta = 0;
 
 		// Saving
 		public SavingBool UseFX { get; private set; } = new SavingBool("StageSoundFX.UseFX", true);
@@ -149,36 +165,72 @@
 			SourceShoot.Play();
 			SourceShoot.Pause();
 			SourceShoot.time = 0f;
+			SourceTapeScratch.clip = m_TapeScratch;
+			while (SourceTapeScratch.clip.loadState == AudioDataLoadState.Loading) { }
+			SourceTapeScratch.Play();
+			SourceTapeScratch.Pause();
+			SourceTapeScratch.time = 0f;
 		}
 
 
 		private void FixedUpdate () {
 			// Glitch
-			if (GlitchGap > 0f && Time.unscaledTime > GlitchNext) {
-				Source.time = GlitchMusicTime;
-				GlitchNext += GlitchGap;
-				if (Time.unscaledTime > GlitchEnd) {
-					TryStopFx(FxType.Glitch);
+			if (SfxGap > 0f) {
+				// Fxing
+				switch (SfxType) {
+					case FxType.Glitch:
+						if (Time.unscaledTime > SfxNext) {
+							Source.time = SfxMusicTime;
+							SfxNext += SfxGap;
+						}
+						break;
+					case FxType.Gate:
+						if (Time.unscaledTime > SfxNext) {
+							Source.mute = !Source.mute;
+							SfxNext += SfxGap;
+						}
+						break;
+					case FxType.SideChain:
+						SourceVolume = GetMusicVolume() * Mathf.Lerp(0f, 1f, (Time.unscaledTime - SfxNext + SfxGap) / SfxGap);
+						if (Time.unscaledTime > SfxNext) {
+							SfxNext += SfxGap;
+						}
+						break;
+					case FxType.ShortDelay:
+						SourceVolume = GetMusicVolume() * Mathf.Lerp(1f, 0f, (Time.unscaledTime - SfxNext + SfxGap) / SfxGap);
+						if (Time.unscaledTime > SfxNext) {
+							Source.time = SfxMusicTime;
+							SfxNext += SfxGap;
+						}
+						break;
+				}
+				// End
+				if (Time.unscaledTime > SfxEnd) {
+					SfxGap = -1f;
+					TryStopFx(SfxType);
 				}
 			}
-			// Gate
-			if (GateGap > 0f && Time.unscaledTime > GateNext) {
-				SetMusicMute(!GetMusicMute());
-				GateNext += GateGap;
-				if (Time.unscaledTime > GateEnd) {
-					TryStopFx(FxType.Gate);
+			// BitCrush
+			if (BitCrushEnd >= 0f) {
+				BitCrushAmount = Mathf.Clamp(BitCrushAmount + (int)(BitCrushDelta * Time.fixedDeltaTime), 1, 2048);
+				if (Time.unscaledTime > BitCrushEnd) {
+					TryStopFx(FxType.BitCrush);
 				}
 			}
-			// Side Chain
-			if (SideChainGap > 0f) {
-				SetMusicVolume(
-					Mathf.Lerp(0f, 1f, (Time.unscaledTime - SideChainNext + SideChainGap) / SideChainGap)
-				);
-				if (Time.unscaledTime > SideChainNext) {
-					SideChainNext += SideChainGap;
-				}
-				if (Time.unscaledTime > SideChainEnd) {
-					TryStopFx(FxType.SideChain);
+		}
+
+
+		private void OnAudioFilterRead (float[] data, int channel) {
+			if (BitCrushEnd < 0f || data == null) { return; }
+			int len = data.Length / channel;
+			float value = 0f;
+			for (int j = 0; j < channel; j++) {
+				for (int i = 0; i < len; i++) {
+					if (i % BitCrushAmount == 0) {
+						value = data[i * channel + j];
+					} else {
+						data[i * channel + j] = value;
+					}
 				}
 			}
 		}
@@ -200,37 +252,60 @@
 			fxDuration = Mathf.Min(fxDuration, 128000);
 			var type = (FxType)typeByte;
 			TryStopFx(type);
+
 			switch (type) {
-				case FxType.Glitch: {
+
+				// Source
+				case FxType.Glitch:
+				case FxType.Gate:
+				case FxType.ShortDelay:
+				case FxType.SideChain: {
+						SfxType = type;
 						float duration = Mathf.Min(fxDuration / 1000f, 128f);
 						float gap = Mathf.Max(paramA * GetSecondPerBeat() / 100f, 0.001f);
-						Volume = GetMusicVolume();
+						SetMusicMute(true);
+						SourceVolume = GetMusicVolume();
 						Source.pitch = GetMusicPitch();
 						Source.mute = false;
-						Source.time = GlitchMusicTime = GetMusicTime();
-						SetMusicMute(true);
+						Source.time = SfxMusicTime = GetMusicTime();
 						Source.Play();
-						GlitchGap = gap;
-						GlitchNext = Time.unscaledTime + gap;
-						GlitchEnd = Time.unscaledTime + duration;
+						SfxGap = gap;
+						SfxNext = Time.unscaledTime + gap;
+						SfxEnd = Time.unscaledTime + duration;
 					}
 					break;
-				case FxType.Gate: {
-						float duration = Mathf.Min(fxDuration / 1000f, 128f);
-						float gap = Mathf.Max(paramA * GetSecondPerBeat() / 200f, 0.001f);
-						GateGap = gap;
-						GateNext = Time.unscaledTime + gap;
-						GateEnd = Time.unscaledTime + duration;
+
+				case FxType.BitCrush: {
+						BitCrushEnd = Time.unscaledTime + fxDuration / 1000f;
+						BitCrushAmount = Mathf.Max(paramA, 1);
+						BitCrushDelta = paramB;
+						Source.time = GetMusicTime();
+						Source.mute = false;
+						Source.pitch = GetMusicPitch();
+						SourceVolume = GetMusicVolume();
+						Source.Play();
+						SetMusicMute(true);
 					}
 					break;
-				case FxType.SideChain: {
-						float duration = Mathf.Min(fxDuration / 1000f, 128f);
-						float gap = Mathf.Max(paramA * GetSecondPerBeat() / 100f, 0.001f);
-						SideChainGap = gap;
-						SideChainNext = Time.unscaledTime + gap;
-						SideChainEnd = Time.unscaledTime + duration;
+
+
+				// Play Clip
+				case FxType.KnobShoot: {
+						float volume = GetMusicVolume() * paramA / 100f;
+						SourceShoot.volume = Mathf.Max(volume * volume, 0f);
+						SourceShoot.time = 0f;
+						SourceShoot.Play();
 					}
 					break;
+				case FxType.TapeScratch: {
+						SourceTapeScratch.pitch = Mathf.Clamp(paramA / 100f, 0f, 10f);
+						SourceTapeScratch.time = 0f;
+						SourceTapeScratch.Play();
+					}
+					break;
+
+
+				// Mixer
 				case FxType.Flange:
 					FxCors[(int)type] = StartCoroutine(
 						Flange(fxDuration / 1000f)
@@ -252,54 +327,32 @@
 						Knob(fxDuration / 1000f, paramA / GetSecondPerBeat() / 100f)
 					);
 					break;
-				case FxType.KnobShoot: {
-						float volume = GetMusicVolume() * paramA / 100f;
-						SourceShoot.volume = Mathf.Max(volume * volume, 0f);
-						SourceShoot.time = 0f;
-						SourceShoot.Play();
-					}
-					break;
+
 				case FxType.Wobble:
 					FxCors[(int)type] = StartCoroutine(
 						Wobble(fxDuration / 1000f, paramA / 100f)
 					);
 					break;
-				case FxType.BitCrush:
-
-
-
-					break;
-				case FxType.TapeScratch:
-
-
-
-					break;
-				case FxType.ShortDelay:
-
-
-
-					break;
-
 			}
 
 			// === Func ===
 			IEnumerator Flange (float duration) {
 				float startTime = Time.unscaledTime;
 				float endTime = startTime + duration;
-				Mixer.SetFloat(FLANGE_VOLUME_KEYWORD, 0f);
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
+				Mixer.SetFloat(VOLUME_FLANGE, 0f);
+				Mixer.SetFloat(VOLUME_MUSIC, -80f);
 				float speed = 1f / GetSecondPerBeat();
 				while (Time.unscaledTime < endTime) {
-					Mixer.SetFloat(FLANGE_DEPTH_KEYWORD, Mathf.PingPong((Time.unscaledTime - startTime) * speed, 1f));
+					Mixer.SetFloat(DEPTH_FLANGE, Mathf.PingPong((Time.unscaledTime - startTime) * speed, 1f));
 					yield return WAIT_FOR_001_SECOND;
 				}
 				TryStopFx(FxType.Flange);
 			}
 			IEnumerator PitchShift (float duration, float pitch) {
 				float endTime = Time.unscaledTime + duration;
-				Mixer.SetFloat(PITCH_VOLUME_KEYWORD, 0f);
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
-				Mixer.SetFloat(PITCH_PARAM_KEYWORD, pitch);
+				Mixer.SetFloat(VOLUME_PITCH, 0f);
+				Mixer.SetFloat(VOLUME_MUSIC, -80f);
+				Mixer.SetFloat(PARAM_PITCH, pitch);
 				yield return new WaitUntil(() => Time.unscaledTime > endTime);
 				TryStopFx(FxType.PitchShift);
 			}
@@ -307,11 +360,11 @@
 				float startTime = Time.unscaledTime;
 				float endTime = startTime + duration;
 				cutoff = Mathf.Clamp01(cutoff);
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
-				Mixer.SetFloat(low ? LOW_VOLUME_KEYWORD : HIGH_VOLUME_KEYWORD, 0f);
+				Mixer.SetFloat(VOLUME_MUSIC, -80f);
+				Mixer.SetFloat(low ? VOLUME_LOW : VOLUME_HIGH, 0f);
 				while (Time.unscaledTime < endTime) {
 					float t01 = cutoff - Mathf.PingPong((Time.unscaledTime - startTime) * delta, cutoff);
-					Mixer.SetFloat(low ? LOW_PARAM_KEYWORD : HIGH_PARAM_KEYWORD, Util.Remap(
+					Mixer.SetFloat(low ? PARAM_LOW : PARAM_HIGH, Util.Remap(
 						0f, 1f,
 						low ? 18000f : 10f,
 						low ? 480f : 6800f,
@@ -324,11 +377,11 @@
 			IEnumerator Knob (float duration, float delta) {
 				float startTime = Time.unscaledTime;
 				float endTime = startTime + duration;
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
-				Mixer.SetFloat(KNOB_VOLUME_KEYWORD, 0f);
+				Mixer.SetFloat(VOLUME_MUSIC, -80f);
+				Mixer.SetFloat(VOLUME_KNOB, 0f);
 				while (Time.unscaledTime < endTime) {
 					float t01 = 1f - Mathf.PingPong((Time.unscaledTime - startTime) * delta, 1f);
-					Mixer.SetFloat(KNOB_PARAM_KEYWORD, Mathf.Lerp(
+					Mixer.SetFloat(PARAM_KNOB, Mathf.Lerp(
 						20f, 22000f, t01 * t01 * t01
 					));
 					yield return WAIT_FOR_001_SECOND;
@@ -339,12 +392,12 @@
 				float startTime = Time.unscaledTime;
 				float endTime = startTime + duration;
 				float spb = GetSecondPerBeat();
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, -80f);
-				Mixer.SetFloat(WOBBLE_VOLUME_KEYWORD, 0f);
-				Mixer.SetFloat(WOBBLE_PARAM_KEYWORD, Mathf.Lerp(6f, 20f, rate * rate));
+				Mixer.SetFloat(VOLUME_MUSIC, -80f);
+				Mixer.SetFloat(VOLUME_WOBBLE, 0f);
+				Mixer.SetFloat(PARAM_WOBBLE, Mathf.Lerp(6f, 20f, rate * rate));
 				while (Time.unscaledTime < endTime) {
 					Mixer.SetFloat(
-						WOBBLE_DEPTH_KEYWORD,
+						DEPTH_WOBBLE,
 						1f - Mathf.PingPong((Time.unscaledTime - startTime) / spb, 1f)
 					);
 					yield return WAIT_FOR_001_SECOND;
@@ -393,52 +446,49 @@
 			// Stop Fx
 			switch (type) {
 				case FxType.Glitch:
-					GlitchGap = -1f;
-					GlitchNext = -1f;
+				case FxType.Gate:
+				case FxType.ShortDelay:
+				case FxType.SideChain:
+					SfxGap = -1f;
 					SetMusicMute(false);
 					SetMusicVolume(1f);
 					Source.mute = true;
 					Source.Pause();
 					break;
-				case FxType.Gate:
-					GateGap = -1f;
-					SetMusicMute(false);
-					SetMusicVolume(1f);
-					break;
-				case FxType.SideChain:
-					SideChainGap = -1f;
-					SetMusicMute(false);
-					SetMusicVolume(1f);
-					break;
-				case FxType.Flange:
-					Mixer.SetFloat(FLANGE_VOLUME_KEYWORD, -80f);
-					break;
-				case FxType.PitchShift:
-					Mixer.SetFloat(PITCH_VOLUME_KEYWORD, -80f);
-					break;
-				case FxType.LowPass:
-					Mixer.SetFloat(LOW_VOLUME_KEYWORD, -80f);
-					break;
-				case FxType.HighPass:
-					Mixer.SetFloat(HIGH_VOLUME_KEYWORD, -80f);
-					break;
-				case FxType.Knob:
-					Mixer.SetFloat(KNOB_VOLUME_KEYWORD, -80f);
-					break;
+
+
 				case FxType.KnobShoot:
 					SourceShoot.Pause();
 					break;
+				case FxType.TapeScratch:
+					SourceTapeScratch.Pause();
+					break;
+
+
+				case FxType.Flange:
+					Mixer.SetFloat(VOLUME_FLANGE, -80f);
+					break;
+				case FxType.PitchShift:
+					Mixer.SetFloat(VOLUME_PITCH, -80f);
+					break;
+				case FxType.LowPass:
+					Mixer.SetFloat(VOLUME_LOW, -80f);
+					break;
+				case FxType.HighPass:
+					Mixer.SetFloat(VOLUME_HIGH, -80f);
+					break;
+				case FxType.Knob:
+					Mixer.SetFloat(VOLUME_KNOB, -80f);
+					break;
 				case FxType.Wobble:
-					Mixer.SetFloat(WOBBLE_VOLUME_KEYWORD, -80f);
+					Mixer.SetFloat(VOLUME_WOBBLE, -80f);
 					break;
 				case FxType.BitCrush:
-
-					break;
-				case FxType.TapeScratch:
-
-					break;
-				case FxType.ShortDelay:
-
+					BitCrushEnd = -1f;
+					SetMusicMute(false);
+					SetMusicVolume(1f);
+					Source.mute = true;
+					Source.Pause();
 					break;
 			}
 			// Stop Cor
@@ -449,14 +499,14 @@
 			}
 			// Music Volume Back
 			bool hasCor = false;
-			for (int i = 4; i < FxCors.Length; i++) {
+			for (int i = 7; i < FxCors.Length; i++) {
 				if (FxCors[i] != null) {
 					hasCor = true;
 					break;
 				}
 			}
 			if (!hasCor) {
-				Mixer.SetFloat(MUSIC_VOLUME_KEYWORD, 0f);
+				Mixer.SetFloat(VOLUME_MUSIC, 0f);
 			}
 		}
 

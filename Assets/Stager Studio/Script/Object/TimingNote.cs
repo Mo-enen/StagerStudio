@@ -35,7 +35,6 @@
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 		[SerializeField] private TextRenderer m_LabelRenderer = null;
-		[SerializeField] private Transform m_Scaler = null;
 		[SerializeField] private Color m_PositiveTint = Color.white;
 		[SerializeField] private Color m_NegativeTint = Color.red;
 
@@ -55,10 +54,7 @@
 
 
 		private void Awake () {
-			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 0);
-			m_Scaler.localScale = m_MainRenderer.transform.localScale.Muti(new Vector3(
-				m_MainRenderer.size.x, m_MainRenderer.size.y, 1f
-			));
+			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 32761);
 		}
 
 
@@ -138,6 +134,9 @@
 			bool hEnabled = !MusicPlaying && active && selecting;
 			if (m_Highlight.gameObject.activeSelf != hEnabled) {
 				m_Highlight.gameObject.SetActive(hEnabled);
+			}
+			if (m_Highlight.gameObject.activeSelf) {
+				m_Highlight.size = Vector2.one * 0.4f + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
 			}
 
 			// Label
