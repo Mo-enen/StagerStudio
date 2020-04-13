@@ -1023,7 +1023,7 @@
 			if (!BeatmapMap.ContainsKey(key)) { return; }
 			BeatmapKey = key;
 			var map = BeatmapMap[key];
-			if (!map) { return; }
+			if (map == null) { return; }
 			LogHint(string.Format(GetLanguage(LanguageData.UI_BeatmapLoadedMSG), map.Tag), true);
 			OnBeatmapOpened(map, key);
 		}

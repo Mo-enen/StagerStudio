@@ -32,6 +32,7 @@
 		[SerializeField] private Color m_StageColor = new Color(0.5f, 0.11f, 0.65f);
 		[SerializeField] private Color m_TrackColor = new Color(0.6f, 0.61f, 0.1f);
 		[SerializeField] private Color m_NoteColor = new Color(0.11f, 0.65f, 0.52f);
+		[SerializeField] private Color m_TimingColor = new Color(0.65f, 0.11f, 0.52f);
 		[SerializeField] private Color m_SelectionColor = new Color(0.6f, 0.15f, 0.12f);
 
 		// Data
@@ -144,6 +145,19 @@
 					toFill.AddUIVertexQuad(TriangleCache);
 					hasSelection = true;
 				}
+			}
+
+			// Timing
+			VertexCache[0].color = VertexCache[1].color = VertexCache[2].color = VertexCache[3].color = m_TimingColor;
+			VertexCache[0].position.y = VertexCache[3].position.y = rect.height * 0.2f;
+			VertexCache[1].position.y = VertexCache[2].position.y = rect.height * 0.2f + rect.height * 0.3f;
+			float timingDuration = GetMusicTime01(0.4f);
+			foreach (var timing in map.TimingNotes) {
+				if (timing is null) { continue; }
+				float time01 = GetMusicTime01(timing.Time);
+				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);
+				VertexCache[2].position.x = VertexCache[3].position.x = Mathf.Lerp(left, right, time01 + timingDuration);
+				toFill.AddUIVertexQuad(VertexCache);
 			}
 
 			if (hasSelection) {

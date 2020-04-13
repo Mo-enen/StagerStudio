@@ -155,7 +155,7 @@
 			Awake_Tutorial(state);
 			Awake_Undo(project, editor, music);
 			Awake_ProjectInfo(project, game, music, menu);
-			Awake_UI(project, game, skin, state, menu, music);
+			Awake_UI(project, game, editor, skin, state, menu, music);
 
 		}
 
@@ -505,15 +505,16 @@
 		private void Awake_Editor (StageEditor editor, StageGame game, StageLibrary library, StageProject project, StageMusic music) {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
-				library.RefreshAddButton(editor.SelectingCount > 0);
+				library.RefreshAddButton(editor.SelectingCount > 0 && editor.SelectingType == 2);
 				m_Preview.SetDirty();
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				editor.ClearSelection();
+				m_TimingPreview.SetVerticesDirty();
 			};
 			StageEditor.GetBrushTypeIndex = () => library.SelectingItemTypeIndex;
 			StageEditor.GetBeatmap = () => project.Beatmap;
-			StageEditor.GetEditorActive = () => project.Beatmap && !music.IsPlaying;
+			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
 			StageEditor.GetDefaultStageBrush = () => library.GetDefaultStage;
@@ -536,7 +537,8 @@
 			StageLibrary.GetSelectingObjects = () => {
 				int finalType = -1;
 				var finalList = new List<object>();
-				editor.ForAddSelectingObjects((type, index) => {
+				editor.ForAddSelectingObjects((index) => {
+					int type = editor.SelectingType;
 					var map = project.Beatmap;
 					if (map == null || type >= 3 || index < 0) { return; }
 					if (type > finalType) {
@@ -660,7 +662,7 @@
 			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
 			ProjectInfoUI.OnBeatmapInfoChanged = (map) => {
-				if (project.Beatmap) {
+				if (project.Beatmap != null) {
 					game.BPM = project.Beatmap.BPM;
 					game.Shift = project.Beatmap.Shift;
 					game.MapDropSpeed = project.Beatmap.DropSpeed;
@@ -715,7 +717,7 @@
 		}
 
 
-		private void Awake_UI (StageProject project, StageGame game, StageSkin skin, StageState state, StageMenu menu, StageMusic music) {
+		private void Awake_UI (StageProject project, StageGame game, StageEditor editor, StageSkin skin, StageState state, StageMenu menu, StageMusic music) {
 
 			CursorUI.GetCursorTexture = (index) => (
 				index >= 0 ? m_Cursors[index].Cursor : null,
@@ -724,7 +726,7 @@
 
 			ProgressUI.GetSnapTime = (time, step) => game.SnapTime(time, step);
 
-			GridRenderer.GetAreaBetween = game.AreaBetween;
+			GridRenderer.GetAreaBetween = (timeA, timeB, muti, useDy) => useDy ? game.AreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
 			GridRenderer.GetSnapedTime = game.SnapTime;
 
 			TrackSectionRenderer.GetAreaBetween = game.AreaBetween;
@@ -777,7 +779,7 @@
 			TimingPreviewUI.GetBeatmap = () => project.Beatmap;
 			TimingPreviewUI.GetMusicTime = () => music.Time;
 			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed * game.MapDropSpeed;
-			TimingPreviewUI.ShowGizmos = () => game.ShowGrid;
+			TimingPreviewUI.ShowPreview = () => game.ShowGrid && editor.GetContainerActive(3);
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
@@ -856,7 +858,7 @@
 		private void RefreshAuthorLabel () {
 			var info = ProjectInfoUI.GetProjectInfo();
 			var map = GetBeatmap();
-			m_AuthorLabel.text = $"{info.name} | {info.mapAuthor} & {info.musicAuthor}, {(map ? map.Tag : "")} Lv{(map ? map.Level : 0)}";
+			m_AuthorLabel.text = $"{info.name} | {info.mapAuthor} & {info.musicAuthor}, {(map != null ? map.Tag : "")} Lv{(map != null ? map.Level : 0)}";
 		}
 
 

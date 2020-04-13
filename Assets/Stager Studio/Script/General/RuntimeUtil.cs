@@ -516,9 +516,9 @@
 		);
 
 
-		public static float Snap (float value, float count, bool floorToInt = false) => count > 0f ? (floorToInt ?
-			Mathf.FloorToInt(value * count) / count :
-			Mathf.Round(value * count) / count) :
+		public static float Snap (float value, float count, float offset = 0f, bool floorToInt = false) => count > 0f ? (floorToInt ?
+			Mathf.FloorToInt((value + offset) * count) / count - offset :
+			Mathf.Round((value + offset) * count) / count - offset) :
 			value;
 
 

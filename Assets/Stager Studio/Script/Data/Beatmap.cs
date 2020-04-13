@@ -550,9 +550,6 @@
 		public Note GetNoteAt (int index) => index >= 0 && index < Notes.Count ? Notes[index] : null;
 
 
-		public static implicit operator bool (Beatmap map) => map != null;
-
-
 		public void SortNotesByTime () {
 			// OldID / Note Map
 			var oldID_Note = new Dictionary<int, Note>();
@@ -578,6 +575,58 @@
 			}
 		}
 
+
+		public void SetSelect (int type, int index, bool select) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						Stages[index].Selecting = select;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						Tracks[index].Selecting = select;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						Notes[index].Selecting = select;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < TimingNotes.Count) {
+						TimingNotes[index].Selecting = select;
+					}
+					break;
+			}
+		}
+
+
+		public bool GetSelect (int type, int index) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						return Stages[index].Selecting;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						return Tracks[index].Selecting;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						return Notes[index].Selecting;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < TimingNotes.Count) {
+						return TimingNotes[index].Selecting;
+					}
+					break;
+			}
+			return false;
+		}
 
 
 	}

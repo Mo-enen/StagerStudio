@@ -29,7 +29,10 @@
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
 		public static FloatHandler GetSpeedMuti { get; set; } = null;
-		public static BoolHandler ShowGizmos { get; set; } = null;
+		public static BoolHandler ShowPreview { get; set; } = null;
+
+		// Ser
+		[SerializeField] private Color m_NegativeTint = default;
 
 		// Data
 		private readonly static UIVertex[] CacheVertex = { default, default, default, default, };
@@ -50,7 +53,7 @@
 			}
 #endif
 			toFill.Clear();
-			if (!ShowGizmos()) { return; }
+			if (!ShowPreview()) { return; }
 			var map = GetBeatmap();
 			if (map == null || map.TimingNotes == null || map.TimingNotes.Count == 0) { return; }
 			float speedMuti = GetSpeedMuti();
@@ -61,9 +64,8 @@
 			float endTime = musicTime + 1f / speedMuti;
 			float firstMidTime = endTime;
 			var rect = GetPixelAdjustedRect();
-			CacheVertex[0].color = CacheVertex[1].color = CacheVertex[2].color = CacheVertex[3].color = color;
 			CacheVertex[0].position.z = CacheVertex[1].position.z = CacheVertex[2].position.z = CacheVertex[3].position.z = 0f;
-			
+
 			// Mid
 			for (int i = 0; i < count; i++) {
 				var timing = timings[i];
@@ -124,12 +126,12 @@
 				CacheVertex[0].position.y = CacheVertex[3].position.y = Mathf.Lerp(rect.yMin, rect.yMax, y01);
 				CacheVertex[1].position.y = CacheVertex[2].position.y = Mathf.Lerp(rect.yMin, rect.yMax, nextY01);
 				// X
-				float x11 = Speed_to_UI(speed);
+				float x11 = Speed_to_UI(Mathf.Abs(speed));
 				CacheVertex[0].position.x = CacheVertex[1].position.x = Mathf.LerpUnclamped(
-					rect.xMin, rect.xMax, speed > 0f ? 0f : x11
+					rect.xMin, rect.xMax, 0f
 				);
 				CacheVertex[2].position.x = CacheVertex[3].position.x = Mathf.LerpUnclamped(
-					rect.xMin, rect.xMax, speed > 0f ? x11 : 0f
+					rect.xMin, rect.xMax, x11
 				);
 				// UV
 				const float UV_SCALE = 24f;
@@ -137,14 +139,19 @@
 				CacheVertex[1].uv0 = new Vector2(0f, nextY01 * rect.height / UV_SCALE);
 				CacheVertex[2].uv0 = new Vector2(x11 * rect.width / UV_SCALE, nextY01 * rect.height / UV_SCALE);
 				CacheVertex[3].uv0 = new Vector2(x11 * rect.width / UV_SCALE, y01 * rect.height / UV_SCALE);
+				// Tint
+				CacheVertex[0].color = CacheVertex[1].color = CacheVertex[2].color = CacheVertex[3].color = (speed > 0f ? color : m_NegativeTint);
 				// Add
 				toFill.AddUIVertexQuad(CacheVertex);
 			}
 			float Speed_to_UI (float speed) {
-
-
-
-				return speed;
+				if (speed < 2f) {
+					return speed;
+				} else if (speed < 16f) {
+					return Util.Remap(2f, 16f, 2f, 3f, speed);
+				} else {
+					return 3f;
+				}
 			}
 		}
 

@@ -25,7 +25,6 @@
 		public delegate Beatmap.Track TrackHandler ();
 		public delegate List<Beatmap.Note> NotesIntHandler (int i);
 
-
 		#endregion
 
 
@@ -51,7 +50,8 @@
 		public static NotesIntHandler GetNotesBrushAt { get; set; } = null;
 
 		// Api
-		public int SelectingCount => SelectingObjectsIndex.Count;
+		public int SelectingType { get; private set; } = -1;
+		public int SelectingCount => SelectingObjectIndexs.Count;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -73,6 +73,7 @@
 		[SerializeField] private float m_Duration = 0.5f;
 
 		// Data
+		private readonly static Dictionary<int, int> LayerToTypeMap = new Dictionary<int, int>();
 		private readonly static bool[] ItemLock = { false, false, false, false, false, };
 		private readonly static int[] ItemLayers = { -1, -1, -1, -1, -1 };
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, };
@@ -84,7 +85,7 @@
 		private LayerMask UnlockedMask = default;
 
 		// Mouse
-		private readonly static List<(int, int)> SelectingObjectsIndex = new List<(int, int)>();
+		private readonly static List<int> SelectingObjectIndexs = new List<int>();
 		private readonly static RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
 		private int HoldNoteLayer = -1;
@@ -106,9 +107,12 @@
 			// Init Layer
 			for (int i = 0; i < ITEM_LAYER_NAMES.Length; i++) {
 				ItemLayers[i] = LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]);
+				LayerToTypeMap.Add(ItemLayers[i], i);
 			}
 			HoldNoteLayer = LayerMask.NameToLayer(m_NoteHoldLayerName);
+			LayerToTypeMap.Add(HoldNoteLayer, 2);
 			SortingLayerID_UI = SortingLayer.NameToID("UI");
+
 
 			// Unlock Mask
 			RefreshUnlockedMask();
@@ -185,14 +189,19 @@
 				var map = GetBeatmap();
 				bool ctrl = Input.GetKey(KeyCode.LeftControl);
 				bool alt = Input.GetKey(KeyCode.LeftAlt);
-				int maxSelectingLayer = GetMaxSelectingLayer();
-				var (overlapLayer, overlapIndex, _) = GetCastLayerIndex(GetMouseRay(), UnlockedMask, true);
-				ClickStartInsideSelection = SelectingObjectsIndex.Count > 0 && !alt && overlapLayer < maxSelectingLayer && CheckSelecting(overlapLayer, overlapIndex, map);
-				// Select
-				if (!ClickStartInsideSelection) {
+				var (overlapType, overlapIndex, _) = GetCastTypeIndex(GetMouseRay(), UnlockedMask, true);
+				ClickStartInsideSelection = SelectingCount > 0 && overlapType == SelectingType && map.GetSelect(overlapType, overlapIndex);
+				if (ClickStartInsideSelection && !alt && !ctrl) {
+					// Move
+
+
+
+
+				} else {
+					// Select
 					if (!ctrl && !alt) { ClearSelection(); }
-					if (overlapLayer >= 0 && overlapIndex >= 0) {
-						AddSelection(overlapLayer, overlapIndex, !alt, map);
+					if (overlapType >= 0 && overlapIndex >= 0) {
+						AddSelection(overlapType, overlapIndex, !alt, map);
 						OnSelectionChanged();
 					}
 				}
@@ -209,9 +218,6 @@
 
 
 		private void OnMouseLeftDrag () {
-			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-			var mouseRay = GetMouseRay();
-			//var plane = new Plane(Vector3.back, zoneMin);
 			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0 && ClickStartInsideSelection) {
 				// Moving Selection
@@ -224,6 +230,7 @@
 		}
 
 
+		// Mouse Hover
 		private void OnMouseHover (Beatmap map) {
 
 			var (brushType, brushIndex) = GetBrushTypeIndex();
@@ -235,124 +242,168 @@
 				SetTargetActive(m_Ghost.gameObject, false);
 			}
 			if (brushIndex >= 0 && brushUnlocked) {
+				var hoverTarget = OnMouseHover_Painting_Grid(map);
+				OnMouseHover_Ghost(hoverTarget);
+			}
 
-				// Hover
-				SetTargetActive(m_Hover.gameObject, false);
+			// --- Normal Select ---
+			if (brushIndex < 0) {
+				OnMouseHover_NormalSelect();
+			}
 
-				// Paint Grid
-				bool gridEnable = false;
-				Vector3 pos = default;
-				Quaternion rot = default;
-				Vector3 scl = default;
-				float speed = 1f;
-				var ray = GetMouseRay();
-				var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
-				int hoverItemLayer = -1;
-				int hoverItemIndex = -1;
-				Transform hoverTarget = null;
-				if (brushType > 0) {
-					(hoverItemLayer, hoverItemIndex, hoverTarget) = GetCastLayerIndex(ray, ItemMasks[brushType - 1], true);
-					if (hoverTarget != null) {
-						gridEnable = true;
-						pos = hoverTarget.position;
-						rot = hoverTarget.rotation;
-						scl = hoverTarget.GetChild(0).localScale;
-						speed = hoverItemLayer == ItemLayers[1] && GetUseDynamicSpeed() ? GetTrackSpeedMuti(map, hoverItemIndex) : 1f;
-					}
-					m_Grid.Mode = hoverItemLayer == ItemLayers[0] ? 1 : 2;
-				} else {
+		}
+
+
+		private Transform OnMouseHover_Painting_Grid (Beatmap map) {
+
+			var (brushType, brushIndex) = GetBrushTypeIndex();
+
+			// Hover
+			SetTargetActive(m_Hover.gameObject, false);
+
+			// Paint Grid
+			bool gridEnable = false;
+			Vector3 pos = default;
+			Quaternion rot = default;
+			Vector3 scl = default;
+			var ray = GetMouseRay();
+			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
+			Transform hoverTarget = null;
+			m_Grid.ObjectSpeedMuti = 1f;
+			switch (brushType) {
+				case 0: // Stage
 					gridEnable = true;
 					pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
 					rot = Quaternion.identity;
 					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
 					m_Grid.Mode = 0;
-				}
-				m_Grid.ObjectSpeedMuti = speed;
-				m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
-				// Ghost
-				bool ghostEnable = false;
-				Vector2 ghostSize01 = default;
-				Vector3 ghostPos = default;
-				Quaternion ghostRot = Quaternion.identity;
-				switch (brushType) {
-					case 0: // Stage
-						var stage = GetDefaultStageBrush();
-						if (stage != null && !GetUseAbreast()) {
-							var mousePos = GetRayPosition(ray, null, true);
-							ghostEnable = mousePos.HasValue;
-							if (mousePos.HasValue) {
-								ghostSize01.x = zoneSize * stage.Width;
-								ghostSize01.y = zoneSize * stage.Height / zoneRatio;
-								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos);
-							}
-						}
-						break;
-					case 1: // Track
-						var track = GetDefaultTrackBrush();
-						if (track != null && hoverTarget != null) {
-							var mousePos = GetRayPosition(ray, null, true);
-							ghostEnable = mousePos.HasValue;
-							if (mousePos.HasValue) {
-								ghostSize01.x = track.Width * zoneSize;
-								ghostSize01.y = hoverTarget.GetChild(0).localScale.y;
-								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos, true);
-								ghostRot = hoverTarget.transform.rotation;
-							}
-						}
-						break;
-					case 2: // Note
-						var notes = GetNotesBrushAt(brushIndex);
-						if (notes != null && notes.Count > 0 && hoverTarget != null) {
-							var note = notes[0];
-							var mousePos = GetRayPosition(ray, hoverTarget, false);
-							ghostEnable = mousePos.HasValue;
-							if (mousePos.HasValue) {
-								ghostSize01.x = note.Width * zoneSize;
-								ghostSize01.y = Mathf.Max(note.Duration, 0.032f) * speed * hoverTarget.GetChild(0).localScale.y;
-								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos, false, true);
-								ghostRot = hoverTarget.transform.rotation;
-							}
-						}
-						break;
-				}
-				SetTargetActive(m_Ghost.gameObject, ghostEnable);
-				if (ghostEnable) {
-					m_Ghost.Size = ghostSize01;
-					m_Ghost.transform.localScale = ghostSize01;
-					m_GhostPivot.transform.localScale = new Vector3(GhostPivotScaleMuti.x / ghostSize01.x, GhostPivotScaleMuti.y / ghostSize01.y, 1f);
-					m_Ghost.transform.position = ghostPos;
-					m_Ghost.transform.rotation = ghostRot;
-					m_Ghost.SetSortingLayer(SortingLayerID_UI, short.MaxValue - 1);
-				}
+					break;
+				case 1: // Track
+				case 2: // Note
+					int hoverItemType;
+					int hoverItemIndex;
+					(hoverItemType, hoverItemIndex, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[brushType - 1], true);
+					if (hoverTarget != null) {
+						gridEnable = true;
+						pos = hoverTarget.position;
+						rot = hoverTarget.rotation;
+						scl = hoverTarget.GetChild(0).localScale;
+						m_Grid.ObjectSpeedMuti = hoverItemType == 1 && GetUseDynamicSpeed() ? GetTrackSpeedMuti(map, hoverItemIndex) : 1f;
+					}
+					m_Grid.Mode = brushType;
+					break;
+				case 3: // Timing
+					gridEnable = true;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					pos = new Vector3((zoneMin.x + zoneMax.x) / 2f, zoneMin.y, zoneMin.z);
+					rot = Quaternion.identity;
+					m_Grid.ObjectSpeedMuti = 1f;
+					m_Grid.Mode = 3;
+					break;
 			}
+			m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
+			return hoverTarget;
+		}
 
 
-			// --- Normal Select ---
-			if (brushIndex < 0) {
+		private void OnMouseHover_Ghost (Transform hoverTarget) {
 
+			var (brushType, brushIndex) = GetBrushTypeIndex();
 
-				SetTargetActive(m_Ghost.gameObject, false);
-
-				// Grid
-				if (m_Grid.GridEnabled) {
-					m_Grid.SetGridTransform(false);
-				}
-				// Hover
-				var ray = GetMouseRay();
-				var (_, _, target) = GetCastLayerIndex(ray, UnlockedMask, true);
-				if (target != null) {
-					SetTargetActive(m_Hover.gameObject, true);
-					m_Hover.transform.position = target.GetChild(0).position;
-					m_Hover.transform.rotation = target.GetChild(0).rotation;
-					m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
-				} else {
-					SetTargetActive(m_Hover.gameObject, false);
-				}
+			// Ghost
+			var ray = GetMouseRay();
+			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
+			bool ghostEnable = false;
+			Vector2 ghostSize01 = default;
+			Vector3 ghostPos = default;
+			Quaternion ghostRot = Quaternion.identity;
+			const float GHOST_NOTE_Y = 0.032f;
+			switch (brushType) {
+				case 0: // Stage
+					var stage = GetDefaultStageBrush();
+					if (stage != null && !GetUseAbreast()) {
+						var mousePos = GetRayPosition(ray, null, true);
+						ghostEnable = mousePos.HasValue;
+						if (mousePos.HasValue) {
+							ghostSize01.x = zoneSize * stage.Width;
+							ghostSize01.y = zoneSize * stage.Height / zoneRatio;
+							ghostPos = mousePos.Value;
+							ghostPos = m_Grid.SnapWorld(ghostPos);
+						}
+					}
+					break;
+				case 1: // Track
+					var track = GetDefaultTrackBrush();
+					if (track != null && hoverTarget != null) {
+						var mousePos = GetRayPosition(ray, null, true);
+						ghostEnable = mousePos.HasValue;
+						if (mousePos.HasValue) {
+							ghostSize01.x = track.Width * zoneSize;
+							ghostSize01.y = hoverTarget.GetChild(0).localScale.y;
+							ghostPos = mousePos.Value;
+							ghostPos = m_Grid.SnapWorld(ghostPos, true);
+							ghostRot = hoverTarget.transform.rotation;
+						}
+					}
+					break;
+				case 2: // Note
+					var notes = GetNotesBrushAt(brushIndex);
+					if (notes != null && notes.Count > 0 && hoverTarget != null) {
+						var note = notes[0];
+						var mousePos = GetRayPosition(ray, hoverTarget, false);
+						ghostEnable = mousePos.HasValue;
+						if (mousePos.HasValue) {
+							ghostSize01.x = note.Width * zoneSize;
+							ghostSize01.y = Mathf.Max(note.Duration, GHOST_NOTE_Y) * m_Grid.ObjectSpeedMuti * hoverTarget.GetChild(0).localScale.y;
+							ghostPos = mousePos.Value;
+							ghostPos = m_Grid.SnapWorld(ghostPos, false, true);
+							ghostRot = hoverTarget.transform.rotation;
+						}
+					}
+					break;
+				case 3: { // Speed
+						var mousePos = GetRayPosition(ray, null, false);
+						ghostEnable = mousePos.HasValue;
+						if (mousePos.HasValue) {
+							ghostSize01.x = 0.12f / zoneSize;
+							ghostSize01.y = GHOST_NOTE_Y / zoneSize;
+							ghostPos.x = zoneMin.x;
+							ghostPos.y = m_Grid.SnapWorld(mousePos.Value, false, false, false).y;
+							ghostPos.z = zoneMin.z;
+							ghostRot = Quaternion.identity;
+						}
+					}
+					break;
 			}
+			SetTargetActive(m_Ghost.gameObject, ghostEnable);
+			if (ghostEnable) {
+				m_Ghost.Size = ghostSize01;
+				m_Ghost.transform.localScale = ghostSize01;
+				m_GhostPivot.transform.localScale = new Vector3(GhostPivotScaleMuti.x / ghostSize01.x, GhostPivotScaleMuti.y / ghostSize01.y, 1f);
+				m_Ghost.transform.position = ghostPos;
+				m_Ghost.transform.rotation = ghostRot;
+				m_Ghost.SetSortingLayer(SortingLayerID_UI, short.MaxValue - 1);
+			}
+		}
 
+
+		private void OnMouseHover_NormalSelect () {
+			SetTargetActive(m_Ghost.gameObject, false);
+			// Grid
+			if (m_Grid.GridEnabled) {
+				m_Grid.SetGridTransform(false);
+			}
+			// Hover
+			var ray = GetMouseRay();
+			var (_, _, target) = GetCastTypeIndex(ray, UnlockedMask, true);
+			if (target != null) {
+				SetTargetActive(m_Hover.gameObject, true);
+				m_Hover.transform.position = target.GetChild(0).position;
+				m_Hover.transform.rotation = target.GetChild(0).rotation;
+				m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
+			} else {
+				SetTargetActive(m_Hover.gameObject, false);
+			}
 		}
 
 
@@ -365,142 +416,48 @@
 
 
 		// Selection
-		public bool CheckSelecting (int layer, int index, Beatmap map) {
-			switch (layer) {
-				case int l when l == ItemLayers[0]:
-					if (index >= 0 && index < map.Stages.Count) {
-						return map.Stages[index].Selecting;
-					}
-					break;
-				case int l when l == ItemLayers[1]:
-					if (index >= 0 && index < map.Tracks.Count) {
-						return map.Tracks[index].Selecting;
-					}
-					break;
-				case int l when l == ItemLayers[2]:
-				case int hl when hl == HoldNoteLayer:
-					if (index >= 0 && index < map.Notes.Count) {
-						return map.Notes[index].Selecting;
-					}
-					break;
-				case int l when l == ItemLayers[3]:
-					if (index >= 0 && index < map.TimingNotes.Count) {
-						return map.TimingNotes[index].Selecting;
-					}
-					break;
-				case int l when l == ItemLayers[4]:
-					break;
-			}
-			return false;
-		}
-
-
-		public void AddSelection (int layer, int index, bool select, Beatmap map) {
+		public void AddSelection (int type, int index, bool select, Beatmap map) {
 			// Selecting Index List
 			if (select) {
 				// Add
-				SelectingObjectsIndex.Add((layer, index));
-			} else {
+				if (SelectingType >= 0 && SelectingCount > 0 && SelectingType != type) {
+					ClearSelection();
+				}
+				SelectingType = type;
+				SelectingObjectIndexs.Add(index);
+			} else if (type == SelectingType) {
 				// Remove
-				for (int i = 0; i < SelectingObjectsIndex.Count; i++) {
-					if (SelectingObjectsIndex[i] == (layer, index)) {
-						SelectingObjectsIndex.RemoveAt(i);
+				for (int i = 0; i < SelectingCount; i++) {
+					if (SelectingObjectIndexs[i] == index) {
+						SelectingObjectIndexs.RemoveAt(i);
 						break;
 					}
 				}
 			}
 			// Set Cache
-			switch (layer) {
-				case int l when l == ItemLayers[0]:
-					if (index >= 0 && index < map.Stages.Count) {
-						map.Stages[index].Selecting = select;
-					}
-					break;
-				case int l when l == ItemLayers[1]:
-					if (index >= 0 && index < map.Tracks.Count) {
-						map.Tracks[index].Selecting = select;
-					}
-					break;
-				case int l when l == ItemLayers[2]:
-				case int hl when hl == HoldNoteLayer:
-					if (index >= 0 && index < map.Notes.Count) {
-						map.Notes[index].Selecting = select;
-					}
-					break;
-				case int l when l == ItemLayers[3]:
-					if (index >= 0 && index < map.TimingNotes.Count) {
-						map.TimingNotes[index].Selecting = select;
-					}
-					break;
-				case int l when l == ItemLayers[4]:
-					break;
-			}
+			map.SetSelect(type, index, select);
 		}
 
 
 		public void ClearSelection () {
 			var map = GetBeatmap();
-			if (!(map is null) && SelectingObjectsIndex.Count > 0) {
+			if (!(map is null) && SelectingCount > 0) {
 				// Clear Cache
-				foreach (var (layer, index) in SelectingObjectsIndex) {
-					switch (layer) {
-						case int l when l == ItemLayers[0]:
-							if (index >= 0 && index < map.Stages.Count) {
-								map.Stages[index].Selecting = false;
-							}
-							break;
-						case int l when l == ItemLayers[1]:
-							if (index >= 0 && index < map.Tracks.Count) {
-								map.Tracks[index].Selecting = false;
-							}
-							break;
-						case int l when l == ItemLayers[2]:
-						case int hl when hl == HoldNoteLayer:
-							if (index >= 0 && index < map.Notes.Count) {
-								map.Notes[index].Selecting = false;
-							}
-							break;
-						case int l when l == ItemLayers[3]:
-							if (index >= 0 && index < map.TimingNotes.Count) {
-								map.TimingNotes[index].Selecting = false;
-							}
-							break;
-						case int l when l == ItemLayers[4]:
-							break;
-					}
+				foreach (var index in SelectingObjectIndexs) {
+					map.SetSelect(SelectingType, index, false);
 				}
 				// Clear List
-				SelectingObjectsIndex.Clear();
+				SelectingObjectIndexs.Clear();
+				SelectingType = -1;
 				// Final
 				OnSelectionChanged();
 			}
 		}
 
 
-		public void ForAddSelectingObjects (System.Action<int, int> action) {   // type, index 
-			foreach (var (layer, index) in SelectingObjectsIndex) {
-				int type = -1;
-				switch (layer) {
-					case int l when l == ItemLayers[0]:
-						type = 0;
-						break;
-					case int l when l == ItemLayers[1]:
-						type = 1;
-						break;
-					case int l when l == ItemLayers[2]:
-					case int hl when hl == HoldNoteLayer:
-						type = 2;
-						break;
-					case int l when l == ItemLayers[3]:
-						type = 3;
-						break;
-					case int l when l == ItemLayers[4]:
-						type = 4;
-						break;
-				}
-				if (type >= 0) {
-					action(type, index);
-				}
+		public void ForAddSelectingObjects (System.Action<int> action) {
+			foreach (var index in SelectingObjectIndexs) {
+				action(index);
 			}
 		}
 
@@ -577,7 +534,13 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private (int layer, int ItemIndex) GetObjectIndexFromCollider (RaycastHit hit) => (hit.transform.gameObject.layer, hit.transform.parent.GetSiblingIndex());
+		private (int type, int ItemIndex) GetObjectIndexFromCollider (RaycastHit hit) {
+			int layer = hit.transform.gameObject.layer;
+			return (
+				LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1,
+				hit.transform.parent.GetSiblingIndex()
+			);
+		}
 
 
 		private void SetLock (int index, bool locked) {
@@ -608,36 +571,27 @@
 		}
 
 
-		private (int layer, int index, Transform target) GetCastLayerIndex (Ray ray, LayerMask mask, bool insideZone) {
+		private (int type, int index, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
-			int overlapLayer = -1;
+			int overlapType = -1;
 			int overlapIndex = -1;
 			Transform tf = null;
 			if (!insideZone || RayInsideZone(ray)) {
 				for (int i = 0; i < count; i++) {
-					var (layerIndex, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
-					if (layerIndex >= overlapLayer) {
-						if (layerIndex != overlapLayer) {
+					var (type, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
+					if (type >= overlapType) {
+						if (type != overlapType) {
 							overlapIndex = -1;
 						}
 						if (itemIndex >= overlapIndex) {
 							tf = CastHits[i].transform.parent;
 						}
 						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-						overlapLayer = layerIndex;
+						overlapType = type;
 					}
 				}
 			}
-			return (overlapLayer, overlapIndex, tf);
-		}
-
-
-		private int GetMaxSelectingLayer () {
-			int maxSelectingLayer = -1;
-			foreach (var (layerIndex, _) in SelectingObjectsIndex) {
-				maxSelectingLayer = Mathf.Max(maxSelectingLayer, layerIndex);
-			}
-			return maxSelectingLayer;
+			return (overlapType, overlapIndex, tf);
 		}
 
 
