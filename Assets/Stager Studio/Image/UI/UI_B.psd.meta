@@ -443,6 +443,24 @@ TextureImporter:
   - first:
       213: -3120261747380468746
     second: Pivot Ring
+  - first:
+      213: 4824580782819576835
+    second: Axis X
+  - first:
+      213: 4436141162012384539
+    second: UI_B_1
+  - first:
+      213: -7519833676518121747
+    second: Axis Y
+  - first:
+      213: -7015434109677604711
+    second: Axis Handle X
+  - first:
+      213: 9107845143076531527
+    second: Axis Handle Y
+  - first:
+      213: -4182881303555017736
+    second: Axis Ring
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -825,16 +843,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Ghost
+      name: Axis X
       rect:
         serializedVersion: 2
-        x: 380
-        y: 3
-        width: 36
-        height: 36
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 3, y: 3, z: 3, w: 3}
+        x: 6
+        y: 61
+        width: 54
+        height: 86
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -883,6 +901,90 @@ TextureImporter:
       bones: []
       spriteID: 6f3c52df87a92b4d0800000000000000
       internalID: -3120261747380468746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axis Y
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 63
+        width: 86
+        height: 54
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: dee1e1dec1f24a790800000000000000
+      internalID: -7519833676518121747
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axis Handle X
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 123
+        width: 16
+        height: 16
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 990f18bb8db24ae90800000000000000
+      internalID: -7015434109677604711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axis Handle Y
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 123
+        width: 16
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74de756f6e0956e70800000000000000
+      internalID: 9107845143076531527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axis Ring
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 58
+        width: 77
+        height: 77
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8f3faf3cd9b63f5c0800000000000000
+      internalID: -4182881303555017736
       vertices: []
       indices: 
       edges: []

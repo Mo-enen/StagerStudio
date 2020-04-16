@@ -307,6 +307,7 @@
 			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
 			[System.NonSerialized] public float TrayTime = float.MaxValue;
+			[System.NonSerialized] public Color Tint = UnityEngine.Color.white;
 
 			// API
 			public int GetMotionCount (MotionType type) {

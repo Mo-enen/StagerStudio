@@ -56,6 +56,7 @@
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private Toggle m_TintNoteTG = null;
 		[SerializeField] private Button m_HighlightCP = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -188,6 +189,12 @@
 				ani.FixedRatio = isOn;
 			});
 
+			// Tint Note
+			m_TintNoteTG.onValueChanged.AddListener((isOn) => {
+				if (!UIReady) { return; }
+				Data.TintNote = isOn;
+			});
+
 			// Type TGs
 			int len = m_TypeTgContainer.childCount;
 			for (int i = 0; i < len; i++) {
@@ -273,6 +280,7 @@
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
 				m_FixedRatioTG.isOn = ani.FixedRatio;
+				m_TintNoteTG.isOn = data.TintNote;
 				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
 					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
 				}
@@ -292,7 +300,7 @@
 
 		// UI
 		public void UI_ImportImage () {
-			if (Data != null) { return; }
+			if (Data == null) { return; }
 			var path = DialogUtil.PickFileDialog(DIALOG_ImportImageTitle, "image", "png", "jpg");
 			if (string.IsNullOrEmpty(path)) { return; }
 			var (pixels32, width, height) = Util.ImageToPixels(path);
@@ -316,7 +324,7 @@
 
 
 		public void UI_ExportImage () {
-			if (Data is null || Data.Texture is null) { return; }
+			if (Data == null || Data.Texture == null) { return; }
 			var path = DialogUtil.CreateFileDialog(DIALOG_ExportImageTitle, $"{SkinName}_Export", "png");
 			if (string.IsNullOrEmpty(path)) { return; }
 			try {

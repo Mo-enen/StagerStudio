@@ -5,6 +5,7 @@
 	using UnityEngine.UI;
 	using Data;
 	using Rendering;
+	using Saving;
 
 
 
@@ -24,6 +25,8 @@
 		public delegate Beatmap.Stage StageHandler ();
 		public delegate Beatmap.Track TrackHandler ();
 		public delegate List<Beatmap.Note> NotesIntHandler (int i);
+		public delegate void VoidStringBoolHandler (string str, bool b);
+		public delegate string StringStringHandler (string str);
 
 		#endregion
 
@@ -35,6 +38,7 @@
 
 		// Const
 		private readonly static string[] ITEM_LAYER_NAMES = { "Stage", "Track", "Note", "Speed", "Motion", };
+		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
 
 		// Handle
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
@@ -48,6 +52,8 @@
 		public static StageHandler GetDefaultStageBrush { get; set; } = null;
 		public static TrackHandler GetDefaultTrackBrush { get; set; } = null;
 		public static NotesIntHandler GetNotesBrushAt { get; set; } = null;
+		public static VoidStringBoolHandler LogHint { get; set; } = null;
+		public static StringStringHandler GetLanguage { get; set; } = null;
 
 		// Api
 		public int SelectingType { get; private set; } = -1;
@@ -92,6 +98,9 @@
 		private Ray? MouseRayDown = null;
 		private Vector2 HoverScaleMuti = Vector2.one;
 		private Vector2 GhostPivotScaleMuti = Vector2.one;
+
+		// Saving
+		public SavingBool UseGlobalBrushScale { get; set; } = new SavingBool("StageEditor.UseGlobalBrushScale", true);
 
 
 		#endregion
@@ -277,6 +286,7 @@
 					rot = Quaternion.identity;
 					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
 					m_Grid.Mode = 0;
+					m_Grid.UseDynamicSpeed = true;
 					break;
 				case 1: // Track
 				case 2: // Note
@@ -291,6 +301,7 @@
 						m_Grid.ObjectSpeedMuti = hoverItemType == 1 && GetUseDynamicSpeed() ? GetTrackSpeedMuti(map, hoverItemIndex) : 1f;
 					}
 					m_Grid.Mode = brushType;
+					m_Grid.UseDynamicSpeed = true;
 					break;
 				case 3: // Timing
 					gridEnable = true;
@@ -299,6 +310,7 @@
 					rot = Quaternion.identity;
 					m_Grid.ObjectSpeedMuti = 1f;
 					m_Grid.Mode = 3;
+					m_Grid.UseDynamicSpeed = false;
 					break;
 			}
 			m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
@@ -314,7 +326,8 @@
 			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
 			bool ghostEnable = false;
-			Vector2 ghostSize01 = default;
+			float ghostPivotX = 0.5f;
+			Vector2 ghostSize = default;
 			Vector3 ghostPos = default;
 			Quaternion ghostRot = Quaternion.identity;
 			const float GHOST_NOTE_Y = 0.032f;
@@ -325,10 +338,11 @@
 						var mousePos = GetRayPosition(ray, null, true);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
-							ghostSize01.x = zoneSize * stage.Width;
-							ghostSize01.y = zoneSize * stage.Height / zoneRatio;
+							ghostSize.x = zoneSize * stage.Width;
+							ghostSize.y = zoneSize * stage.Height / zoneRatio;
 							ghostPos = mousePos.Value;
 							ghostPos = m_Grid.SnapWorld(ghostPos);
+							ghostPivotX = 0.5f;
 						}
 					}
 					break;
@@ -338,11 +352,16 @@
 						var mousePos = GetRayPosition(ray, null, true);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
-							ghostSize01.x = track.Width * zoneSize;
-							ghostSize01.y = hoverTarget.GetChild(0).localScale.y;
+							if (UseGlobalBrushScale) {
+								ghostSize.x = track.Width * zoneSize;
+							} else {
+								ghostSize.x = track.Width * hoverTarget.GetChild(0).localScale.x;
+							}
+							ghostSize.y = hoverTarget.GetChild(0).localScale.y;
 							ghostPos = mousePos.Value;
 							ghostPos = m_Grid.SnapWorld(ghostPos, true);
 							ghostRot = hoverTarget.transform.rotation;
+							ghostPivotX = 0.5f;
 						}
 					}
 					break;
@@ -353,11 +372,16 @@
 						var mousePos = GetRayPosition(ray, hoverTarget, false);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
-							ghostSize01.x = note.Width * zoneSize;
-							ghostSize01.y = Mathf.Max(note.Duration, GHOST_NOTE_Y) * m_Grid.ObjectSpeedMuti * hoverTarget.GetChild(0).localScale.y;
+							if (UseGlobalBrushScale) {
+								ghostSize.x = note.Width * zoneSize;
+							} else {
+								ghostSize.x = note.Width * hoverTarget.GetChild(0).localScale.x;
+							}
+							ghostSize.y = Mathf.Max(note.Duration * m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti * hoverTarget.GetChild(0).localScale.y, GHOST_NOTE_Y / zoneSize);
 							ghostPos = mousePos.Value;
 							ghostPos = m_Grid.SnapWorld(ghostPos, false, true);
 							ghostRot = hoverTarget.transform.rotation;
+							ghostPivotX = 0.5f;
 						}
 					}
 					break;
@@ -365,24 +389,26 @@
 						var mousePos = GetRayPosition(ray, null, false);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
-							ghostSize01.x = 0.12f / zoneSize;
-							ghostSize01.y = GHOST_NOTE_Y / zoneSize;
+							ghostSize.x = 0.12f / zoneSize;
+							ghostSize.y = GHOST_NOTE_Y / zoneSize;
 							ghostPos.x = zoneMin.x;
 							ghostPos.y = m_Grid.SnapWorld(mousePos.Value, false, false, false).y;
 							ghostPos.z = zoneMin.z;
 							ghostRot = Quaternion.identity;
+							ghostPivotX = 0f;
 						}
 					}
 					break;
 			}
 			SetTargetActive(m_Ghost.gameObject, ghostEnable);
 			if (ghostEnable) {
-				m_Ghost.Size = ghostSize01;
-				m_Ghost.transform.localScale = ghostSize01;
-				m_GhostPivot.transform.localScale = new Vector3(GhostPivotScaleMuti.x / ghostSize01.x, GhostPivotScaleMuti.y / ghostSize01.y, 1f);
+				m_Ghost.Size = ghostSize;
+				m_Ghost.transform.localScale = ghostSize;
 				m_Ghost.transform.position = ghostPos;
 				m_Ghost.transform.rotation = ghostRot;
+				m_Ghost.Pivot = new Vector3(ghostPivotX, 0f, 0f);
 				m_Ghost.SetSortingLayer(SortingLayerID_UI, short.MaxValue - 1);
+				m_GhostPivot.transform.localScale = new Vector3(GhostPivotScaleMuti.x / ghostSize.x, GhostPivotScaleMuti.y / ghostSize.y, 1f);
 			}
 		}
 
@@ -413,6 +439,17 @@
 
 
 		#region --- API ---
+
+
+		public void SwitchUseGlobalBrushScale () {
+			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
+			try {
+				LogHint(
+					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
+					true
+				);
+			} catch { }
+		}
 
 
 		// Selection

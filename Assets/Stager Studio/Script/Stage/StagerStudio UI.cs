@@ -35,6 +35,7 @@
 			ShowIndexLabel,
 			ShowGrid,
 			ShowKeypress,
+			BrushScale,
 
 		}
 
@@ -86,7 +87,7 @@
 
 
 		// MSG
-		private void Awake_Setting_UI (StageSoundFX sfx, StageMusic music, StageGame game) {
+		private void Awake_Setting_UI (StageSoundFX sfx, StageMusic music, StageGame game, StageEditor editor) {
 
 			// Input
 			InputItemMap.Add(InputType.Frame, ((str) => {
@@ -179,6 +180,9 @@
 				ToggleItemMap[ToggleType.ShowKeypress].saving.Value = isOn;
 			}, () => m_Keypress.gameObject.activeSelf, new SavingBool("StageGame.ShowKeypress", false), true));
 
+			ToggleItemMap.Add(ToggleType.BrushScale, ((isOn) => {
+				editor.UseGlobalBrushScale.Value = isOn;
+			}, () => editor.UseGlobalBrushScale.Value, editor.UseGlobalBrushScale, true));
 
 
 			// Slider

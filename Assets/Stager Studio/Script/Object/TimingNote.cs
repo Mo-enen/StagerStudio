@@ -35,6 +35,7 @@
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 		[SerializeField] private TextRenderer m_LabelRenderer = null;
+		[SerializeField] private Transform m_Col = null;
 		[SerializeField] private Color m_PositiveTint = Color.white;
 		[SerializeField] private Color m_NegativeTint = Color.red;
 
@@ -54,7 +55,7 @@
 
 
 		private void Awake () {
-			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 32761);
+			m_LabelRenderer.SetSortingLayer(SortingLayerID_UI, 4);
 		}
 
 
@@ -94,6 +95,11 @@
 
 
 		private void LateUpdate () {
+			// Active
+			if (m_Col.gameObject.activeSelf != m_MainRenderer.enabled) {
+				m_Col.gameObject.SetActive(m_MainRenderer.enabled);
+			}
+			// Late Note
 			if (LateNote == null || !LateNote.Active) { return; }
 			float noteY01 = LateNote.NoteDropPos - MusicTime * LateNote.SpeedMuti;
 			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01);
@@ -136,7 +142,7 @@
 				m_Highlight.gameObject.SetActive(hEnabled);
 			}
 			if (m_Highlight.gameObject.activeSelf) {
-				m_Highlight.size = Vector2.one * 0.4f + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
+				m_Highlight.size = Vector2.one * 0.4f + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.0618f);
 			}
 
 			// Label

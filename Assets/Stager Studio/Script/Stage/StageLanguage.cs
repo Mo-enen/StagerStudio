@@ -293,7 +293,7 @@ namespace StagerStudio.Editor {
 
 
 		public override void OnInspectorGUI () {
-			base.OnInspectorGUI();
+
 			Space(4);
 
 			var leftLabelStyle = new GUIStyle(EditorStyles.centeredGreyMiniLabel) { alignment = TextAnchor.MiddleLeft, };
@@ -318,9 +318,9 @@ namespace StagerStudio.Editor {
 
 			// Bar
 			LayoutH(() => {
-				GUI.Label(GUIRect(0, 18), "Key", leftLabelStyle);
+				GUI.Label(GUIRect(0, 18), "Key × " + Datas[0].Length.ToString(), leftLabelStyle);
 				foreach (var language in Languages) {
-					EditorGUI.DelayedTextField(GUIRect(0, 18), language.ToString(), leftLabelStyle);
+					EditorGUI.DelayedTextField(GUIRect(0, 18), (target as StageLanguage).GetDisplayName(language), leftLabelStyle);
 				}
 			});
 

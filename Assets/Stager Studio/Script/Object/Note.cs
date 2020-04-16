@@ -221,6 +221,8 @@
 			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
 			bool highlighing = (type == SkinType.HoldNote || type == SkinType.Comment || type == SkinType.SlideNote) && MusicTime > Time && MusicTime < Time + Duration;
 			float noteZ = GetNoteZ(noteData);
+			var tint = highlighing ? HighlightTints[(int)type] : WHITE_32;
+			if (TintNote) { tint *= linkedTrack.Tint; }
 
 			// Movement
 			var (noteZonePos, rotX, rotZ) = Track.Inside(
@@ -248,7 +250,7 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || activeSelf;
-			MainRenderer.Tint = highlighing ? HighlightTints[(int)type] : WHITE_32;
+			MainRenderer.Tint = tint;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = MusicTime - Time;
@@ -277,8 +279,12 @@
 
 			// Highlight
 			bool highlighting = !MusicPlaying && active && selecting;
-			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
-				Highlight.gameObject.SetActive(highlighting);
+			if ((Highlight != null) != highlighting) {
+				if (highlighting) {
+					InstantiateHighlight();
+				} else {
+					Destroy(Highlight.gameObject);
+				}
 			}
 
 			// Col

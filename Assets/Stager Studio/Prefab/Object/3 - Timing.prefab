@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 1398407539520907666}
   - component: {fileID: 368720427764027685}
   m_Layer: 12
-  m_Name: 3 - Speed
+  m_Name: 3 - Timing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -51,6 +51,7 @@ MonoBehaviour:
   m_MainRenderer: {fileID: 7728667973207816046}
   m_Highlight: {fileID: 583818811190487742}
   m_LabelRenderer: {fileID: 3214920307257600984}
+  m_Col: {fileID: 1656124352844751143}
   m_PositiveTint: {r: 1, g: 1, b: 1, a: 1}
   m_NegativeTint: {r: 0.8235294, g: 0.25816992, b: 0.145098, a: 1}
 --- !u!1 &3959314893052432644
@@ -122,7 +123,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
   m_SortingLayer: 14
-  m_SortingOrder: 10
+  m_SortingOrder: 2
   m_Sprite: {fileID: -994478920888325196, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -278,7 +279,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
   m_SortingLayer: 14
-  m_SortingOrder: 11
+  m_SortingOrder: 3
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Color: {r: 0.8235295, g: 0.5529412, b: 0.14509805, a: 1}

@@ -48,12 +48,13 @@
 		public static bool ShowGrid { get; set; } = true;
 		public static int MaterialZoneID { get; set; } = 0;
 		public static int SortingLayerID_Gizmos { get; set; } = -1;
+		public static bool TintNote { get; set; } = false;
 
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
 		protected TextRenderer Label => m_Label;
-		protected SpriteRenderer Highlight => m_Highlight;
+		protected SpriteRenderer Highlight { get; private set; } = null;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
 		protected Vector2? ColSize { get; set; } = null;
@@ -63,14 +64,15 @@
 		[SerializeField] private ObjectRenderer m_MainRenderer = null;
 		[SerializeField] private BoxCollider m_Col = null;
 		[SerializeField] private TextRenderer m_Label = null;
-		[SerializeField] private SpriteRenderer m_Highlight = null;
+		[SerializeField] private SpriteRenderer m_HighlightPrefab = null;
+		[SerializeField] private Transform m_HighlightRoot = null;
+		[SerializeField] private float m_HighlightScaleMuti = 0f;
 
 		// Data
 		protected static SkinData Skin = null;
 		private static (Vector3 size, bool fixedRatio)[] RectSizes = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
-		private float HighlightScaleMuti = 0f;
 
 
 		#endregion
@@ -80,7 +82,6 @@
 			if (m_Label != null) {
 				m_Label.SetSortingLayer(SortingLayerID_Gizmos, 0);
 			}
-			HighlightScaleMuti = m_Highlight != null ? 1f / m_Highlight.transform.localScale.x : 0f;
 			MainRenderer.SkinData = Skin;
 			VanishDuration = Skin != null ? Skin.VanishDuration : 0f;
 		}
@@ -98,19 +99,28 @@
 				m_Col.gameObject.SetActive(ColSize.HasValue);
 			}
 			if (MusicPlaying) { return; }
+			// Collider
 			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
 				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.01f);
 				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
 				PrevColSize = m_Col.size = size;
 				m_Col.center = offset;
-				m_Highlight.transform.localPosition = offset;
-
 				if (ColRot.HasValue) {
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
 			}
-			if (ColSize.HasValue && m_Highlight.gameObject.activeSelf) {
-				m_Highlight.size = Vector2.Max(ColSize.Value * HighlightScaleMuti, Vector2.one * 0.36f) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.1f);
+			// Highlight
+			if (Highlight != null) {
+				if (!Highlight.gameObject.activeSelf) {
+					Highlight.gameObject.SetActive(true);
+				}
+				if (ColSize.HasValue) {
+					Highlight.transform.localPosition = m_Col.center;
+					Highlight.size = Vector2.Max(
+						ColSize.Value * m_HighlightScaleMuti,
+						Vector2.one * 0.36f
+					) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.0618f);
+				}
 			}
 		}
 
@@ -214,6 +224,7 @@
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
 			RectSizes = new (Vector3, bool)[typeCount];
 			HighlightTints = new Color32[typeCount];
+			TintNote = skin.TintNote;
 			if (skin == null) { return; }
 			for (int i = 0; i < RectSizes.Length; i++) {
 				// Sizes
@@ -255,6 +266,14 @@
 			}
 		}
 
+
+		protected void InstantiateHighlight () {
+			if (m_HighlightRoot.childCount > 0) {
+				m_HighlightRoot.DestroyAllChildImmediately();
+			}
+			Highlight = Instantiate(m_HighlightPrefab, m_HighlightRoot);
+			Highlight.transform.localScale = Vector3.one / m_HighlightScaleMuti;
+		}
 
 
 		#endregion

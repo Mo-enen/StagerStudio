@@ -68,6 +68,7 @@
 			int trackIndex = transform.GetSiblingIndex();
 			var trackData = !(Beatmap is null) && trackIndex < Beatmap.Tracks.Count ? Beatmap.Tracks[trackIndex] : null;
 			if (trackData is null) {
+				Update_Gizmos(false, false, trackIndex, 1f);
 				gameObject.SetActive(false);
 				return;
 			}
@@ -145,7 +146,7 @@
 			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
 			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
-			m_TrackTintRenderer.Tint = GetTrackColor(trackData);
+			m_TrackTintRenderer.Tint = trackData.Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			m_TrackTintRenderer.Alpha *= MainRenderer.Alpha;
 			MainRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder());
@@ -165,8 +166,12 @@
 
 			// Highlight
 			bool highlighting = !MusicPlaying && trackActive && selecting;
-			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
-				Highlight.gameObject.SetActive(highlighting);
+			if ((Highlight != null) != highlighting) {
+				if (highlighting) {
+					InstantiateHighlight();
+				} else {
+					Destroy(Highlight.gameObject);
+				}
 			}
 
 			// Section
@@ -209,10 +214,10 @@
 		public static bool GetTrackActive (Beatmap.Track data) => MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
-		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f, 2f);
+		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f, 128f);
 
 
-		public static float GetTrackX (Beatmap.Track data) => Mathf.Clamp01(data.X + Evaluate(data.Xs, MusicTime - data.Time));
+		public static float GetTrackX (Beatmap.Track data) => data.X + Evaluate(data.Xs, MusicTime - data.Time);
 
 
 		public static Color GetTrackColor (Beatmap.Track data) => EvaluateColor(data.Colors, MusicTime - data.Time, PaletteColor(data.Color));

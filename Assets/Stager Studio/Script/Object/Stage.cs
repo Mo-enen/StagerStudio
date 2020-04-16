@@ -133,8 +133,12 @@
 
 			// Highlight
 			bool highlighting = !MusicPlaying && stageActive && selecting;
-			if (Highlight != null && Highlight.gameObject.activeSelf != highlighting) {
-				Highlight.gameObject.SetActive(highlighting);
+			if ((Highlight != null) != highlighting) {
+				if (highlighting) {
+					InstantiateHighlight();
+				} else {
+					Destroy(Highlight.gameObject);
+				}
 			}
 
 		}

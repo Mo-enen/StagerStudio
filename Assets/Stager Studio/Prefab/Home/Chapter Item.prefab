@@ -505,6 +505,7 @@ GameObject:
   - component: {fileID: 3834248574817542361}
   - component: {fileID: 8945921263491216559}
   - component: {fileID: 4423863117782631516}
+  - component: {fileID: 6029991564689449432}
   m_Layer: 0
   m_Name: Chapter Item
   m_TagString: Untagged
@@ -678,3 +679,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &6029991564689449432
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8876300012325130670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1ac56bf05699194f95b513302ec4dcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_TipKey: Tip.Home.ChapterItem
+  m_HotKey: 

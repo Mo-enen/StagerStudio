@@ -37,6 +37,7 @@ Available Actions:
 	Shortcut.Seek.Negative
 	Shortcut.PitchUp
 	Shortcut.PitchDown
+	Shortcut.GlobalBrushScale
 
 Available Keys:
 

@@ -37,6 +37,9 @@ Start tutorial now?
 Dialog.TweenEditor.CancelConfirm
 Close tween editor? Changes will not be save.
 
+Editor.Hint.GlobalBrushScale
+Global brush size {0}
+
 Game.Hint.AbreastWidth
 Stage width {0}
 
@@ -45,6 +48,9 @@ Drop Speed × {0}
 
 Game.Hint.Pitch
 Music speed {0}
+
+Game.Hint.ShowGrid
+Grid and Auxiliary {0}
 
 Menu.AutoSave.0
 Auto save every 30 sec
@@ -80,22 +86,40 @@ Menu.ChapterItem.ShowInExplorer
 Show in Explorer
 
 Menu.Grid.bps0
-3 Beat per Section
+2 Beats per Section
 
 Menu.Grid.bps1
-4 Beat per Section
+3 Beats per Section
 
-Menu.Grid.x0
-Grid X ×1
+Menu.Grid.bps2
+4 Beats per Section
 
-Menu.Grid.x1
-Grid X ×3
+Menu.Grid.x00
+Stage Grid X ×1
 
-Menu.Grid.x2
-Grid X ×7
+Menu.Grid.x01
+Stage Grid X ×7
 
-Menu.Grid.x3
-Grid X ×15
+Menu.Grid.x02
+Stage Grid X ×15
+
+Menu.Grid.x10
+Track Grid X ×1
+
+Menu.Grid.x11
+Track Grid X ×7
+
+Menu.Grid.x12
+Track Grid X ×15
+
+Menu.Grid.x20
+Note Grid X ×1
+
+Menu.Grid.x21
+Note Grid X ×7
+
+Menu.Grid.x22
+Note Grid X ×15
 
 Menu.Grid.y0
 Grid Y ×1
@@ -394,6 +418,9 @@ Hide Stage
 Shortcut.Eye.Track
 Hide Track
 
+Shortcut.GlobalBrushScale
+Global Brush Scale
+
 Shortcut.Lock.Motion
 Lock Motion Note
 
@@ -547,6 +574,24 @@ Open offical website www.stager.studio
 Tip.Grid
 Show grid (right click to open menu)
 
+Tip.Home.ChapterItem
+Chapter, a folder contains several projects
+
+Tip.Home.Menu
+Menu
+
+Tip.Home.New
+Create new project or chapter
+
+Tip.Home.ProjectItem
+Project (double click to open)
+
+Tip.Home.Trushbin
+Trushbin, completely remove or restore the deleted project
+
+Tip.Home.Tutorial
+Start tutorial
+
 Tip.Lib.Motion
 Motion brush
 
@@ -643,8 +688,14 @@ Show preview of the beatmap on the progress bar or not
 Tip.Setting.Reset
 Reset all settings
 
+Tip.Setting.ScaleBrush
+Change brush size by stage and track size or not
+
 Tip.Setting.SFX
 Use sound effects or not, turning this off will reduce CPU load
+
+Tip.Setting.ShowGrid
+Show grid and auxiliary lines
 
 Tip.Setting.ShowIndexLabel
 Show the index label or not
@@ -865,8 +916,11 @@ Use Positive Mouse Scroll
 UI.Setting.Preview
 Show Beatmap Preview
 
+UI.Setting.ScaleBrush
+Use Global Scale for Brushs
+
 UI.Setting.ShowGrid
-Show Auxiliary Grid for Brushs and Tracks
+Show Grid and Auxiliary
 
 UI.Setting.ShowIndexLabelIndexLabel
 Show Index Label for Stage,Track and Note
@@ -982,6 +1036,9 @@ X
 UI.SkinEditor.SubY
 Y
 
+UI.SkinEditor.TintNote
+Tint Note
+
 UI.SkinEditor.VanishDuration
 Vanish
 
@@ -1020,6 +1077,12 @@ Tween
 
 UI.Tutorial.BoardMSG
 Click Here to Start Tutorial
+
+UI.TweenEditor.AddPoint
++ Point
+
+UI.TweenEditor.DeletePoint
+- Point
 
 UI.TweenEditor.Snap
 Snap

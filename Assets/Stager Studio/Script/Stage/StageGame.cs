@@ -36,6 +36,7 @@
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";
+		private const string SHOW_GRID_HINT = "Game.Hint.ShowGrid";
 		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 1f, };
 
 		// Handler
@@ -98,8 +99,10 @@
 
 		// Saving
 		public SavingBool ShowGrid { get; private set; } = new SavingBool("StageGame.ShowGrid", true);
-		public SavingInt GridCountX { get; private set; } = new SavingInt("StageGame.GridCountX", 3);
-		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 1);
+		public SavingInt GridCountX0 { get; private set; } = new SavingInt("StageGame.GridCountX0", 7);
+		public SavingInt GridCountX1 { get; private set; } = new SavingInt("StageGame.GridCountX1", 7);
+		public SavingInt GridCountX2 { get; private set; } = new SavingInt("StageGame.GridCountX2", 7);
+		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 4);
 		public SavingInt BeatPerSection { get; private set; } = new SavingInt("StageGame.BeatPerSection", 4);
 		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 1);
 
@@ -123,7 +126,9 @@
 
 		private void Start () {
 			SetShowGrid(ShowGrid);
-			SetGridCountX(GridCountX);
+			SetGridCountX0(GridCountX0);
+			SetGridCountX1(GridCountX1);
+			SetGridCountX2(GridCountX2);
 			SetGridCountY(GridCountY);
 			SetBeatPerSection(BeatPerSection);
 			SetAbreastWidth(AbreastWidthIndex);
@@ -399,13 +404,6 @@
 			UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
 
 
-		// Grid
-		public float SnapTime (float time, int step) => SnapTime(time, 60f / BPM / step, Mathf.Repeat(Shift, 60f / BPM));
-
-
-		public float SnapTime (float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
-
-
 		// Abreast
 		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreast, true);
 
@@ -494,7 +492,16 @@
 
 
 		// Grid
-		public void SwitchShowGrid () => SetShowGrid(!ShowGrid);
+		public float SnapTime (float time, int step) => SnapTime(time, 60f / BPM / step, Mathf.Repeat(Shift, 60f / BPM));
+
+
+		public float SnapTime (float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
+
+
+		public void SwitchShowGrid () {
+			SetShowGrid(!ShowGrid);
+			LogGameHint_Key(SHOW_GRID_HINT, ShowGrid.Value ? "ON" : "OFF", true);
+		}
 
 
 		public void SetShowGrid (bool show) {
@@ -503,8 +510,20 @@
 		}
 
 
-		public void SetGridCountX (int x) {
-			GridCountX.Value = Mathf.Clamp(x, 1, 32);
+		public void SetGridCountX0 (int x) {
+			GridCountX0.Value = Mathf.Clamp(x, 1, 32);
+			OnGridChanged();
+		}
+
+
+		public void SetGridCountX1 (int x) {
+			GridCountX1.Value = Mathf.Clamp(x, 1, 32);
+			OnGridChanged();
+		}
+
+
+		public void SetGridCountX2 (int x) {
+			GridCountX2.Value = Mathf.Clamp(x, 1, 32);
 			OnGridChanged();
 		}
 
@@ -609,14 +628,14 @@
 
 
 		// Misc
-		private void LogGameHint_Key (string key, string arg, bool flash) {
+		private void LogGameHint_Key (string key, string arg, bool flash) => LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
+
+
+		private void LogGameHint_Message (string msg, bool flash) {
 			try {
-				LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
+				LogHint(msg, flash);
 			} catch { }
 		}
-
-
-		private void LogGameHint_Message (string msg, bool flash) => LogHint(msg, flash);
 
 
 		#endregion

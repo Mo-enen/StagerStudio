@@ -13,7 +13,7 @@
 			XX = 0,
 			X_ = 1,
 			XY = 2,
-			_Y_StaticSpeed = 3,
+			_Y = 3,
 		}
 
 
@@ -51,15 +51,6 @@
 				}
 			}
 		}
-		public int CountX {
-			get => _CountX;
-			set {
-				if (value != _CountX) {
-					_CountX = value;
-					SetDirty();
-				}
-			}
-		}
 		public float TimeGap {
 			get => _TimeGap;
 			set {
@@ -90,6 +81,8 @@
 		}
 		public bool GridShowed { get; private set; } = false;
 		public bool GridEnabled { get; private set; } = false;
+		public bool UseDynamicSpeed { get; set; } = true;
+		public int CountX => _CountXs[Mode];
 
 		// Ser
 		[SerializeField] private Sprite m_SpriteV = null;
@@ -99,7 +92,7 @@
 		[SerializeField] private ushort m_Thickness = 1;
 
 		// Data
-		private int _CountX = 0;
+		private readonly int[] _CountXs = { 0, 0, 0, 0, };
 		private float _TimeGap = 1f;
 		private float _TimeOffset = 0f;
 		private float _MusicTime = -1f;
@@ -131,7 +124,7 @@
 			Tint = m_Tints[(int)m_Mode];
 
 			// X
-			if (Mode != (int)GridMode._Y_StaticSpeed) {
+			if (Mode != (int)GridMode._Y) {
 				ForAllX((x) => AddQuad01(
 					x - thick / Scale.x,
 					x + thick / Scale.x,
@@ -146,7 +139,7 @@
 			ForAllY((y) => AddQuad01(
 				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
 				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
-			), false, Mode != (int)GridMode._Y_StaticSpeed);
+			), false, UseDynamicSpeed);
 
 		}
 
@@ -172,7 +165,7 @@
 		public Vector3 SnapWorld (Vector3 pos, bool groundY = false, bool floorToIntY = false, bool useDynamicSpeed = true) {
 			if (!RendererEnable) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
-			pos.x = Util.Snap(pos.x, CountX + 1);
+			pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
 			if (groundY) {
 				pos.y = 0f;
 			} else {
@@ -192,10 +185,18 @@
 		}
 
 
+		public void SetCountX (int mode, int value) {
+			if (value != _CountXs[mode]) {
+				_CountXs[mode] = value;
+				SetDirty();
+			}
+		}
+
+
 		// LGC
 		private void ForAllX (System.Action<float> action) {
 			int countX = Mathf.Clamp(CountX + 1, 1, 32);
-			for (int i = 0; i <= countX; i++) {
+			for (int i = CountX > 1 ? 0 : 1; i <= (CountX > 1 ? countX : countX - 1); i++) {
 				action((float)i / countX);
 			}
 		}
@@ -214,7 +215,7 @@
 					}
 					break;
 				case GridMode.XY:
-				case GridMode._Y_StaticSpeed: {
+				case GridMode._Y: {
 						float speedMuti = SpeedMuti * ObjectSpeedMuti;
 						float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
 						float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(

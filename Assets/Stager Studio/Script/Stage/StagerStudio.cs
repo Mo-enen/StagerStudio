@@ -142,7 +142,7 @@
 
 			Awake_Message(language, shortcut);
 			Awake_Setting(skin, language, shortcut, menu);
-			Awake_Setting_UI(sfx, music, game);
+			Awake_Setting_UI(sfx, music, game, editor);
 			Awake_Menu(menu, game, project);
 			Awake_Object(project, game, music, sfx);
 			Awake_Project(project, editor, game, music, sfx);
@@ -206,12 +206,14 @@
 			SkinEditorUI.GetLanguage = language.Get;
 			SettingUI.GetLanguage = language.Get;
 			StageLibrary.GetLanguage = language.Get;
+			StageEditor.GetLanguage = language.Get;
 			// Misc
 			TooltipUI.SetTip = m_Hint.SetTip;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
 			StageLibrary.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;
+			StageEditor.LogHint = m_Hint.SetHint;
 			StageLanguage.OnLanguageLoaded = () => {
 				TryRefreshSetting();
 				foreach (var text in m_LanguageTexts) {
@@ -246,10 +248,18 @@
 
 		private void Awake_Menu (StageMenu menu, StageGame game, StageProject project) {
 			// Grid
-			menu.AddCheckerFunc("Menu.Grid.x0", () => game.GridCountX == 1);
-			menu.AddCheckerFunc("Menu.Grid.x1", () => game.GridCountX == 3);
-			menu.AddCheckerFunc("Menu.Grid.x2", () => game.GridCountX == 7);
-			menu.AddCheckerFunc("Menu.Grid.x3", () => game.GridCountX == 15);
+			menu.AddCheckerFunc("Menu.Grid.x00", () => game.GridCountX0 == 1);
+			menu.AddCheckerFunc("Menu.Grid.x01", () => game.GridCountX0 == 7);
+			menu.AddCheckerFunc("Menu.Grid.x02", () => game.GridCountX0 == 15);
+
+			menu.AddCheckerFunc("Menu.Grid.x10", () => game.GridCountX1 == 1);
+			menu.AddCheckerFunc("Menu.Grid.x11", () => game.GridCountX1 == 7);
+			menu.AddCheckerFunc("Menu.Grid.x12", () => game.GridCountX1 == 15);
+
+			menu.AddCheckerFunc("Menu.Grid.x20", () => game.GridCountX2 == 1);
+			menu.AddCheckerFunc("Menu.Grid.x21", () => game.GridCountX2 == 7);
+			menu.AddCheckerFunc("Menu.Grid.x22", () => game.GridCountX2 == 15);
+
 			menu.AddCheckerFunc("Menu.Grid.y0", () => game.GridCountY == 1);
 			menu.AddCheckerFunc("Menu.Grid.y1", () => game.GridCountY == 2);
 			menu.AddCheckerFunc("Menu.Grid.y2", () => game.GridCountY == 4);
@@ -261,8 +271,9 @@
 			menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(project.UI_AutoSaveTime - 600f) < 1f);
 			menu.AddCheckerFunc("Menu.AutoSave.Off", () => project.UI_AutoSaveTime < 0f);
 			// Beat per Section
-			menu.AddCheckerFunc("Menu.Grid.bps0", () => game.BeatPerSection == 3);
-			menu.AddCheckerFunc("Menu.Grid.bps1", () => game.BeatPerSection == 4);
+			menu.AddCheckerFunc("Menu.Grid.bps0", () => game.BeatPerSection == 2);
+			menu.AddCheckerFunc("Menu.Grid.bps1", () => game.BeatPerSection == 3);
+			menu.AddCheckerFunc("Menu.Grid.bps2", () => game.BeatPerSection == 4);
 		}
 
 
@@ -883,7 +894,9 @@
 
 
 		private void RefreshGridRenderer (StageGame game) {
-			m_GridRenderer.CountX = game.GridCountX;
+			m_GridRenderer.SetCountX(0, game.GridCountX0);
+			m_GridRenderer.SetCountX(1, game.GridCountX1);
+			m_GridRenderer.SetCountX(2, game.GridCountX2);
 			m_GridRenderer.TimeGap = 60f / game.BPM / game.GridCountY;
 			m_GridRenderer.TimeGap_Main = 60f / game.BPM;
 			m_GridRenderer.TimeOffset = game.Shift;

@@ -134,7 +134,7 @@
 					rect.xMin, rect.xMax, x11
 				);
 				// UV
-				const float UV_SCALE = 24f;
+				const float UV_SCALE = 18f;
 				CacheVertex[0].uv0 = new Vector2(0f, y01 * rect.height / UV_SCALE);
 				CacheVertex[1].uv0 = new Vector2(0f, nextY01 * rect.height / UV_SCALE);
 				CacheVertex[2].uv0 = new Vector2(x11 * rect.width / UV_SCALE, nextY01 * rect.height / UV_SCALE);
