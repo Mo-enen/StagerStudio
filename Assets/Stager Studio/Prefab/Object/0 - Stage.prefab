@@ -53,7 +53,7 @@ MonoBehaviour:
   m_HighlightPrefab: {fileID: 6959574560222653280, guid: 6f0481f7b2b3bc7469183a17a13df3e7,
     type: 3}
   m_HighlightRoot: {fileID: 3414794851520666827}
-  m_HighlightScaleMuti: 6
+  m_HighlightScaleMuti: 12
   m_JudgelineRenderer: {fileID: 1565432842165653743}
 --- !u!1 &1225454915215906052
 GameObject:

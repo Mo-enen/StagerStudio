@@ -1149,6 +1149,7 @@ GameObject:
   - component: {fileID: 84390046}
   - component: {fileID: 84390049}
   - component: {fileID: 84390048}
+  - component: {fileID: 84390047}
   m_Layer: 0
   m_Name: Arrow Y
   m_TagString: Untagged
@@ -1173,6 +1174,19 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &84390047
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 84390045}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Type: 11
 --- !u!61 &84390048
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3292,6 +3306,7 @@ GameObject:
   - component: {fileID: 332377902}
   - component: {fileID: 332377905}
   - component: {fileID: 332377904}
+  - component: {fileID: 332377903}
   m_Layer: 0
   m_Name: Arrow X
   m_TagString: Untagged
@@ -3316,6 +3331,19 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &332377903
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332377901}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Type: 10
 --- !u!61 &332377904
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -14114,6 +14142,10 @@ MonoBehaviour:
     Offset: {x: 23, y: 23}
   - Cursor: {fileID: 2800000, guid: 934215cc7ab829a43a5870f0a301ec1c, type: 3}
     Offset: {x: 24, y: 24}
+  - Cursor: {fileID: 2800000, guid: 935b10ab4f779bd4088e8c1121e6d594, type: 3}
+    Offset: {x: 9, y: 8}
+  - Cursor: {fileID: 2800000, guid: 0bbb3a98506659b458d74bb99ea97619, type: 3}
+    Offset: {x: 9, y: 8}
 --- !u!1 &1491978200
 GameObject:
   m_ObjectHideFlags: 0
@@ -15287,6 +15319,7 @@ GameObject:
   - component: {fileID: 1582119750}
   - component: {fileID: 1582119754}
   - component: {fileID: 1582119753}
+  - component: {fileID: 1582119751}
   m_Layer: 0
   m_Name: Ring
   m_TagString: Untagged
@@ -15310,6 +15343,19 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1582119751
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1582119749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Type: 4
 --- !u!61 &1582119753
 BoxCollider2D:
   m_ObjectHideFlags: 0

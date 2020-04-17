@@ -61,6 +61,9 @@
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
+		private Transform AxisMoveX => m_MoveAxis.GetChild(0);
+		private Transform AxisMoveY => m_MoveAxis.GetChild(1);
+		private Transform AxisMoveXY => m_MoveAxis.GetChild(2);
 
 		// Ser
 		[SerializeField] private Toggle[] m_EyeTGs = null;
@@ -171,9 +174,13 @@
 				if (m_Grid.GridEnabled) {
 					m_Grid.SetGridTransform(false);
 				}
-				SetTargetActive(m_Hover.gameObject, false);
+				if (m_Hover.gameObject.activeSelf) {
+					SetTargetActive(m_Hover.gameObject, false);
+				}
+				LateUpdate_Axis();
 				return;
 			}
+			var map = GetBeatmap();
 			// Axis Hovering
 			AxisHovering = false;
 			foreach (var hover in m_AxisHovers) {
@@ -183,13 +190,13 @@
 				}
 			}
 			// Misc
-			LateUpdate_Selection();
+			LateUpdate_Selection(map);
 			// Mouse
 			if (Input.GetMouseButton(0)) {
 				if (!MouseRayDown.HasValue) {
 					// Down
 					MouseRayDown = GetMouseRay();
-					OnMouseLeftDown();
+					OnMouseLeftDown(map);
 				} else {
 					// Drag
 					OnMouseLeftDrag();
@@ -200,19 +207,18 @@
 					MouseRayDown = null;
 				}
 			}
-			OnMouseHover();
+			OnMouseHover(map);
 			// Final
 			LateUpdate_Axis();
 		}
 
 
 		// Mouse Left
-		private void OnMouseLeftDown () {
+		private void OnMouseLeftDown (Beatmap map) {
 			if (AxisHovering) { return; }
 			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0) {
 				// Select or Move
-				var map = GetBeatmap();
 				bool ctrl = Input.GetKey(KeyCode.LeftControl);
 				bool alt = Input.GetKey(KeyCode.LeftAlt);
 				var (overlapType, overlapIndex, _) = GetCastTypeIndex(GetMouseRay(), UnlockedMask, true);
@@ -259,12 +265,11 @@
 
 
 		// Mouse Hover
-		private void OnMouseHover () {
+		private void OnMouseHover (Beatmap map) {
 
-			var map = GetBeatmap();
 			var (brushType, brushIndex) = GetBrushTypeIndex();
 
-			if (AxisHovering || map == null || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
+			if (AxisHovering || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
 				SetTargetActive(m_Hover.gameObject, false);
 				SetTargetActive(m_Ghost.gameObject, false);
 				return;
@@ -460,10 +465,8 @@
 
 
 		// Selection
-		private void LateUpdate_Selection () {
+		private void LateUpdate_Selection (Beatmap map) {
 			if (SelectingCount == 0) { return; }
-			var map = GetBeatmap();
-			if (map == null) { return; }
 			bool changed = false;
 			for (int i = 0; i < SelectingObjectIndexs.Count; i++) {
 				int index = SelectingObjectIndexs[i].index;
@@ -492,6 +495,19 @@
 			var pos = m_Containers[SelectingType].GetChild(SelectingObjectIndexs[0].index).position;
 			if (m_MoveAxis.position != pos) {
 				m_MoveAxis.position = pos;
+			}
+			bool editorActive = GetEditorActive();
+			bool xActive = editorActive && SelectingType != 3;
+			bool yActive = editorActive && SelectingType != 1;
+			bool xyActive = xActive || yActive;
+			if (AxisMoveX.gameObject.activeSelf != xActive) {
+				AxisMoveX.gameObject.SetActive(xActive);
+			}
+			if (AxisMoveY.gameObject.activeSelf != yActive) {
+				AxisMoveY.gameObject.SetActive(yActive);
+			}
+			if (AxisMoveXY.gameObject.activeSelf != xyActive) {
+				AxisMoveXY.gameObject.SetActive(xyActive);
 			}
 		}
 

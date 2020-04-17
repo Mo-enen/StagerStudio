@@ -142,7 +142,7 @@
 				m_Highlight.gameObject.SetActive(hEnabled);
 			}
 			if (m_Highlight.gameObject.activeSelf) {
-				m_Highlight.size = Vector2.one * 0.4f + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.0618f);
+				m_Highlight.size = Vector2.one * 0.4f;
 			}
 
 			// Label

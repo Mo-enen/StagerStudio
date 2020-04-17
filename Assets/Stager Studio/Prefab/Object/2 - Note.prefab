@@ -55,7 +55,7 @@ MonoBehaviour:
   m_HighlightPrefab: {fileID: 6959574560222653280, guid: 6f0481f7b2b3bc7469183a17a13df3e7,
     type: 3}
   m_HighlightRoot: {fileID: 8579531368441506786}
-  m_HighlightScaleMuti: 6
+  m_HighlightScaleMuti: 12
   m_ArrowRenderer: {fileID: 4102185042040288686}
   m_PoleRenderer: {fileID: 121411173720610814}
   m_ZLineRenderer: {fileID: 690638146277422865}

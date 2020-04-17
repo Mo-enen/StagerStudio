@@ -116,10 +116,7 @@
 				}
 				if (ColSize.HasValue) {
 					Highlight.transform.localPosition = m_Col.center;
-					Highlight.size = Vector2.Max(
-						ColSize.Value * m_HighlightScaleMuti,
-						Vector2.one * 0.36f
-					) + Vector2.one * Mathf.PingPong(UnityEngine.Time.time / 6f, 0.0618f);
+					Highlight.size = ColSize.Value * m_HighlightScaleMuti;
 				}
 			}
 		}
