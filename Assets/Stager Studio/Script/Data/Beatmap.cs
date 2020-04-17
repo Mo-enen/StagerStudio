@@ -577,6 +577,34 @@
 		}
 
 
+		// Cache
+		public bool GetSelect (int type, int index) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						return Stages[index].Selecting;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						return Tracks[index].Selecting;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						return Notes[index].Selecting;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < TimingNotes.Count) {
+						return TimingNotes[index].Selecting;
+					}
+					break;
+			}
+			return false;
+		}
+
+
 		public void SetSelect (int type, int index, bool select) {
 			switch (type) {
 				case 0:
@@ -603,30 +631,134 @@
 		}
 
 
-		public bool GetSelect (int type, int index) {
+		public float GetTime (int type, int index) {
 			switch (type) {
 				case 0:
 					if (index >= 0 && index < Stages.Count) {
-						return Stages[index].Selecting;
+						return Stages[index].Time;
 					}
 					break;
 				case 1:
 					if (index >= 0 && index < Tracks.Count) {
-						return Tracks[index].Selecting;
+						return Tracks[index].Time;
 					}
 					break;
 				case 2:
 					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].Selecting;
+						return Notes[index].Time;
 					}
 					break;
 				case 3:
 					if (index >= 0 && index < TimingNotes.Count) {
-						return TimingNotes[index].Selecting;
+						return TimingNotes[index].Time;
 					}
 					break;
 			}
-			return false;
+			return 0f;
+		}
+
+
+		public void SetTime (int type, int index, float time) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						Stages[index].Time = time;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						Tracks[index].Time = time;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						Notes[index].Time = time;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < TimingNotes.Count) {
+						TimingNotes[index].Time = time;
+					}
+					break;
+			}
+		}
+
+
+		public float GetX (int type, int index) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						return Stages[index].X;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						return Tracks[index].X;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						return Notes[index].X;
+					}
+					break;
+			}
+			return 0f;
+		}
+
+
+		public void SetX (int type, int index, float x) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						Stages[index].X = x;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						Tracks[index].X = x;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						Notes[index].X = x;
+					}
+					break;
+			}
+		}
+
+
+		public float GetStageY (int index) {
+			if (index >= 0 && index < Stages.Count) {
+				return Stages[index].Y;
+			}
+			return 0f;
+		}
+
+
+		public float GetSpeedMuti (int type, int index) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						return Stages[index].SpeedMuti;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						return GetSpeedMuti(0, Tracks[index].StageIndex);
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						return Notes[index].SpeedMuti;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < TimingNotes.Count) {
+						return TimingNotes[index].SpeedMuti;
+					}
+					break;
+			}
+			return 1f;
 		}
 
 

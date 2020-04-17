@@ -313,7 +313,7 @@
 				if (MouseDownMusicTime < -0.5f) {
 					// Right Down
 					if (MouseDownMusicTime > -1.5f) {
-						MouseDownMusicTime = CheckAntiMouse() ? GetMusicTimeAt(Input.mousePosition) : -2f;
+						MouseDownMusicTime = CheckAntiMouse(false) ? GetMusicTimeAt(Input.mousePosition) : -2f;
 						MusicPlayingForMouseDrag = Music.IsPlaying;
 						Music.Pause();
 					}
@@ -336,7 +336,7 @@
 				MouseDownMusicTime = -1f;
 			}
 			// Func
-			bool CheckAntiMouse () {
+			bool CheckAntiMouse (bool mustInZone = true) {
 				// Transform
 				foreach (var tf in m_AntiMouseTF) {
 					if (tf.gameObject.activeSelf) {
@@ -344,8 +344,10 @@
 					}
 				}
 				// Hover In Zone
-				var pos01 = m_ZoneRT.Get01Position(Input.mousePosition, Camera);
-				if (pos01.x < 0 || pos01.x > 1 || pos01.y < 0 || pos01.y > 1) { return false; }
+				if (mustInZone) {
+					var pos01 = m_ZoneRT.Get01Position(Input.mousePosition, Camera);
+					if (pos01.x < 0 || pos01.x > 1 || pos01.y < 0 || pos01.y > 1) { return false; }
+				}
 				// Final
 				return true;
 			}

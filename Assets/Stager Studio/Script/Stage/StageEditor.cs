@@ -73,6 +73,8 @@
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private SpriteRenderer m_GhostPivot = null;
+		[SerializeField] private Transform m_MoveAxis = null;
+		[SerializeField] private Transform[] m_AxisHovers = null;
 		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
@@ -91,9 +93,11 @@
 		private LayerMask UnlockedMask = default;
 
 		// Mouse
-		private readonly static List<int> SelectingObjectIndexs = new List<int>();
+		private readonly static List<(int index, float x, float y_time)> SelectingObjectIndexs = new List<(int, float, float)>();
 		private readonly static RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
+		private bool UndoDirtySetted_Move = false;
+		private bool AxisHovering = false;
 		private int HoldNoteLayer = -1;
 		private Ray? MouseRayDown = null;
 		private Vector2 HoverScaleMuti = Vector2.one;
@@ -170,6 +174,16 @@
 				SetTargetActive(m_Hover.gameObject, false);
 				return;
 			}
+			// Axis Hovering
+			AxisHovering = false;
+			foreach (var hover in m_AxisHovers) {
+				if (hover.gameObject.activeSelf) {
+					AxisHovering = true;
+					break;
+				}
+			}
+			// Misc
+			LateUpdate_Selection();
 			// Mouse
 			if (Input.GetMouseButton(0)) {
 				if (!MouseRayDown.HasValue) {
@@ -186,12 +200,15 @@
 					MouseRayDown = null;
 				}
 			}
-			OnMouseHover(GetBeatmap());
+			OnMouseHover();
+			// Final
+			LateUpdate_Axis();
 		}
 
 
 		// Mouse Left
 		private void OnMouseLeftDown () {
+			if (AxisHovering) { return; }
 			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0) {
 				// Select or Move
@@ -211,6 +228,7 @@
 					if (!ctrl && !alt) { ClearSelection(); }
 					if (overlapType >= 0 && overlapIndex >= 0) {
 						AddSelection(overlapType, overlapIndex, !alt, map);
+						m_MoveAxis.gameObject.SetActive(SelectingCount > 0);
 						OnSelectionChanged();
 					}
 				}
@@ -227,6 +245,7 @@
 
 
 		private void OnMouseLeftDrag () {
+			if (AxisHovering) { return; }
 			var (_, brushIndex) = GetBrushTypeIndex();
 			if (brushIndex < 0 && ClickStartInsideSelection) {
 				// Moving Selection
@@ -240,9 +259,16 @@
 
 
 		// Mouse Hover
-		private void OnMouseHover (Beatmap map) {
+		private void OnMouseHover () {
 
+			var map = GetBeatmap();
 			var (brushType, brushIndex) = GetBrushTypeIndex();
+
+			if (AxisHovering || map == null || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
+				SetTargetActive(m_Hover.gameObject, false);
+				SetTargetActive(m_Ghost.gameObject, false);
+				return;
+			}
 
 			// --- Painting ---
 			bool brushUnlocked = !GetItemLock(brushType);
@@ -298,7 +324,7 @@
 						pos = hoverTarget.position;
 						rot = hoverTarget.rotation;
 						scl = hoverTarget.GetChild(0).localScale;
-						m_Grid.ObjectSpeedMuti = hoverItemType == 1 && GetUseDynamicSpeed() ? GetTrackSpeedMuti(map, hoverItemIndex) : 1f;
+						m_Grid.ObjectSpeedMuti = hoverItemType == 1 && GetUseDynamicSpeed() ? map.GetSpeedMuti(1, hoverItemIndex) : 1f;
 					}
 					m_Grid.Mode = brushType;
 					m_Grid.UseDynamicSpeed = true;
@@ -335,7 +361,7 @@
 				case 0: // Stage
 					var stage = GetDefaultStageBrush();
 					if (stage != null && !GetUseAbreast()) {
-						var mousePos = GetRayPosition(ray, null, true);
+						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
 							ghostSize.x = zoneSize * stage.Width;
@@ -349,7 +375,7 @@
 				case 1: // Track
 					var track = GetDefaultTrackBrush();
 					if (track != null && hoverTarget != null) {
-						var mousePos = GetRayPosition(ray, null, true);
+						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
 							if (UseGlobalBrushScale) {
@@ -369,7 +395,7 @@
 					var notes = GetNotesBrushAt(brushIndex);
 					if (notes != null && notes.Count > 0 && hoverTarget != null) {
 						var note = notes[0];
-						var mousePos = GetRayPosition(ray, hoverTarget, false);
+						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
 							if (UseGlobalBrushScale) {
@@ -386,7 +412,7 @@
 					}
 					break;
 				case 3: { // Speed
-						var mousePos = GetRayPosition(ray, null, false);
+						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {
 							ghostSize.x = 0.12f / zoneSize;
@@ -433,6 +459,73 @@
 		}
 
 
+		// Selection
+		private void LateUpdate_Selection () {
+			if (SelectingCount == 0) { return; }
+			var map = GetBeatmap();
+			if (map == null) { return; }
+			bool changed = false;
+			for (int i = 0; i < SelectingObjectIndexs.Count; i++) {
+				int index = SelectingObjectIndexs[i].index;
+				if (!map.GetSelect(SelectingType, index)) {
+					SelectingObjectIndexs.RemoveAt(i);
+					i--;
+					changed = true;
+				}
+			}
+			if (changed) {
+				if (SelectingCount == 0) {
+					m_MoveAxis.gameObject.SetActive(false);
+				}
+				OnSelectionChanged();
+			}
+		}
+
+
+		// Axis
+		private void LateUpdate_Axis () {
+			if (!m_MoveAxis.gameObject.activeSelf) { return; }
+			if (SelectingCount == 0) {
+				m_MoveAxis.gameObject.SetActive(false);
+				return;
+			}
+			var pos = m_Containers[SelectingType].GetChild(SelectingObjectIndexs[0].index).position;
+			if (m_MoveAxis.position != pos) {
+				m_MoveAxis.position = pos;
+			}
+		}
+
+
+		public void OnMoveAxisDrag (Vector3 pos, Vector3? downPos, int axis) {
+			if (SelectingCount == 0) { return; }
+			var map = GetBeatmap();
+			if (map == null) { return; }
+			if (!downPos.HasValue) {
+				// Down
+				for (int i = 0; i < SelectingCount; i++) {
+					SelectingObjectIndexs[i] = (
+						SelectingObjectIndexs[i].index,
+						map.GetX(SelectingType, i),
+						map.GetTime(SelectingType, i)
+					);
+				}
+				UndoDirtySetted_Move = false;
+			} else {
+				// Drag
+				var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+				var downPos01 = Util.Vector3InverseLerp3(zoneMin, zoneMax, downPos.Value.x, downPos.Value.y);
+				var pos01 = Util.Vector3InverseLerp3(zoneMin, zoneMax, pos.x, pos.y);
+				for (int i = 0; i < SelectingCount; i++) {
+					var (index, startX, startY_Time) = SelectingObjectIndexs[i];
+
+
+
+
+				}
+			}
+		}
+
+
 		#endregion
 
 
@@ -461,11 +554,11 @@
 					ClearSelection();
 				}
 				SelectingType = type;
-				SelectingObjectIndexs.Add(index);
+				SelectingObjectIndexs.Add((index, -1f, -1f));
 			} else if (type == SelectingType) {
 				// Remove
 				for (int i = 0; i < SelectingCount; i++) {
-					if (SelectingObjectIndexs[i] == index) {
+					if (SelectingObjectIndexs[i].index == index) {
 						SelectingObjectIndexs.RemoveAt(i);
 						break;
 					}
@@ -480,20 +573,22 @@
 			var map = GetBeatmap();
 			if (!(map is null) && SelectingCount > 0) {
 				// Clear Cache
-				foreach (var index in SelectingObjectIndexs) {
+				foreach (var (index, _, _) in SelectingObjectIndexs) {
 					map.SetSelect(SelectingType, index, false);
 				}
 				// Clear List
 				SelectingObjectIndexs.Clear();
 				SelectingType = -1;
 				// Final
+				m_MoveAxis.gameObject.SetActive(false);
 				OnSelectionChanged();
+
 			}
 		}
 
 
 		public void ForAddSelectingObjects (System.Action<int> action) {
-			foreach (var index in SelectingObjectIndexs) {
+			foreach (var (index, _, _) in SelectingObjectIndexs) {
 				action(index);
 			}
 		}
@@ -571,15 +666,6 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private (int type, int ItemIndex) GetObjectIndexFromCollider (RaycastHit hit) {
-			int layer = hit.transform.gameObject.layer;
-			return (
-				LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1,
-				hit.transform.parent.GetSiblingIndex()
-			);
-		}
-
-
 		private void SetLock (int index, bool locked) {
 			// Set Logic
 			ItemLock[index] = locked;
@@ -615,7 +701,10 @@
 			Transform tf = null;
 			if (!insideZone || RayInsideZone(ray)) {
 				for (int i = 0; i < count; i++) {
-					var (type, itemIndex) = GetObjectIndexFromCollider(CastHits[i]);
+					var hit = CastHits[i];
+					int layer = hit.transform.gameObject.layer;
+					int type = LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1;
+					int itemIndex = hit.transform.parent.GetSiblingIndex();
 					if (type >= overlapType) {
 						if (type != overlapType) {
 							overlapIndex = -1;
@@ -632,17 +721,6 @@
 		}
 
 
-		private float GetTrackSpeedMuti (Beatmap map, int index) {
-			if (index >= 0 && index < map.Tracks.Count) {
-				int sIndex = map.Tracks[index].StageIndex;
-				if (sIndex >= 0 && sIndex < map.Stages.Count) {
-					return map.Stages[sIndex].SpeedMuti;
-				}
-			}
-			return 1f;
-		}
-
-
 		private bool RayInsideZone (Ray ray) {
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
@@ -650,24 +728,6 @@
 				return point.x > zoneMin.x && point.x < zoneMax.x && point.y > zoneMin.y && point.y < zoneMax.y;
 			}
 			return false;
-		}
-
-
-		private Vector3? GetRayPosition (Ray ray, Transform planeTarget = null, bool clampInZone = false) {
-			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-			if (new Plane(
-				planeTarget != null ? -planeTarget.forward : Vector3.back,
-				planeTarget != null ? planeTarget.position : zoneMin
-			).Raycast(ray, out float enter)) {
-				var point = ray.GetPoint(enter);
-				if (clampInZone) {
-					point.x = Mathf.Clamp(point.x, zoneMin.x, zoneMax.x);
-					point.y = Mathf.Clamp(point.y, zoneMin.y, zoneMax.y);
-					point.z = Mathf.Clamp(point.z, zoneMin.z, zoneMax.z);
-				}
-				return point;
-			}
-			return null;
 		}
 
 

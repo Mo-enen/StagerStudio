@@ -493,6 +493,13 @@
 		);
 
 
+		public static Vector3 Vector3InverseLerp3 (Vector3 a, Vector3 b, float x, float y, float z = 0f) => new Vector3(
+			RemapUnclamped(a.x, b.x, 0f, 1f, x),
+			RemapUnclamped(a.y, b.y, 0f, 1f, y),
+			RemapUnclamped(a.z, b.z, 0f, 1f, z)
+		);
+
+
 		public static float RemapUnclamped (float l, float r, float newL, float newR, float t) {
 			return l == r ? 0 : Mathf.LerpUnclamped(
 				newL, newR,
@@ -671,6 +678,23 @@
 
 
 		public static string GetKeyName (KeyCode key) => SpecialKeyNames.ContainsKey(key) ? SpecialKeyNames[key] : key.ToString();
+
+
+		public static Vector3? GetRayPosition (Ray ray, Vector3 zoneMin, Vector3 zoneMax, Transform planeTarget = null, bool clampInZone = false) {
+			if (new Plane(
+				planeTarget != null ? -planeTarget.forward : Vector3.back,
+				planeTarget != null ? planeTarget.position : zoneMin
+			).Raycast(ray, out float enter)) {
+				var point = ray.GetPoint(enter);
+				if (clampInZone) {
+					point.x = Mathf.Clamp(point.x, zoneMin.x, zoneMax.x);
+					point.y = Mathf.Clamp(point.y, zoneMin.y, zoneMax.y);
+					point.z = Mathf.Clamp(point.z, zoneMin.z, zoneMax.z);
+				}
+				return point;
+			}
+			return null;
+		}
 
 
 		#endregion

@@ -792,6 +792,8 @@
 			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed * game.MapDropSpeed;
 			TimingPreviewUI.ShowPreview = () => game.ShowGrid && editor.GetContainerActive(3);
 
+			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
+
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
 		}
