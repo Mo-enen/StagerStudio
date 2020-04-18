@@ -20,8 +20,8 @@
 		public class NoteComparer : IComparer<Note> {
 			public int Compare (Note x, Note y) => x.Time.CompareTo(y.Time);
 		}
-		public class SpeedNoteComparer : IComparer<TimingNote> {
-			public int Compare (TimingNote x, TimingNote y) => x.Time.CompareTo(y.Time);
+		public class SpeedNoteComparer : IComparer<Timing> {
+			public int Compare (Timing x, Timing y) => x.Time.CompareTo(y.Time);
 		}
 
 
@@ -169,9 +169,43 @@
 		}
 
 
+		[System.Serializable]
+		public class MapItem {
+
+
+			// Api
+			public float Time {
+				get => m_Time / 1000f;
+				set => m_Time = (int)(value * 1000f);
+			}
+			public float Duration {
+				get => m_Duration / 1000f;
+				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
+			}
+			public float X {
+				get => m_X / 1000f;
+				set => m_X = (int)(value * 1000f);
+			}
+
+			// Api_Ser
+			public int m_Time = 0;
+			public int m_Duration = 0;
+			public int m_X = 0;
+
+			// Cache
+			[System.NonSerialized] public bool Active = false;
+			[System.NonSerialized] public bool Selecting = false;
+			[System.NonSerialized] public float SpeedMuti = -1f;
+
+
+
+		}
+
+
+
 
 		[System.Serializable]
-		public class Stage {
+		public class Stage : MapItem {
 
 			public const int MOTION_COUNT = 5;
 			public enum MotionType {
@@ -182,22 +216,11 @@
 			}
 
 			// API
-			public float Time {
-				get => m_Time / 1000f;
-				set => m_Time = (int)(value * 1000f);
-			}
-			public float Duration {
-				get => m_Duration / 1000f;
-				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
-			}
 			public float Speed {
 				get => m_Speed / 1000f;
 				set => m_Speed = (int)(value * 1000f);
 			}
-			public float X {
-				get => m_X / 1000f;
-				set => m_X = (int)(value * 1000f);
-			}
+
 			public float Y {
 				get => m_Y / 1000f;
 				set => m_Y = (int)(value * 1000f);
@@ -216,10 +239,7 @@
 			}
 
 			// SER-API
-			public int m_Time = 0;
-			public int m_Duration = 0;
 			public int m_Speed = 1000;
-			public int m_X = 0;
 			public int m_Y = 0;
 			public int m_Width = 1000;
 			public int m_Height = 1000;
@@ -229,10 +249,6 @@
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
 
-			// Cache
-			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public bool Selecting = false;
-			[System.NonSerialized] public float SpeedMuti = 1f;
 
 			// API
 			public int GetMotionCount (MotionType type) {
@@ -256,7 +272,7 @@
 
 
 		[System.Serializable]
-		public class Track {
+		public class Track : MapItem {
 
 			public const int MOTION_COUNT = 3;
 			public enum MotionType {
@@ -267,18 +283,6 @@
 			}
 
 			// API
-			public float Time {
-				get => m_Time / 1000f;
-				set => m_Time = (int)(value * 1000f);
-			}
-			public float Duration {
-				get => m_Duration / 1000f;
-				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
-			}
-			public float X {
-				get => m_X / 1000f;
-				set => m_X = (int)(value * 1000f);
-			}
 			public float Width {
 				get => m_Width / 1000f;
 				set => m_Width = (int)(value * 1000f);
@@ -289,9 +293,6 @@
 			}
 
 			// API - Ser
-			public int m_Time = 0;
-			public int m_Duration = 0;
-			public int m_X = 0;
 			public int m_Width = 1000;
 			public int m_Angle = 0;
 			public int StageIndex = -1;
@@ -303,8 +304,6 @@
 			public List<TimeFloatTween> Angles;
 
 			// Cache
-			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
 			[System.NonSerialized] public float TrayTime = float.MaxValue;
 			[System.NonSerialized] public Color Tint = UnityEngine.Color.white;
@@ -330,21 +329,9 @@
 
 
 		[System.Serializable]
-		public class Note {
+		public class Note : MapItem {
 
 			// API
-			public float Time {
-				get => m_Time / 1000f;
-				set => m_Time = (int)(value * 1000f);
-			}
-			public float Duration {
-				get => m_Duration / 1000f;
-				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
-			}
-			public float X {
-				get => m_X / 1000f;
-				set => m_X = (int)(value * 1000f);
-			}
 			public float Z {
 				get => m_Z / 1000f;
 				set => m_Z = (int)(value * 1000f);
@@ -355,9 +342,6 @@
 			}
 
 			// SER-API
-			public int m_Time = 0;
-			public int m_Duration = 0;
-			public int m_X = 0;
 			public int m_Z = 0;
 			public int m_Width = 1000;
 			public int TrackIndex = -1;
@@ -372,10 +356,7 @@
 			public int SoundFxParamB = 0;
 
 			// Cache
-			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public float AppearTime = 0f;
-			[System.NonSerialized] public float SpeedMuti = -1f;
 			[System.NonSerialized] public float SpeedOnDrop = 1f;
 			[System.NonSerialized] public float NoteDropStart = -1f;
 			[System.NonSerialized] public float NoteDropEnd = -1f;
@@ -389,35 +370,25 @@
 
 
 		[System.Serializable]
-		public class TimingNote {
+		public class Timing : MapItem {
 
 			// API
-			public float Time {
-				get => m_Time / 1000f;
-				set => m_Time = (int)(value * 1000f);
-			}
 			public float Speed {
-				get => m_Speed / 100f;
-				set => m_Speed = (int)(value * 100f);
+				get => m_X / 100f;
+				set => m_X = (int)(value * 100f);
 			}
 
 			// SER
-			public int m_Time = 0;
-			public int m_Speed = 0;
 			public byte SoundFxIndex = 0;
-			public int SoundFxDuration = 0;
 			public int SoundFxParamA = 0;
 			public int SoundFxParamB = 0;
 
 			// Cache
-			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public float AppearTime = -1f;
-			[System.NonSerialized] public float SpeedMuti = -1f;
 			[System.NonSerialized] public float NoteDropPos = -1f;
 
 			// API
-			public TimingNote (float time, float speed) {
+			public Timing (float time, float speed) {
 				Time = time;
 				Speed = speed;
 			}
@@ -426,34 +397,6 @@
 
 
 		// API-SER
-		public readonly static Stage DEFAULT_STAGE = new Stage() {
-			Time = 0f,
-			Duration = float.MaxValue,
-			Rotation = 0f,
-			Height = 1f,
-			Width = 1f,
-			X = 0.5f,
-			Y = 0f,
-			Speed = 1f,
-			Rotations = { },
-			Positions = { },
-			Heights = { },
-			Widths = { },
-		};
-		public readonly static Track DEFAULT_TRACK = new Track() {
-			Time = 0f,
-			Duration = float.MaxValue,
-			Color = -1,
-			X = 0.5f,
-			Width = 1f,
-			HasTray = false,
-			StageIndex = -1,
-			Angle = 0f,
-			Xs = { },
-			Colors = { },
-			Widths = { },
-			Angles = { },
-		};
 		public float DropSpeed {
 			get => m_DropSpeed / 1000f;
 			set {
@@ -479,7 +422,7 @@
 		public List<Stage> Stages = new List<Stage>();
 		public List<Track> Tracks = new List<Track>();
 		public List<Note> Notes = new List<Note>();
-		public List<TimingNote> TimingNotes = new List<TimingNote>();
+		public List<Timing> Timings = new List<Timing>();
 
 		// SER
 		public int m_DropSpeed = 1000;
@@ -506,8 +449,8 @@
 			if (Notes is null) {
 				Notes = new List<Note>();
 			}
-			if (TimingNotes is null) {
-				TimingNotes = new List<TimingNote>();
+			if (Timings is null) {
+				Timings = new List<Timing>();
 			}
 		}
 
@@ -532,23 +475,8 @@
 			Stages = map.Stages;
 			Tracks = map.Tracks;
 			Notes = map.Notes;
-			TimingNotes = map.TimingNotes;
+			Timings = map.Timings;
 		}
-
-
-		public Stage GetStageAt (int index) {
-			var stage = index >= 0 && index < Stages.Count ? Stages[index] : null;
-			return stage is null ? DEFAULT_STAGE : stage;
-		}
-
-
-		public Track GetTrackAt (int index) {
-			var track = index >= 0 && index < Tracks.Count ? Tracks[index] : null;
-			return track is null ? DEFAULT_TRACK : track;
-		}
-
-
-		public Note GetNoteAt (int index) => index >= 0 && index < Notes.Count ? Notes[index] : null;
 
 
 		public void SortNotesByTime () {
@@ -577,155 +505,39 @@
 		}
 
 
-		// Cache
+		// Data
 		public bool GetSelect (int type, int index) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						return Stages[index].Selecting;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						return Tracks[index].Selecting;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].Selecting;
-					}
-					break;
-				case 3:
-					if (index >= 0 && index < TimingNotes.Count) {
-						return TimingNotes[index].Selecting;
-					}
-					break;
-			}
-			return false;
+			var item = GetItem(type, index);
+			return item != null ? item.Selecting : false;
 		}
-
-
 		public void SetSelect (int type, int index, bool select) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						Stages[index].Selecting = select;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						Tracks[index].Selecting = select;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						Notes[index].Selecting = select;
-					}
-					break;
-				case 3:
-					if (index >= 0 && index < TimingNotes.Count) {
-						TimingNotes[index].Selecting = select;
-					}
-					break;
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Selecting = select;
 			}
 		}
-
 
 		public float GetTime (int type, int index) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						return Stages[index].Time;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						return Tracks[index].Time;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].Time;
-					}
-					break;
-				case 3:
-					if (index >= 0 && index < TimingNotes.Count) {
-						return TimingNotes[index].Time;
-					}
-					break;
-			}
-			return 0f;
+			var item = GetItem(type, index);
+			return item != null ? item.Time : 0f;
 		}
-
-
 		public void SetTime (int type, int index, float time) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						Stages[index].Time = time;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						Tracks[index].Time = time;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						Notes[index].Time = time;
-					}
-					break;
-				case 3:
-					if (index >= 0 && index < TimingNotes.Count) {
-						TimingNotes[index].Time = time;
-					}
-					break;
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Time = time;
 			}
 		}
-
 
 		public float GetX (int type, int index) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						return Stages[index].X;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						return Tracks[index].X;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].X;
-					}
-					break;
-			}
-			return 0f;
+			var item = GetItem(type, index);
+			return item != null ? item.X : 0f;
 		}
-
-
 		public void SetX (int type, int index, float x) {
-			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						Stages[index].X = x;
-					}
-					break;
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						Tracks[index].X = x;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						Notes[index].X = x;
-					}
-					break;
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.X = x;
 			}
 		}
-
 
 		public float GetStageY (int index) {
 			if (index >= 0 && index < Stages.Count) {
@@ -734,31 +546,61 @@
 			return 0f;
 		}
 
-
 		public float GetSpeedMuti (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.SpeedMuti : 1f;
+		}
+		public void SetSpeedMuti (int type, int index, float speedMuti) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.SpeedMuti = speedMuti;
+			}
+		}
+
+		public int GetParentIndex (int type, int index) {
 			switch (type) {
-				case 0:
-					if (index >= 0 && index < Stages.Count) {
-						return Stages[index].SpeedMuti;
-					}
-					break;
 				case 1:
 					if (index >= 0 && index < Tracks.Count) {
-						return GetSpeedMuti(0, Tracks[index].StageIndex);
+						return Tracks[index].StageIndex;
 					}
 					break;
 				case 2:
 					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].SpeedMuti;
-					}
-					break;
-				case 3:
-					if (index >= 0 && index < TimingNotes.Count) {
-						return TimingNotes[index].SpeedMuti;
+						return Notes[index].TrackIndex;
 					}
 					break;
 			}
-			return 1f;
+			return -1;
+		}
+		public void SetParentIndex (int type, int index, int pIndex) {
+			switch (type) {
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						Tracks[index].StageIndex = pIndex;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						Notes[index].TrackIndex = pIndex;
+					}
+					break;
+			}
+		}
+
+
+		// LGC
+		private MapItem GetItem (int type, int index) {
+			switch (type) {
+				case 0:
+					return index >= 0 && index < Stages.Count ? Stages[index] : null;
+				case 1:
+					return index >= 0 && index < Tracks.Count ? Tracks[index] : null;
+				case 2:
+					return index >= 0 && index < Notes.Count ? Notes[index] : null;
+				case 3:
+					return index >= 0 && index < Timings.Count ? Timings[index] : null;
+			}
+			return null;
 		}
 
 

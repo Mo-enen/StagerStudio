@@ -55,10 +55,10 @@
 			toFill.Clear();
 			if (!ShowPreview()) { return; }
 			var map = GetBeatmap();
-			if (map == null || map.TimingNotes == null || map.TimingNotes.Count == 0) { return; }
+			if (map == null || map.Timings == null || map.Timings.Count == 0) { return; }
 			float speedMuti = GetSpeedMuti();
 			if (speedMuti <= 0.001f) { return; }
-			var timings = map.TimingNotes;
+			var timings = map.Timings;
 			int count = timings.Count;
 			float musicTime = GetMusicTime();
 			float endTime = musicTime + 1f / speedMuti;

@@ -1149,7 +1149,6 @@ GameObject:
   - component: {fileID: 84390046}
   - component: {fileID: 84390049}
   - component: {fileID: 84390048}
-  - component: {fileID: 84390047}
   m_Layer: 0
   m_Name: Arrow Y
   m_TagString: Untagged
@@ -1174,19 +1173,6 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &84390047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 84390045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Type: 11
 --- !u!61 &84390048
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1986,8 +1972,8 @@ MonoBehaviour:
   m_DefaultStage:
     m_Time: 0
     m_Duration: 2000
-    m_Speed: 1000
     m_X: 0
+    m_Speed: 1000
     m_Y: 0
     m_Width: 1000
     m_Height: 1000
@@ -3306,7 +3292,6 @@ GameObject:
   - component: {fileID: 332377902}
   - component: {fileID: 332377905}
   - component: {fileID: 332377904}
-  - component: {fileID: 332377903}
   m_Layer: 0
   m_Name: Arrow X
   m_TagString: Untagged
@@ -3331,19 +3316,6 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &332377903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 332377901}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Type: 10
 --- !u!61 &332377904
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7986,7 +7958,7 @@ SpriteRenderer:
   m_SortingOrder: 10
   m_Sprite: {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.078431375}
+  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.16078432}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -10621,7 +10593,7 @@ GameObject:
   - component: {fileID: 981357319}
   - component: {fileID: 981357320}
   m_Layer: 0
-  m_Name: Handle - Move
+  m_Name: Axis - Move
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -12891,7 +12863,7 @@ MonoBehaviour:
     Stages: []
     Tracks: []
     Notes: []
-    TimingNotes: []
+    Timings: []
     m_DropSpeed: 1000
     m_Shift: 0
     m_Ratio: 1500
@@ -13754,7 +13726,7 @@ SpriteRenderer:
   m_SortingOrder: 10
   m_Sprite: {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.078431375}
+  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.16078432}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -15319,7 +15291,6 @@ GameObject:
   - component: {fileID: 1582119750}
   - component: {fileID: 1582119754}
   - component: {fileID: 1582119753}
-  - component: {fileID: 1582119751}
   m_Layer: 0
   m_Name: Ring
   m_TagString: Untagged
@@ -15343,19 +15314,6 @@ Transform:
   m_Father: {fileID: 981357319}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1582119751
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1582119749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Type: 4
 --- !u!61 &1582119753
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -15933,6 +15891,10 @@ MonoBehaviour:
   m_AntiTargets:
   - {fileID: 1820277924}
   - {fileID: 213184611}
+  m_AxisHovers:
+  - {fileID: 1802189642}
+  - {fileID: 824399546}
+  - {fileID: 1451865468}
   m_FocusCancel: {fileID: 2017125844}
   m_FocusAni: {fileID: 703012816}
   m_Grid: {fileID: 1637691684}
@@ -15940,10 +15902,6 @@ MonoBehaviour:
   m_Ghost: {fileID: 1035960598}
   m_GhostPivot: {fileID: 1505890989}
   m_MoveAxis: {fileID: 981357319}
-  m_AxisHovers:
-  - {fileID: 1802189642}
-  - {fileID: 824399546}
-  - {fileID: 1451865468}
   m_NoteHoldLayerName: HoldNote
   m_FocusKey: Focus
   m_UnfocusKey: Unfocus
@@ -16167,7 +16125,7 @@ SpriteRenderer:
   m_SortingOrder: 12
   m_Sprite: {fileID: 9107845143076531527, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 0.5262199, g: 0.83, b: 0.32369998, a: 1}
+  m_Color: {r: 0.6039216, g: 0.9529412, b: 0.282353, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -17085,7 +17043,7 @@ SpriteRenderer:
   m_SortingLayer: 14
   m_SortingOrder: 10
   m_Sprite: {fileID: 21300016, guid: 7a27da5dc56b4574ba3d0d5a3102e617, type: 3}
-  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.078431375}
+  m_Color: {r: 0.14509805, g: 0.8235294, b: 0.65882355, a: 0.16078432}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
@@ -18931,7 +18889,7 @@ SpriteRenderer:
   m_SortingOrder: 12
   m_Sprite: {fileID: -7015434109677604711, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
-  m_Color: {r: 0.759, g: 0.2500905, b: 0.193545, a: 1}
+  m_Color: {r: 0.8588235, g: 0.2431373, b: 0.1137255, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1

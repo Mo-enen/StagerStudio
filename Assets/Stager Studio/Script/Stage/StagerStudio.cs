@@ -467,7 +467,6 @@
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
 				m_TimingPreview.SetVerticesDirty();
-				Beatmap.DEFAULT_STAGE.Height = 1f / ratio;
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
 		}
@@ -523,7 +522,8 @@
 				editor.ClearSelection();
 				m_TimingPreview.SetVerticesDirty();
 			};
-			StageEditor.GetBrushTypeIndex = () => library.SelectingItemTypeIndex;
+			StageEditor.GetBrushType = () => library.SelectingItemTypeIndex.type;
+			StageEditor.GetBrushIndex = () => library.SelectingItemTypeIndex.index;
 			StageEditor.GetBeatmap = () => project.Beatmap;
 			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
@@ -885,7 +885,7 @@
 				stageCount = map.Stages.Count;
 				trackCount = map.Tracks.Count;
 				noteCount = map.Notes.Count;
-				speedCount = map.TimingNotes.Count;
+				speedCount = map.Timings.Count;
 			}
 			try {
 				m_InfoLabel.text = string.Format(GetLanguage(UI_InfoLabel), stageCount, trackCount, noteCount, speedCount);

@@ -80,9 +80,10 @@
 			Duration = trackData.Duration;
 
 			// Get/Check Track/Stage
-			var linkedStage = Beatmap.GetStageAt(trackData.StageIndex);
+			var linkedStage = Beatmap.Stages[trackData.StageIndex];
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
+			trackData.SpeedMuti = linkedStage.SpeedMuti;
 
 			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
@@ -118,11 +119,11 @@
 			var stagePos = Stage.GetStagePosition(linkedStage, trackData.StageIndex);
 			float rotX = GetTrackAngle(trackData);
 			float trackX = GetTrackX(trackData);
-			var (pos, _, rotZ) = Stage.Inside(trackX, 0f, stagePos, stageWidth, stageHeight, stageRotZ);
+			var pos = Stage.LocalToZone(trackX, 0f, 0f, stagePos, stageWidth, stageHeight, stageRotZ);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			transform.localRotation = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0, 0);
+			transform.localRotation = Quaternion.Euler(0f, 0f, stageRotZ) * Quaternion.Euler(rotX, 0, 0);
 			ColSize = MainRenderer.transform.localScale = m_TrackTintRenderer.transform.localScale = new Vector3(
 				zoneSize * trackWidth * stageWidth,
 				zoneSize * stageHeight,
@@ -133,7 +134,11 @@
 			if (trackData.HasTray) {
 				var traySize = GetRectSize(SkinType.Tray, false, false);
 				var judgeLineSize = GetRectSize(SkinType.JudgeLine);
-				var (trayPos, _, _) = Inside(TrayX, judgeLineSize.y / 2f / stageHeight, stagePos, stageWidth, stageHeight, stageRotZ, trackX, trackWidth, rotX);
+				var trayPos = LocalToZone(
+					TrayX, judgeLineSize.y / 2f / stageHeight, 0f,
+					stagePos, stageWidth, stageHeight, stageRotZ,
+					trackX, trackWidth, rotX
+				);
 				m_TrayRenderer.transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, trayPos.x, trayPos.y);
 				m_TrayRenderer.transform.localScale = new Vector3(traySize.x, traySize.y, 1f);
 				m_TrayRenderer.Scale = traySize;
@@ -235,16 +240,26 @@
 		);
 
 
-		public static (Vector3 pos, float rotX, float rotZ) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ, float trackX, float trackWidth, float trackRotX) {
-			float halfTrackWidth = trackWidth * 0.5f;
-			var (pos, pivot, rotZ) = Stage.Inside(
-				Mathf.LerpUnclamped(trackX - halfTrackWidth, trackX + halfTrackWidth, x01), y01,
-				stagePos, stageWidth, stageHeight, stageRotZ
-			);
-			return (
-				(Quaternion.AngleAxis(trackRotX, Quaternion.Euler(0, 0, rotZ) * Vector3.right) * (pos - pivot)) + (Vector3)pivot,
-				trackRotX, rotZ
-			);
+		public static Vector3 LocalToZone (
+			float x01, float y01, float z01,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			float trackX, float trackWidth, float trackRotX
+		) {
+			var sPos = Matrix4x4.TRS(
+				new Vector3(trackX, 0f, 0f),
+				Quaternion.Euler(trackRotX, 0f, 0f),
+				new Vector3(trackWidth, 1f, 1f)
+			).MultiplyPoint(new Vector3(x01 - 0.5f, y01, -z01));
+			return Stage.LocalToZone(sPos.x, sPos.y, sPos.z, stagePos, stageWidth, stageHeight, stageRotZ);
+		}
+
+
+		public static Vector2 Outside (Vector3 pos) {
+
+
+
+
+			return pos;
 		}
 
 

@@ -43,7 +43,7 @@
 		private static byte CacheDirtyID = 1;
 		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
-		private Beatmap.TimingNote LateNote = null;
+		private Beatmap.Timing LateNote = null;
 
 
 		#endregion
@@ -65,7 +65,7 @@
 
 			// Get Data
 			int noteIndex = transform.GetSiblingIndex();
-			var noteData = !(Beatmap is null) && noteIndex < Beatmap.TimingNotes.Count ? Beatmap.TimingNotes[noteIndex] : null;
+			var noteData = !(Beatmap is null) && noteIndex < Beatmap.Timings.Count ? Beatmap.Timings[noteIndex] : null;
 			if (noteData is null) {
 				SetRendererEnable(false);
 				Update_Gizmos(null, false);
@@ -109,32 +109,32 @@
 		}
 
 
-		private void Update_Cache (Beatmap.TimingNote noteData) {
+		private void Update_Cache (Beatmap.Timing timingData) {
 			if (LocalCacheDirtyID != CacheDirtyID) {
 				LocalCacheDirtyID = CacheDirtyID;
 				Time = -1f;
 			}
-			if (GameSpeedMuti != noteData.SpeedMuti) {
-				noteData.SpeedMuti = GameSpeedMuti;
+			if (GameSpeedMuti != timingData.SpeedMuti) {
+				timingData.SpeedMuti = GameSpeedMuti;
 				Time = -1f;
 			}
-			if (Time != noteData.Time) {
-				Time = noteData.Time;
-				noteData.AppearTime = noteData.Time - 1f / GameSpeedMuti;
-				noteData.NoteDropPos = -1f;
+			if (Time != timingData.Time) {
+				Time = timingData.Time;
+				timingData.AppearTime = timingData.Time - 1f / GameSpeedMuti;
+				timingData.NoteDropPos = -1f;
 			}
-			if (Speed != noteData.m_Speed) {
-				Speed = noteData.m_Speed;
+			if (Speed != timingData.m_X) {
+				Speed = timingData.m_X;
 			}
-			if (noteData.NoteDropPos < 0f) {
-				noteData.NoteDropPos = noteData.Time * GameSpeedMuti;
+			if (timingData.NoteDropPos < 0f) {
+				timingData.NoteDropPos = timingData.Time * GameSpeedMuti;
 			}
 		}
 
 
-		private void Update_Gizmos (Beatmap.TimingNote noteData, bool selecting) {
+		private void Update_Gizmos (Beatmap.Timing timingData, bool selecting) {
 
-			bool active = !(noteData is null) && noteData.Active;
+			bool active = !(timingData is null) && timingData.Active;
 
 			// Highlight
 			bool hEnabled = !MusicPlaying && active && selecting;
@@ -156,10 +156,10 @@
 		}
 
 
-		private void Update_SoundFx (Beatmap.TimingNote noteData) {
+		private void Update_SoundFx (Beatmap.Timing noteData) {
 			bool clicked = MusicTime > noteData.Time;
 			if (MusicPlaying && clicked && !PrevClicked) {
-				PlaySfx(noteData.SoundFxIndex, noteData.SoundFxDuration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+				PlaySfx(noteData.SoundFxIndex, noteData.m_Duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
 			}
 			PrevClicked = clicked;
 		}
@@ -184,7 +184,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetActive (Beatmap.TimingNote data, float appearTime) => MusicTime >= appearTime && MusicTime <= data.Time;
+		private static bool GetActive (Beatmap.Timing data, float appearTime) => MusicTime >= appearTime && MusicTime <= data.Time;
 
 
 		private void SetRendererEnable (bool enable) {

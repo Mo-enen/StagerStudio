@@ -83,6 +83,7 @@
 		public bool GridEnabled { get; private set; } = false;
 		public bool UseDynamicSpeed { get; set; } = true;
 		public int CountX => _CountXs[Mode];
+		public bool Visible { get; set; } = true;
 
 		// Ser
 		[SerializeField] private Sprite m_SpriteV = null;
@@ -98,23 +99,11 @@
 		private float _MusicTime = -1f;
 		private float _SpeedMuti = 1f;
 		private float _ObjectSpeedMuti = 1f;
-		private (Vector3 pos, Quaternion rot, Vector3 scale)? TransformDirty = null;
-
-
-
-		protected override void LateUpdate () {
-			if (TransformDirty.HasValue) {
-				transform.position = TransformDirty.Value.pos;
-				transform.rotation = TransformDirty.Value.rot;
-				transform.localScale = TransformDirty.Value.scale;
-				Scale = TransformDirty.Value.scale;
-				TransformDirty = null;
-			}
-			base.LateUpdate();
-		}
 
 
 		protected override void OnMeshFill () {
+
+			if (!Visible) { return; }
 
 			float thick = m_Thickness / 1000f;
 			var uvMin0 = m_SpriteV.uv[2];
@@ -145,12 +134,18 @@
 
 
 		// API
-		public void SetGridTransform (bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
+		public void SetGridTransform (bool enable, bool visible, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
 			GridEnabled = enable;
-			gameObject.SetActive(GridShowed && GridEnabled);
+			Visible = visible;
 			RendererEnable = GridShowed && GridEnabled;
+			if (gameObject.activeSelf != RendererEnable) {
+				gameObject.SetActive(RendererEnable);
+			}
 			if (enable) {
-				TransformDirty = (pos, rot, scale);
+				transform.position = pos;
+				transform.rotation = rot;
+				transform.localScale = Scale = scale;
+				SetDirty();
 			}
 		}
 

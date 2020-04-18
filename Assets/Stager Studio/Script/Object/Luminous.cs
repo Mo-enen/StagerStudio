@@ -74,9 +74,9 @@
 
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
-			var linkedTrack = Beatmap.GetTrackAt(noteData.TrackIndex);
+			var linkedTrack = Beatmap.Tracks[noteData.TrackIndex];
 			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
-			var linkedStage = Beatmap.GetStageAt(linkedTrack.StageIndex);
+			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
 			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
 			Time = noteData.Time;
@@ -90,17 +90,17 @@
 			float trackWidth = Track.GetTrackWidth(linkedTrack);
 			float trackRotX = Track.GetTrackAngle(linkedTrack);
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
-			var (pos, rotX, rotZ) = Track.Inside(
-				noteData.X, stageHeight > 0f ? judgeLineSize.y / 2f / stageHeight : 0f,
-				stagePos, stageWidth, stageHeight, stageRotZ,
+			var pos = Track.LocalToZone(
+				noteData.X, stageHeight > 0f ? judgeLineSize.y / 2f / stageHeight : 0f, Note.GetNoteZ(noteData),
+			stagePos, stageWidth, stageHeight, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			float noteZ = Note.GetNoteZ(noteData);
-			if (noteZ != 0f) {
-				var noteRot = Quaternion.Euler(0f, 0f, rotZ) * Quaternion.Euler(rotX, 0f, 0f);
-				noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
-			}
+			//float noteZ = Note.GetNoteZ(noteData);
+			//if (noteZ != 0f) {
+			//	var noteRot = Quaternion.Euler(0f, 0f, stageRotZ) * Quaternion.Euler(trackRotX, 0f, 0f);
+			//	noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
+			//}
 
 			// Movement
 			var noteSize = GetRectSize(noteType);
@@ -122,7 +122,7 @@
 			}
 
 			transform.position = noteWorldPos;
-			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, rotZ);
+			MainRenderer.transform.rotation = Quaternion.Euler(0f, 0f, stageRotZ);
 			MainRenderer.transform.localScale = new Vector3(
 				zoneSize * scaleX,
 				zoneSize * scaleY,

@@ -152,7 +152,7 @@
 			VertexCache[0].position.y = VertexCache[3].position.y = rect.height * 0.2f;
 			VertexCache[1].position.y = VertexCache[2].position.y = rect.height * 0.2f + rect.height * 0.3f;
 			float timingDuration = GetMusicTime01(0.4f);
-			foreach (var timing in map.TimingNotes) {
+			foreach (var timing in map.Timings) {
 				if (timing is null) { continue; }
 				float time01 = GetMusicTime01(timing.Time);
 				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);

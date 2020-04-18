@@ -215,18 +215,23 @@
 		}
 
 
-		public static (Vector2 pos, Vector2 zero, float rot) Inside (float x01, float y01, Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ) {
-			float halfWidth = stageWidth * 0.5f;
-			x01 = Mathf.LerpUnclamped(stagePos.x - halfWidth, stagePos.x + halfWidth, x01);
-			return (
-				(Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (
-				new Vector2(
-					x01,
-					Mathf.LerpUnclamped(stagePos.y, stagePos.y + stageHeight, y01)
-				) - stagePos)) + stagePos,
-				(Vector2)(Quaternion.Euler(0f, 0f, stageRotZ) * (new Vector2(x01, stagePos.y) - stagePos)) + stagePos,
-				stageRotZ
-			);
+		public static Vector3 LocalToZone (
+			float x01, float y01, float z01,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
+		) => Matrix4x4.TRS(
+			stagePos,
+			Quaternion.Euler(0f, 0f, stageRotZ),
+			new Vector3(stageWidth, stageHeight, stageHeight)
+		).MultiplyPoint3x4(new Vector3(x01 - 0.5f, y01, z01));
+
+
+		public static Vector2 Outside (Vector3 pos) {
+
+
+
+
+
+			return pos;
 		}
 
 
