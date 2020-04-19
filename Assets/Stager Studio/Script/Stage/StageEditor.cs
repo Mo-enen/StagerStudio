@@ -6,8 +6,7 @@
 	using Data;
 	using Rendering;
 	using Saving;
-
-
+	using global::StagerStudio.Object;
 
 	public class StageEditor : MonoBehaviour {
 
@@ -522,19 +521,42 @@
 								break;
 							case 1: // Track
 								if (axis == 0 || axis == 2) {
-
-
-
+									var track = index >= 0 && index < map.Tracks.Count ? map.Tracks[index] : null;
+									if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+									var stage = map.Stages[track.StageIndex];
+									var localPosX = Stage.ZoneToLocal(
+										zonePos.x, zonePos.y, zonePos.z,
+										Stage.GetStagePosition(stage, index),
+										Stage.GetStageWidth(stage),
+										Stage.GetStageHeight(stage),
+										Stage.GetStageWorldRotationZ(stage)
+									).x;
+									map.SetX(1, index, localPosX);
 								}
 								break;
-							case 2: // Note
-								if (axis == 0 || axis == 2) {
+							case 2: { // Note
+									var note = index >= 0 && index < map.Notes.Count ? map.Notes[index] : null;
+									if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
+									var track = map.Tracks[note.TrackIndex];
+									if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+									var stage = map.Stages[track.StageIndex];
+									var localPos = Track.ZoneToLocal(
+										zonePos.x, zonePos.y, zonePos.z,
+										Stage.GetStagePosition(stage, track.StageIndex),
+										Stage.GetStageWidth(stage),
+										Stage.GetStageHeight(stage),
+										Stage.GetStageWorldRotationZ(stage),
+										Track.GetTrackX(track),
+										Track.GetTrackWidth(track),
+										Track.GetTrackAngle(track)
+									);
+									if (axis == 0 || axis == 2) {
+										map.SetX(2, index, localPos.x);
+									}
+									if (axis == 1 || axis == 2) {
 
 
-								}
-								if (axis == 1 || axis == 2) {
-
-
+									}
 								}
 								break;
 							case 3:  // Timing

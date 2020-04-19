@@ -10630,6 +10630,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aee0dc330cf70e64f87772bb01565eae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_TriggerX: {fileID: 332377905}
+  m_TriggerY: {fileID: 84390049}
+  m_TriggerXY: {fileID: 1582119754}
   m_OnDrag:
     m_PersistentCalls:
       m_Calls:
@@ -10644,9 +10647,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_TriggerX: {fileID: 332377905}
-  m_TriggerY: {fileID: 84390049}
-  m_TriggerXY: {fileID: 1582119754}
 --- !u!1 &999004252
 GameObject:
   m_ObjectHideFlags: 0
@@ -15773,18 +15773,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Tint:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 1140850687
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
   m_SpriteV: {fileID: 4824580782819576835, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
   m_SpriteH: {fileID: 1959211095122329946, guid: bb44e351ca6629b4db3834249557bb66,
     type: 3}
-  m_Tints:
-  - {r: 1, g: 1, b: 1, a: 0.14117648}
-  - {r: 1, g: 1, b: 1, a: 0.46666667}
-  - {r: 0.8235294, g: 0.55215687, b: 0.145098, a: 0.4745098}
-  - {r: 0.8235294, g: 0.55215687, b: 0.145098, a: 0.4745098}
   m_Mode: 0
   m_Thickness: 1
 --- !u!33 &1637691685

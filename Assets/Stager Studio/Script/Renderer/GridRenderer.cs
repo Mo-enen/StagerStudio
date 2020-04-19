@@ -88,10 +88,9 @@
 		// Ser
 		[SerializeField] private Sprite m_SpriteV = null;
 		[SerializeField] private Sprite m_SpriteH = null;
-		[SerializeField] private Color[] m_Tints = default;
 		[SerializeField] private GridMode m_Mode = GridMode.XX;
 		[SerializeField] private ushort m_Thickness = 1;
-
+		 
 		// Data
 		private readonly int[] _CountXs = { 0, 0, 0, 0, };
 		private float _TimeGap = 1f;
@@ -110,7 +109,6 @@
 			var uvMax0 = m_SpriteV.uv[1];
 			var uvMin1 = m_SpriteH.uv[2];
 			var uvMax1 = m_SpriteH.uv[1];
-			Tint = m_Tints[(int)m_Mode];
 
 			// X
 			if (Mode != (int)GridMode._Y) {
