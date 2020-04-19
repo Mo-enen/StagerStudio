@@ -386,6 +386,9 @@
 			// Cache
 			[System.NonSerialized] public float AppearTime = -1f;
 			[System.NonSerialized] public float NoteDropPos = -1f;
+			[System.NonSerialized] public static byte CacheDirtyID = 1;
+			[System.NonSerialized] public byte LocalCacheDirtyID = 0;
+			[System.NonSerialized] public float CacheTime = -1f;
 
 			// API
 			public Timing (float time, float speed) {
@@ -544,6 +547,11 @@
 				return Stages[index].Y;
 			}
 			return 0f;
+		}
+		public void SetStageY (int index, float y) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Y = y;
+			}
 		}
 
 		public float GetSpeedMuti (int type, int index) {

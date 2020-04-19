@@ -49,6 +49,7 @@
 
 		private void Update () {
 
+
 			MainRenderer.RendererEnable = false;
 			m_JudgelineRenderer.RendererEnable = false;
 			ColSize = null;
@@ -63,7 +64,9 @@
 
 			bool oldSelecting = stageData.Selecting;
 			stageData.Active = false;
-			stageData.Selecting = false;
+			if (GetDeselectWhenInactive()) {
+				stageData.Selecting = false;
+			}
 			stageData.SpeedMuti = GetStageSpeed(stageData);
 			Time = stageData.Time;
 			Duration = stageData.Duration;
@@ -215,6 +218,7 @@
 		}
 
 
+		// Matrix
 		public static Vector3 LocalToZone (
 			float x01, float y01, float z01,
 			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
@@ -225,13 +229,17 @@
 		).MultiplyPoint3x4(new Vector3(x01 - 0.5f, y01, z01));
 
 
-		public static Vector2 Outside (Vector3 pos) {
-
-
-
-
-
-			return pos;
+		public static Vector3 ZoneToLocal (
+			float zoneX, float zoneY, float zoneZ,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
+		) {
+			var pos01 = Matrix4x4.TRS(
+				stagePos,
+				Quaternion.Euler(0f, 0f, stageRotZ),
+				new Vector3(stageWidth, stageHeight, stageHeight)
+			).inverse.MultiplyPoint3x4(new Vector3(zoneX, zoneY, zoneZ));
+			pos01.x += 0.5f;
+			return pos01;
 		}
 
 

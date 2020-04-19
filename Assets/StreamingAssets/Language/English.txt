@@ -922,6 +922,9 @@ Use Global Scale for Brushs
 UI.Setting.ShowGrid
 Show Grid and Auxiliary
 
+UI.Setting.ShowGridOnSelect
+Show Grid On Select
+
 UI.Setting.ShowIndexLabelIndexLabel
 Show Index Label for Stage,Track and Note
 

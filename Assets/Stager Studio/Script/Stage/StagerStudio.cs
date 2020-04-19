@@ -101,6 +101,7 @@
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
+		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[Header("Data")]
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
@@ -144,7 +145,7 @@
 			Awake_Setting(skin, language, shortcut, menu);
 			Awake_Setting_UI(sfx, music, game, editor);
 			Awake_Menu(menu, game, project);
-			Awake_Object(project, game, music, sfx);
+			Awake_Object(project, game, editor, music, sfx);
 			Awake_Project(project, editor, game, music, sfx);
 			Awake_Game(project, game, music, library);
 			Awake_Music(game, music, sfx);
@@ -277,9 +278,11 @@
 		}
 
 
-		private void Awake_Object (StageProject project, StageGame game, StageMusic music, StageSoundFX sfx) {
+		private void Awake_Object (StageProject project, StageGame game, StageEditor editor, StageMusic music, StageSoundFX sfx) {
 			StageObject.TweenEvaluate = (x, index) => project.Tweens[Mathf.Clamp(index, 0, project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : project.Palette[Mathf.Min(index, project.Palette.Count - 1)];
+			StageObject.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
+			TimingNote.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
 			Note.GetFilledTime = game.FillDropTime;
 			Note.GetDropSpeedAt = game.GetDropSpeedAt;
@@ -476,6 +479,7 @@
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetVerticesDirty();
+				m_GridRenderer.MusicTime = music.Time;
 				StageObject.MusicPlaying = playing;
 				TimingNote.MusicPlaying = playing;
 				sfx.StopAllFx();
@@ -488,6 +492,7 @@
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
+				m_GridRenderer.MusicTime = music.Time;
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetVerticesDirty();
 			};
@@ -511,7 +516,7 @@
 
 		}
 
-
+		 
 		private void Awake_Editor (StageEditor editor, StageGame game, StageLibrary library, StageProject project, StageMusic music) {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
@@ -531,6 +536,7 @@
 			StageEditor.GetDefaultStageBrush = () => library.GetDefaultStage;
 			StageEditor.GetDefaultTrackBrush = () => library.GetDefaultTrack;
 			StageEditor.GetNotesBrushAt = library.GetNotesAt;
+			StageEditor.GetMoveAxisHovering = () => m_MoveHandler.Hovering;
 		}
 
 

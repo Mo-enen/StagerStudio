@@ -171,7 +171,7 @@
 						resY = y;
 						minDis = Mathf.Abs(pos.y - y);
 					}
-				}, true, useDynamicSpeed);
+				}, false, useDynamicSpeed);
 				pos.y = resY;
 			}
 			pos.z = 0f;
@@ -222,7 +222,7 @@
 							action(0f);
 						}
 						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
-							if (y01 > 0f) { action(y01); }
+							if (y01 >= 0f) { action(y01); }
 							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, useDynamicSpeed);
 							time += TimeGap;
 						}

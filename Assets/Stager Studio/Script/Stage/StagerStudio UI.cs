@@ -36,6 +36,7 @@
 			ShowGrid,
 			ShowKeypress,
 			BrushScale,
+			ShowGridOnSelect,
 
 		}
 
@@ -184,6 +185,9 @@
 				editor.UseGlobalBrushScale.Value = isOn;
 			}, () => editor.UseGlobalBrushScale.Value, editor.UseGlobalBrushScale, true));
 
+			ToggleItemMap.Add(ToggleType.ShowGridOnSelect, ((isOn) => {
+				editor.ShowGridOnSelect.Value = isOn;
+			}, () => editor.ShowGridOnSelect.Value, editor.ShowGridOnSelect, true));
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {

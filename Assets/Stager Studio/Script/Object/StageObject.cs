@@ -17,6 +17,7 @@
 
 		public delegate float FloatFloatIntHandler (float time, int index);
 		public delegate Color ColorIntHandler (int index);
+		public delegate bool BoolHandler ();
 
 
 		#endregion
@@ -34,6 +35,7 @@
 		// Handler
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorIntHandler PaletteColor { get; set; } = null;
+		public static BoolHandler GetDeselectWhenInactive { get; set; } = null;
 
 		// API
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);

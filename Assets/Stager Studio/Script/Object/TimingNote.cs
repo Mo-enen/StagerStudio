@@ -12,24 +12,32 @@
 
 
 
+		#region --- SUB ---
+
+
+		public delegate void SfxHandler (byte type, int duration, int a, int b);
+		public delegate bool BoolHandler ();
+
+
+		#endregion
+
+
+
+
 		#region --- VAR ---
 
 
 		// Handler
-		public delegate void SfxHandler (byte type, int duration, int a, int b);
 		public static SfxHandler PlaySfx { get; set; } = null;
+		public static BoolHandler GetDeselectWhenInactive { get; set; } = null;
 
 		// Api
-		public static int SortingLayerID_UI { get; set; } = -1;
 		public static Beatmap Beatmap { get; set; } = null;
+		public static int SortingLayerID_UI { get; set; } = -1;
 		public static float GameSpeedMuti { get; set; } = 1f;
 		public static float MusicTime { get; set; } = 0f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
-
-		// Short
-		private float Time { get; set; } = 0f;
-		private int Speed { get; set; } = 100;
 
 		// Ser
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
@@ -40,8 +48,6 @@
 		[SerializeField] private Color m_NegativeTint = Color.red;
 
 		// Data
-		private static byte CacheDirtyID = 1;
-		private byte LocalCacheDirtyID = 0;
 		private bool PrevClicked = false;
 		private Beatmap.Timing LateNote = null;
 
@@ -65,30 +71,32 @@
 
 			// Get Data
 			int noteIndex = transform.GetSiblingIndex();
-			var noteData = !(Beatmap is null) && noteIndex < Beatmap.Timings.Count ? Beatmap.Timings[noteIndex] : null;
-			if (noteData is null) {
+			var timingData = !(Beatmap is null) && noteIndex < Beatmap.Timings.Count ? Beatmap.Timings[noteIndex] : null;
+			if (timingData is null) {
 				SetRendererEnable(false);
 				Update_Gizmos(null, false);
 				return;
 			}
 
-			bool oldSelecting = noteData.Selecting;
-			noteData.Selecting = false;
+			bool oldSelecting = timingData.Selecting;
+			if (GetDeselectWhenInactive()) {
+				timingData.Selecting = false;
+			}
 
 			// Update
-			Update_Cache(noteData);
-			Update_SoundFx(noteData);
-			Update_Gizmos(noteData, oldSelecting);
+			Update_SoundFx(timingData);
+			Update_Gizmos(timingData, oldSelecting);
 
-			noteData.Active = GetActive(noteData, noteData.AppearTime);
-			if (!noteData.Active) {
+			timingData.Active = GetActive(timingData);
+			if (!timingData.Active) {
 				SetRendererEnable(false);
+				gameObject.SetActive(false);
 				return;
 			}
 
 			// Final
-			noteData.Selecting = oldSelecting;
-			LateNote = noteData;
+			timingData.Selecting = oldSelecting;
+			LateNote = timingData;
 			SetRendererEnable(true);
 
 		}
@@ -103,28 +111,25 @@
 			if (LateNote == null || !LateNote.Active) { return; }
 			float noteY01 = LateNote.NoteDropPos - MusicTime * LateNote.SpeedMuti;
 			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01);
-			var tint = Speed >= 0 ? m_PositiveTint : m_NegativeTint;
+			var tint = LateNote.m_X >= 0 ? m_PositiveTint : m_NegativeTint;
 			tint.a = Mathf.Clamp01(16f - noteY01 * 16f);
 			m_MainRenderer.color = tint;
 		}
 
 
-		private void Update_Cache (Beatmap.Timing timingData) {
-			if (LocalCacheDirtyID != CacheDirtyID) {
-				LocalCacheDirtyID = CacheDirtyID;
-				Time = -1f;
+		public static void Update_Cache (Beatmap.Timing timingData) {
+			if (timingData.LocalCacheDirtyID != Beatmap.Timing.CacheDirtyID) {
+				timingData.LocalCacheDirtyID = Beatmap.Timing.CacheDirtyID;
+				timingData.CacheTime = -1f;
 			}
 			if (GameSpeedMuti != timingData.SpeedMuti) {
 				timingData.SpeedMuti = GameSpeedMuti;
-				Time = -1f;
+				timingData.CacheTime = -1f;
 			}
-			if (Time != timingData.Time) {
-				Time = timingData.Time;
+			if (timingData.CacheTime != timingData.Time) {
+				timingData.CacheTime = timingData.Time;
 				timingData.AppearTime = timingData.Time - 1f / GameSpeedMuti;
 				timingData.NoteDropPos = -1f;
-			}
-			if (Speed != timingData.m_X) {
-				Speed = timingData.m_X;
 			}
 			if (timingData.NoteDropPos < 0f) {
 				timingData.NoteDropPos = timingData.Time * GameSpeedMuti;
@@ -141,16 +146,13 @@
 			if (m_Highlight.gameObject.activeSelf != hEnabled) {
 				m_Highlight.gameObject.SetActive(hEnabled);
 			}
-			if (m_Highlight.gameObject.activeSelf) {
-				m_Highlight.size = Vector2.one * 0.4f;
-			}
-
+			
 			// Label
 			if (m_LabelRenderer.gameObject.activeSelf != active) {
 				m_LabelRenderer.gameObject.SetActive(active);
 			}
 			if (active) {
-				m_LabelRenderer.Text = $"{Speed}%";
+				m_LabelRenderer.Text = $"{timingData.m_X}%";
 			}
 
 		}
@@ -173,7 +175,9 @@
 		#region --- API ---
 
 
-		public static void SetCacheDirty () => CacheDirtyID++;
+		public static void SetCacheDirty () => Beatmap.Timing.CacheDirtyID++;
+
+		public static bool GetActive (Beatmap.Timing data) => MusicTime >= data.AppearTime && MusicTime <= data.Time;
 
 
 		#endregion
@@ -182,9 +186,6 @@
 
 
 		#region --- LGC ---
-
-
-		private static bool GetActive (Beatmap.Timing data, float appearTime) => MusicTime >= appearTime && MusicTime <= data.Time;
 
 
 		private void SetRendererEnable (bool enable) {

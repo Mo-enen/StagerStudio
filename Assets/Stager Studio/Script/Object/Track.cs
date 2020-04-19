@@ -75,7 +75,9 @@
 
 			bool oldSelecting = trackData.Selecting;
 			trackData.Active = false;
-			trackData.Selecting = false;
+			if (GetDeselectWhenInactive()) {
+				trackData.Selecting = false;
+			}
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
@@ -240,6 +242,7 @@
 		);
 
 
+		// Matrix
 		public static Vector3 LocalToZone (
 			float x01, float y01, float z01,
 			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
@@ -254,12 +257,22 @@
 		}
 
 
-		public static Vector2 Outside (Vector3 pos) {
-
-
-
-
-			return pos;
+		public static Vector3 ZoneToLocal (
+			float zoneX, float zoneY, float zoneZ,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			float trackX, float trackWidth, float trackRotX
+		) {
+			var sPos01 = Stage.ZoneToLocal(
+				zoneX, zoneY, zoneZ,
+				stagePos, stageWidth, stageHeight, stageRotZ
+			);
+			var tPos01 = Matrix4x4.TRS(
+				new Vector3(trackX, 0f, 0f),
+				Quaternion.Euler(trackRotX, 0f, 0f),
+				new Vector3(trackWidth, 1f, 1f)
+			).inverse.MultiplyPoint3x4(sPos01);
+			tPos01.x += 0.5f;
+			return tPos01;
 		}
 
 

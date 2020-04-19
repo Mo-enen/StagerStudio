@@ -922,6 +922,9 @@ UI.Setting.ScaleBrush
 UI.Setting.ShowGrid
 显示网格辅助线
 
+UI.Setting.ShowGridOnSelect
+选择时显示网格
+
 UI.Setting.ShowIndexLabelIndexLabel
 显示舞台、轨道、音符的编号
 

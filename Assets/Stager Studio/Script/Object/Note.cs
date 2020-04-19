@@ -100,7 +100,9 @@
 			}
 			bool oldSelecting = noteData.Selecting;
 			noteData.Active = false;
-			noteData.Selecting = false;
+			if (GetDeselectWhenInactive()) {
+				noteData.Selecting = false;
+			}
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.Tracks[noteData.TrackIndex];
@@ -164,7 +166,7 @@
 
 			base.LateUpdate();
 		}
-
+		
 
 		public static void Update_Cache (Beatmap.Note noteData, float speedMuti) {
 			if (noteData.LocalCacheDirtyID != Beatmap.Note.CacheDirtyID) {

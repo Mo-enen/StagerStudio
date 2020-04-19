@@ -1211,6 +1211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b115370ac4938c42b1abb1525ba8bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Entering: 0
   m_CallbackLeft:
     m_PersistentCalls:
       m_Calls:
@@ -2877,7 +2878,7 @@ GameObject:
   m_Component:
   - component: {fileID: 277437334}
   m_Layer: 0
-  m_Name: Stages
+  m_Name: Stage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3354,6 +3355,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b115370ac4938c42b1abb1525ba8bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Entering: 0
   m_CallbackLeft:
     m_PersistentCalls:
       m_Calls:
@@ -6451,7 +6453,7 @@ GameObject:
   m_Component:
   - component: {fileID: 716853922}
   m_Layer: 0
-  m_Name: Notes
+  m_Name: Note
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10020,7 +10022,7 @@ GameObject:
   m_Component:
   - component: {fileID: 915685450}
   m_Layer: 0
-  m_Name: Speeds
+  m_Name: Timing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10642,6 +10644,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  m_TriggerX: {fileID: 332377905}
+  m_TriggerY: {fileID: 84390049}
+  m_TriggerXY: {fileID: 1582119754}
 --- !u!1 &999004252
 GameObject:
   m_ObjectHideFlags: 0
@@ -13331,7 +13336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1402808310}
   m_Layer: 0
-  m_Name: Tracks
+  m_Name: Track
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14087,6 +14092,7 @@ MonoBehaviour:
   m_Preview: {fileID: 1433018270}
   m_Wave: {fileID: 268875062}
   m_TimingPreview: {fileID: 1894342153}
+  m_MoveHandler: {fileID: 981357320}
   m_LanguageTexts:
   - {fileID: 1796458040}
   - {fileID: 1149638195}
@@ -15292,7 +15298,7 @@ GameObject:
   - component: {fileID: 1582119754}
   - component: {fileID: 1582119753}
   m_Layer: 0
-  m_Name: Ring
+  m_Name: Ring XY
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15352,6 +15358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b115370ac4938c42b1abb1525ba8bb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Entering: 0
   m_CallbackLeft:
     m_PersistentCalls:
       m_Calls:
@@ -15891,10 +15898,6 @@ MonoBehaviour:
   m_AntiTargets:
   - {fileID: 1820277924}
   - {fileID: 213184611}
-  m_AxisHovers:
-  - {fileID: 1802189642}
-  - {fileID: 824399546}
-  - {fileID: 1451865468}
   m_FocusCancel: {fileID: 2017125844}
   m_FocusAni: {fileID: 703012816}
   m_Grid: {fileID: 1637691684}
@@ -17047,7 +17050,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 1
-  m_Size: {x: 1.3, y: 1.3}
+  m_Size: {x: 1, y: 1}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -19715,6 +19718,8 @@ MonoBehaviour:
   - Use Global Scale for Brushs
   - UI.Setting.ShowGrid
   - Show Grid and Auxiliary
+  - UI.Setting.ShowGridOnSelect
+  - Show Grid On Select
   - UI.Setting.ShowIndexLabelIndexLabel
   - Show Index Label for Stage,Track and Note
   - UI.Setting.ShowKeypress
@@ -21193,7 +21198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2127271184}
   m_Layer: 0
-  m_Name: Motions
+  m_Name: Motion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -27,11 +27,15 @@
 
 		// Api
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
+		public bool Hovering => m_TriggerX.Entering || m_TriggerY.Entering || m_TriggerXY.Entering;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
+		[SerializeField] private ColliderTriggerUI m_TriggerX = null;
+		[SerializeField] private ColliderTriggerUI m_TriggerY = null;
+		[SerializeField] private ColliderTriggerUI m_TriggerXY = null;
 		[SerializeField] private AxisEventHandler m_OnDrag = null;
 
 		// Data
@@ -56,12 +60,11 @@
 
 		public void OnAxisDown (int axis) {
 			if (m_OnDrag == null) { return; }
-			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-			var downPos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
+			var downPos = Util.GetRayPosition(GetMouseRay(), zoneMin, zoneMax, transform, false);
 			if (downPos.HasValue) {
 				MouseDown = downPos.Value;
-				m_OnDrag.Invoke(downPos.Value, null, axis);
+				m_OnDrag.Invoke(downPos.Value, downPos, axis);
 			} else {
 				MouseDown = null;
 			}
@@ -70,13 +73,13 @@
 
 		public void OnAxisDrag (int axis) { // 0:x  1:y  2:xy
 			if (m_OnDrag == null || !MouseDown.HasValue) { return; }
-			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-			var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
+			var mousePos = Util.GetRayPosition(GetMouseRay(), zoneMin, zoneMax, transform, false);
 			if (mousePos.HasValue) {
-				m_OnDrag.Invoke(mousePos.Value, MouseDown.Value, axis);
+				m_OnDrag.Invoke(mousePos.Value, null, axis);
 			}
 		}
+
 
 
 		#endregion

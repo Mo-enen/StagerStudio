@@ -140,6 +140,7 @@
 			Update_StageActive();
 			Update_TrackActive();
 			Update_NoteActive();
+			Update_TimingActive();
 			Update_SpeedCurve();
 			Update_Mouse();
 		}
@@ -255,6 +256,25 @@
 				}
 			}
 
+		}
+
+
+		private void Update_TimingActive () {
+			var map = GetBeatmap();
+			if (map == null) { return; }
+			int timingCount = map.Timings.Count;
+			var container = m_Containers[3];
+			for (int i = 0; i < timingCount; i++) {
+				var tf = container.GetChild(i);
+				var tData = map.Timings[i];
+				TimingNote.Update_Cache(tData);
+				if (!tf.gameObject.activeSelf) {
+					tData.Active = TimingNote.GetActive(tData);
+					if (tData.Active) {
+						tf.gameObject.SetActive(true);
+					}
+				}
+			}
 		}
 
 
