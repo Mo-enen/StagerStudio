@@ -12,6 +12,7 @@
 		public static LanguageHandler GetLanguage { get; set; } = null;
 
 		// Ser
+		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_ButtonContainer = null;
 		[SerializeField] private Text m_Content = null;
 		[SerializeField] private Image m_Mark = null;
@@ -41,7 +42,7 @@
 
 
 		// API
-		public void Init (string content, int mark, params System.Action[] actions) {
+		public void Init (string content, int mark, float height, params System.Action[] actions) {
 			// Language
 			foreach (var txt in m_LanguageTexts) {
 				txt.text = GetLanguage(txt.name);
@@ -67,6 +68,11 @@
 				ButtonActions[i] = action;
 				m_ButtonContainer.GetChild(i).gameObject.SetActive(!(action is null));
 			}
+			// Large
+			if (height > 0f) {
+				m_Window.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+			}
+
 			// Func
 			void ButtonClick (int buttonID) {
 				try {

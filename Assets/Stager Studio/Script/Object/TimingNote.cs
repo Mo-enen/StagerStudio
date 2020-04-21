@@ -16,8 +16,7 @@
 
 
 		public delegate void SfxHandler (byte type, int duration, int a, int b);
-		public delegate bool BoolHandler ();
-
+		
 
 		#endregion
 
@@ -29,7 +28,6 @@
 
 		// Handler
 		public static SfxHandler PlaySfx { get; set; } = null;
-		public static BoolHandler GetDeselectWhenInactive { get; set; } = null;
 
 		// Api
 		public static Beatmap Beatmap { get; set; } = null;
@@ -41,7 +39,6 @@
 
 		// Ser
 		[SerializeField] private SpriteRenderer m_MainRenderer = null;
-		[SerializeField] private SpriteRenderer m_Highlight = null;
 		[SerializeField] private TextRenderer m_LabelRenderer = null;
 		[SerializeField] private Transform m_Col = null;
 		[SerializeField] private Color m_PositiveTint = Color.white;
@@ -74,18 +71,13 @@
 			var timingData = !(Beatmap is null) && noteIndex < Beatmap.Timings.Count ? Beatmap.Timings[noteIndex] : null;
 			if (timingData is null) {
 				SetRendererEnable(false);
-				Update_Gizmos(null, false);
+				Update_Gizmos(null);
 				return;
-			}
-
-			bool oldSelecting = timingData.Selecting;
-			if (GetDeselectWhenInactive()) {
-				timingData.Selecting = false;
 			}
 
 			// Update
 			Update_SoundFx(timingData);
-			Update_Gizmos(timingData, oldSelecting);
+			Update_Gizmos(timingData);
 
 			timingData.Active = GetActive(timingData);
 			if (!timingData.Active) {
@@ -95,7 +87,6 @@
 			}
 
 			// Final
-			timingData.Selecting = oldSelecting;
 			LateNote = timingData;
 			SetRendererEnable(true);
 
@@ -137,16 +128,10 @@
 		}
 
 
-		private void Update_Gizmos (Beatmap.Timing timingData, bool selecting) {
+		private void Update_Gizmos (Beatmap.Timing timingData) {
 
 			bool active = !(timingData is null) && timingData.Active;
 
-			// Highlight
-			bool hEnabled = !MusicPlaying && active && selecting;
-			if (m_Highlight.gameObject.activeSelf != hEnabled) {
-				m_Highlight.gameObject.SetActive(hEnabled);
-			}
-			
 			// Label
 			if (m_LabelRenderer.gameObject.activeSelf != active) {
 				m_LabelRenderer.gameObject.SetActive(active);

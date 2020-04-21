@@ -195,7 +195,6 @@
 
 			// Cache
 			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public bool Selecting = false;
 			[System.NonSerialized] public float SpeedMuti = -1f;
 
 
@@ -508,15 +507,9 @@
 
 
 		// Data
-		public bool GetSelect (int type, int index) {
+		public bool GetActive (int type, int index) {
 			var item = GetItem(type, index);
-			return item != null ? item.Selecting : false;
-		}
-		public void SetSelect (int type, int index, bool select) {
-			var item = GetItem(type, index);
-			if (item != null) {
-				item.Selecting = select;
-			}
+			return item != null ? item.Active : false;
 		}
 
 		public float GetTime (int type, int index) {

@@ -35,7 +35,6 @@
 		// Handler
 		public static FloatFloatIntHandler TweenEvaluate { get; set; } = null;
 		public static ColorIntHandler PaletteColor { get; set; } = null;
-		public static BoolHandler GetDeselectWhenInactive { get; set; } = null;
 
 		// API
 		public static (Vector3 min, Vector3 max, float size, float ratio) ZoneMinMax { get; set; } = (default, default, 0f, 1f);
@@ -66,9 +65,6 @@
 		[SerializeField] private ObjectRenderer m_MainRenderer = null;
 		[SerializeField] private BoxCollider m_Col = null;
 		[SerializeField] private TextRenderer m_Label = null;
-		[SerializeField] private SpriteRenderer m_HighlightPrefab = null;
-		[SerializeField] private Transform m_HighlightRoot = null;
-		[SerializeField] private float m_HighlightScaleMuti = 0f;
 
 		// Data
 		protected static SkinData Skin = null;
@@ -109,16 +105,6 @@
 				m_Col.center = offset;
 				if (ColRot.HasValue) {
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
-				}
-			}
-			// Highlight
-			if (Highlight != null) {
-				if (!Highlight.gameObject.activeSelf) {
-					Highlight.gameObject.SetActive(true);
-				}
-				if (ColSize.HasValue) {
-					Highlight.transform.localPosition = m_Col.center;
-					Highlight.size = ColSize.Value * m_HighlightScaleMuti;
 				}
 			}
 		}
@@ -263,15 +249,6 @@
 			if (m_Col.gameObject.layer != layer) {
 				m_Col.gameObject.layer = layer;
 			}
-		}
-
-
-		protected void InstantiateHighlight () {
-			if (m_HighlightRoot.childCount > 0) {
-				m_HighlightRoot.DestroyAllChildImmediately();
-			}
-			Highlight = Instantiate(m_HighlightPrefab, m_HighlightRoot);
-			Highlight.transform.localScale = Vector3.one / m_HighlightScaleMuti;
 		}
 
 

@@ -9,8 +9,7 @@
 	using Object;
 	using Rendering;
 	using Data;
-
-
+	using global::StagerStudio.Saving;
 
 	public partial class StagerStudio : MonoBehaviour {
 
@@ -91,6 +90,7 @@
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
+		[SerializeField] private Transform m_TutorialBoard = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -102,8 +102,12 @@
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[Header("Data")]
+		[SerializeField] private BuildData m_BuildData = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
+
+		// Saving
+		private SavingBool TutorialOpened = new SavingBool("StagerStudio.TutorialOpened", false);
 
 
 		#endregion
@@ -143,14 +147,13 @@
 			Awake_Setting(skin, language, shortcut, menu);
 			Awake_Setting_UI(sfx, music, game, editor);
 			Awake_Menu(menu, game, project);
-			Awake_Object(project, game, editor, music, sfx);
+			Awake_Object(project, game, music, sfx);
 			Awake_Project(project, editor, game, music, sfx);
 			Awake_Game(project, game, music, editor);
 			Awake_Music(game, music, sfx);
 			Awake_Sfx(music, game, sfx);
 			Awake_Editor(editor, game, project, music);
 			Awake_Skin(game);
-			Awake_Tutorial(state);
 			Awake_Undo(project, editor, music);
 			Awake_ProjectInfo(project, game, music, menu);
 			Awake_UI(project, game, editor, skin, state, menu, music);
@@ -273,11 +276,9 @@
 		}
 
 
-		private void Awake_Object (StageProject project, StageGame game, StageEditor editor, StageMusic music, StageSoundFX sfx) {
+		private void Awake_Object (StageProject project, StageGame game, StageMusic music, StageSoundFX sfx) {
 			StageObject.TweenEvaluate = (x, index) => project.Tweens[Mathf.Clamp(index, 0, project.Tweens.Count - 1)].curve.Evaluate(x);
 			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : project.Palette[Mathf.Min(index, project.Palette.Count - 1)];
-			StageObject.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
-			TimingNote.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
 			Note.GetFilledTime = game.FillTime;
 			Note.GetDropSpeedAt = game.GetDropSpeedAt;
@@ -439,7 +440,7 @@
 				if (editor.SelectingBrushIndex != -1) {
 					editor.SetBrush(-1);
 				}
-				if (editor.SelectingObjectIndex != -1) {
+				if (editor.SelectingItemIndex != -1) {
 					editor.ClearSelection();
 				}
 				Note.SetCacheDirty();
@@ -555,12 +556,6 @@
 				TryRefreshSetting();
 				game.ClearAllContainers();
 			};
-		}
-
-
-		private void Awake_Tutorial (StageState state) {
-			StageTutorial.OpenProjectAt = state.GotoEditor;
-
 		}
 
 
@@ -759,6 +754,17 @@
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
+
+			// Tutorial
+			if (TutorialOpened.Value) {
+				//Destroy(m_TutorialBoard.gameObject);
+			} else {
+				m_TutorialBoard.gameObject.SetActive(true);
+			}
+			///////////////// No Tutorial Yet ///////////////
+			Destroy(m_TutorialBoard.gameObject);
+			/////////////////////////////////////////////////
+
 		}
 
 
@@ -773,7 +779,17 @@
 		public void Quit () => Application.Quit();
 
 
-		public void About () => DialogUtil.Open($"Stager Studio v{Application.version} by 楠瓜Moenen\nEmail moenen6@gmail.com\nTwitter @_Moenen\nQQ 754100943\nwww.stager.studio", DialogUtil.MarkType.Info, () => { });
+		public void About () => DialogUtil.Open(
+			$"<size=38><b>Stager Studio</b> v{Application.version}</size>\n" +
+			"<size=20>" +
+			$"Created by 楠瓜Moenen, {m_BuildData.BuildTime}\n\n" +
+			"Home     www.stager.studio\n" +
+			"Email     moenen6@gmail.com\n" +
+			"Twitter   _Moenen\n" +
+			"QQ        754100943" +
+			"</size>",
+			DialogUtil.MarkType.Info, 324, () => { }
+		);
 
 
 		public void GotoWeb () {
@@ -783,6 +799,22 @@
 				DialogUtil.MarkType.Info,
 				() => { }, null, null, null, null
 			);
+		}
+
+
+		public void GotoTutorial (bool open) {
+			TutorialOpened.Value = true;
+			if (m_TutorialBoard) {
+				Destroy(m_TutorialBoard.gameObject);
+			}
+			if (open) {
+				Application.OpenURL("");
+				DialogUtil.Open(
+					string.Format(GetLanguage(UI_OpenWebMSG), ""),
+					DialogUtil.MarkType.Info,
+					() => { }, null, null, null, null
+				);
+			}
 		}
 
 

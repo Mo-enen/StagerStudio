@@ -52,11 +52,12 @@
 
 
 		// ok yes delete no cancel
-		public static void Dialog_OK (string contentKey, MarkType mark, System.Action ok = null) => OpenLogic(GetLanguage(contentKey), mark, ok is null ? () => { } : ok);
-		public static void Dialog_OK_Cancel (string contentKey, MarkType mark, System.Action ok) => OpenLogic(GetLanguage(contentKey), mark, ok, null, null, null, () => { });
-		public static void Dialog_Yes_No_Cancel (string contentKey, MarkType mark, System.Action yes, System.Action no) => OpenLogic(GetLanguage(contentKey), mark, null, yes, null, no, () => { });
-		public static void Dialog_Delete_Cancel (string contentKey, System.Action delete) => OpenLogic(GetLanguage(contentKey), MarkType.Warning, null, null, delete, null, () => { });
-		public static void Open (string content, MarkType mark, params System.Action[] actions) => OpenLogic(content, mark, actions);
+		public static void Dialog_OK (string contentKey, MarkType mark, System.Action ok = null) => OpenLogic(GetLanguage(contentKey), mark, -1f, ok is null ? () => { } : ok);
+		public static void Dialog_OK_Cancel (string contentKey, MarkType mark, System.Action ok) => OpenLogic(GetLanguage(contentKey), mark, -1f, ok, null, null, null, () => { });
+		public static void Dialog_Yes_No_Cancel (string contentKey, MarkType mark, System.Action yes, System.Action no) => OpenLogic(GetLanguage(contentKey), mark, -1f, null, yes, null, no, () => { });
+		public static void Dialog_Delete_Cancel (string contentKey, System.Action delete) => OpenLogic(GetLanguage(contentKey), MarkType.Warning, -1f, null, null, delete, null, () => { });
+		public static void Open (string content, MarkType mark, params System.Action[] actions) => OpenLogic(content, mark, -1f, actions);
+		public static void Open (string content, MarkType mark, float height, params System.Action[] actions) => OpenLogic(content, mark, height, actions);
 
 
 		// File
@@ -120,13 +121,13 @@
 		#region --- LGC ---
 
 
-		private static void OpenLogic (string content, MarkType mark, params System.Action[] actions) {
+		private static void OpenLogic (string content, MarkType mark, float height, params System.Action[] actions) {
 			if (actions is null || actions.Length == 0) { return; }
 			var root = GetRoot();
 			root.parent.gameObject.SetActive(true);
 			root.DestroyAllChildImmediately();
 			root.gameObject.SetActive(true);
-			Util.SpawnUI(GetPrefab(), root, "Dialog").Init(content, (int)mark, actions);
+			Util.SpawnUI(GetPrefab(), root, "Dialog").Init(content, (int)mark, height, actions);
 		}
 
 

@@ -81,7 +81,7 @@
 		}
 		public bool GridShowed { get; private set; } = false;
 		public bool GridEnabled { get; private set; } = false;
-		public bool UseDynamicSpeed { get; set; } = true;
+		public bool IgnoreDynamicSpeed { get; set; } = true;
 		public int CountX => _CountXs[Mode];
 		public bool Visible { get; set; } = true;
 
@@ -126,7 +126,7 @@
 			ForAllY((y) => AddQuad01(
 				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
 				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
-			), false, UseDynamicSpeed);
+			), false);
 
 		}
 
@@ -167,7 +167,7 @@
 		}
 
 
-		public Vector3 SnapWorld (Vector3 pos, bool groundY = false, bool ignoreDynamicSpeed = false) {
+		public Vector3 SnapWorld (Vector3 pos, bool groundY = false) {
 			if (!RendererEnable) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
 			pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
@@ -181,7 +181,7 @@
 						resY = y;
 						minDis = Mathf.Abs(pos.y - y);
 					}
-				}, false, ignoreDynamicSpeed);
+				}, false);
 				pos.y = resY;
 			}
 			pos.z = 0f;
@@ -207,7 +207,7 @@
 		}
 
 
-		private void ForAllY (System.Action<float> action, bool doZero = false, bool ignoreDynamicSpeed = false) {
+		private void ForAllY (System.Action<float> action, bool doZero = false) {
 			switch (m_Mode) {
 				case GridMode.XX: {
 						if (doZero) {
@@ -226,14 +226,14 @@
 						float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
 							Mathf.Min(MusicTime, time),
 							Mathf.Max(MusicTime, time),
-							speedMuti, ignoreDynamicSpeed
+							speedMuti, IgnoreDynamicSpeed
 						);
 						if (doZero) {
 							action(0f);
 						}
 						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
 							if (y01 >= 0f) { action(y01); }
-							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, ignoreDynamicSpeed);
+							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
 							time += TimeGap;
 						}
 					}

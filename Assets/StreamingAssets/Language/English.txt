@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.Type
-Type
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Editor.CannotSelectStage
@@ -554,7 +551,7 @@ Tip.Home.Trushbin
 Trushbin, completely remove or restore the deleted project
 
 Tip.Home.Tutorial
-Start tutorial
+Open tutorial
 
 Tip.Lib.Motion
 Motion brush
@@ -1005,6 +1002,9 @@ Y
 
 UI.SkinEditor.TintNote
 Tint Note
+
+UI.SkinEditor.Type
+Type
 
 UI.SkinEditor.VanishDuration
 Vanish

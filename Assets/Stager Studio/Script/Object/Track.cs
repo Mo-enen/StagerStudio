@@ -68,16 +68,13 @@
 			int trackIndex = transform.GetSiblingIndex();
 			var trackData = !(Beatmap is null) && trackIndex < Beatmap.Tracks.Count ? Beatmap.Tracks[trackIndex] : null;
 			if (trackData is null) {
-				Update_Gizmos(false, false, trackIndex, 1f);
+				Update_Gizmos(false, trackIndex, 1f);
 				gameObject.SetActive(false);
 				return;
 			}
 
-			bool oldSelecting = trackData.Selecting;
+
 			trackData.Active = false;
-			if (GetDeselectWhenInactive()) {
-				trackData.Selecting = false;
-			}
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
@@ -87,13 +84,12 @@
 			trackData.Active = active;
 			trackData.SpeedMuti = linkedStage.SpeedMuti;
 
-			Update_Gizmos(trackData.Active, oldSelecting, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
+			Update_Gizmos(trackData.Active, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
 			if (!active) {
 				gameObject.SetActive(false);
 				return;
 			}
-			trackData.Selecting = oldSelecting;
 
 			LateTrackData = trackData;
 
@@ -165,23 +161,13 @@
 		}
 
 
-		private void Update_Gizmos (bool trackActive, bool selecting, int trackIndex, float speed) {
+		private void Update_Gizmos (bool trackActive, int trackIndex, float speed) {
 
 			// Label
 			bool active = ShowIndexLabel && !MusicPlaying && trackActive;
 			Label.gameObject.SetActive(active);
 			if (active) {
 				Label.Text = trackIndex.ToString();
-			}
-
-			// Highlight
-			bool highlighting = !MusicPlaying && trackActive && selecting;
-			if ((Highlight != null) != highlighting) {
-				if (highlighting) {
-					InstantiateHighlight();
-				} else {
-					Destroy(Highlight.gameObject);
-				}
 			}
 
 			// Section

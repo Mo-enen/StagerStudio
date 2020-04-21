@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.Type
-类型
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Editor.CannotSelectStage
@@ -554,7 +551,7 @@ Tip.Home.Trushbin
 回收站，将删除的工程彻底清除或恢复
 
 Tip.Home.Tutorial
-开启教程
+查看教程
 
 Tip.Lib.Motion
 运动笔刷
@@ -1005,6 +1002,9 @@ Y
 
 UI.SkinEditor.TintNote
 变色音符
+
+UI.SkinEditor.Type
+类型
 
 UI.SkinEditor.VanishDuration
 消失时长

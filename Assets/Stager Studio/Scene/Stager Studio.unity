@@ -651,9 +651,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 958325133}
-        m_MethodName: CloseBoard
-        m_Mode: 1
+      - m_Target: {fileID: 1488624210}
+        m_MethodName: GotoTutorial
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2507,7 +2507,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.71599996, g: 0.4872566, b: 0.142484, a: 0.77254903}
+  m_Color: {r: 0.11536932, g: 0.655, b: 0.52474433, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -7585,7 +7585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -9343,16 +9343,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 958325133}
-        m_MethodName: StartTutorial
-        m_Mode: 1
+      - m_Target: {fileID: 1488624210}
+        m_MethodName: GotoTutorial
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &868289317
 MonoBehaviour:
@@ -9881,50 +9881,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
---- !u!1 &958325131
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 958325132}
-  - component: {fileID: 958325133}
-  m_Layer: 0
-  m_Name: Tutorial
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &958325132
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 958325131}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1488624209}
-  m_RootOrder: 10
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &958325133
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 958325131}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 15dcf677581f99d4987155d3ca6d3ce4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_TutorialBoard: {fileID: 252673457}
 --- !u!1 &962408685
 GameObject:
   m_ObjectHideFlags: 0
@@ -12005,7 +11961,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -12527,7 +12483,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1349422441
 RectTransform:
   m_ObjectHideFlags: 0
@@ -12612,16 +12568,16 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 958325133}
-        m_MethodName: StartTutorial
-        m_Mode: 1
+      - m_Target: {fileID: 1488624210}
+        m_MethodName: GotoTutorial
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
-          m_BoolArgument: 0
+          m_BoolArgument: 1
         m_CallState: 2
 --- !u!114 &1349422445
 MonoBehaviour:
@@ -13154,7 +13110,6 @@ MonoBehaviour:
   m_TrackColor: {r: 0.6, g: 0.61, b: 0.1, a: 1}
   m_NoteColor: {r: 0.11, g: 0.65, b: 0.52, a: 1}
   m_TimingColor: {r: 0.8235295, g: 0.5529412, b: 0.14509805, a: 1}
-  m_SelectionColor: {r: 0.8235295, g: 0.5529412, b: 0.14509805, a: 1}
 --- !u!1 &1443414469
 GameObject:
   m_ObjectHideFlags: 0
@@ -13582,7 +13537,6 @@ Transform:
   - {fileID: 1564010260}
   - {fileID: 826612609}
   - {fileID: 798248422}
-  - {fileID: 958325132}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13645,6 +13599,7 @@ MonoBehaviour:
   m_PitchWarningBlock: {fileID: 1885491280}
   m_Keypress: {fileID: 1191655087}
   m_CameraTF: {fileID: 513021336}
+  m_TutorialBoard: {fileID: 252673457}
   m_Background: {fileID: 40944130}
   m_Progress: {fileID: 1876790200}
   m_Hint: {fileID: 797034088}
@@ -13654,6 +13609,7 @@ MonoBehaviour:
   m_Wave: {fileID: 268875062}
   m_TimingPreview: {fileID: 1894342153}
   m_MoveHandler: {fileID: 981357320}
+  m_BuildData: {fileID: 11400000, guid: 2f0c2288dde315d42979e3df372ec70f, type: 2}
   m_LanguageTexts:
   - {fileID: 1796458040}
   - {fileID: 1149638195}
@@ -14171,7 +14127,7 @@ Transform:
   m_GameObject: {fileID: 1505890987}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.04, y: 0.04, z: 1}
+  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
   m_Children: []
   m_Father: {fileID: 1035960595}
   m_RootOrder: 0
@@ -14215,13 +14171,12 @@ SpriteRenderer:
   m_SortingLayerID: -1173555823
   m_SortingLayer: 14
   m_SortingOrder: 12
-  m_Sprite: {fileID: -3120261747380468746, guid: da7f946bf2fc8f84f95134f233c99156,
-    type: 3}
+  m_Sprite: {fileID: 21300024, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.14, y: 0.27}
+  m_Size: {x: 0.16, y: 0.16}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -18709,8 +18664,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - UI.SkinEditor.Type
-  - Type
+  - 
+  - 
   - Author
   - Stager Official
   - Dialog.Editor.CannotSelectStage
@@ -19080,7 +19035,7 @@ MonoBehaviour:
   - Tip.Home.Trushbin
   - Trushbin, completely remove or restore the deleted project
   - Tip.Home.Tutorial
-  - Start tutorial
+  - Open tutorial
   - Tip.Lib.Motion
   - Motion brush
   - Tip.Lib.Note
@@ -19381,6 +19336,8 @@ MonoBehaviour:
   - Y
   - UI.SkinEditor.TintNote
   - Tint Note
+  - UI.SkinEditor.Type
+  - Type
   - UI.SkinEditor.VanishDuration
   - Vanish
   - UI.SkinEditor.View

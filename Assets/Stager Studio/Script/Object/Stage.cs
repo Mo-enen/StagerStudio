@@ -64,11 +64,7 @@
 				return;
 			}
 
-			bool oldSelecting = stageData.Selecting;
 			stageData.Active = false;
-			if (GetDeselectWhenInactive()) {
-				stageData.Selecting = false;
-			}
 			stageData.SpeedMuti = GetStageSpeed(stageData);
 			Time = stageData.Time;
 			Duration = stageData.Duration;
@@ -77,13 +73,12 @@
 			bool active = GetStageActive(stageData, stageIndex);
 			stageData.Active = active;
 
-			Update_Gizmos(active, oldSelecting, stageIndex);
+			Update_Gizmos(active, stageIndex);
 
 			if (!active) {
 				gameObject.SetActive(false);
 				return;
 			}
-			stageData.Selecting = oldSelecting;
 
 			// Update
 			Update_Movement(stageData, stageIndex);
@@ -125,7 +120,7 @@
 		}
 
 
-		private void Update_Gizmos (bool stageActive, bool selecting, int stageIndex) {
+		private void Update_Gizmos (bool stageActive, int stageIndex) {
 
 			// Label
 			if (Label != null) {
@@ -133,16 +128,6 @@
 				Label.gameObject.SetActive(active);
 				if (active) {
 					Label.Text = stageIndex.ToString();
-				}
-			}
-
-			// Highlight
-			bool highlighting = !MusicPlaying && stageActive && selecting;
-			if ((Highlight != null) != highlighting) {
-				if (highlighting) {
-					InstantiateHighlight();
-				} else {
-					Destroy(Highlight.gameObject);
 				}
 			}
 

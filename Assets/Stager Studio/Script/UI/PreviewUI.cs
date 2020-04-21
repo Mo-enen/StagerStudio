@@ -33,13 +33,10 @@
 		[SerializeField] private Color m_TrackColor = new Color(0.6f, 0.61f, 0.1f);
 		[SerializeField] private Color m_NoteColor = new Color(0.11f, 0.65f, 0.52f);
 		[SerializeField] private Color m_TimingColor = new Color(0.65f, 0.11f, 0.52f);
-		[SerializeField] private Color m_SelectionColor = new Color(0.6f, 0.15f, 0.12f);
 
 		// Data
-		private bool IsDirty = false;
-		private float HasSelectionTime = -1f;
 		private static readonly UIVertex[] VertexCache = new UIVertex[4] { default, default, default, default };
-		private static readonly UIVertex[] TriangleCache = new UIVertex[4] { default, default, default, default };
+		private bool IsDirty = false;
 
 
 		#endregion
@@ -51,7 +48,7 @@
 
 
 		private void LateUpdate () {
-			if (IsDirty || (HasSelectionTime > 0f && Time.time > HasSelectionTime + 0.5f)) {
+			if (IsDirty) {
 				IsDirty = false;
 				SetVerticesDirty();
 			}
@@ -66,17 +63,12 @@
 			}
 #endif
 			toFill.Clear();
-			HasSelectionTime = -1f;
 			var map = GetBeatmap();
 			if (map is null) { return; }
 
 			var rect = GetPixelAdjustedRect();
 			float left = rect.xMin;
 			float right = rect.xMax;
-			bool hasSelection = false;
-			TriangleCache[0].color = TriangleCache[1].color = TriangleCache[2].color = TriangleCache[3].color = m_SelectionColor;
-			TriangleCache[0].position.y = TriangleCache[3].position.y = rect.height;
-			TriangleCache[1].position.y = TriangleCache[2].position.y = rect.height * 1.618f;
 
 			// Stage
 			VertexCache[0].color = VertexCache[1].color = VertexCache[2].color = VertexCache[3].color = m_StageColor;
@@ -89,16 +81,6 @@
 				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);
 				VertexCache[2].position.x = VertexCache[3].position.x = Mathf.Lerp(left, right, time01 + duration01);
 				toFill.AddUIVertexQuad(VertexCache);
-				// Selection
-				if (stage.Selecting) {
-					int index = toFill.currentVertCount;
-					float x = Mathf.Lerp(left, right, time01);
-					TriangleCache[0].position.x = TriangleCache[3].position.x = x;
-					TriangleCache[1].position.x = x - rect.height * 0.3f;
-					TriangleCache[2].position.x = x + rect.height * 0.3f;
-					toFill.AddUIVertexQuad(TriangleCache);
-					hasSelection = true;
-				}
 			}
 
 			// Track
@@ -112,16 +94,6 @@
 				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);
 				VertexCache[2].position.x = VertexCache[3].position.x = Mathf.Lerp(left, right, time01 + duration01);
 				toFill.AddUIVertexQuad(VertexCache);
-				// Selection
-				if (track.Selecting) {
-					int index = toFill.currentVertCount;
-					float x = Mathf.Lerp(left, right, time01);
-					TriangleCache[0].position.x = TriangleCache[3].position.x = x;
-					TriangleCache[1].position.x = x - rect.height * 0.3f;
-					TriangleCache[2].position.x = x + rect.height * 0.3f;
-					toFill.AddUIVertexQuad(TriangleCache);
-					hasSelection = true;
-				}
 			}
 
 			// Note
@@ -135,16 +107,6 @@
 				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);
 				VertexCache[2].position.x = VertexCache[3].position.x = Mathf.Lerp(left, right, time01 + duration01);
 				toFill.AddUIVertexQuad(VertexCache);
-				// Selection
-				if (note.Selecting) {
-					int index = toFill.currentVertCount;
-					float x = Mathf.Lerp(left, right, time01);
-					TriangleCache[0].position.x = TriangleCache[3].position.x = x;
-					TriangleCache[1].position.x = x - rect.height * 0.3f;
-					TriangleCache[2].position.x = x + rect.height * 0.3f;
-					toFill.AddUIVertexQuad(TriangleCache);
-					hasSelection = true;
-				}
 			}
 
 			// Timing
@@ -158,10 +120,6 @@
 				VertexCache[0].position.x = VertexCache[1].position.x = Mathf.Lerp(left, right, time01);
 				VertexCache[2].position.x = VertexCache[3].position.x = Mathf.Lerp(left, right, time01 + timingDuration);
 				toFill.AddUIVertexQuad(VertexCache);
-			}
-
-			if (hasSelection) {
-				HasSelectionTime = Time.time;
 			}
 
 		}

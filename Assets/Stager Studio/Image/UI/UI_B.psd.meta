@@ -633,27 +633,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Highlight
-      rect:
-        serializedVersion: 2
-        x: 243
-        y: 2
-        width: 35
-        height: 35
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 17, y: 17, z: 17, w: 17}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 98c5ab9d7a3d912d0800000000000000
-      internalID: -3307379733461050231
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Shirt
       rect:
         serializedVersion: 2
@@ -759,27 +738,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Library Brush Rect
-      rect:
-        serializedVersion: 2
-        x: 205
-        y: 2
-        width: 22
-        height: 22
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 2, y: 2, z: 2, w: 2}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: de7083b4e21e8a500800000000000000
-      internalID: 407823355223738349
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Abreast Width
       rect:
         serializedVersion: 2
@@ -880,27 +838,6 @@ TextureImporter:
       bones: []
       spriteID: a5145c45c14803b10800000000000000
       internalID: 1959211095122329946
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Pivot Ring
-      rect:
-        serializedVersion: 2
-        x: 420
-        y: 2
-        width: 42
-        height: 42
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 6f3c52df87a92b4d0800000000000000
-      internalID: -3120261747380468746
       vertices: []
       indices: 
       edges: []
