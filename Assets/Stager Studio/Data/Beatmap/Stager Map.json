@@ -3,54 +3,9 @@
   "Level": 1,
   "Tag": "Normal",
   "CreatedTime": 637208493784316751,
-  "Stages": [
-    {
-      "m_Time": 0,
-      "m_Duration": 2147483646,
-      "m_Speed": 1000,
-      "m_X": 500,
-      "m_Y": 0,
-      "m_Width": 1000,
-      "m_Height": 666,
-      "m_Rotation": 0,
-      "Positions": [],
-      "Rotations": [],
-      "Widths": [],
-      "Heights": []
-    }
-  ],
-  "Tracks": [
-    {
-      "m_Time": 0,
-      "m_Duration": 2147483646,
-      "m_X": 500,
-      "m_Width": 200,
-      "m_Angle": 0,
-      "StageIndex": 0,
-      "Color": 0,
-      "HasTray": false,
-      "Xs": [],
-      "Widths": [],
-      "Colors": [],
-      "Angles": []
-    }
-  ],
-  "Notes": [
-    {
-      "m_Time": 300,
-      "m_Duration": 0,
-      "m_X": 500,
-      "m_Z": 0,
-      "m_Width": 618,
-      "TrackIndex": 0,
-      "LinkedNoteIndex": -1,
-      "ClickSoundIndex": 0,
-      "Tap": true,
-      "Comment": "",
-      "SwipeX": 1,
-      "SwipeY": 1
-    }
-  ],
+  "Stages": [],
+  "Tracks": [],
+  "Notes": [],
   "SpeedNotes": [
     {
       "m_Time": 0,

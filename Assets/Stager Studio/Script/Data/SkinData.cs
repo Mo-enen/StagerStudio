@@ -16,27 +16,23 @@
 		TrackTint = 3,
 		Tray = 4,
 
-		TapNote = 5,
-		HoldNote = 6,
-		SwipeArrow = 7,
-		SlideNote = 8,
-		LinkPole = 9,
+		Note = 5,
+		Arrow = 6,
+		Pole = 7,
 
-		NoteLuminous = 10,
-		HoldLuminous = 11,
-
-		Comment = 12,
-		Pixel = 13,
+		NoteLuminous = 8,
+		HoldLuminous = 9,
 
 	}
 
 
 	[System.Serializable]
 	public enum SkinLoopType {
-		Forward = 0,
-		Loop = 1,
-		PingPong = 2,
-		PingPong_Stay = 3,
+		Type = 0,
+		Forward = 1,
+		Loop = 2,
+		PingPong = 3,
+		PingPong_Stay = 4,
 	}
 
 
@@ -256,7 +252,7 @@
 		}
 
 		// Ser
-		public SkinLoopType Loop = SkinLoopType.Forward;
+		public SkinLoopType Loop = SkinLoopType.Type;
 		public List<RectData> Rects = new List<RectData>();
 		public ColorData Highlight = new ColorData(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 		public int FrameDuration = 200;
@@ -268,12 +264,14 @@
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);
 
 
-		public int GetFrame (float lifeTime, float lifeLength) {
+		public int GetFrame (int type, float lifeTime, float lifeLength) {
 			int count = Rects.Count;
 			float spf = FrameDuration / 1000f;
 			if (count <= 1 || FrameDuration == 0) { return 0; }
 			switch (Loop) {
 				default:
+				case SkinLoopType.Type:
+					return Mathf.Clamp(type, 0, count - 1);
 				case SkinLoopType.Forward:
 					return Mathf.Clamp(Mathf.FloorToInt(
 						Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf

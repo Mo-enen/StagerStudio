@@ -45,7 +45,7 @@
 
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
-			if (noteData is null || !string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) {
+			if (noteData is null || noteData.SpeedOnDrop < 0f) {
 				gameObject.SetActive(false);
 				return;
 			}
@@ -80,7 +80,7 @@
 			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
 			Time = noteData.Time;
-			var noteType = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
+			var noteType = SkinType.Note;
 			var judgeLineSize = GetRectSize(SkinType.JudgeLine);
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
@@ -96,12 +96,7 @@
 				trackX, trackWidth, trackRotX
 			);
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			//float noteZ = Note.GetNoteZ(noteData);
-			//if (noteZ != 0f) {
-			//	var noteRot = Quaternion.Euler(0f, 0f, stageRotZ) * Quaternion.Euler(trackRotX, 0f, 0f);
-			//	noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
-			//}
-
+			
 			// Movement
 			var noteSize = GetRectSize(noteType);
 			var lumSize = GetRectSize(lumType, true, true);

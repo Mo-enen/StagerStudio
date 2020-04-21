@@ -226,7 +226,7 @@ TextureImporter:
     second: Music Note 5
   - first:
       213: -7089468405191809942
-    second: Palette
+    second: Shirt
   - first:
       213: 7175862385276731420
     second: Arrow Up
@@ -654,13 +654,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Palette
+      name: Shirt
       rect:
         serializedVersion: 2
-        x: 110
-        y: 3
-        width: 51
-        height: 51
+        x: 109
+        y: 2
+        width: 49
+        height: 39
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -977,7 +977,7 @@ TextureImporter:
         width: 77
         height: 77
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

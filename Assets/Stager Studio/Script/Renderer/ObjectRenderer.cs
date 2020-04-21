@@ -37,6 +37,7 @@
 				}
 			}
 		}
+		public int ItemType { get; set; } = 0;
 		public float LifeTime {
 			get => _LifeTime;
 			set {
@@ -76,10 +77,7 @@
 
 			// Data
 			var ani = AniData;
-			if (ani is null || SkinData.Texture is null || ani.Rects.Count == 0) {
-				ClearMeshCache();
-				return;
-			}
+			if (ani is null || SkinData.Texture is null || ani.Rects.Count == 0) { return; }
 
 			// Calculate New
 			var rData = ani.Rects[Frame];
@@ -203,7 +201,7 @@
 		// LGC
 		private void ReCalculateFrame () {
 			var ani = AniData;
-			int frame = ani is null ? 0 : ani.GetFrame(_LifeTime, Duration);
+			int frame = ani is null ? 0 : ani.GetFrame(ItemType, _LifeTime, Duration);
 			if (frame != Frame) {
 				Frame = frame;
 				SetDirty();

@@ -258,19 +258,12 @@
 			try {
 				// Active
 				m_FixedRatioTG.transform.parent.gameObject.SetActive(
-					EditingType == SkinType.Comment ||
-					EditingType == SkinType.HoldNote ||
-					EditingType == SkinType.TapNote ||
-					EditingType == SkinType.SlideNote ||
+					EditingType == SkinType.Note ||
 					EditingType == SkinType.NoteLuminous ||
 					EditingType == SkinType.HoldLuminous
 				);
 				m_HighlightCP.transform.parent.gameObject.SetActive(
-					EditingType == SkinType.HoldNote ||
-					EditingType == SkinType.SlideNote ||
-					EditingType == SkinType.Comment ||
-					EditingType == SkinType.LinkPole ||
-					EditingType == SkinType.Pixel
+					EditingType == SkinType.Pole
 				);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();

@@ -90,7 +90,7 @@
 		[SerializeField] private Sprite m_SpriteH = null;
 		[SerializeField] private GridMode m_Mode = GridMode.XX;
 		[SerializeField] private ushort m_Thickness = 1;
-		 
+
 		// Data
 		private readonly int[] _CountXs = { 0, 0, 0, 0, };
 		private float _TimeGap = 1f;
@@ -140,10 +140,22 @@
 				gameObject.SetActive(RendererEnable);
 			}
 			if (enable) {
-				transform.position = pos;
-				transform.rotation = rot;
-				transform.localScale = Scale = scale;
-				SetDirty();
+				bool changed = false;
+				if (pos != transform.position) {
+					transform.position = pos;
+					changed = true;
+				}
+				if (rot != transform.rotation) {
+					transform.rotation = rot;
+					changed = true;
+				}
+				if (scale != transform.localScale) {
+					Scale = transform.localScale = scale;
+					changed = true;
+				}
+				if (changed) {
+					RefreshMesh();
+				}
 			}
 		}
 
@@ -155,7 +167,7 @@
 		}
 
 
-		public Vector3 SnapWorld (Vector3 pos, bool groundY = false, bool floorToIntY = false, bool useDynamicSpeed = true) {
+		public Vector3 SnapWorld (Vector3 pos, bool groundY = false, bool ignoreDynamicSpeed = false) {
 			if (!RendererEnable) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
 			pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
@@ -165,11 +177,11 @@
 				float minDis = float.MaxValue;
 				float resY = pos.y;
 				ForAllY((y) => {
-					if ((!floorToIntY || y < pos.y) && Mathf.Abs(pos.y - y) < minDis) {
+					if (Mathf.Abs(pos.y - y) < minDis) {
 						resY = y;
 						minDis = Mathf.Abs(pos.y - y);
 					}
-				}, false, useDynamicSpeed);
+				}, false, ignoreDynamicSpeed);
 				pos.y = resY;
 			}
 			pos.z = 0f;
@@ -195,7 +207,7 @@
 		}
 
 
-		private void ForAllY (System.Action<float> action, bool doZero = false, bool useDynamicSpeed = true) {
+		private void ForAllY (System.Action<float> action, bool doZero = false, bool ignoreDynamicSpeed = false) {
 			switch (m_Mode) {
 				case GridMode.XX: {
 						if (doZero) {
@@ -214,14 +226,14 @@
 						float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
 							Mathf.Min(MusicTime, time),
 							Mathf.Max(MusicTime, time),
-							speedMuti, useDynamicSpeed
+							speedMuti, ignoreDynamicSpeed
 						);
 						if (doZero) {
 							action(0f);
 						}
 						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
 							if (y01 >= 0f) { action(y01); }
-							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, useDynamicSpeed);
+							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, ignoreDynamicSpeed);
 							time += TimeGap;
 						}
 					}

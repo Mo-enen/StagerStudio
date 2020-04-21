@@ -72,7 +72,7 @@
 			// Bar Position
 			if (Bar_Dirty) {
 				float aValue = GetAbreastValue();
-				float aPosX = Mathf.Lerp(50f, 0f, aValue);
+				float aPosX = Mathf.Lerp(-m_Root.rect.width, 0f, aValue);
 				var oldPos = m_Root.anchoredPosition;
 				if (Mathf.Abs(oldPos.x - aPosX) > 0.01f) {
 					m_Root.anchoredPosition = new Vector2(

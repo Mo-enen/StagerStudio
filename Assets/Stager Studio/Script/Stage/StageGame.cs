@@ -358,7 +358,7 @@
 				} else {
 					// Right Drag
 					float mouseTime = GetMusicTimeAt(Input.mousePosition);
-					Music.Seek(FillDropTime(
+					Music.Seek(FillTime(
 						MouseDownMusicTime,
 						Mathf.Sign(Music.Time - mouseTime) * AreaBetween(mouseTime, Music.Time, GameDropSpeed * MapDropSpeed),
 						GameDropSpeed * MapDropSpeed
@@ -389,7 +389,7 @@
 				// Final
 				return true;
 			}
-			float GetMusicTimeAt (Vector2 screenPos) => FillDropTime(Music.Time, m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed * MapDropSpeed);
+			float GetMusicTimeAt (Vector2 screenPos) => FillTime(Music.Time, m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed * MapDropSpeed);
 		}
 
 
@@ -433,11 +433,8 @@
 		public float GetDropSpeedAt (float time) => UseDynamicSpeed ? SpeedCurve.Evaluate(time) : 1f;
 
 
-		public float FillDropTime (float time, float fill, float muti) =>
+		public float FillTime (float time, float fill, float muti) =>
 			UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
-
-
-		public float AreaBetweenDrop (float time, float muti) => AreaBetween(0f, time, muti);
 
 
 		public float AreaBetween (float timeA, float timeB, float muti) =>

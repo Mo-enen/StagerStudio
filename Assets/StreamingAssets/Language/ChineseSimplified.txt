@@ -1,29 +1,20 @@
-﻿Author
+﻿UI.SkinEditor.Type
+类型
+
+Author
 Stager 官方
+
+Dialog.Editor.CannotSelectStage
+全景模式下不能选择舞台
+
+Dialog.Editor.CannotSelectStageBrush
+全景模式下不能选择舞台笔刷
+
+Dialog.Editor.SelectingLayerLocked
+图层已锁定
 
 Dialog.Error.FailCreateProject
 创建工程时发生错误
-
-Dialog.Library.CannotSelectStage
-全景模式下不能选择舞台笔刷
-
-Dialog.Library.DeletePrefabConfirm
-删除笔刷吗？本操作不能撤销
-
-Dialog.Library.ExportPrefabTitle
-导出笔刷
-
-Dialog.Library.ImportPrefabConfirm
-导入笔刷吗？这将覆盖现有的笔刷。
-
-Dialog.Library.ImportPrefabTitle
-导入笔刷
-
-Dialog.Library.PrefabExported
-笔刷已导出
-
-Dialog.Library.SelectingLayerLocked
-图层已锁定
 
 Dialog.OpenWebMSG
 正在尝试打开 {0} 请查看您的浏览器
@@ -150,21 +141,6 @@ Menu.Home.SortByName
 
 Menu.Home.SortByTime
 按时间排序
-
-Menu.Library.DeletePrefabItem
-删除
-
-Menu.Library.ExportPrefabs
-导出笔刷
-
-Menu.Library.ImportPrefabs
-导入笔刷
-
-Menu.Library.MovePrefabLeft
-左移
-
-Menu.Library.MovePrefabRight
-右移
 
 Menu.ProjectInfo.DeleteClickSound
 删除
@@ -323,22 +299,22 @@ ProjectCreator.Error.NoTitle
 标题不能为空
 
 ProjectCreator.Hint.Arcaea
-创建为悬浮音符的固定轨道工程，非悬浮音符的宽度与位置固定，悬浮音符的位置不固定。
+使用双层倾斜轨道模板
 
 ProjectCreator.Hint.Deemo
-创建为简单的隐藏舞台轨道工程，不限制音符横向位置，不限制音符宽度，无长按音符。
+使用单倾斜轨道模板
 
 ProjectCreator.Hint.Dynamix
-创建为三线落点式工程，系统会自动创建舞台和轨道，您只需编辑音符即可。
+使用三线落点模板
 
 ProjectCreator.Hint.Osu
-创建为固定数量轨道、仅支持普通与长按音符的工程，音符横向占满整个轨道，轨道横向并排在舞台中。
+使用简易的并列轨道模板
 
 ProjectCreator.Hint.StagerStudio
-创建为标准的StagerStudio工程，允许使用所有功能。
+创建空白工程
 
 ProjectCreator.Hint.Voez
-创建为移动轨道式工程，可编辑轨道的位置、颜色、角度等信息，音符的横向位置锁定在轨道正中间。
+使用移动轨道模板
 
 ProjectInfo.Dialog.DeletePal
 确认删除颜色{0}吗？本操作不可撤销。
@@ -502,11 +478,8 @@ SkinEditor.Dialog.ImportImageTitle
 SkinEditor.Dialog.SkinImageExported
 图片已导出
 
-SkinEditor.Item.Comment
-注释
-
-SkinEditor.Item.Hold
-长按音符
+SkinEditor.Item.Arrow
+箭头
 
 SkinEditor.Item.HoldLuminous
 长按光效
@@ -514,26 +487,17 @@ SkinEditor.Item.HoldLuminous
 SkinEditor.Item.Judgeline
 判定线
 
-SkinEditor.Item.LinkPole
-连接杆
-
 SkinEditor.Item.Luminous
 光效
 
-SkinEditor.Item.Pixel
-像素
+SkinEditor.Item.Note
+音符
 
-SkinEditor.Item.Slide
-滑动音符
+SkinEditor.Item.Pole
+连接杆
 
 SkinEditor.Item.Stage
 舞台
-
-SkinEditor.Item.SwipeArrow
-方向箭头
-
-SkinEditor.Item.Tap
-点击音符
 
 SkinEditor.Item.Track
 轨道
@@ -650,7 +614,7 @@ Tip.PInfo.Done
 保存并关闭工程信息窗口
 
 Tip.ProjectInfo
-工程信息：工程的标题、简介、音乐、背景等资源，谱面的难度、BPM等信息。
+工程信息：管理标题、音乐、背景，谱面难度、BPM等
 
 Tip.Save
 保存工程 (右键点击可以设置自动保存时间)

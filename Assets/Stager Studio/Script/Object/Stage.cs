@@ -39,6 +39,8 @@
 			base.Awake();
 			ColRot = null;
 			m_JudgelineRenderer.SkinData = Skin;
+			MainRenderer.Type = SkinType.Stage;
+			m_JudgelineRenderer.Type = SkinType.JudgeLine;
 		}
 
 
@@ -110,12 +112,12 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
-			MainRenderer.Type = SkinType.Stage;
+			MainRenderer.ItemType = stageData.ItemType;
 			MainRenderer.Scale = new Vector2(width, height);
 			MainRenderer.Duration = m_JudgelineRenderer.Duration = Duration;
 			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
-			m_JudgelineRenderer.Type = SkinType.JudgeLine;
+			m_JudgelineRenderer.ItemType = stageData.ItemType;
 			m_JudgelineRenderer.Scale = new Vector2(width, judgeLineSize.y);
 			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Judge, GetSortingOrder());
 			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());

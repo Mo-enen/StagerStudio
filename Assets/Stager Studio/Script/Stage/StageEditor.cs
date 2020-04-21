@@ -18,14 +18,13 @@
 
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
+		public delegate void VoidIntHandler (int i);
 		public delegate Beatmap BeatmapHandler ();
-		public delegate int IntHandler ();
 		public delegate bool BoolHandler ();
-		public delegate Beatmap.Stage StageHandler ();
-		public delegate Beatmap.Track TrackHandler ();
-		public delegate List<Beatmap.Note> NotesIntHandler (int i);
 		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate string StringStringHandler (string str);
+		public delegate float FillHandler (float time, float fill, float muti);
+
 
 		#endregion
 
@@ -38,28 +37,30 @@
 		// Const
 		private readonly static string[] ITEM_LAYER_NAMES = { "Stage", "Track", "Note", "Speed", "Motion", };
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
+		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
+		private const string DIALOG_CannotSelectStage = "Dialog.Editor.CannotSelectStage";
+		private const string DIALOG_SelectingLayerLocked = "Dialog.Editor.SelectingLayerLocked";
+		private const string HOLD_NOTE_LAYER_NAME = "HoldNote";
 
 		// Handle
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
-		public static IntHandler GetBrushType { get; set; } = null;
-		public static IntHandler GetBrushIndex { get; set; } = null;
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
+		public static VoidIntHandler OnObjectEdited { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
 		public static BoolHandler GetUseDynamicSpeed { get; set; } = null;
 		public static BoolHandler GetUseAbreast { get; set; } = null;
-		public static StageHandler GetDefaultStageBrush { get; set; } = null;
-		public static TrackHandler GetDefaultTrackBrush { get; set; } = null;
-		public static NotesIntHandler GetNotesBrushAt { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static BoolHandler GetMoveAxisHovering { get; set; } = null;
+		public static FillHandler GetFilledTime { get; set; } = null;
 
 		// Api
+		public int SelectingObjectIndex { get; private set; } = -1;
 		public int SelectingType { get; private set; } = -1;
-		public int SelectingCount => SelectingObjectIndexs.Count;
 		public bool DeselectWhenInactive { get; private set; } = true;
+		public int SelectingBrushIndex { get; private set; } = -1;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -79,10 +80,13 @@
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private SpriteRenderer m_GhostPivot = null;
 		[SerializeField] private Transform m_MoveAxis = null;
-		[SerializeField] private string m_NoteHoldLayerName = "HoldNote";
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
-		[SerializeField] private float m_Duration = 0.5f;
+		[Header("Brush")]
+		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
+		[SerializeField] private Beatmap.Stage m_DefaultStage = null;
+		[SerializeField] private Beatmap.Track m_DefaultTrack = null;
+		[SerializeField] private Beatmap.Note m_DefaultNote = null;
 
 		// Data
 		private readonly static Dictionary<int, int> LayerToTypeMap = new Dictionary<int, int>();
@@ -97,7 +101,6 @@
 		private LayerMask UnlockedMask = default;
 
 		// Mouse
-		private readonly static List<int> SelectingObjectIndexs = new List<int>();
 		private readonly static RaycastHit[] CastHits = new RaycastHit[64];
 		private bool ClickStartInsideSelection = false;
 		private int HoldNoteLayer = -1;
@@ -125,7 +128,7 @@
 				ItemLayers[i] = LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]);
 				LayerToTypeMap.Add(ItemLayers[i], i);
 			}
-			HoldNoteLayer = LayerMask.NameToLayer(m_NoteHoldLayerName);
+			HoldNoteLayer = LayerMask.NameToLayer(HOLD_NOTE_LAYER_NAME);
 			LayerToTypeMap.Add(HoldNoteLayer, 2);
 			SortingLayerID_UI = SortingLayer.NameToID("UI");
 
@@ -160,6 +163,15 @@
 				});
 			}
 
+			// Init Brush
+			for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+				int index = i;
+				m_DefaultBrushTGs[index].onValueChanged.AddListener((isOn) => {
+					if (!UIReady) { return; }
+					SetBrushLogic(isOn ? index : -1);
+				});
+			}
+
 			// UI
 			HoverScaleMuti = m_Hover.transform.localScale;
 			GhostPivotScaleMuti = m_GhostPivot.transform.localScale;
@@ -188,41 +200,25 @@
 
 
 		private void LateUpdate_Selection (Beatmap map) {
-			if (SelectingCount > 0) {
-				bool changed = false;
-				for (int i = 0; i < SelectingObjectIndexs.Count; i++) {
-					int index = SelectingObjectIndexs[i];
-					if (!map.GetSelect(SelectingType, index)) {
-						SelectingObjectIndexs.RemoveAt(i);
-						i--;
-						changed = true;
-					}
-				}
-				if (changed) {
-					if (SelectingCount == 0) {
-						m_MoveAxis.gameObject.SetActive(false);
-					}
-					OnSelectionChanged();
-				}
+			if (SelectingObjectIndex >= 0 && !map.GetSelect(SelectingType, SelectingObjectIndex)) {
+				SelectingObjectIndex = -1;
+				SelectingType = -1;
+				OnSelectionChanged();
 			}
 		}
 
 
 		private void LateUpdate_Down (Beatmap map) {
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
-			int brushType = GetBrushType();
-			if (brushType < 0) {
+			if (SelectingBrushIndex < 0) {
 				// Select or Move
-				bool ctrl = Input.GetKey(KeyCode.LeftControl);
-				bool alt = Input.GetKey(KeyCode.LeftAlt);
 				var (overlapType, overlapIndex, _) = GetCastTypeIndex(GetMouseRay(), UnlockedMask, true);
-				ClickStartInsideSelection = SelectingCount > 0 && overlapType == SelectingType && map.GetSelect(overlapType, overlapIndex);
-				if (!ClickStartInsideSelection || alt || ctrl) {
+				ClickStartInsideSelection = SelectingObjectIndex >= 0 && overlapType == SelectingType && map.GetSelect(overlapType, overlapIndex);
+				if (!ClickStartInsideSelection) {
 					// Select
-					if (!ctrl && !alt) { ClearSelection(); }
+					ClearSelection();
 					if (overlapType >= 0 && overlapIndex >= 0) {
-						AddSelection(overlapType, overlapIndex, !alt, map);
-						m_MoveAxis.gameObject.SetActive(SelectingCount > 0);
+						SetSelection(overlapType, overlapIndex, map);
 						OnSelectionChanged();
 					}
 				}
@@ -239,10 +235,9 @@
 
 
 		private void LateUpdate_Hover (Beatmap map) {
-			int brushType = GetBrushType();
-			if (brushType >= 0) {
+			if (SelectingBrushIndex >= 0) {
 				// --- Painting ---
-				if (GetItemLock(brushType)) {
+				if (GetItemLock(SelectingBrushIndex)) {
 					TrySetTargetActive(m_Ghost.gameObject, false);
 					TrySetGridInactive();
 				} else {
@@ -261,9 +256,9 @@
 
 		private void LateUpdate_Axis () {
 			var map = GetBeatmap();
-			if (SelectingCount > 0) {
-				int index = SelectingObjectIndexs[0];
-				var target = m_Containers[SelectingType].GetChild(index);
+			var con = SelectingType >= 0 && SelectingType < m_Containers.Length ? m_Containers[SelectingType] : null;
+			if (con != null && SelectingObjectIndex >= 0 && SelectingObjectIndex < con.childCount) {
+				var target = con.GetChild(SelectingObjectIndex);
 				// Pos
 				var pos = target.position;
 				if (m_MoveAxis.position != pos) {
@@ -276,7 +271,7 @@
 					rot = Quaternion.identity;
 				} else {
 					// Track Note Timing
-					var pIndex = map.GetParentIndex(SelectingType, index);
+					var pIndex = map.GetParentIndex(SelectingType, SelectingObjectIndex);
 					var pTarget = pIndex >= 0 ? m_Containers[SelectingType - 1].GetChild(pIndex) : null;
 					if (pTarget != null) {
 						rot = pTarget.GetChild(0).rotation;
@@ -312,7 +307,7 @@
 		private void OnMouseHover_Grid (Beatmap map, bool selectingMode) {
 
 			// Check
-			if (selectingMode && SelectingCount == 0) {
+			if (selectingMode && SelectingObjectIndex < 0) {
 				TrySetGridInactive();
 				return;
 			}
@@ -324,7 +319,7 @@
 			Vector3 scl = default;
 			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
-			int gridingItemType = selectingMode ? SelectingType : GetBrushType();
+			int gridingItemType = selectingMode ? SelectingType : SelectingBrushIndex;
 			switch (gridingItemType) {
 				case 0: // Stage
 					gridEnable = true;
@@ -340,9 +335,8 @@
 					int hoverItemType, hoverItemIndex;
 					Transform hoverTarget;
 					if (selectingMode) {
-						int gridingItemIndex = SelectingObjectIndexs[0];
 						hoverItemType = gridingItemType - 1;
-						hoverItemIndex = map.GetParentIndex(gridingItemType, gridingItemIndex);
+						hoverItemIndex = map.GetParentIndex(gridingItemType, SelectingObjectIndex);
 						hoverTarget = hoverItemIndex >= 0 ? m_Containers[hoverItemType].GetChild(hoverItemIndex) : null;
 					} else {
 						(hoverItemType, hoverItemIndex, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[gridingItemType - 1], true);
@@ -352,7 +346,7 @@
 						pos = hoverTarget.position;
 						rot = hoverTarget.rotation;
 						scl = hoverTarget.GetChild(0).localScale;
-						m_Grid.ObjectSpeedMuti = hoverItemType == 1 && GetUseDynamicSpeed() ? map.GetSpeedMuti(1, hoverItemIndex) : 1f;
+						m_Grid.ObjectSpeedMuti = GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) : 1f;
 					} else {
 						m_Grid.ObjectSpeedMuti = 1f;
 					}
@@ -375,8 +369,6 @@
 
 		private void OnMouseHover_Ghost () {
 
-			int brushType = GetBrushType();
-
 			// Ghost
 			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetZoneMinMax();
@@ -387,77 +379,82 @@
 			Quaternion ghostRot = Quaternion.identity;
 			const float GHOST_NOTE_Y = 0.032f;
 			Transform hoverTarget = null;
-			switch (brushType) {
-				case 0: // Stage
-					var stage = GetDefaultStageBrush();
-					if (stage != null && !GetUseAbreast()) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = zoneSize * stage.Width;
-							ghostSize.y = zoneSize * stage.Height / zoneRatio;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos);
-							ghostPivotX = 0.5f;
-						}
-					}
-					break;
-				case 1: // Track
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
-					var track = GetDefaultTrackBrush();
-					if (track != null && hoverTarget != null) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							if (UseGlobalBrushScale) {
-								ghostSize.x = track.Width * zoneSize;
-							} else {
-								ghostSize.x = track.Width * hoverTarget.GetChild(0).localScale.x;
+
+			// Movement
+			if (RayInsideZone(ray)) {
+				switch (SelectingBrushIndex) {
+					case 0: // Stage
+						var stage = m_DefaultStage;
+						if (stage != null && !GetUseAbreast()) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = zoneSize * stage.Width;
+								ghostSize.y = zoneSize * stage.Height / zoneRatio;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos);
+								ghostPivotX = 0.5f;
 							}
-							ghostSize.y = hoverTarget.GetChild(0).localScale.y;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, true);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
 						}
-					}
-					break;
-				case 2: // Note
-					var notes = GetNotesBrushAt(GetBrushIndex());
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
-					if (notes != null && notes.Count > 0 && hoverTarget != null) {
-						var note = notes[0];
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							if (UseGlobalBrushScale) {
-								ghostSize.x = note.Width * zoneSize;
-							} else {
-								ghostSize.x = note.Width * hoverTarget.GetChild(0).localScale.x;
+						break;
+					case 1: // Track
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
+						var track = m_DefaultTrack;
+						if (track != null && hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								if (UseGlobalBrushScale) {
+									ghostSize.x = track.Width * zoneSize;
+								} else {
+									ghostSize.x = track.Width * hoverTarget.GetChild(0).localScale.x;
+								}
+								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, true);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
 							}
-							ghostSize.y = Mathf.Max(note.Duration * m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti * hoverTarget.GetChild(0).localScale.y, GHOST_NOTE_Y / zoneSize);
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, false, true);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
 						}
-					}
-					break;
-				case 3: { // Speed
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = 0.12f / zoneSize;
-							ghostSize.y = GHOST_NOTE_Y / zoneSize;
-							ghostPos.x = zoneMin.x;
-							ghostPos.y = m_Grid.SnapWorld(mousePos.Value, false, false, false).y;
-							ghostPos.z = zoneMin.z;
-							ghostRot = Quaternion.identity;
-							ghostPivotX = 0f;
+						break;
+					case 2: // Note
+						var note = m_DefaultNote;
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
+						if (note != null && hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								if (UseGlobalBrushScale) {
+									ghostSize.x = note.Width * zoneSize;
+								} else {
+									ghostSize.x = note.Width * hoverTarget.GetChild(0).localScale.x;
+								}
+								ghostSize.y = Mathf.Max(note.Duration * m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti * hoverTarget.GetChild(0).localScale.y, GHOST_NOTE_Y / zoneSize);
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, true);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
+					case 3: { // Speed
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = 0.12f / zoneSize;
+								ghostSize.y = GHOST_NOTE_Y / zoneSize;
+								ghostPos.x = zoneMin.x;
+								ghostPos.y = m_Grid.SnapWorld(mousePos.Value, false, true).y;
+								ghostPos.z = zoneMin.z;
+								ghostRot = Quaternion.identity;
+								ghostPivotX = 0f;
+							}
+						}
+						break;
+				}
 			}
+
+			// Final
 			if (ghostEnable) {
 				m_Ghost.Size = ghostSize;
 				m_Ghost.transform.localScale = ghostSize;
@@ -495,7 +492,7 @@
 		// Axis
 		public void OnMoveAxisDrag (Vector3 pos, Vector3? downPos, int axis) {
 			var map = GetBeatmap();
-			if (map != null && SelectingCount > 0) {
+			if (map != null && SelectingObjectIndex >= 0) {
 				var (zoneMin, zoneMax_real, zoneSize, _) = GetZoneMinMax();
 				var zoneMax = zoneMax_real;
 				zoneMax.y = zoneMin.y + zoneSize;
@@ -505,71 +502,77 @@
 					DragOffsetWorld = downPos.Value - m_MoveAxis.position;
 				} else {
 					// Drag
-					pos = m_Grid.SnapWorld(pos - DragOffsetWorld);
+					pos = m_Grid.SnapWorld(
+						pos - DragOffsetWorld,
+						SelectingType == 1,
+						SelectingType == 3
+					);
 					var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
 					var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, pos.x, pos.y, pos.z);
-					for (int i = 0; i < SelectingCount; i++) {
-						int index = SelectingObjectIndexs[i];
-						switch (SelectingType) {
-							case 0:  // Stage
+					int index = SelectingObjectIndex;
+					switch (SelectingType) {
+						case 0:  // Stage
+							if (axis == 0 || axis == 2) {
+								map.SetX(0, index, zonePos.x);
+							}
+							if (axis == 1 || axis == 2) {
+								map.SetStageY(index, zonePos.y);
+							}
+							break;
+						case 1: // Track
+							if (axis == 0 || axis == 2) {
+								var track = index >= 0 && index < map.Tracks.Count ? map.Tracks[index] : null;
+								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+								var stage = map.Stages[track.StageIndex];
+								var localPosX = Stage.ZoneToLocal(
+									zonePos.x, zonePos.y, zonePos.z,
+									Stage.GetStagePosition(stage, index),
+									Stage.GetStageWidth(stage),
+									Stage.GetStageHeight(stage),
+									Stage.GetStageWorldRotationZ(stage)
+								).x;
+								map.SetX(1, index, localPosX);
+							}
+							break;
+						case 2: { // Note
+								var note = index >= 0 && index < map.Notes.Count ? map.Notes[index] : null;
+								if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
+								var track = map.Tracks[note.TrackIndex];
+								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+								var stage = map.Stages[track.StageIndex];
+								var localPos = Track.ZoneToLocal(
+									zonePos.x, zonePos.y, zonePos.z,
+									Stage.GetStagePosition(stage, track.StageIndex),
+									Stage.GetStageWidth(stage),
+									Stage.GetStageHeight(stage),
+									Stage.GetStageWorldRotationZ(stage),
+									Track.GetTrackX(track),
+									Track.GetTrackWidth(track),
+									Track.GetTrackAngle(track)
+								);
 								if (axis == 0 || axis == 2) {
-									map.SetX(0, index, zonePos.x);
+									map.SetX(2, index, localPos.x);
 								}
 								if (axis == 1 || axis == 2) {
-									map.SetStageY(index, zonePos.y);
+									map.SetTime(2, index, GetFilledTime(
+										m_Grid.MusicTime,
+										localPos.y,
+										m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
+									));
 								}
-								break;
-							case 1: // Track
-								if (axis == 0 || axis == 2) {
-									var track = index >= 0 && index < map.Tracks.Count ? map.Tracks[index] : null;
-									if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-									var stage = map.Stages[track.StageIndex];
-									var localPosX = Stage.ZoneToLocal(
-										zonePos.x, zonePos.y, zonePos.z,
-										Stage.GetStagePosition(stage, index),
-										Stage.GetStageWidth(stage),
-										Stage.GetStageHeight(stage),
-										Stage.GetStageWorldRotationZ(stage)
-									).x;
-									map.SetX(1, index, localPosX);
-								}
-								break;
-							case 2: { // Note
-									var note = index >= 0 && index < map.Notes.Count ? map.Notes[index] : null;
-									if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
-									var track = map.Tracks[note.TrackIndex];
-									if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-									var stage = map.Stages[track.StageIndex];
-									var localPos = Track.ZoneToLocal(
-										zonePos.x, zonePos.y, zonePos.z,
-										Stage.GetStagePosition(stage, track.StageIndex),
-										Stage.GetStageWidth(stage),
-										Stage.GetStageHeight(stage),
-										Stage.GetStageWorldRotationZ(stage),
-										Track.GetTrackX(track),
-										Track.GetTrackWidth(track),
-										Track.GetTrackAngle(track)
-									);
-									if (axis == 0 || axis == 2) {
-										map.SetX(2, index, localPos.x);
-									}
-									if (axis == 1 || axis == 2) {
-
-
-									}
-								}
-								break;
-							case 3:  // Timing
-								if (axis == 1 || axis == 2) {
-									map.SetTime(
-										3, index,
-										Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f)
-									);
-								}
-								break;
-						}
+							}
+							break;
+						case 3:  // Timing
+							if (axis == 1 || axis == 2) {
+								map.SetTime(
+									3, index,
+									Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f)
+								);
+							}
+							break;
 					}
 					DeselectWhenInactive = false;
+					OnObjectEdited(SelectingType);
 				}
 			}
 		}
@@ -595,50 +598,34 @@
 
 
 		// Selection
-		public void AddSelection (int type, int index, bool select, Beatmap map) {
-			// Selecting Index List
-			if (select) {
-				// Add
-				if (SelectingType >= 0 && SelectingCount > 0 && SelectingType != type) {
-					ClearSelection();
-				}
-				SelectingType = type;
-				SelectingObjectIndexs.Add(index);
-			} else if (type == SelectingType) {
-				// Remove
-				for (int i = 0; i < SelectingCount; i++) {
-					if (SelectingObjectIndexs[i] == index) {
-						SelectingObjectIndexs.RemoveAt(i);
-						break;
-					}
-				}
+		public void SetSelection (int type, int index, Beatmap map) {
+			// Select
+			if (SelectingType >= 0 && SelectingObjectIndex >= 0 && SelectingType != type) {
+				ClearSelection();
+			}
+			SelectingType = type;
+			SelectingObjectIndex = index;
+			// No Stage in Abreast View
+			if (GetUseAbreast() && SelectingType == 0) {
+				SelectingType = -1;
+				SelectingObjectIndex = -1;
+				LogHint(GetLanguage(DIALOG_CannotSelectStage), true);
 			}
 			// Set Cache
-			map.SetSelect(type, index, select);
+			map.SetSelect(SelectingType, SelectingObjectIndex, true);
 		}
 
 
 		public void ClearSelection () {
 			var map = GetBeatmap();
-			if (!(map is null) && SelectingCount > 0) {
+			if (!(map is null) && SelectingObjectIndex >= 0) {
 				// Clear Cache
-				foreach (var index in SelectingObjectIndexs) {
-					map.SetSelect(SelectingType, index, false);
-				}
-				// Clear List
-				SelectingObjectIndexs.Clear();
+				map.SetSelect(SelectingType, SelectingObjectIndex, false);
+				// Clear
+				SelectingObjectIndex = -1;
 				SelectingType = -1;
 				// Final
-				m_MoveAxis.gameObject.SetActive(false);
 				OnSelectionChanged();
-
-			}
-		}
-
-
-		public void ForAddSelectingObjects (System.Action<int> action) {
-			foreach (var index in SelectingObjectIndexs) {
-				action(index);
 			}
 		}
 
@@ -678,7 +665,7 @@
 				if (focus) {
 					m_FocusCancel.gameObject.SetActive(true);
 				}
-				yield return new WaitForSeconds(m_Duration);
+				yield return new WaitForSeconds(0.5f);
 				yield return new WaitUntil(() =>
 					m_FocusAni.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && !m_FocusAni.IsInTransition(0)
 				);
@@ -692,6 +679,14 @@
 
 
 		public void UI_SwitchFocus () => UI_SetFocus(!FocusMode);
+
+
+		// Brush
+		public void SetBrush (int index) {
+			if (UIReady) {
+				SetBrushLogic(index);
+			}
+		}
 
 
 		#endregion
@@ -788,7 +783,7 @@
 			}
 			// Hold Note Layer
 			if (!ItemLock[2]) {
-				list.Add(m_NoteHoldLayerName);
+				list.Add(HOLD_NOTE_LAYER_NAME);
 			}
 			UnlockedMask = LayerMask.GetMask(list.ToArray());
 		}
@@ -805,6 +800,31 @@
 			if (m_Grid.GridEnabled) {
 				m_Grid.SetGridTransform(false, false);
 			}
+		}
+
+
+		private void SetBrushLogic (int index) {
+			if (!enabled) { index = -1; }
+			UIReady = false;
+			try {
+				// No Stage in Abreast
+				if (index == 0 && GetUseAbreast()) {
+					index = -1;
+					LogHint(GetLanguage(DIALOG_CannotSelectStageBrush), true);
+				}
+				// Layer Lock
+				if (GetItemLock(index)) {
+					index = -1;
+					LogHint(GetLanguage(DIALOG_SelectingLayerLocked), true);
+				}
+				// Brushs TG
+				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+					m_DefaultBrushTGs[i].isOn = i == index;
+				}
+				// Logic
+				SelectingBrushIndex = index;
+			} catch { }
+			UIReady = true;
 		}
 
 

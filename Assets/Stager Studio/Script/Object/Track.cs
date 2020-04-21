@@ -41,8 +41,8 @@
 		protected override void Awake () {
 			base.Awake();
 			ColRot = null;
-			MainRenderer.Type = SkinType.Track;
 			MainRenderer.Tint = Color.white;
+			MainRenderer.Type = SkinType.Track;
 			m_TrackTintRenderer.Type = SkinType.TrackTint;
 			m_TrayRenderer.Type = SkinType.Tray;
 			m_TrayRenderer.SkinData = Skin;
@@ -149,7 +149,10 @@
 			// Renderer
 			MainRenderer.RendererEnable = true;
 			m_TrackTintRenderer.RendererEnable = true;
+			m_TrackTintRenderer.ItemType = trackData.ItemType;
+			MainRenderer.ItemType = trackData.ItemType;
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
+			m_TrayRenderer.ItemType = trackData.ItemType;
 			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
 			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);

@@ -72,6 +72,9 @@
 			base.Awake();
 			m_ArrowRenderer.SkinData = Skin;
 			m_PoleRenderer.SkinData = Skin;
+			MainRenderer.Type = SkinType.Note;
+			m_PoleRenderer.Type = SkinType.Pole;
+			m_ArrowRenderer.Type = SkinType.Arrow;
 		}
 
 
@@ -166,7 +169,7 @@
 
 			base.LateUpdate();
 		}
-		
+
 
 		public static void Update_Cache (Beatmap.Note noteData, float speedMuti) {
 			if (noteData.LocalCacheDirtyID != Beatmap.Note.CacheDirtyID) {
@@ -220,10 +223,9 @@
 			bool isLink = !(linkedNote is null);
 			bool activeSelf = GetNoteActive(noteData, null, noteData.AppearTime);
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
-			var type = !string.IsNullOrEmpty(noteData.Comment) ? SkinType.Comment : !noteData.Tap ? SkinType.SlideNote : noteData.Duration > DURATION_GAP ? SkinType.HoldNote : SkinType.TapNote;
-			bool highlighing = (type == SkinType.HoldNote || type == SkinType.Comment || type == SkinType.SlideNote) && MusicTime > Time && MusicTime < Time + Duration;
+			bool highlighing = MusicTime > Time && MusicTime < Time + Duration;
 			float noteZ = GetNoteZ(noteData);
-			var tint = highlighing ? HighlightTints[(int)type] : WHITE_32;
+			var tint = highlighing ? HighlightTints[(int)SkinType.Note] : WHITE_32;
 			if (TintNote) { tint *= linkedTrack.Tint; }
 
 			// Movement
@@ -236,14 +238,8 @@
 			zoneMax.z += zoneSize;
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y, noteZonePos.z);
 
-			// Z
-			//noteWorldPos.z += noteZonePos.z * zoneSize;
-			//if (Mathf.Abs(noteZ) > 0.0005f) {
-			//	noteWorldPos += noteZ * zoneSize * (noteRot * Vector3.back);
-			//}
-
 			// Size
-			var noteSize = GetRectSize(type == SkinType.HoldNote ? SkinType.TapNote : type);
+			var noteSize = GetRectSize(SkinType.Note);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
 			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteSize.y);
 			var zoneNoteScale = new Vector3(
@@ -259,12 +255,12 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || activeSelf;
+			MainRenderer.ItemType = noteData.ItemType;
 			MainRenderer.Tint = tint;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
-			MainRenderer.Type = type;
 			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
 
 		}
@@ -277,9 +273,8 @@
 			// ID
 			if (Label != null) {
 				if (ShowIndexLabel && !MusicPlaying && active) {
-					bool hasComment = !string.IsNullOrEmpty(noteData.Comment);
 					Label.gameObject.SetActive(true);
-					Label.Text = hasComment ? $"{noteIndex} {noteData.Comment}" : noteIndex.ToString();
+					Label.Text = noteIndex.ToString();
 					Label.transform.localRotation = MainRenderer.transform.localRotation;
 				} else {
 					Label.gameObject.SetActive(false);
@@ -333,7 +328,7 @@
 
 		private void Update_Sound (Beatmap.Note noteData, Beatmap.Note linkedNote) {
 
-			if (!string.IsNullOrEmpty(noteData.Comment) || noteData.SpeedOnDrop < 0f) { return; }
+			if (noteData.SpeedOnDrop < 0f) { return; }
 
 			// Start Trigger
 			bool clicked = MusicTime > noteData.Time;
@@ -398,12 +393,6 @@
 			// Linked Note World Pos
 			zoneMax.z += zoneSize;
 			var linkedNoteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedZonePos.x, linkedZonePos.y, linkedZonePos.z);
-			//linkedNoteWorldPos.z += linkedZonePos.z * zoneSize;
-			//float linkedZ = GetNoteZ(linkedNote);
-			//if (Mathf.Abs(linkedZ) > 0.0005f) {
-			//	var linkedRot = Quaternion.Euler(0f, 0f, linkedStageRotZ) * Quaternion.Euler(linkedTrackAngle, 0f, 0f);
-			//	linkedNoteWorldPos += linkedZ * zoneSize * (linkedRot * Vector3.back);
-			//}
 
 			// Sub Pole World Pos
 			float noteEndTime = noteData.Time + noteData.Duration;
@@ -431,19 +420,18 @@
 			}
 
 			// Final
-			var poleType = string.IsNullOrEmpty(noteData.Comment) ? SkinType.LinkPole : SkinType.Pixel;
-			var poleSize = GetRectSize(poleType, false, false);
+			var poleSize = GetRectSize(SkinType.Pole, false, false);
+			m_PoleRenderer.ItemType = noteData.ItemType;
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
 				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
 			) * Quaternion.Euler(90f, 0f, 0f) : Quaternion.identity;
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
-			m_PoleRenderer.Type = poleType;
 			m_PoleRenderer.Duration = Duration;
 			m_PoleRenderer.LifeTime = MusicTime - Time;
 			m_PoleRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_PoleRenderer.Scale = new Vector2(poleSize.x, scaleY / zoneSize);
-			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)poleType] : WHITE_32;
+			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)SkinType.Pole] : WHITE_32;
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
 			m_PoleRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
 
@@ -453,13 +441,13 @@
 
 		private void LateUpdate_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha, SkinType type) {
 			var noteSize = GetRectSize(type);
-			var arrowSize = GetRectSize(SkinType.SwipeArrow, false, false);
+			var arrowSize = GetRectSize(SkinType.Arrow, false, false);
 			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
 			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * noteSize.y * 0.5f, -noteSize.z);
 			m_ArrowRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
 			m_ArrowRenderer.transform.localScale = new Vector3(zoneSize * arrowSize.x, zoneSize * arrowSize.y, 1f);
 			m_ArrowRenderer.RendererEnable = true;
-			m_ArrowRenderer.Type = SkinType.SwipeArrow;
+			m_ArrowRenderer.ItemType = noteData.ItemType;
 			m_ArrowRenderer.Pivot = new Vector3(0.5f, 0.5f);
 			m_ArrowRenderer.Scale = arrowSize;
 			m_ArrowRenderer.Alpha = alpha;

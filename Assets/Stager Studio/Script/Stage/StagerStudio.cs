@@ -62,7 +62,6 @@
 		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
-		private const string Dialog_SelectingLayerLocked = "Dialog.Library.SelectingLayerLocked";
 
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
@@ -122,7 +121,6 @@
 			var game = FindObjectOfType<StageGame>();
 			var sfx = FindObjectOfType<StageSoundFX>();
 			var editor = FindObjectOfType<StageEditor>();
-			var library = FindObjectOfType<StageLibrary>();
 			var language = FindObjectOfType<StageLanguage>();
 			var skin = FindObjectOfType<StageSkin>();
 			var shortcut = FindObjectOfType<StageShortcut>();
@@ -147,11 +145,10 @@
 			Awake_Menu(menu, game, project);
 			Awake_Object(project, game, editor, music, sfx);
 			Awake_Project(project, editor, game, music, sfx);
-			Awake_Game(project, game, music, library);
+			Awake_Game(project, game, music, editor);
 			Awake_Music(game, music, sfx);
 			Awake_Sfx(music, game, sfx);
-			Awake_Editor(editor, game, library, project, music);
-			Awake_Library(project, editor, library, menu, game, music);
+			Awake_Editor(editor, game, project, music);
 			Awake_Skin(game);
 			Awake_Tutorial(state);
 			Awake_Undo(project, editor, music);
@@ -206,13 +203,11 @@
 			ProjectCreatorUI.GetLanguage = language.Get;
 			SkinEditorUI.GetLanguage = language.Get;
 			SettingUI.GetLanguage = language.Get;
-			StageLibrary.GetLanguage = language.Get;
 			StageEditor.GetLanguage = language.Get;
 			// Misc
 			TooltipUI.SetTip = m_Hint.SetTip;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
-			StageLibrary.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;
 			StageEditor.LogHint = m_Hint.SetHint;
 			StageLanguage.OnLanguageLoaded = () => {
@@ -284,10 +279,10 @@
 			StageObject.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
 			TimingNote.GetDeselectWhenInactive = () => editor.DeselectWhenInactive;
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
-			Note.GetFilledTime = game.FillDropTime;
+			Note.GetFilledTime = game.FillTime;
 			Note.GetDropSpeedAt = game.GetDropSpeedAt;
-			Note.GetGameDropOffset = (muti) => game.AreaBetweenDrop(music.Time, muti);
-			Note.GetDropOffset = game.AreaBetweenDrop;
+			Note.GetGameDropOffset = (muti) => game.AreaBetween(0f, music.Time, muti);
+			Note.GetDropOffset = (time, muti) => game.AreaBetween(0f, time, muti);
 			Note.PlayClickSound = music.PlayClickSound;
 			Note.PlaySfx = sfx.PlayFX;
 			TimingNote.PlaySfx = sfx.PlayFX;
@@ -429,7 +424,7 @@
 		}
 
 
-		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageLibrary library) {
+		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageEditor editor) {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
 				m_TimingPreview.SetVerticesDirty();
@@ -441,8 +436,11 @@
 				m_AbreastSwitcherUI.SetBarUIDirty();
 				m_AbreastSwitcherUI.RefreshHighlightUI();
 				m_TimingPreview.SetVerticesDirty();
-				if (library.SelectingItemTypeIndex.index != -1) {
-					library.UI_SetSelection(-1);
+				if (editor.SelectingBrushIndex != -1) {
+					editor.SetBrush(-1);
+				}
+				if (editor.SelectingObjectIndex != -1) {
+					editor.ClearSelection();
 				}
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
@@ -516,72 +514,31 @@
 
 		}
 
-		 
-		private void Awake_Editor (StageEditor editor, StageGame game, StageLibrary library, StageProject project, StageMusic music) {
+
+		private void Awake_Editor (StageEditor editor, StageGame game, StageProject project, StageMusic music) {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
-				library.RefreshAddButton(editor.SelectingCount > 0 && editor.SelectingType == 2);
 				m_Preview.SetDirty();
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				editor.ClearSelection();
 				m_TimingPreview.SetVerticesDirty();
 			};
-			StageEditor.GetBrushType = () => library.SelectingItemTypeIndex.type;
-			StageEditor.GetBrushIndex = () => library.SelectingItemTypeIndex.index;
 			StageEditor.GetBeatmap = () => project.Beatmap;
 			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
-			StageEditor.GetDefaultStageBrush = () => library.GetDefaultStage;
-			StageEditor.GetDefaultTrackBrush = () => library.GetDefaultTrack;
-			StageEditor.GetNotesBrushAt = library.GetNotesAt;
 			StageEditor.GetMoveAxisHovering = () => m_MoveHandler.Hovering;
-		}
-
-
-		private void Awake_Library (StageProject project, StageEditor editor, StageLibrary library, StageMenu menu, StageGame game, StageMusic music) {
-			StageLibrary.OnSelectionChanged = () => {
-				var (type, index) = library.SelectingItemTypeIndex;
-				if (index >= 0) {
-					editor.ClearSelection();
-					music.Pause();
-				}
-				if (index >= 0 && editor.GetItemLock(type)) {
-					m_Hint.SetHint(GetLanguage(Dialog_SelectingLayerLocked));
+			StageEditor.OnObjectEdited = (typeIndex) => {
+				m_Preview.SetDirty();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				if (typeIndex == 3) {
+					m_TimingPreview.SetVerticesDirty();
+					game.SetSpeedCurveDirty();
 				}
 			};
-			StageLibrary.GetSelectingObjects = () => {
-				int finalType = -1;
-				var finalList = new List<object>();
-				editor.ForAddSelectingObjects((index) => {
-					int type = editor.SelectingType;
-					var map = project.Beatmap;
-					if (map == null || type >= 3 || index < 0) { return; }
-					if (type > finalType) {
-						finalType = type;
-						finalList.Clear();
-					}
-					if (type == 0) {
-						if (map.Stages != null && index < map.Stages.Count) {
-							finalList.Add(map.Stages[index]);
-						}
-					} else if (type == 1) {
-						if (map.Tracks != null && index < map.Tracks.Count) {
-							finalList.Add(map.Tracks[index]);
-						}
-					} else if (type == 2) {
-						if (map.Notes != null && index < map.Notes.Count) {
-							finalList.Add(map.Notes[index]);
-						}
-					}
-				});
-				return (finalType, finalList);
-			};
-			StageLibrary.GetSelectionCount = () => editor.SelectingCount;
-			StageLibrary.OpenMenu = menu.OpenMenu;
-			StageLibrary.GetBPM = () => game.BPM;
-			StageLibrary.GetAbreastValue = () => game.AbreastValue;
+			StageEditor.GetFilledTime = game.FillTime;
 		}
 
 
@@ -743,7 +700,7 @@
 
 			ProgressUI.GetSnapTime = (time, step) => game.SnapTime(time, step);
 
-			GridRenderer.GetAreaBetween = (timeA, timeB, muti, useDy) => useDy ? game.AreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
+			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : game.AreaBetween(timeA, timeB, muti);
 			GridRenderer.GetSnapedTime = game.SnapTime;
 
 			TrackSectionRenderer.GetAreaBetween = game.AreaBetween;

@@ -93,14 +93,7 @@
 		protected virtual void LateUpdate () {
 			if (!MeshDirty) { return; }
 			MeshDirty = false;
-			ClearMeshCache();
-			if (Scale.x < SCALE_GAP || Scale.y < SCALE_GAP) { return; }
-			OnMeshFill();
-			Mesh.SetVertices(Vertices);
-			Mesh.SetColors(Colors);
-			Mesh.SetUVs(0, UVs);
-			Mesh.SetTriangles(Triangles, 0);
-			Mesh.UploadMeshData(false);
+			RefreshMesh();
 		}
 
 
@@ -170,6 +163,18 @@
 			Colors.Clear();
 			UVs.Clear();
 			Triangles.Clear();
+		}
+
+
+		protected void RefreshMesh () {
+			ClearMeshCache();
+			if (Scale.x < SCALE_GAP || Scale.y < SCALE_GAP) { return; }
+			OnMeshFill();
+			Mesh.SetVertices(Vertices);
+			Mesh.SetColors(Colors);
+			Mesh.SetUVs(0, UVs);
+			Mesh.SetTriangles(Triangles, 0);
+			Mesh.UploadMeshData(false);
 		}
 
 
