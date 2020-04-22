@@ -19,6 +19,7 @@
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
 		public delegate void VoidIntHandler (int i);
+		public delegate void VoidFloatHandler (float f);
 		public delegate Beatmap BeatmapHandler ();
 		public delegate bool BoolHandler ();
 		public delegate void VoidStringBoolHandler (string str, bool b);
@@ -38,7 +39,6 @@
 		private readonly static string[] ITEM_LAYER_NAMES = { "Stage", "Track", "Note", "Speed", "Motion", };
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
 		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
-		private const string DIALOG_CannotSelectStage = "Dialog.Editor.CannotSelectStage";
 		private const string DIALOG_SelectingLayerLocked = "Dialog.Editor.SelectingLayerLocked";
 		private const string HOLD_NOTE_LAYER_NAME = "HoldNote";
 
@@ -55,8 +55,10 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static BoolHandler GetMoveAxisHovering { get; set; } = null;
 		public static FillHandler GetFilledTime { get; set; } = null;
+		public static VoidFloatHandler SetAbreastIndex { get; set; } = null;
 
 		// Api
+		public int SelectingItemType { get; private set; } = -1;
 		public int SelectingItemIndex { get; private set; } = -1;
 		public int SelectingBrushIndex { get; private set; } = -1;
 
@@ -65,7 +67,6 @@
 		private Transform AxisMoveX => m_MoveAxis.GetChild(0);
 		private Transform AxisMoveY => m_MoveAxis.GetChild(1);
 		private Transform AxisMoveXY => m_MoveAxis.GetChild(2);
-		private int SelectingItemType { get; set; } = -1;
 
 		// Ser
 		[SerializeField] private Toggle[] m_EyeTGs = null;
@@ -605,6 +606,32 @@
 		}
 
 
+		public void MoveStageItemUp (object target) {
+			if (!(target is RectTransform)) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(0, index, index--);
+			}
+		}
+		public void MoveStageItemDown (object target) {
+			if (!(target is RectTransform)) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(0, index, index++);
+			}
+		}
+		public void MoveTrackItemUp (object target) {
+			if (!(target is RectTransform)) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(1, index, index--);
+			}
+		}
+		public void MoveTrackItemDown (object target) {
+			if (!(target is RectTransform)) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(1, index, index++);
+			}
+		}
+
+
 		// Selection
 		public void SetSelection (int type, int index) {
 			// Select
@@ -613,18 +640,18 @@
 			}
 			SelectingItemType = type;
 			SelectingItemIndex = index;
-			// No Stage in Abreast View
+			// No Stage Selection in Abreast View
 			if (GetUseAbreast() && SelectingItemType == 0) {
+				// Switch Abreast Index
+				SetAbreastIndex(SelectingItemIndex);
 				SelectingItemType = -1;
 				SelectingItemIndex = -1;
-				LogHint(GetLanguage(DIALOG_CannotSelectStage), true);
 			}
 		}
 
 
 		public void ClearSelection () {
-			var map = GetBeatmap();
-			if (!(map is null) && SelectingItemIndex >= 0) {
+			if (SelectingItemIndex >= 0 || SelectingItemType >= 0) {
 				// Clear
 				SelectingItemIndex = -1;
 				SelectingItemType = -1;
@@ -829,6 +856,15 @@
 				SelectingBrushIndex = index;
 			} catch { }
 			UIReady = true;
+		}
+
+
+		private void MoveItem (int type, int index, int newIndex) {
+			var map = GetBeatmap();
+			if (map != null) {
+				ClearSelection();
+				map.SetItemIndex(type, index, newIndex);
+			}
 		}
 
 

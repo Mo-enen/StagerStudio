@@ -157,6 +157,18 @@ Move
 Menu.ProjectItem.ShowInExplorer
 Show in Explorer
 
+Menu.Selector.Stage.MoveDown
+Move to Next
+
+Menu.Selector.Stage.MoveUp
+Move to Previous
+
+Menu.Selector.Track.MoveDown
+Move to Next
+
+Menu.Selector.Track.MoveUp
+Move to Previous
+
 Menu.UI.QuitConfirm
 Are you sure to quit now?
 

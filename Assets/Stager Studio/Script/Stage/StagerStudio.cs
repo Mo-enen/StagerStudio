@@ -56,6 +56,8 @@
 
 		// Const
 		private const string UI_QuitConfirm = "Menu.UI.QuitConfirm";
+		private const string UI_SelectorStageMenu = "Menu.UI.SelectorStage";
+		private const string UI_SelectorTrackMenu = "Menu.UI.SelectorTrack";
 		private const string UI_OpenWebMSG = "Dialog.OpenWebMSG";
 		private const string UI_InfoLabel = "UI.InfoLabel";
 		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
@@ -91,18 +93,17 @@
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[SerializeField] private Transform m_TutorialBoard = null;
+		[SerializeField] private Transform m_AbreastWidthBTN = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
 		[SerializeField] private HintBarUI m_Hint = null;
-		[SerializeField] private AbreastSwitcherUI m_AbreastSwitcherUI = null;
 		[SerializeField] private ZoneUI m_Zone = null;
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[Header("Data")]
-		[SerializeField] private BuildData m_BuildData = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
 
@@ -434,8 +435,7 @@
 			StageGame.OnAbreastChanged = () => {
 				m_AbreastTGMark.enabled = game.UseAbreast;
 				m_Wave.SetAlpha(game.AbreastValue);
-				m_AbreastSwitcherUI.SetBarUIDirty();
-				m_AbreastSwitcherUI.RefreshHighlightUI();
+				m_AbreastWidthBTN.gameObject.SetActive(game.UseAbreast);
 				m_TimingPreview.SetVerticesDirty();
 				if (editor.SelectingBrushIndex != -1) {
 					editor.SetBrush(-1);
@@ -540,6 +540,7 @@
 				}
 			};
 			StageEditor.GetFilledTime = game.FillTime;
+			StageEditor.SetAbreastIndex = game.SetAbreastIndex;
 		}
 
 
@@ -718,10 +719,6 @@
 			ProgressUI.PauseMusic = music.Pause;
 			ProgressUI.SeekMusic = music.Seek;
 
-			AbreastSwitcherUI.SetAbreastIndex = game.SetAbreastIndex;
-			AbreastSwitcherUI.GetAbreastIndex = () => game.AbreastIndex;
-			AbreastSwitcherUI.GetAbreastValue = () => game.AbreastValue;
-
 			PreviewUI.GetMusicTime01 = (time) => time / music.Duration;
 			PreviewUI.GetBeatmap = () => project.Beatmap;
 
@@ -751,6 +748,25 @@
 			TimingPreviewUI.ShowPreview = () => game.ShowGrid && editor.GetContainerActive(3);
 
 			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
+
+			SelectorUI.GetBeatmap = () => project.Beatmap;
+			SelectorUI.SelectStage = (index) => {
+				editor.SetSelection(0, index);
+				var map = project.Beatmap;
+				if (map != null && !map.GetActive(0, index)) {
+					music.Seek(map.GetTime(0, index));
+				}
+			};
+			SelectorUI.SelectTrack = (index) => {
+				editor.SetSelection(1, index);
+				var map = project.Beatmap;
+				if (map != null && !map.GetActive(1, index)) {
+					music.Seek(map.GetTime(1, index));
+				}
+			};
+			SelectorUI.OpenItemMenu = (rt, type) => menu.OpenMenu(type == 0 ? UI_SelectorStageMenu : UI_SelectorTrackMenu, rt);
+			SelectorUI.GetSelectionType = () => editor.SelectingItemType;
+			SelectorUI.GetSelectionIndex = () => editor.SelectingItemIndex;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
@@ -782,7 +798,7 @@
 		public void About () => DialogUtil.Open(
 			$"<size=38><b>Stager Studio</b> v{Application.version}</size>\n" +
 			"<size=20>" +
-			$"Created by 楠瓜Moenen, {m_BuildData.BuildTime}\n\n" +
+			$"Created by 楠瓜Moenen\n\n" +
 			"Home     www.stager.studio\n" +
 			"Email     moenen6@gmail.com\n" +
 			"Twitter   _Moenen\n" +

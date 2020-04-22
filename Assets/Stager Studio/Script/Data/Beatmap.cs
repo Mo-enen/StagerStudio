@@ -249,6 +249,8 @@
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
 
+			// Cache
+			[System.NonSerialized] public int TrackCount = 0;
 
 			// API
 			public int GetMotionCount (MotionType type) {
@@ -585,6 +587,21 @@
 					}
 					break;
 			}
+		}
+
+		public int GetChildTrackCount (int stageIndex) {
+			if (stageIndex >= 0 && stageIndex < Stages.Count) {
+				return Stages[stageIndex].TrackCount;
+			}
+			return 0;
+		}
+
+		public void SetItemIndex (int type, int index, int newIndex) {
+
+
+
+
+
 		}
 
 

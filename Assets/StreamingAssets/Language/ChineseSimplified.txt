@@ -157,6 +157,18 @@ Menu.ProjectItem.Move
 Menu.ProjectItem.ShowInExplorer
 查看
 
+Menu.Selector.Stage.MoveDown
+后移
+
+Menu.Selector.Stage.MoveUp
+前移
+
+Menu.Selector.Track.MoveDown
+后移
+
+Menu.Selector.Track.MoveUp
+前移
+
 Menu.UI.QuitConfirm
 确认退出吗？
 

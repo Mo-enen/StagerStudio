@@ -10,7 +10,7 @@
 	public class Stage : StageObject {
 
 
-
+		
 
 		#region --- VAR ---
 

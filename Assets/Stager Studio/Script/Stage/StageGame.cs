@@ -137,10 +137,10 @@
 
 		private void Update () {
 			Update_Beatmap();
-			Update_StageActive();
-			Update_TrackActive();
-			Update_NoteActive();
-			Update_TimingActive();
+			Update_Stage();
+			Update_Track();
+			Update_Note();
+			Update_Timing();
 			Update_SpeedCurve();
 			Update_Mouse();
 		}
@@ -187,15 +187,16 @@
 		}
 
 
-		private void Update_StageActive () {
+		private void Update_Stage () {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int stageCount = map.Stages.Count;
 			var container = m_Containers[0];
 			for (int i = 0; i < stageCount; i++) {
 				var tf = container.GetChild(i);
+				var stageData = map.Stages[i];
+				stageData.TrackCount = 0;
 				if (!tf.gameObject.activeSelf) {
-					var stageData = map.Stages[i];
 					stageData.Active = Stage.GetStageActive(stageData, i);
 					if (stageData.Active) {
 						tf.gameObject.SetActive(true);
@@ -205,15 +206,19 @@
 		}
 
 
-		private void Update_TrackActive () {
+		private void Update_Track () {
 			var map = GetBeatmap();
 			if (map == null) { return; }
+			int stageCount = map.Stages.Count;
 			int trackCount = map.Tracks.Count;
 			var container = m_Containers[1];
 			for (int i = 0; i < trackCount; i++) {
 				var tf = container.GetChild(i);
+				var trackData = map.Tracks[i];
+				if (trackData.StageIndex >= 0 && trackData.StageIndex < stageCount) {
+					map.Stages[trackData.StageIndex].TrackCount++;
+				}
 				if (!tf.gameObject.activeSelf) {
-					var trackData = map.Tracks[i];
 					trackData.Active = Track.GetTrackActive(trackData);
 					if (trackData.Active) {
 						tf.gameObject.SetActive(true);
@@ -223,7 +228,7 @@
 		}
 
 
-		private void Update_NoteActive () {
+		private void Update_Note () {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int noteCount = map.Notes.Count;
@@ -259,7 +264,7 @@
 		}
 
 
-		private void Update_TimingActive () {
+		private void Update_Timing () {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int timingCount = map.Timings.Count;
