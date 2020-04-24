@@ -161,9 +161,9 @@
 				BackgroundAuthor = "",
 				BeatmapAuthor = m_BeatmapAuthor.text,
 				MusicAuthor = m_MusicAuthor.text,
+				MusicData = MusicData,
 				BackgroundData = null,
 				FrontCover = null,
-				MusicData = MusicData,
 			};
 			// Asset
 			ProjectAsset asset = null;
@@ -211,6 +211,7 @@
 
 
 		public void UI_Close () {
+			MusicData = null;
 			transform.parent.gameObject.SetActive(false);
 			transform.parent.parent.InactiveIfNoChildActive();
 			DestroyImmediate(gameObject, false);

@@ -16,24 +16,12 @@
 		[SerializeField] private float m_FlashDuration = 0.5f;
 		[SerializeField] private string m_Keyword = "Flash";
 
-		// Api
-		public bool ShowTip { get; set; } = true;
-
 		// Data
 		private Coroutine VanishCor = null;
 		private Coroutine FlashCor = null;
-		private string Tip = "";
 
 
 		// API
-		public void SetTip (string tip) {
-			Tip = ShowTip ? tip : "";
-			if (VanishCor == null) {
-				SetLabelText("");
-			}
-		}
-
-
 		public void SetHint (string hint = "", bool flash = true) {
 			SetLabelText(hint);
 			// Flash
@@ -82,7 +70,7 @@
 
 
 		// LGC
-		private void SetLabelText (string text) => m_Text.text = string.IsNullOrEmpty(text) ? Tip : text;
+		private void SetLabelText (string text) => m_Text.text = text;
 
 
 		private void SetLabelAlpha (float a) {

@@ -149,9 +149,8 @@
 			}, () => m_Preview.gameObject.activeSelf, new SavingBool("SS.ShowPreview", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowTip, ((isOn) => {
-				m_Hint.ShowTip = isOn;
-				ToggleItemMap[ToggleType.ShowTip].saving.Value = isOn;
-			}, () => m_Hint.ShowTip, new SavingBool("SS.ShowTip", true), true));
+				TooltipUI.ShowTip.Value = isOn;
+			}, null, TooltipUI.ShowTip, true));
 
 			ToggleItemMap.Add(ToggleType.ShowWelcome, ((isOn) => {
 				ToggleItemMap[ToggleType.ShowWelcome].saving.Value = isOn;

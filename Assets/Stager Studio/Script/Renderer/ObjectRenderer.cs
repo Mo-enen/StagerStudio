@@ -37,7 +37,15 @@
 				}
 			}
 		}
-		public int ItemType { get; set; } = 0;
+		public int ItemType {
+			get => _ItemType;
+			set {
+				if (value != _ItemType) {
+					_ItemType = value;
+					ReCalculateFrame();
+				}
+			}
+		}
 		public float LifeTime {
 			get => _LifeTime;
 			set {
@@ -61,11 +69,13 @@
 
 		// Ser
 		[SerializeField] private bool m_Allow3D = true;
+		[SerializeField] private SkinLoopType m_LoopType = SkinLoopType.Type;
 
 		// Data
 		private SkinData _Data = null;
 		private SkinType _TypeIndex = SkinType.Stage;
 		private float _LifeTime = 0f;
+		private int _ItemType = 0;
 		private float _Duration = 0f;
 
 		// Cache
@@ -85,8 +95,8 @@
 			if (rData.Width <= 0 || rData.Height <= 0) { return; }
 			float tWidth = SkinData.Texture.width;
 			float tHeight = SkinData.Texture.height;
-			bool is3D = m_Allow3D && ani.Is3D;
-			float thickness3D = is3D ? ani.Thickness3D / SkinData.ScaleMuti : 0f;
+			bool is3D = m_Allow3D && rData.Is3D;
+			float thickness3D = is3D ? rData.Thickness3D / SkinData.ScaleMuti : 0f;
 			Vector3 offset = new Vector3(0f, 0f, -thickness3D);
 			// Add Rect Mesh Cache
 			float uvL = rData.L / tWidth;
@@ -95,7 +105,7 @@
 			float uvU = rData.U / tHeight;
 			if (rData.BorderL <= 0 && rData.BorderR <= 0 && rData.BorderD <= 0 && rData.BorderU <= 0) {
 				// No Border
-				AddQuad01(0f, 1f, 0f, 1f, uvL, uvR, uvD, uvU, offset);
+				AddQuad01(0f, 1f, 0f, 1f, uvL, uvR, uvD, uvU, offset, Tint);
 			} else {
 				// Nine-Slice
 				bool hasBorderL = rData.BorderL > 0;
@@ -148,60 +158,61 @@
 				if (hasBorderL) {
 					if (hasBorderD) {
 						// DL
-						AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset);
+						AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset, Tint);
 					}
 					if (hasBorderU) {
 						// UL
-						AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset);
+						AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset, Tint);
 					}
 					// L Scale
-					AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset);
+					AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset, Tint);
 				}
 				if (hasBorderD) {
 					// DM
-					AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset);
+					AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset, Tint);
 				}
 				if (hasBorderU) {
 					// UM
-					AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset);
+					AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset, Tint);
 				}
 				// MM
-				AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset);
+				AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset, Tint);
 				if (hasBorderR) {
 					if (hasBorderD) {
 						// DR
-						AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset);
+						AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset, Tint);
 					}
 					if (hasBorderU) {
 						// UR
-						AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset);
+						AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset, Tint);
 					}
 					// R
-					AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset);
+					AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset, Tint);
 				}
 			}
 			// 3D
 			if (is3D) {
-				float uvL3d = uvL - ani.Thickness3D / tWidth;
-				float uvD3d = uvD - ani.Thickness3D / tHeight;
+				float uvL3d = uvL - rData.Thickness3D / tWidth;
+				float uvD3d = uvD - rData.Thickness3D / tHeight;
 				// B
-				AddQuad01(0f, 1f, 1f, 0f, uvL, uvR, uvD, uvU, new Vector3(0f, 0f, 0f));
+				AddQuad01(0f, 1f, 1f, 0f, uvL, uvR, uvD, uvU, new Vector3(0f, 0f, 0f), Tint);
 				// L
-				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D), false);
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D), Tint, false);
 				// R
-				AddQuad01(1f, 0f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D), false);
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(1f - Pivot.x, 0f, -thickness3D), Tint, false);
 				// D
-				AddQuad01(1f, 0f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D), true);
+				AddQuad01(1f, 0f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, -Pivot.y, -thickness3D), Tint, true);
 				// U
-				AddQuad01(0f, 1f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D), true);
+				AddQuad01(0f, 1f, 0f, thickness3D, uvL, uvR, uvD3d, uvD, 0, 2, new Vector3(0f, 1f - Pivot.y, -thickness3D), Tint, true);
 			}
+
 		}
 
 
 		// LGC
 		private void ReCalculateFrame () {
 			var ani = AniData;
-			int frame = ani is null ? 0 : ani.GetFrame(ItemType, _LifeTime, Duration);
+			int frame = ani is null ? 0 : ani.GetFrame(ItemType, m_LoopType, _LifeTime, Duration);
 			if (frame != Frame) {
 				Frame = frame;
 				SetDirty();

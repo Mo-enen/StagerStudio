@@ -10,7 +10,7 @@
 	public class Stage : StageObject {
 
 
-		
+
 
 		#region --- VAR ---
 
@@ -92,7 +92,7 @@
 			float width = GetStageWidth(stageData);
 			float height = GetStageHeight(stageData);
 			var stagePos = GetStagePosition(stageData, stageIndex);
-			var judgeLineSize = GetRectSize(SkinType.JudgeLine);
+			var judgeLineSize = GetRectSize(SkinType.JudgeLine, stageData.ItemType);
 
 			// Movement
 			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));

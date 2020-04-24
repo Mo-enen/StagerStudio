@@ -71,6 +71,7 @@
 		}
 
 
+				
 		public void OnAxisDrag (int axis) { // 0:x  1:y  2:xy
 			if (m_OnDrag == null || !MouseDown.HasValue) { return; }
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();

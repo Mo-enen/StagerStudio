@@ -81,7 +81,7 @@
 
 			Time = noteData.Time;
 			var noteType = SkinType.Note;
-			var judgeLineSize = GetRectSize(SkinType.JudgeLine);
+			var judgeLineSize = GetRectSize(SkinType.JudgeLine, 0);
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
@@ -92,14 +92,15 @@
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var pos = Track.LocalToZone(
 				noteData.X, stageHeight > 0f ? judgeLineSize.y / 2f / stageHeight : 0f, Note.GetNoteZ(noteData),
-			stagePos, stageWidth, stageHeight, stageRotZ,
+				stagePos, stageWidth, stageHeight, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
-			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
-			
+			zoneMax.z += zoneSize;
+			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
+
 			// Movement
-			var noteSize = GetRectSize(noteType);
-			var lumSize = GetRectSize(lumType, true, true);
+			var noteSize = GetRectSize(noteType, noteData.ItemType);
+			var lumSize = GetRectSize(lumType, 0, true, true);
 			float scaleX, scaleY;
 			if (lumSize.x < 0f) {
 				// Scaled
@@ -147,8 +148,8 @@
 			var lumAni1 = skin?.Items[(int)SkinType.HoldLuminous];
 			LuminousDuration_Tap = lumAni0 is null ? 0f : lumAni0.TotalDuration;
 			LuminousDuration_Hold = lumAni1 is null ? 0f : lumAni1.TotalDuration;
-			LumHeight_Tap = skin.TryGetItemSize((int)SkinType.NoteLuminous).y / skin.ScaleMuti;
-			LumHeight_Hold = skin.TryGetItemSize((int)SkinType.HoldLuminous).y / skin.ScaleMuti;
+			LumHeight_Tap = skin.TryGetItemSize((int)SkinType.NoteLuminous, 0).y / skin.ScaleMuti;
+			LumHeight_Hold = skin.TryGetItemSize((int)SkinType.HoldLuminous, 0).y / skin.ScaleMuti;
 		}
 
 

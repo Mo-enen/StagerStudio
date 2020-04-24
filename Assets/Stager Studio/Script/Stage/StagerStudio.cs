@@ -88,12 +88,12 @@
 		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
+		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[SerializeField] private Transform m_TutorialBoard = null;
-		[SerializeField] private Transform m_AbreastWidthBTN = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -175,18 +175,22 @@
 		private void Update () {
 			var (aValue, aIndex, aWidth) = GetAbreastData();
 			var (dropSpeed, mapSpeed) = GetDropMapSpeed();
+			float musicTime = GetMusicTime();
 			CursorUI.GlobalUpdate();
 			StageUndo.GlobalUpdate();
 			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.GameSpeedMuti = dropSpeed * mapSpeed;
-			StageObject.MusicTime = GetMusicTime();
+			StageObject.MusicTime = musicTime;
+			Object.Stage.StageCount = GetGameItemCount(0);
 			Note.CameraWorldPos = m_CameraTF.position;
 			TimingNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
 			TimingNote.GameSpeedMuti = dropSpeed * mapSpeed;
-			TimingNote.MusicTime = GetMusicTime();
-			Object.Stage.StageCount = GetGameItemCount(0);
+			TimingNote.MusicTime = musicTime;
+			StageHead.MusicTime = musicTime;
+			StageHead.SpeedMuti = dropSpeed * mapSpeed;
+			StageHead.UseAbreast = aValue > 0.5f;
 		}
 
 
@@ -209,7 +213,7 @@
 			SettingUI.GetLanguage = language.Get;
 			StageEditor.GetLanguage = language.Get;
 			// Misc
-			TooltipUI.SetTip = m_Hint.SetTip;
+			TooltipUI.SetTip = (tip) => m_TipLabel.text = tip;
 			HomeUI.LogHint = m_Hint.SetHint;
 			StageProject.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;
@@ -274,6 +278,11 @@
 			menu.AddCheckerFunc("Menu.Grid.bps0", () => game.BeatPerSection == 2);
 			menu.AddCheckerFunc("Menu.Grid.bps1", () => game.BeatPerSection == 3);
 			menu.AddCheckerFunc("Menu.Grid.bps2", () => game.BeatPerSection == 4);
+			// Abreast Width
+			menu.AddCheckerFunc("Menu.Abreast.Width0", () => game.AbreastWidthIndex == 0);
+			menu.AddCheckerFunc("Menu.Abreast.Width1", () => game.AbreastWidthIndex == 1);
+			menu.AddCheckerFunc("Menu.Abreast.Width2", () => game.AbreastWidthIndex == 2);
+			menu.AddCheckerFunc("Menu.Abreast.Width3", () => game.AbreastWidthIndex == 3);
 		}
 
 
@@ -298,12 +307,10 @@
 			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
 			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");
 			Note.SortingLayerID_Note = SortingLayer.NameToID("Note");
+			TimingNote.SortingLayerID_UI = SortingLayer.NameToID("UI");
+			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
 			Note.LayerID_Note = LayerMask.NameToLayer("Note");
 			Note.LayerID_Note_Hold = LayerMask.NameToLayer("HoldNote");
-			Note.SortingLayerID_Arrow = SortingLayer.NameToID("Arrow");
-			TimingNote.SortingLayerID_UI = SortingLayer.NameToID("UI");
-			MotionNote.SortingLayerID_Motion = SortingLayer.NameToID("Motion");
-			Luminous.SortingLayerID_Lum = SortingLayer.NameToID("Luminous");
 		}
 
 
@@ -317,7 +324,7 @@
 				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
-				StageObject.Beatmap = TimingNote.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = null;
 				game.SetAbreastIndex(0);
 				game.SetUseAbreastView(false);
 				game.SetGameDropSpeed(1f);
@@ -347,7 +354,7 @@
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
 				editor.ClearSelection();
-				StageObject.Beatmap = TimingNote.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = null;
 			};
 
 			// Beatmap
@@ -358,7 +365,7 @@
 					game.MapDropSpeed = map.DropSpeed;
 					game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
-					StageObject.Beatmap = TimingNote.Beatmap = map;
+					StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
@@ -429,14 +436,13 @@
 		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageEditor editor) {
 			StageGame.OnStageObjectChanged = () => {
 				m_Preview.SetDirty();
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				RefreshInfoLabel();
 			};
 			StageGame.OnAbreastChanged = () => {
 				m_AbreastTGMark.enabled = game.UseAbreast;
 				m_Wave.SetAlpha(game.AbreastValue);
-				m_AbreastWidthBTN.gameObject.SetActive(game.UseAbreast);
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				if (editor.SelectingBrushIndex != -1) {
 					editor.SetBrush(-1);
 				}
@@ -452,7 +458,7 @@
 						1f / (game.GameDropSpeed * game.MapDropSpeed) / music.Duration :
 					0f;
 				}
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 				RefreshGridRenderer(game);
@@ -461,14 +467,14 @@
 			StageGame.OnGridChanged = () => {
 				m_GridTG.isOn = game.ShowGrid;
 				m_GridRenderer.SetShow(game.ShowGrid);
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				Track.BeatPerSection = game.BeatPerSection;
 				StageObject.ShowGrid = game.ShowGrid;
 				RefreshGridRenderer(game);
 			};
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
 		}
@@ -477,7 +483,7 @@
 		private void Awake_Music (StageGame game, StageMusic music, StageSoundFX sfx) {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				m_GridRenderer.MusicTime = music.Time;
 				StageObject.MusicPlaying = playing;
 				TimingNote.MusicPlaying = playing;
@@ -487,13 +493,13 @@
 				m_Progress.SetProgress(time, game.BPM);
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
 				m_GridRenderer.MusicTime = music.Time;
 				m_Progress.RefreshControlUI();
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 			};
 			StageMusic.OnPitchChanged = () => {
 				m_PitchWarningBlock.gameObject.SetActive(music.Pitch < 0.05f);
@@ -523,7 +529,7 @@
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				editor.ClearSelection();
-				m_TimingPreview.SetVerticesDirty();
+				m_TimingPreview.SetDirty();
 			};
 			StageEditor.GetBeatmap = () => project.Beatmap;
 			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
@@ -535,7 +541,7 @@
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 				if (typeIndex == 3) {
-					m_TimingPreview.SetVerticesDirty();
+					m_TimingPreview.SetDirty();
 					game.SetSpeedCurveDirty();
 				}
 			};
@@ -564,12 +570,11 @@
 			StageUndo.GetObjectData = () => new UndoData() {
 				Beatmap = Util.ObjectToBytes(project.Beatmap),
 				MusicTime = music.Time,
-				ContainerActive = new bool[5] {
+				ContainerActive = new bool[4] {
 					editor.GetContainerActive(0),
 					editor.GetContainerActive(1),
 					editor.GetContainerActive(2),
 					editor.GetContainerActive(3),
-					editor.GetContainerActive(4),
 				},
 			};
 			StageUndo.OnUndo = (bytes) => {

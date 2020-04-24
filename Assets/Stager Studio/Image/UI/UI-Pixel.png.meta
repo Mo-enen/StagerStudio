@@ -65,6 +65,12 @@ TextureImporter:
   - first:
       213: 9025415919998567879
     second: Pixel Rect H a2
+  - first:
+      213: 5496280042393542759
+    second: Dotted Ring R
+  - first:
+      213: -6482297465717724214
+    second: Dotted Ring L
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -452,8 +458,8 @@ TextureImporter:
         serializedVersion: 2
         x: 13
         y: 13
-        width: 9
-        height: 9
+        width: 14
+        height: 14
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 2, y: 2, z: 2, w: 2}
@@ -526,6 +532,48 @@ TextureImporter:
       bones: []
       spriteID: 7c58ba5e5f7b04d70800000000000000
       internalID: 9025415919998567879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dotted Ring R
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 13
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 2, z: 2, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 760afe8f395b64c40800000000000000
+      internalID: 5496280042393542759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dotted Ring L
+      rect:
+        serializedVersion: 2
+        x: 13
+        y: 13
+        width: 2
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 2, y: 2, z: 0, w: 2}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: acbea73bcc04a06a0800000000000000
+      internalID: -6482297465717724214
       vertices: []
       indices: 
       edges: []

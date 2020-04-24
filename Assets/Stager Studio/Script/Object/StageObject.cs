@@ -68,7 +68,7 @@
 
 		// Data
 		protected static SkinData Skin = null;
-		private static (Vector3 size, bool fixedRatio)[] RectSizes = default;
+		private static (Vector3 size, bool fixedRatio)[][] RectSizess = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
 
@@ -207,26 +207,35 @@
 		public static void LoadSkin (SkinData skin) {
 			Skin = skin;
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
-			RectSizes = new (Vector3, bool)[typeCount];
+			RectSizess = new (Vector3, bool)[typeCount][];
 			HighlightTints = new Color32[typeCount];
 			TintNote = skin.TintNote;
 			if (skin == null) { return; }
-			for (int i = 0; i < RectSizes.Length; i++) {
+			for (int i = 0; i < RectSizess.Length && i < skin.Items.Count; i++) {
+				int rectCount = skin.Items[i].Rects.Count;
+				bool fixedRatio = skin.Items[i].FixedRatio;
+				var rectSizes = new (Vector3, bool)[rectCount];
 				// Sizes
-				var size = skin.TryGetItemSize(i) / skin.ScaleMuti;
-				size.x = Mathf.Max(size.x, 0f);
-				size.y = Mathf.Max(size.y, 0.001f);
-				size.z = Mathf.Max(size.z, 0f);
-				RectSizes[i] = (size, skin.Items[i].FixedRatio);
+				for (int j = 0; j < rectCount; j++) {
+					var size = skin.TryGetItemSize(i, j) / skin.ScaleMuti;
+					size.x = Mathf.Max(size.x, 0f);
+					size.y = Mathf.Max(size.y, 0.001f);
+					size.z = Mathf.Max(size.z, 0f);
+					rectSizes[j] = (size, fixedRatio);
+				}
 				// Highlights
 				HighlightTints[i] = skin.Items[i].HighlightTint;
+				// Final
+				RectSizess[i] = rectSizes;
 			}
 
 		}
 
 
-		protected static Vector3 GetRectSize (SkinType type, bool scalableX = true, bool scalableY = false) {
-			var (size, fix) = RectSizes[(int)type];
+		protected static Vector3 GetRectSize (SkinType type, int rectIndex, bool scalableX = true, bool scalableY = false) {
+			var rSizes = RectSizess[(int)type];
+			if (rSizes.Length == 0) { return default; }
+			var (size, fix) = rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)];
 			if (!fix) {
 				if (scalableX) {
 					size.x = -1f;

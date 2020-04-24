@@ -25,7 +25,7 @@
 			AddQuad01(
 				0f, 1f, 0f, 1f,
 				uvL, uvL + Size.x * Scale.x, uvD, uvD + Size.y * Scale.y,
-				Vector2.zero
+				Vector2.zero, Tint
 			);
 		}
 

@@ -17,9 +17,9 @@ TagManager:
   - Track
   - HoldNote
   - Note
-  - Speed
-  - Motion
-  - 
+  - Timing
+  - Stage Head
+  - Track Head
   - 
   - 
   - 
@@ -59,20 +59,14 @@ TagManager:
   - name: Tray
     uniqueID: 296525073
     locked: 0
-  - name: Pole
-    uniqueID: 4270631489
-    locked: 0
   - name: HoldNote
     uniqueID: 3463294581
     locked: 0
   - name: Note
     uniqueID: 1274917977
     locked: 0
-  - name: Arrow
-    uniqueID: 271100707
-    locked: 0
-  - name: Speed
-    uniqueID: 3738023523
+  - name: Pole
+    uniqueID: 4270631489
     locked: 0
   - name: Motion
     uniqueID: 1991258759

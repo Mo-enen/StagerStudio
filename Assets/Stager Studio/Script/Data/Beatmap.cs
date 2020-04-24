@@ -186,9 +186,13 @@
 				get => m_X / 1000f;
 				set => m_X = (int)(value * 1000f);
 			}
+			public int ItemType {
+				get => m_ItemType;
+				set => m_ItemType = value;
+			}
 
 			// Api_Ser
-			public int ItemType = 0;
+			public int m_ItemType = 0;
 			public int m_Time = 0;
 			public int m_Duration = 0;
 			public int m_X = 0;
@@ -349,8 +353,6 @@
 			public int TrackIndex = -1;
 			public int LinkedNoteIndex = -1;
 			public short ClickSoundIndex = -1;
-			public byte SwipeX = 1; // 0 = Left, 1 = None, 2 = Right
-			public byte SwipeY = 1; // 0 = Down, 1 = None, 2 = Up
 			public byte SoundFxIndex = 0;
 			public int SoundFxParamA = 0;
 			public int SoundFxParamB = 0;

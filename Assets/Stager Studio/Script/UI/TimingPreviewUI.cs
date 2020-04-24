@@ -9,6 +9,8 @@
 	public class TimingPreviewUI : Image {
 
 
+
+
 		#region --- SUB ---
 
 
@@ -33,6 +35,7 @@
 
 		// Ser
 		[SerializeField] private Color m_NegativeTint = default;
+		[SerializeField] private RectTransform m_InavtiveTarget = null;
 
 		// Data
 		private readonly static UIVertex[] CacheVertex = { default, default, default, default, };
@@ -134,7 +137,7 @@
 					rect.xMin, rect.xMax, x11
 				);
 				// UV
-				const float UV_SCALE = 18f;
+				float UV_SCALE = 12f;
 				CacheVertex[0].uv0 = new Vector2(0f, y01 * rect.height / UV_SCALE);
 				CacheVertex[1].uv0 = new Vector2(0f, nextY01 * rect.height / UV_SCALE);
 				CacheVertex[2].uv0 = new Vector2(x11 * rect.width / UV_SCALE, nextY01 * rect.height / UV_SCALE);
@@ -152,6 +155,22 @@
 				} else {
 					return 3f;
 				}
+			}
+		}
+
+
+		#endregion
+
+
+
+		#region --- API ---
+
+
+		public void SetDirty () {
+			SetVerticesDirty();
+			bool show = ShowPreview();
+			if (m_InavtiveTarget.gameObject.activeSelf == show) {
+				m_InavtiveTarget.gameObject.SetActive(!show);
 			}
 		}
 

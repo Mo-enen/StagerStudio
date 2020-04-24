@@ -40,6 +40,18 @@ Music speed {0}
 Game.Hint.ShowGrid
 Grid and Auxiliary {0}
 
+Menu.Abreast.Width0
+Panorama mode stage width 25%
+
+Menu.Abreast.Width1
+Panorama mode stage width 33%
+
+Menu.Abreast.Width2
+Panorama mode stage width 62%
+
+Menu.Abreast.Width3
+Panorama mode stage width 100%
+
 Menu.AutoSave.0
 Auto save every 30 sec
 
@@ -370,9 +382,6 @@ Reset all settings back to default?
 Shortcut.AbreastView
 Panorama View
 
-Shortcut.Brush.Motion
-Motion Brush
-
 Shortcut.Brush.Note
 Note Brush
 
@@ -388,9 +397,6 @@ Track Brush
 Shortcut.CancelZone
 Cancel
 
-Shortcut.Eye.Motion
-Hide Motion Note
-
 Shortcut.Eye.Note
 Hide Note
 
@@ -405,9 +411,6 @@ Hide Track
 
 Shortcut.GlobalBrushScale
 Global Brush Scale
-
-Shortcut.Lock.Motion
-Lock Motion Note
 
 Shortcut.Lock.Note
 Lock Note
@@ -487,9 +490,6 @@ Import Image
 SkinEditor.Dialog.SkinImageExported
 Image exported
 
-SkinEditor.Item.Arrow
-Arrow
-
 SkinEditor.Item.HoldLuminous
 Hold Lum
 
@@ -526,14 +526,8 @@ About
 Stager.Quit
 Quit
 
-Tip.AbreastSwitcher.Item
-Switch to specified stage
-
-Tip.AbreastSwitcher.Width
-The width of the stage area
-
 Tip.AbreastView
-Panorama mode
+Panorama mode (Right click to open menu)
 
 Tip.BeatmapSwiper
 Select beatmap and open
@@ -564,9 +558,6 @@ Trushbin, completely remove or restore the deleted project
 
 Tip.Home.Tutorial
 Open tutorial
-
-Tip.Lib.Motion
-Motion brush
 
 Tip.Lib.Note
 Note brush
@@ -626,7 +617,7 @@ Tip.ProjectInfo
 Project info: manage title, music, background, map difficulty, BPM, etc.
 
 Tip.Save
-Save project (Right click to set auto save)
+Save project (Right click to open menu)
 
 Tip.Setting
 Setting: Your own setting for this application.
@@ -702,12 +693,6 @@ Back to home page
 
 Tip.Toolbar.Skin
 Switch skin
-
-Tip.ViewContainer.Motion
-Show/Hide motion notes
-
-Tip.ViewContainer.MotionLock
-Lock motion note
 
 Tip.ViewContainer.Note
 Show/Hide notes
@@ -788,7 +773,7 @@ UI.ImportBeatmap
 Import
 
 UI.InfoLabel
-stage × {0} | track × {1} | note × {2} | speed × {3}
+stage × {0} | track × {1} | note × {2} | timing × {3}
 
 UI.NewBeatmap
 New
@@ -949,29 +934,17 @@ Export Image
 UI.SkinEditor.FixedRatio
 Fixed Ratio
 
-UI.SkinEditor.Forward
-Forward
-
 UI.SkinEditor.Highlight
 Highlight
 
 UI.SkinEditor.ImportImage
 Import Image
 
-UI.SkinEditor.Loop
-Loop
-
 UI.SkinEditor.LuminousHeight
 Lum Height
 
 UI.SkinEditor.LuminousWidth
 Lum Width
-
-UI.SkinEditor.PingPong
-PingPong
-
-UI.SkinEditor.PingPongStay
-Stay Pong
 
 UI.SkinEditor.Scale
 Scale
@@ -1014,9 +987,6 @@ Y
 
 UI.SkinEditor.TintNote
 Tint Note
-
-UI.SkinEditor.Type
-Type
 
 UI.SkinEditor.VanishDuration
 Vanish

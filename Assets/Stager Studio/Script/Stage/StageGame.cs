@@ -73,16 +73,25 @@
 		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
+		private Transform StageContainer => m_Containers[0];
+		private Transform TrackContainer => m_Containers[1];
+		private Transform NoteContainer => m_Containers[2];
+		private Transform TimingContainer => m_Containers[3];
+		private Transform LuminousContainer => m_Containers[4];
+		private Transform StageHeadContainer => m_Containers[5];
+		private Transform TrackHeadContainer => m_Containers[6];
+		private Transform Prefab_Stage => m_Prefabs[0];
+		private Transform Prefab_Track => m_Prefabs[1];
+		private Transform Prefab_Note => m_Prefabs[2];
+		private Transform Prefab_Timing => m_Prefabs[3];
+		private Transform Prefab_Luminous => m_Prefabs[4];
+		private Transform Prefab_Stage_Head => m_Prefabs[5];
+		private Transform Prefab_Track_Head => m_Prefabs[6];
 
 		// Ser
-		[SerializeField] private Transform m_Prefab_Stage = null;
-		[SerializeField] private Transform m_Prefab_Track = null;
-		[SerializeField] private Transform m_Prefab_Note = null;
-		[SerializeField] private Transform m_Prefab_Speed = null;
-		[SerializeField] private Transform m_Prefab_Motion = null;
-		[SerializeField] private Transform m_Prefab_Luminous = null;
 		[SerializeField] private RectTransform m_ZoneRT = null;
 		[SerializeField] private Transform[] m_AntiMouseTF = null;
+		[SerializeField] private Transform[] m_Prefabs = null;
 		[SerializeField] private Transform[] m_Containers = null;
 
 		// Data
@@ -168,15 +177,22 @@
 						i--;
 					}
 				}
+				// Sync Container Active
+				if (StageHeadContainer.gameObject.activeSelf != StageContainer.gameObject.activeSelf) {
+					StageHeadContainer.gameObject.SetActive(StageContainer.gameObject.activeSelf);
+				}
+				if (TrackHeadContainer.gameObject.activeSelf != TrackContainer.gameObject.activeSelf) {
+					TrackHeadContainer.gameObject.SetActive(TrackContainer.gameObject.activeSelf);
+				}
 				// Has Beatmap
 				bool changed = false;
-				changed = FixObject(m_Prefab_Stage, null, m_Containers[0], map.Stages.Count) || changed;
-				changed = FixObject(m_Prefab_Track, null, m_Containers[1], map.Tracks.Count) || changed;
-				changed = FixObject(m_Prefab_Note, null, m_Containers[2], map.Notes.Count) || changed;
-				changed = FixObject(null, m_Prefab_Speed, m_Containers[3], map.Timings.Count) || changed;
-				changed = FixStageMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(0), map.Stages) || changed;
-				changed = FixTrackMotionObject(m_Prefab_Motion, m_Containers[4].GetChild(1), map.Tracks) || changed;
-				changed = FixObject(m_Prefab_Luminous, null, m_Containers[5], map.Notes.Count) || changed;
+				changed = FixObject(Prefab_Stage, StageContainer, map.Stages.Count) || changed;
+				changed = FixObject(Prefab_Track, TrackContainer, map.Tracks.Count) || changed;
+				changed = FixObject(Prefab_Note, NoteContainer, map.Notes.Count) || changed;
+				changed = FixObject(Prefab_Timing, TimingContainer, map.Timings.Count) || changed;
+				changed = FixObject(Prefab_Luminous, LuminousContainer, map.Notes.Count) || changed;
+				changed = FixObject(Prefab_Stage_Head, StageHeadContainer, map.Stages.Count) || changed;
+				changed = FixObject(Prefab_Track_Head, TrackHeadContainer, map.Tracks.Count) || changed;
 				if (changed) {
 					OnStageObjectChanged();
 				}
@@ -191,15 +207,24 @@
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int stageCount = map.Stages.Count;
-			var container = m_Containers[0];
+			var container = StageContainer;
+			var headContainer = StageHeadContainer;
 			for (int i = 0; i < stageCount; i++) {
-				var tf = container.GetChild(i);
+				// Stage
 				var stageData = map.Stages[i];
+				var stageTF = container.GetChild(i);
 				stageData.TrackCount = 0;
-				if (!tf.gameObject.activeSelf) {
+				if (!stageTF.gameObject.activeSelf) {
 					stageData.Active = Stage.GetStageActive(stageData, i);
 					if (stageData.Active) {
-						tf.gameObject.SetActive(true);
+						stageTF.gameObject.SetActive(true);
+					}
+				}
+				// Head
+				var headTF = headContainer.GetChild(i);
+				if (!headTF.gameObject.activeSelf) {
+					if (StageHead.GetHeadActive(stageData)) {
+						headTF.gameObject.SetActive(true);
 					}
 				}
 			}
@@ -211,7 +236,7 @@
 			if (map == null) { return; }
 			int stageCount = map.Stages.Count;
 			int trackCount = map.Tracks.Count;
-			var container = m_Containers[1];
+			var container = TrackContainer;
 			for (int i = 0; i < trackCount; i++) {
 				var tf = container.GetChild(i);
 				var trackData = map.Tracks[i];
@@ -232,8 +257,8 @@
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int noteCount = map.Notes.Count;
-			var container = m_Containers[2];
-			var lumContainer = m_Containers[5];
+			var container = NoteContainer;
+			var lumContainer = LuminousContainer;
 			Beatmap.Note linkedNote;
 			Beatmap.Track linkedTrack;
 			Beatmap.Stage linkedStage;
@@ -268,7 +293,7 @@
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int timingCount = map.Timings.Count;
-			var container = m_Containers[3];
+			var container = TimingContainer;
 			for (int i = 0; i < timingCount; i++) {
 				var tf = container.GetChild(i);
 				var tData = map.Timings[i];
@@ -408,13 +433,7 @@
 
 		public void ClearAllContainers () {
 			for (int i = 0; i < m_Containers.Length; i++) {
-				var container = m_Containers[i];
-				if (i == 4) {
-					container.GetChild(0).DestroyAllChildImmediately();
-					container.GetChild(1).DestroyAllChildImmediately();
-				} else {
-					container.DestroyAllChildImmediately();
-				}
+				m_Containers[i].DestroyAllChildImmediately();
 			}
 		}
 
@@ -454,8 +473,8 @@
 			if (AbreastValueCor != null) {
 				StopCoroutine(AbreastValueCor);
 			}
-			var items = m_Containers[0].parent.GetComponentsInChildren<StageObject>();
-			var speedNotes = m_Containers[3].GetComponentsInChildren<TimingNote>();
+			var items = StageContainer.parent.GetComponentsInChildren<StageObject>();
+			var speedNotes = TimingContainer.GetComponentsInChildren<TimingNote>();
 			AbreastValueCor = StartCoroutine(AbreastValueing());
 			// === Func ===
 			IEnumerator AbreastValueing () {
@@ -522,8 +541,8 @@
 		}
 
 
-		public void SwitchAbreastWidth () {
-			SetAbreastWidth((AbreastWidthIndex + 1) % ABREAST_WIDTHS.Length, true);
+		public void UI_SetAbreastWidth (int index) {
+			SetAbreastWidth(index, true);
 			// Hint
 			string str = "% ";
 			for (int i = 0; i < ABREAST_WIDTHS.Length; i++) {
@@ -607,7 +626,7 @@
 
 
 		// Beatmap Update
-		private bool FixObject (Transform prefab, Transform subPrefab, Transform container, int count) {
+		private bool FixObject (Transform prefab, Transform container, int count) {
 			bool changed = false;
 			int conCount = container.childCount;
 			if (conCount > count) {
@@ -615,7 +634,7 @@
 				changed = true;
 			} else if (conCount < count) {
 				count -= conCount;
-				if (prefab is null && subPrefab is null) {
+				if (prefab is null) {
 					// Spawn Container
 					for (int i = 0; i < count; i++) {
 						var tf = new GameObject("").transform;
@@ -627,43 +646,8 @@
 					for (int i = 0; i < count; i++) {
 						Instantiate(prefab, container);
 					}
-				} else {
-					// Spawn Transform Object
-					for (int i = 0; i < count; i++) {
-						Instantiate(subPrefab, container);
-					}
 				}
 				changed = true;
-			}
-			return changed;
-		}
-
-
-		private bool FixStageMotionObject (Transform prefab, Transform container, List<Beatmap.Stage> stages) {
-			bool changed = false;
-			int count = stages.Count;
-			changed = FixObject(null, null, container, count) || changed;
-			for (int i = 0; i < count; i++) {
-				var stageCon = container.GetChild(i);
-				changed = FixObject(null, null, stageCon, Beatmap.Stage.MOTION_COUNT) || changed;
-				for (int j = 0; j < Beatmap.Stage.MOTION_COUNT; j++) {
-					changed = FixObject(null, prefab, stageCon.GetChild(j), stages[i].GetMotionCount((Beatmap.Stage.MotionType)j)) || changed;
-				}
-			}
-			return changed;
-		}
-
-
-		private bool FixTrackMotionObject (Transform prefab, Transform container, List<Beatmap.Track> tracks) {
-			bool changed = false;
-			int count = tracks.Count;
-			changed = FixObject(null, null, container, count) || changed;
-			for (int i = 0; i < count; i++) {
-				var trackCon = container.GetChild(i);
-				changed = FixObject(null, null, trackCon, Beatmap.Track.MOTION_COUNT) || changed;
-				for (int j = 0; j < Beatmap.Track.MOTION_COUNT; j++) {
-					changed = FixObject(null, prefab, trackCon.GetChild(j), tracks[i].GetMotionCount((Beatmap.Track.MotionType)j)) || changed;
-				}
 			}
 			return changed;
 		}

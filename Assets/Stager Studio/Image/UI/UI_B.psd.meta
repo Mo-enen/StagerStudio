@@ -738,27 +738,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Abreast Width
-      rect:
-        serializedVersion: 2
-        x: 3
-        y: 5
-        width: 103
-        height: 48
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7ad06f71e86405970800000000000000
-      internalID: 8741564452827434407
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Arcaea Icon
       rect:
         serializedVersion: 2

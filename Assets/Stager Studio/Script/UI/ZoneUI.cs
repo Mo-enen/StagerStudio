@@ -12,10 +12,6 @@
 		public bool IsShowing => m_ZoneGraphics[0].enabled;
 
 		// Short
-		private Vector3 ZoneMinPos { get; set; } = default;
-		private Vector3 ZoneMaxPos { get; set; } = default;
-		private Vector3 ZoneMaxPos_Real { get; set; } = default;
-		private float Ratio { get; set; } = 1f;
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
@@ -27,6 +23,11 @@
 		// Data
 		private Coroutine ZoneCor = null;
 		private Camera _Camera = null;
+		private Vector3 ZoneMinPos = default;
+		private Vector3 ZoneMaxPos = default;
+		private Vector3 ZoneMaxPos_Real = default;
+		private float ZoneSize = 0f;
+		private float Ratio = 1f;
 
 
 		// MSG
@@ -38,10 +39,11 @@
 				0.0001f,
 				float.MaxValue
 			);
-			ZoneMaxPos_Real = max;
-			max.y = min.y + max.x - min.x;
+			ZoneSize = max.x - min.x;
+			max.z = min.z + ZoneSize;
 			ZoneMinPos = min;
-			ZoneMaxPos = max;
+			ZoneMaxPos_Real = ZoneMaxPos = max;
+			ZoneMaxPos.y = ZoneMinPos.y + ZoneSize;
 		}
 
 
@@ -72,14 +74,18 @@
 		}
 
 
-		public (Vector3, Vector3, float, float) GetZoneMinMax (bool real = false) => (ZoneMinPos, real ? ZoneMaxPos_Real : ZoneMaxPos, ZoneMaxPos.x - ZoneMinPos.x, Ratio);
-
-
-		public (Vector2, Vector2) GetScreenZoneMinMax () => (
-			Camera.WorldToScreenPoint(ZoneMinPos),
-			Camera.WorldToScreenPoint(ZoneMaxPos_Real)
+		public (Vector3, Vector3, float, float) GetZoneMinMax (bool real = false) => (
+			ZoneMinPos, real ? ZoneMaxPos_Real : ZoneMaxPos, ZoneSize, Ratio
 		);
 
 
+		public (Vector2, Vector2) GetScreenZoneMinMax () {
+			var max = ZoneMaxPos_Real;
+			max.z = ZoneMinPos.z;
+			return (
+				Camera.WorldToScreenPoint(ZoneMinPos),
+				Camera.WorldToScreenPoint(max)
+			);
+		}
 	}
 }

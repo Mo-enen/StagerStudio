@@ -130,8 +130,8 @@
 
 			// Tray
 			if (trackData.HasTray) {
-				var traySize = GetRectSize(SkinType.Tray, false, false);
-				var judgeLineSize = GetRectSize(SkinType.JudgeLine);
+				var traySize = GetRectSize(SkinType.Tray, trackData.ItemType, false, false);
+				var judgeLineSize = GetRectSize(SkinType.JudgeLine, trackData.ItemType);
 				var trayPos = LocalToZone(
 					TrayX, judgeLineSize.y / 2f / stageHeight, 0f,
 					stagePos, stageWidth, stageHeight, stageRotZ,

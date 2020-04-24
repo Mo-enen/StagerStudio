@@ -17,11 +17,10 @@
 		Tray = 4,
 
 		Note = 5,
-		Arrow = 6,
-		Pole = 7,
+		Pole = 6,
 
-		NoteLuminous = 8,
-		HoldLuminous = 9,
+		NoteLuminous = 7,
+		HoldLuminous = 8,
 
 	}
 
@@ -145,7 +144,6 @@
 			while (Items.Count < typeCount) {
 				Items.Add(new AnimatedItemData() {
 					FrameDuration = 120,
-					Loop = SkinLoopType.Loop,
 					Rects = new List<AnimatedItemData.RectData>(),
 				});
 			}
@@ -163,12 +161,12 @@
 		}
 
 
-		public Vector3 TryGetItemSize (int index) {
-			if (Items is null || index < 0 || index >= Items.Count) { return default; }
-			var item = Items[index];
+		public Vector3 TryGetItemSize (int itemIndex, int rectIndex) {
+			if (Items is null || itemIndex < 0 || itemIndex >= Items.Count) { return default; }
+			var item = Items[itemIndex];
 			if (item.Rects is null || item.Rects.Count == 0) { return default; }
-			var rect = item.Rects[0];
-			return new Vector3(rect.Width, rect.Height, item.Is3D ? item.Thickness3D : 0f);
+			var rect = item.Rects[Mathf.Clamp(rectIndex, 0, item.Rects.Count - 1)];
+			return new Vector3(rect.Width, rect.Height, rect.Is3D ? rect.Thickness3D : 0f);
 		}
 
 
@@ -192,6 +190,11 @@
 		[System.Serializable]
 		public struct RectData {
 
+			public int Thickness3D_UI {
+				get => Mathf.Max(Thickness3D, 0);
+				set => Thickness3D = Mathf.Max(value, 0);
+			}
+
 			public int R => X + Width;
 			public int U => Y + Height;
 			public int L => X;
@@ -207,6 +210,9 @@
 			public int BorderL;
 			public int BorderR;
 
+			public bool Is3D;
+			public int Thickness3D;
+
 			public static RectData MinMax (int xMin, int xMax, int yMin, int yMax) => new RectData(xMin, yMin, xMax - xMin, yMax - yMin);
 
 			public RectData (int x, int y, int width, int height, int borderU = 0, int borderD = 0, int borderL = 0, int borderR = 0) {
@@ -218,6 +224,8 @@
 				BorderD = borderD;
 				BorderL = borderL;
 				BorderR = borderR;
+				Is3D = false;
+				Thickness3D = 0;
 			}
 
 		}
@@ -240,10 +248,6 @@
 
 		// API
 		public float TotalDuration => FrameDuration / 1000f * Rects.Count;
-		public int Thickness3D_UI {
-			get => Mathf.Max(Thickness3D, 0);
-			set => Thickness3D = Mathf.Max(value, 0);
-		}
 		public Color32 HighlightTint {
 			get => new Color32(Highlight.R, Highlight.G, Highlight.B, Highlight.A);
 			set {
@@ -252,26 +256,23 @@
 		}
 
 		// Ser
-		public SkinLoopType Loop = SkinLoopType.Type;
 		public List<RectData> Rects = new List<RectData>();
 		public ColorData Highlight = new ColorData(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 		public int FrameDuration = 200;
-		public bool Is3D = false;
-		public int Thickness3D = 0;
 		public bool FixedRatio = false;
 
 		// API
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);
 
 
-		public int GetFrame (int type, float lifeTime, float lifeLength) {
+		public int GetFrame (int itemType, SkinLoopType loop, float lifeTime, float lifeLength) {
 			int count = Rects.Count;
 			float spf = FrameDuration / 1000f;
 			if (count <= 1 || FrameDuration == 0) { return 0; }
-			switch (Loop) {
+			switch (loop) {
 				default:
 				case SkinLoopType.Type:
-					return Mathf.Clamp(type, 0, count - 1);
+					return Mathf.Clamp(itemType, 0, count - 1);
 				case SkinLoopType.Forward:
 					return Mathf.Clamp(Mathf.FloorToInt(
 						Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf

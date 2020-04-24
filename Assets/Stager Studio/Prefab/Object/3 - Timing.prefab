@@ -16,7 +16,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1398407539520907666
 Transform:
   m_ObjectHideFlags: 0
@@ -49,7 +49,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_MainRenderer: {fileID: 7728667973207816046}
-  m_Highlight: {fileID: 583818811190487742}
   m_LabelRenderer: {fileID: 3214920307257600984}
   m_Col: {fileID: 1656124352844751143}
   m_PositiveTint: {r: 1, g: 1, b: 1, a: 1}
@@ -122,7 +121,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
-  m_SortingLayer: 14
+  m_SortingLayer: 12
   m_SortingOrder: 2
   m_Sprite: {fileID: -994478920888325196, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
@@ -278,7 +277,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1173555823
-  m_SortingLayer: 14
+  m_SortingLayer: 12
   m_SortingOrder: 3
   m_Sprite: {fileID: -3307379733461050231, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
@@ -289,7 +288,7 @@ SpriteRenderer:
   m_Size: {x: 1.6, y: 0.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &7308530671233841364

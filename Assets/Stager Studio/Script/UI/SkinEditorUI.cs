@@ -57,11 +57,10 @@
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_TintNoteTG = null;
-		[SerializeField] private Button m_HighlightCP = null;
+		[SerializeField] private Button m_HighlightTint = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
-		[SerializeField] private Button[] m_LoopTypeBtns = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
@@ -136,13 +135,13 @@
 			});
 
 			// Highlight
-			m_HighlightCP.onClick.AddListener(() => {
+			m_HighlightTint.onClick.AddListener(() => {
 				if (!UIReady) { return; }
 				var ani = GetEditingAniData();
 				if (ani is null) { return; }
 				SS.SpawnColorPicker(ani.HighlightTint, (newHighlight) => {
 					ani.HighlightTint = newHighlight;
-					m_HighlightCP.GetComponent<Image>().color = ani.HighlightTint;
+					m_HighlightTint.GetComponent<Image>().color = ani.HighlightTint;
 				});
 			});
 
@@ -262,21 +261,19 @@
 					EditingType == SkinType.NoteLuminous ||
 					EditingType == SkinType.HoldLuminous
 				);
-				m_HighlightCP.transform.parent.gameObject.SetActive(
-					EditingType == SkinType.Pole
+				m_HighlightTint.transform.parent.gameObject.SetActive(
+					EditingType == SkinType.Pole ||
+					EditingType == SkinType.Note
 				);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
-				m_HighlightCP.GetComponent<Image>().color = ani.HighlightTint;
+				m_HighlightTint.GetComponent<Image>().color = ani.HighlightTint;
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
 				m_LuminHeightAppendIF.text = data.LuminousAppendY_UI.ToString();
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
 				m_FixedRatioTG.isOn = ani.FixedRatio;
 				m_TintNoteTG.isOn = data.TintNote;
-				for (int i = 0; i < m_LoopTypeBtns.Length; i++) {
-					m_LoopTypeBtns[i].gameObject.SetActive(i == (int)ani.Loop);
-				}
 			} catch { }
 			UIReady = true;
 		}
@@ -324,14 +321,6 @@
 				Util.ByteToFile(Data.Texture.EncodeToPNG(), path);
 				DialogUtil.Dialog_OK(DIALOG_SkinImageExported, DialogUtil.MarkType.Success);
 			} catch { }
-		}
-
-
-		public void UI_SetLoopType (int typeIndex) {
-			var data = GetEditingAniData();
-			if (data is null) { return; }
-			data.Loop = (SkinLoopType)typeIndex;
-			RefreshInfoUI();
 		}
 
 

@@ -88,7 +88,10 @@
 					var data = m_Editor.Data;
 					var ani = m_Editor.GetEditingAniData();
 					if (ani is null || data is null || data.Texture is null) { return; }
-					ani.Is3D = isOn;
+					if (ani.Rects == null || SelectingRectIndex >= ani.Rects.Count) { return; }
+					var rect = ani.Rects[SelectingRectIndex];
+					rect.Is3D = isOn;
+					ani.Rects[SelectingRectIndex] = rect;
 					Refresh3DUI();
 				}
 			});
@@ -119,7 +122,7 @@
 						SetPositionRect(rt, rect, textureWidth, textureHeight);
 						// Index
 						int index = rt.GetSiblingIndex();
-						grab.Grab<Text>("Index").text = (index + 1).ToString();
+						grab.Grab<Text>("Index").text = index.ToString();
 						// Trigger
 						var trigger = grab.Grab<EventTrigger>();
 						trigger.triggers[0].callback.AddListener((bEvent) => {
@@ -328,7 +331,11 @@
 			if (int.TryParse(str, out int value)) {
 				var ani = m_Editor.GetEditingAniData();
 				if (ani != null) {
-					ani.Thickness3D_UI = value;
+					if (ani.Rects != null && SelectingRectIndex < ani.Rects.Count) {
+						var rect = ani.Rects[SelectingRectIndex];
+						rect.Thickness3D_UI = value;
+						ani.Rects[SelectingRectIndex] = rect;
+					}
 				}
 				Refresh3DUI();
 			}
@@ -443,7 +450,7 @@
 		}
 		private void Selection_3D_Drag (PointerEventData e, bool down) {
 			var (rData, ani, data) = GetSelectingRect();
-			if (ani is null || !ani.Is3D) { return; }
+			if (ani is null || !rData.Is3D) { return; }
 			SelectingRectIndex = Mathf.Clamp(SelectingRectIndex, 0, ani.Rects.Count - 1);
 			int tWidth = data.Texture.width;
 			int tHeight = data.Texture.height;
@@ -452,12 +459,13 @@
 			if (down) {
 				aimPos01.y = Snap01(aimPos01.y, tHeight);
 				int y = Mathf.Clamp(Mathf.RoundToInt(aimPos01.y * tHeight), 0, tHeight - 1);
-				ani.Thickness3D_UI = Mathf.Clamp(rData.Y - y, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
+				rData.Thickness3D_UI = Mathf.Clamp(rData.Y - y, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
 			} else {
 				aimPos01.x = Snap01(aimPos01.x, tWidth);
 				int x = Mathf.Clamp(Mathf.RoundToInt(aimPos01.x * tWidth), 0, tWidth - 1);
-				ani.Thickness3D_UI = Mathf.Clamp(rData.X - x, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
+				rData.Thickness3D_UI = Mathf.Clamp(rData.X - x, Mathf.Min(rData.X, rData.Y, 4), Mathf.Min(rData.X, rData.Y));
 			}
+			ani.Rects[SelectingRectIndex] = rData;
 			SetSelection();
 		}
 
@@ -536,7 +544,7 @@
 					m_SubR.text = rData.BorderR.ToString();
 					m_SubB.text = rData.BorderD.ToString();
 					m_SubT.text = rData.BorderU.ToString();
-					m_Sub3D.text = ani.Thickness3D_UI.ToString();
+					m_Sub3D.text = rData.Thickness3D_UI.ToString();
 				} catch { }
 				UIReady = true;
 				// Pos
@@ -555,25 +563,26 @@
 			if (SelectingRectIndex >= 0 && SelectingRectIndex < ani.Rects.Count) {
 				var rData = ani.Rects[SelectingRectIndex];
 				// 3D Pos
-				ani.Is3D = ani.Is3D && rData.Width > 0 && rData.Height > 0;
-				m_3DRectD.gameObject.SetActive(ani.Is3D);
-				m_3DRectL.gameObject.SetActive(ani.Is3D);
-				if (ani.Is3D) {
-					float uiSize3D = (float)ani.Thickness3D_UI / data.Texture.height * m_Root.rect.height;
+				rData.Is3D = rData.Is3D && rData.Width > 0 && rData.Height > 0;
+				m_3DRectD.gameObject.SetActive(rData.Is3D);
+				m_3DRectL.gameObject.SetActive(rData.Is3D);
+				if (rData.Is3D) {
+					float uiSize3D = (float)rData.Thickness3D_UI / data.Texture.height * m_Root.rect.height;
 					m_3DRectL.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, uiSize3D);
 					m_3DRectD.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, uiSize3D);
 				}
+				ani.Rects[SelectingRectIndex] = rData;
+				// 3D Toggle
+				UIReady = false;
+				try {
+					m_3dTG.isOn = rData.Is3D;
+					m_Sub3D.text = rData.Thickness3D_UI.ToString();
+				} catch { }
+				UIReady = true;
 			} else {
 				m_3DRectD.gameObject.SetActive(false);
 				m_3DRectL.gameObject.SetActive(false);
 			}
-			// 3D Toggle
-			UIReady = false;
-			try {
-				m_3dTG.isOn = ani.Is3D;
-				m_Sub3D.text = ani.Thickness3D_UI.ToString();
-			} catch { }
-			UIReady = true;
 		}
 
 

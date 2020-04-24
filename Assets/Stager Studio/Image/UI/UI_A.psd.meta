@@ -951,27 +951,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Lib Motion Note
-      rect:
-        serializedVersion: 2
-        x: 109
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 7f940a908da33af4aba667b6f40801e4
-      internalID: 408736907599971988
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Delete
       rect:
         serializedVersion: 2
@@ -1072,27 +1051,6 @@ TextureImporter:
       bones: []
       spriteID: bce7db30c18645e49b67c555450c56c0
       internalID: 7491557216104332933
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lib Luminous
-      rect:
-        serializedVersion: 2
-        x: 136
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4240f5a13612a1240bc414720d2f9e03
-      internalID: 82707731993968007
       vertices: []
       indices: 
       edges: []
@@ -1295,7 +1253,7 @@ TextureImporter:
         width: 44
         height: 41
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []

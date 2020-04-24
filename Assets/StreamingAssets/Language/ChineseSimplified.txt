@@ -40,6 +40,18 @@ Game.Hint.Pitch
 Game.Hint.ShowGrid
 辅助线网格 {0}
 
+Menu.Abreast.Width0
+全景舞台宽度 25%
+
+Menu.Abreast.Width1
+全景舞台宽度 33%
+
+Menu.Abreast.Width2
+全景舞台宽度 62%
+
+Menu.Abreast.Width3
+全景舞台宽度 100%
+
 Menu.AutoSave.0
 每30秒自动保存
 
@@ -370,9 +382,6 @@ Setting.ResetConfirm
 Shortcut.AbreastView
 全景模式
 
-Shortcut.Brush.Motion
-运动笔刷
-
 Shortcut.Brush.Note
 音符笔刷
 
@@ -388,9 +397,6 @@ Shortcut.Brush.Track
 Shortcut.CancelZone
 取消
 
-Shortcut.Eye.Motion
-隐藏运动音符
-
 Shortcut.Eye.Note
 隐藏音符
 
@@ -405,9 +411,6 @@ Shortcut.Eye.Track
 
 Shortcut.GlobalBrushScale
 全局笔刷尺寸
-
-Shortcut.Lock.Motion
-锁定运动音符
 
 Shortcut.Lock.Note
 锁定音符
@@ -487,9 +490,6 @@ SkinEditor.Dialog.ImportImageTitle
 SkinEditor.Dialog.SkinImageExported
 图片已导出
 
-SkinEditor.Item.Arrow
-箭头
-
 SkinEditor.Item.HoldLuminous
 长按光效
 
@@ -526,14 +526,8 @@ Stager.About
 Stager.Quit
 退出
 
-Tip.AbreastSwitcher.Item
-切换到指定编号的舞台
-
-Tip.AbreastSwitcher.Width
-舞台区域的宽度
-
 Tip.AbreastView
-全景模式
+全景模式（右键打开菜单）
 
 Tip.BeatmapSwiper
 选择谱面并打开
@@ -545,7 +539,7 @@ Tip.GotoWeb
 打开官网 www.stager.studio
 
 Tip.Grid
-显示网格、辅助线（右键点击显示菜单）
+显示网格、辅助线（右键打开菜单）
 
 Tip.Home.ChapterItem
 章节，包含若干工程的文件夹
@@ -564,9 +558,6 @@ Tip.Home.Trushbin
 
 Tip.Home.Tutorial
 查看教程
-
-Tip.Lib.Motion
-运动笔刷
 
 Tip.Lib.Note
 音符笔刷
@@ -626,7 +617,7 @@ Tip.ProjectInfo
 工程信息：管理标题、音乐、背景，谱面难度、BPM等
 
 Tip.Save
-保存工程 (右键点击可以设置自动保存时间)
+保存工程 (右键打开菜单)
 
 Tip.Setting
 设置：本地设置
@@ -702,12 +693,6 @@ Tip.Toolbar.Home
 
 Tip.Toolbar.Skin
 快速切换皮肤
-
-Tip.ViewContainer.Motion
-显示/隐藏运动音符
-
-Tip.ViewContainer.MotionLock
-锁定运动音符
 
 Tip.ViewContainer.Note
 显示/隐藏音符
@@ -788,7 +773,7 @@ UI.ImportBeatmap
 导入
 
 UI.InfoLabel
-舞台 × {0} | 轨道 × {1} | 音符 × {2} | 速度 × {3}
+舞台 × {0} | 轨道 × {1} | 音符 × {2} | 时间 × {3}
 
 UI.NewBeatmap
 新建
@@ -949,29 +934,17 @@ UI.SkinEditor.ExportImage
 UI.SkinEditor.FixedRatio
 固定长宽比
 
-UI.SkinEditor.Forward
-顺序播放
-
 UI.SkinEditor.Highlight
 高光
 
 UI.SkinEditor.ImportImage
 导入图片
 
-UI.SkinEditor.Loop
-循环播放
-
 UI.SkinEditor.LuminousHeight
 光效高度
 
 UI.SkinEditor.LuminousWidth
 光效宽度
-
-UI.SkinEditor.PingPong
-折返播放
-
-UI.SkinEditor.PingPongStay
-折返（滞留）
 
 UI.SkinEditor.Scale
 尺寸
@@ -1014,9 +987,6 @@ Y
 
 UI.SkinEditor.TintNote
 变色音符
-
-UI.SkinEditor.Type
-类型
 
 UI.SkinEditor.VanishDuration
 消失时长

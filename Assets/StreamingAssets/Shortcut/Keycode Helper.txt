@@ -18,20 +18,17 @@ Available Actions:
 	Shortcut.Brush.Track
 	Shortcut.Brush.Note
 	Shortcut.Brush.Speed
-	Shortcut.Brush.Motion
 	Shortcut.Undo
 	Shortcut.Redo
 	Shortcut.Eye.Stage
 	Shortcut.Eye.Track
 	Shortcut.Eye.Note
 	Shortcut.Eye.Speed
-	Shortcut.Eye.Motion
 	Shortcut.ShowGrid
 	Shortcut.Lock.Stage
 	Shortcut.LockTrack
 	Shortcut.Lock.Note
 	Shortcut.Lock.Speed
-	Shortcut.Lock.Motion
 	Shortcut.SwitchFocus
 	Shortcut.Seek.Positive
 	Shortcut.Seek.Negative

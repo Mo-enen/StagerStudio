@@ -1,4 +1,5 @@
 ﻿namespace StagerStudio.UI {
+	using global::StagerStudio.Saving;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
@@ -18,6 +19,7 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static StringStringHandler GetHotKey { get; set; } = null;
 		public static VoidStringHandler SetTip { get; set; } = null;
+		public static SavingBool ShowTip { get; } = new SavingBool("TooltipUI.ShowTip", true);
 
 		[SerializeField] private string m_TipKey = "";
 		[SerializeField] private string m_HotKey = "";
@@ -30,7 +32,7 @@
 
 
 		// API
-		public static void LogTip (string key, string hotkey = "") => SetTip($"{GetLanguage(key)}   {GetHotKey(hotkey)}");
+		public static void LogTip (string key, string hotkey = "") => SetTip(ShowTip ? $"{GetLanguage(key)}   {GetHotKey(hotkey)}" : "");
 
 
 	}

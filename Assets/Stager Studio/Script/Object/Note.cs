@@ -44,11 +44,9 @@
 		public static int SortingLayerID_Note { get; set; } = -1;
 		public static int SortingLayerID_Note_Hold { get; set; } = -1;
 		public static int SortingLayerID_Pole { get; set; } = -1;
-		public static int SortingLayerID_Arrow { get; set; } = -1;
 		public static Vector3 CameraWorldPos { get; set; } = default;
 
 		// Ser
-		[SerializeField] private ObjectRenderer m_ArrowRenderer = null;
 		[SerializeField] private ObjectRenderer m_PoleRenderer = null;
 		[SerializeField] private SpriteRenderer m_ZLineRenderer = null;
 
@@ -70,11 +68,9 @@
 
 		protected override void Awake () {
 			base.Awake();
-			m_ArrowRenderer.SkinData = Skin;
 			m_PoleRenderer.SkinData = Skin;
 			MainRenderer.Type = SkinType.Note;
 			m_PoleRenderer.Type = SkinType.Pole;
-			m_ArrowRenderer.Type = SkinType.Arrow;
 		}
 
 
@@ -89,7 +85,6 @@
 			Late_Note = null;
 			Late_LinkedNote = null;
 			MainRenderer.RendererEnable = false;
-			m_ArrowRenderer.RendererEnable = false;
 			m_PoleRenderer.RendererEnable = false;
 			ColSize = null;
 
@@ -152,13 +147,9 @@
 				return;
 			}
 
-			// Sub Update
-			var (_, _, zoneSize, _) = ZoneMinMax;
+			// Link Update
 			if (Late_LinkedNote != null) {
 				LateUpdate_Movement_Linked(Late_Note, Late_LinkedNote, Late_NoteWorldPos, ColRot ?? Quaternion.identity, MainRenderer.Alpha);
-			}
-			if ((Late_Note.SwipeX != 1 || Late_Note.SwipeY != 1) && GetNoteActive(Late_Note, null, Late_Note.AppearTime)) {
-				LateUpdate_Movement_Swipe(Late_Note, zoneSize, ColRot ?? Quaternion.identity, MainRenderer.Alpha, MainRenderer.Type);
 			}
 
 			base.LateUpdate();
@@ -229,13 +220,13 @@
 				trackX, trackWidth, trackAngle
 			);
 			var noteRot = Quaternion.Euler(0f, 0f, stageRotZ) * Quaternion.Euler(trackAngle, 0f, 0f);
-			zoneMax.z += zoneSize;
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, noteZonePos.x, noteZonePos.y, noteZonePos.z);
 
 			// Size
-			var noteSize = GetRectSize(SkinType.Note);
+			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
+			var noteBasicSize = GetRectSize(SkinType.Note, 0);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteSize.y);
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteBasicSize.y);
 			var zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,
@@ -255,7 +246,10 @@
 			MainRenderer.Duration = Duration;
 			MainRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
-			MainRenderer.SetSortingLayer(Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold, GetSortingOrder());
+			MainRenderer.SetSortingLayer(
+				Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold,
+				GetSortingOrder()
+			);
 
 		}
 
@@ -375,7 +369,6 @@
 			);
 
 			// Linked Note World Pos
-			zoneMax.z += zoneSize;
 			var linkedNoteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, linkedZonePos.x, linkedZonePos.y, linkedZonePos.z);
 
 			// Sub Pole World Pos
@@ -404,7 +397,7 @@
 			}
 
 			// Final
-			var poleSize = GetRectSize(SkinType.Pole, false, false);
+			var poleSize = GetRectSize(SkinType.Pole, noteData.ItemType, false, false);
 			m_PoleRenderer.ItemType = noteData.ItemType;
 			m_PoleRenderer.transform.rotation = linkedNoteWorldPos != subWorldPos ? Quaternion.LookRotation(
 				linkedNoteWorldPos - subWorldPos, -MainRenderer.transform.forward
@@ -417,27 +410,11 @@
 			m_PoleRenderer.Scale = new Vector2(poleSize.x, scaleY / zoneSize);
 			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)SkinType.Pole] : WHITE_32;
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
-			m_PoleRenderer.SetSortingLayer(SortingLayerID_Pole, GetSortingOrder());
+			m_PoleRenderer.SetSortingLayer(
+				SortingLayerID_Pole,
+				GetSortingOrder()
+			);
 
-
-		}
-
-
-		private void LateUpdate_Movement_Swipe (Beatmap.Note noteData, float zoneSize, Quaternion rot, float alpha, SkinType type) {
-			var noteSize = GetRectSize(type);
-			var arrowSize = GetRectSize(SkinType.Arrow, false, false);
-			float arrowZ = noteData.SwipeX == 1 ? (180f - 90f * noteData.SwipeY) : Mathf.Sign(-noteData.SwipeX) * (135f - 45f * noteData.SwipeY);
-			m_ArrowRenderer.transform.localPosition = rot * new Vector3(0f, zoneSize * noteSize.y * 0.5f, -noteSize.z);
-			m_ArrowRenderer.transform.rotation = rot * Quaternion.Euler(0f, 0f, arrowZ);
-			m_ArrowRenderer.transform.localScale = new Vector3(zoneSize * arrowSize.x, zoneSize * arrowSize.y, 1f);
-			m_ArrowRenderer.RendererEnable = true;
-			m_ArrowRenderer.ItemType = noteData.ItemType;
-			m_ArrowRenderer.Pivot = new Vector3(0.5f, 0.5f);
-			m_ArrowRenderer.Scale = arrowSize;
-			m_ArrowRenderer.Alpha = alpha;
-			m_ArrowRenderer.Duration = Duration;
-			m_ArrowRenderer.LifeTime = MusicTime - Time;
-			m_ArrowRenderer.SetSortingLayer(SortingLayerID_Arrow, GetSortingOrder());
 		}
 
 
@@ -457,7 +434,6 @@
 
 		protected override void RefreshRendererZone () {
 			base.RefreshRendererZone();
-			RefreshRendererZoneFor(m_ArrowRenderer);
 			RefreshRendererZoneFor(m_PoleRenderer);
 		}
 

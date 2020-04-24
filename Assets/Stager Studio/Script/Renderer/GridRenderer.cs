@@ -118,14 +118,14 @@
 					0f, 1f,
 					uvMin0.x, uvMax0.x,
 					uvMin0.y, uvMax0.y,
-					Vector3.zero
+					Vector3.zero, Tint
 				));
 			}
 
 			// Y
 			ForAllY((y) => AddQuad01(
 				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
-				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero
+				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero, Tint
 			), false);
 
 		}
@@ -168,21 +168,25 @@
 
 
 		public Vector3 SnapWorld (Vector3 pos, bool groundY = false) {
-			if (!RendererEnable) { return pos; }
+			if (!RendererEnable && !groundY) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
-			pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
-			if (groundY) {
+			if (RendererEnable) {
+				pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
+				if (groundY) {
+					pos.y = 0f;
+				} else {
+					float minDis = float.MaxValue;
+					float resY = pos.y;
+					ForAllY((y) => {
+						if (Mathf.Abs(pos.y - y) < minDis) {
+							resY = y;
+							minDis = Mathf.Abs(pos.y - y);
+						}
+					}, false);
+					pos.y = resY;
+				}
+			} else if (groundY) {
 				pos.y = 0f;
-			} else {
-				float minDis = float.MaxValue;
-				float resY = pos.y;
-				ForAllY((y) => {
-					if (Mathf.Abs(pos.y - y) < minDis) {
-						resY = y;
-						minDis = Mathf.Abs(pos.y - y);
-					}
-				}, false);
-				pos.y = resY;
 			}
 			pos.z = 0f;
 			pos = transform.localToWorldMatrix.MultiplyPoint3x4(pos);

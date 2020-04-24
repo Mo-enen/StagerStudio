@@ -47,7 +47,7 @@
 				AddQuad01(
 					i, i + 1f, 0f, Scale.y,
 					uvMin.x, uvMax.x, uvMin.y, uvMax.y,
-					offset
+					offset, Tint
 				);
 			}
 

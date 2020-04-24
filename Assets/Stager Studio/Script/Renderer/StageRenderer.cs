@@ -114,10 +114,10 @@
 		public void SetDirty () => MeshDirty = true;
 
 
-		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU, Vector3 offset) => AddQuad01(l, r, d, u, uvL, uvR, uvD, uvU, 0, 1, offset);
+		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU, Vector3 offset, Color tint) => AddQuad01(l, r, d, u, uvL, uvR, uvD, uvU, 0, 1, offset, tint);
 
 
-		protected void AddQuad01 (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, int axisA, int axisB, Vector3 offset, bool normalUV = true) {
+		protected void AddQuad01 (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, int axisA, int axisB, Vector3 offset, Color tint, bool normalUV = true) {
 			int vIndex = Vertices.Count;
 			// Rect
 			Vector3 v = Vector3.zero;
@@ -150,10 +150,10 @@
 			Triangles.Add(vIndex + 2);
 			Triangles.Add(vIndex + 3);
 			// Color
-			Colors.Add(Tint);
-			Colors.Add(Tint);
-			Colors.Add(Tint);
-			Colors.Add(Tint);
+			Colors.Add(tint);
+			Colors.Add(tint);
+			Colors.Add(tint);
+			Colors.Add(tint);
 		}
 
 

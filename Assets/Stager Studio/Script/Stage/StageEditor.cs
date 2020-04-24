@@ -36,7 +36,9 @@
 
 
 		// Const
-		private readonly static string[] ITEM_LAYER_NAMES = { "Stage", "Track", "Note", "Speed", "Motion", };
+		private readonly static string[] ITEM_LAYER_NAMES = {
+			"Stage", "Track", "Note", "Timing", "Stage Head", "Track Head",
+		};
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
 		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
 		private const string DIALOG_SelectingLayerLocked = "Dialog.Editor.SelectingLayerLocked";
@@ -78,7 +80,6 @@
 		[SerializeField] private GridRenderer m_Grid = null;
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
-		[SerializeField] private SpriteRenderer m_GhostPivot = null;
 		[SerializeField] private Transform m_MoveAxis = null;
 		[SerializeField] private string m_FocusKey = "Focus";
 		[SerializeField] private string m_UnfocusKey = "Unfocus";
@@ -91,8 +92,7 @@
 		// Data
 		private readonly static Dictionary<int, int> LayerToTypeMap = new Dictionary<int, int>();
 		private readonly static bool[] ItemLock = { false, false, false, false, false, };
-		private readonly static int[] ItemLayers = { -1, -1, -1, -1, -1 };
-		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, };
+		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
 		private Renderer[] AxisRenderers = null;
 		private bool FocusMode = false;
 		private bool UIReady = true;
@@ -106,7 +106,6 @@
 		private bool ClickStartInsideSelection = false;
 		private int HoldNoteLayer = -1;
 		private Vector2 HoverScaleMuti = Vector2.one;
-		private Vector2 GhostPivotScaleMuti = Vector2.one;
 		private Vector3 DragOffsetWorld = default;
 
 		// Saving
@@ -125,13 +124,12 @@
 		private void Awake () {
 
 			// Init Layer
+			SortingLayerID_UI = SortingLayer.NameToID("UI");
 			for (int i = 0; i < ITEM_LAYER_NAMES.Length; i++) {
-				ItemLayers[i] = LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]);
-				LayerToTypeMap.Add(ItemLayers[i], i);
+				LayerToTypeMap.Add(LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]), i);
 			}
 			HoldNoteLayer = LayerMask.NameToLayer(HOLD_NOTE_LAYER_NAME);
 			LayerToTypeMap.Add(HoldNoteLayer, 2);
-			SortingLayerID_UI = SortingLayer.NameToID("UI");
 
 			// Unlock Mask
 			RefreshUnlockedMask();
@@ -174,7 +172,6 @@
 
 			// UI
 			HoverScaleMuti = m_Hover.transform.localScale;
-			GhostPivotScaleMuti = m_GhostPivot.transform.localScale;
 			AxisRenderers = m_MoveAxis.GetComponentsInChildren<Renderer>(true);
 
 		}
@@ -258,8 +255,7 @@
 			var con = SelectingItemType >= 0 && SelectingItemType < m_Containers.Length ? m_Containers[SelectingItemType] : null;
 			bool targetActive = map.GetActive(SelectingItemType, SelectingItemIndex);
 			if (
-				con != null &&
-				SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount &&
+				con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount &&
 				(targetActive || Input.GetMouseButton(0))
 			) {
 				var target = con.GetChild(SelectingItemIndex);
@@ -342,7 +338,7 @@
 					m_Grid.ObjectSpeedMuti = 1f;
 					break;
 				case 1: // Track
-				case 2: // Note
+				case 2:  // Note
 					int hoverItemType, hoverItemIndex;
 					Transform hoverTarget;
 					if (selectingMode) {
@@ -372,6 +368,18 @@
 					m_Grid.ObjectSpeedMuti = 1f;
 					m_Grid.Mode = 3;
 					m_Grid.IgnoreDynamicSpeed = true;
+					break;
+				case 4: // Stage Head
+				case 5: // Track Head
+					if (!selectingMode) { break; }
+					var target = m_Containers[gridingItemType - 4].GetChild(SelectingItemIndex);
+					gridEnable = true;
+					pos = target.position;
+					rot = target.rotation;
+					scl = target.GetChild(0).localScale;
+					m_Grid.Mode = 3;
+					m_Grid.IgnoreDynamicSpeed = true;
+					m_Grid.ObjectSpeedMuti = 1f;
 					break;
 			}
 			m_Grid.SetGridTransform(gridEnable, ShowGridOnSelect.Value || !selectingMode, pos, rot, scl);
@@ -473,7 +481,6 @@
 				m_Ghost.transform.rotation = ghostRot;
 				m_Ghost.Pivot = new Vector3(ghostPivotX, 0f, 0f);
 				m_Ghost.SetSortingLayer(SortingLayerID_UI, short.MaxValue - 1);
-				m_GhostPivot.transform.localScale = new Vector3(GhostPivotScaleMuti.x / ghostSize.x, GhostPivotScaleMuti.y / ghostSize.y, 1f);
 				TrySetTargetActive(m_Ghost.gameObject, true);
 			} else {
 				TrySetTargetActive(m_Ghost.gameObject, false);
@@ -507,7 +514,6 @@
 				var (zoneMin, zoneMax_real, zoneSize, _) = GetZoneMinMax();
 				var zoneMax = zoneMax_real;
 				zoneMax.y = zoneMin.y + zoneSize;
-				zoneMax_real.z = zoneMin.z + zoneSize;
 				if (downPos.HasValue) {
 					// Down
 					DragOffsetWorld = downPos.Value - m_MoveAxis.position;
@@ -518,7 +524,6 @@
 						SelectingItemType == 1
 					);
 					var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
-					var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, pos.x, pos.y, pos.z);
 					int index = SelectingItemIndex;
 					switch (SelectingItemType) {
 						case 0:  // Stage
@@ -574,10 +579,25 @@
 							break;
 						case 3:  // Timing
 							if (axis == 1 || axis == 2) {
+								var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, pos.x, pos.y, pos.z);
 								map.SetTime(
 									3, index,
 									Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f)
 								);
+							}
+							break;
+						case 4: // Stage Head
+							if (axis == 1 || axis == 2) {
+
+								Debug.Log(Time.time + " Stage Head");
+
+							}
+							break;
+						case 5: // Track Head
+							if (axis == 1 || axis == 2) {
+
+								Debug.Log(Time.time + " Track Head");
+
 							}
 							break;
 					}

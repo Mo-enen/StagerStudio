@@ -92,15 +92,16 @@
 				Mathf.Max(MusicTime, time),
 				SpeedMuti
 			);
+			Color tint;
 			for (int i = 0; i < 64 && y01 < 1f; i++) {
 				for (int j = 0; j < BeatPerSection && y01 < 1f; j++) {
-					Tint = m_RulerColors[j % m_RulerColors.Length];
+					tint = m_RulerColors[j % m_RulerColors.Length];
 					if (time >= MusicTime - TimeGap && y01 > 0f) {
 						AddQuad01(
 							0f, 1f,
 							y01 - (j == 0 ? thickA : thickB),
 							y01 + (j == 0 ? thickA : thickB),
-							uvMin.x, uvMax.x, uvMin.y, uvMax.y, Vector3.zero
+							uvMin.x, uvMax.x, uvMin.y, uvMax.y, Vector3.zero, tint
 						);
 					}
 					y01 += GetAreaBetween(time, time + TimeGap, SpeedMuti);
