@@ -452,8 +452,8 @@ MonoBehaviour:
     rgba: 4294967295
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
-  m_SpriteSheet: {fileID: 11400000, guid: 3c69f1aab24836240a36801417379693, type: 2}
   m_Text: 
+  m_Background: {r: 0, g: 0, b: 0, a: 0.5019608}
 --- !u!23 &7261055106303066098
 MeshRenderer:
   m_ObjectHideFlags: 0

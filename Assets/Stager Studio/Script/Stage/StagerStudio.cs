@@ -67,7 +67,7 @@
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
 		private StringStringHandler GetLanguage { get; set; } = null;
-		private FloatFloatHandler GetDropMapSpeed { get; set; } = null;
+		private FloatHandler GetDropSpeed { get; set; } = null;
 		private VoidIntHandler ProjectRemoveClickSound { get; set; } = null;
 		private VoidIntHandler ProjectRemoveTweenAt { get; set; } = null;
 		private VoidIntHandler ProjectRemovePaletteAt { get; set; } = null;
@@ -104,6 +104,7 @@
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[Header("Data")]
+		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
 
@@ -139,7 +140,7 @@
 			ProjectRemoveTweenAt = project.RemoveTweenAt;
 			ProjectRemovePaletteAt = project.RemovePaletteAt;
 			GetAbreastData = () => (game.AbreastValue, game.AbreastIndex, game.AbreastWidth);
-			GetDropMapSpeed = () => (game.GameDropSpeed, game.MapDropSpeed);
+			GetDropSpeed = () => game.GameDropSpeed;
 			GetGameItemCount = game.GetItemCount;
 			GetBeatmap = () => project.Beatmap;
 			GetLanguage = language.Get;
@@ -174,23 +175,23 @@
 
 		private void Update () {
 			var (aValue, aIndex, aWidth) = GetAbreastData();
-			var (dropSpeed, mapSpeed) = GetDropMapSpeed();
+			var dropSpeed = GetDropSpeed();
 			float musicTime = GetMusicTime();
 			CursorUI.GlobalUpdate();
 			StageUndo.GlobalUpdate();
-			StageObject.ZoneMinMax = m_Zone.GetZoneMinMax();
+			StageObject.ZoneMinMax = ObjectTimer.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
-			StageObject.GameSpeedMuti = dropSpeed * mapSpeed;
+			StageObject.GameSpeedMuti = dropSpeed;
 			StageObject.MusicTime = musicTime;
 			Object.Stage.StageCount = GetGameItemCount(0);
 			Note.CameraWorldPos = m_CameraTF.position;
 			TimingNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
-			TimingNote.GameSpeedMuti = dropSpeed * mapSpeed;
+			TimingNote.GameSpeedMuti = dropSpeed;
 			TimingNote.MusicTime = musicTime;
-			StageHead.MusicTime = musicTime;
-			StageHead.SpeedMuti = dropSpeed * mapSpeed;
-			StageHead.UseAbreast = aValue > 0.5f;
+			ObjectTimer.MusicTime = musicTime;
+			ObjectTimer.SpeedMuti = dropSpeed;
+			StageTimer.UseAbreast = aValue > 0.5f;
 		}
 
 
@@ -221,7 +222,9 @@
 			StageLanguage.OnLanguageLoaded = () => {
 				TryRefreshSetting();
 				foreach (var text in m_LanguageTexts) {
-					text.text = language.Get(text.name);
+					if (text != null) {
+						text.text = language.Get(text.name);
+					}
 				}
 			};
 			DialogUtil.GetRoot = () => m_DialogRoot;
@@ -245,7 +248,9 @@
 			};
 			// Reload Language Texts
 			foreach (var text in m_LanguageTexts) {
-				text.text = language.Get(text.name);
+				if (text != null) {
+					text.text = language.Get(text.name);
+				}
 			}
 		}
 
@@ -324,7 +329,7 @@
 				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
-				StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 				game.SetAbreastIndex(0);
 				game.SetUseAbreastView(false);
 				game.SetGameDropSpeed(1f);
@@ -337,9 +342,6 @@
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 				RefreshAuthorLabel();
-				if (ShowWelcome) {
-					SpawnWelcome();
-				}
 			};
 			StageProject.OnProjectSavingStart = () => {
 				StartCoroutine(SaveProgressing());
@@ -354,7 +356,7 @@
 				StageUndo.ClearUndo();
 				m_Preview.SetDirty();
 				editor.ClearSelection();
-				StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = null;
+				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 			};
 
 			// Beatmap
@@ -362,10 +364,9 @@
 				if (!(map is null)) {
 					game.BPM = map.BPM;
 					game.Shift = map.Shift;
-					game.MapDropSpeed = map.DropSpeed;
 					game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
-					StageObject.Beatmap = TimingNote.Beatmap = StageHead.Beatmap = map;
+					StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
@@ -454,9 +455,8 @@
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = game.GameDropSpeed * game.MapDropSpeed > 0f ?
-						1f / (game.GameDropSpeed * game.MapDropSpeed) / music.Duration :
-					0f;
+					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
+
 				}
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
@@ -477,6 +477,13 @@
 				m_TimingPreview.SetDirty();
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
+			StageGame.GetMusicTime = () => music.Time;
+			StageGame.MusicSeek = music.Seek;
+			StageGame.MusicIsPlaying = () => music.IsPlaying;
+			StageGame.GetPitch = () => music.Pitch;
+			StageGame.SetPitch = (p) => music.Pitch = p;
+			StageGame.MusicPlay = music.Play;
+			StageGame.MusicPause = music.Pause;
 		}
 
 
@@ -640,7 +647,6 @@
 				if (project.Beatmap != null) {
 					game.BPM = project.Beatmap.BPM;
 					game.Shift = project.Beatmap.Shift;
-					game.MapDropSpeed = project.Beatmap.DropSpeed;
 					game.Ratio = project.Beatmap.Ratio;
 					m_BeatmapSwiperLabel.text = project.Beatmap.Tag;
 				}
@@ -687,7 +693,7 @@
 				return index;
 			};
 			SettingUI.SpawnSkinEditor = SpawnSkinEditor;
-
+			SettingUI.LoadLanguage = language.LoadLanguage;
 
 		}
 
@@ -749,7 +755,7 @@
 
 			TimingPreviewUI.GetBeatmap = () => project.Beatmap;
 			TimingPreviewUI.GetMusicTime = () => music.Time;
-			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed * game.MapDropSpeed;
+			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed;
 			TimingPreviewUI.ShowPreview = () => game.ShowGrid && editor.GetContainerActive(3);
 
 			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
@@ -773,8 +779,11 @@
 			SelectorUI.GetSelectionType = () => editor.SelectingItemType;
 			SelectorUI.GetSelectionIndex = () => editor.SelectingItemIndex;
 
+			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
+
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
+			m_TextSheet.Init();
 
 			// Tutorial
 			if (TutorialOpened.Value) {
@@ -918,7 +927,7 @@
 			m_GridRenderer.TimeGap = 60f / game.BPM / game.GridCountY;
 			m_GridRenderer.TimeGap_Main = 60f / game.BPM;
 			m_GridRenderer.TimeOffset = game.Shift;
-			m_GridRenderer.SpeedMuti = game.GameDropSpeed * game.MapDropSpeed;
+			m_GridRenderer.SpeedMuti = game.GameDropSpeed;
 		}
 
 

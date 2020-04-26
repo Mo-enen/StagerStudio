@@ -170,8 +170,10 @@
 
 
 		public static float GetStageAlpha (Beatmap.Stage data) => Mathf.Lerp(
-			Mathf.Clamp01(VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration),
-			1f,
+			Mathf.Clamp01(
+				VanishDuration < DURATION_GAP ? 1f :
+				Mathf.Min(data.Time + data.Duration - MusicTime, MusicTime - data.Time) / VanishDuration
+			), 1f,
 			Abreast.value
 		);
 

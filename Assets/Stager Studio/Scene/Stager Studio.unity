@@ -2426,7 +2426,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1820277924}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -4219,7 +4219,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: -856563916936495532, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -5197,7 +5197,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &572003329
 MonoBehaviour:
@@ -6303,7 +6303,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.000030517578}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &740101816
@@ -6526,7 +6526,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1820277924}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -6613,7 +6613,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &798248423
 MonoBehaviour:
@@ -7715,7 +7715,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 8
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &826612610
 MonoBehaviour:
@@ -8636,7 +8636,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1820277924}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -8698,7 +8698,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1959211095122329946, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: -856563916936495532, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -8818,7 +8818,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Container_Stage: {fileID: 1858595815}
   m_Container_Track: {fileID: 740101815}
-  m_ItemPrefab: {fileID: 4512532867327734522, guid: afae43d37c1278148887d585399f241b,
+  m_StagePrefab: {fileID: 4512532867327734522, guid: afae43d37c1278148887d585399f241b,
+    type: 3}
+  m_TrackPrefab: {fileID: 4512532867327734522, guid: 799f8b051a165d24eb4d0f5b2995f8c3,
     type: 3}
   m_Highlight: {fileID: 1311776942}
 --- !u!1 &836490914
@@ -10512,7 +10514,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1820277924}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -10547,7 +10549,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1820277924}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -12449,7 +12451,6 @@ MonoBehaviour:
     Tracks: []
     Notes: []
     Timings: []
-    m_DropSpeed: 1000
     m_Shift: 0
     m_Ratio: 1500
 --- !u!1 &1349422440
@@ -13612,12 +13613,12 @@ Transform:
   - {fileID: 1340495426}
   - {fileID: 1688303049}
   - {fileID: 949943522}
-  - {fileID: 1967135108}
-  - {fileID: 572003328}
-  - {fileID: 2029856296}
   - {fileID: 1564010260}
   - {fileID: 826612609}
+  - {fileID: 572003328}
   - {fileID: 798248422}
+  - {fileID: 2029856296}
+  - {fileID: 1967135108}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -13645,8 +13646,6 @@ MonoBehaviour:
     type: 3}
   m_TweenEditorPrefab: {fileID: 4593172773593598451, guid: 52cac99e952b4f944827753e20a322a7,
     type: 3}
-  m_WelcomePrefab: {fileID: 1522137509579469888, guid: f58db40083601f84290e6e03340f53fc,
-    type: 3}
   m_BeatmapSwiperPrefab: {fileID: 771444623270062725, guid: 02eb472b5ec416f4fbd3692b121e3638,
     type: 3}
   m_SkinSwiperPrefab: {fileID: 6691283299907288033, guid: 9bb381117bb29304cac09adee06098a8,
@@ -13662,7 +13661,6 @@ MonoBehaviour:
   m_DialogRoot: {fileID: 1091387902}
   m_ColorPickerRoot: {fileID: 1132931636}
   m_TweenEditorRoot: {fileID: 250612134}
-  m_WelcomeRoot: {fileID: 1942699200}
   m_BeatmapSwiperRoot: {fileID: 1040074352}
   m_SkinSwiperRoot: {fileID: 1913392029}
   m_LoadingRoot: {fileID: 827280940}
@@ -13690,6 +13688,7 @@ MonoBehaviour:
   m_Wave: {fileID: 268875062}
   m_TimingPreview: {fileID: 1894342153}
   m_MoveHandler: {fileID: 981357320}
+  m_TextSheet: {fileID: 11400000, guid: 3c69f1aab24836240a36801417379693, type: 2}
   m_LanguageTexts:
   - {fileID: 1796458040}
   - {fileID: 1149638195}
@@ -14436,7 +14435,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 7
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1564010261
 MonoBehaviour:
@@ -15053,7 +15052,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1614147925}
   m_Layer: 0
-  m_Name: Root - ProjectInfo
+  m_Name: Root - Project Info
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -15133,7 +15132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7089468405191809942, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: -686967408958484587, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -15471,6 +15470,11 @@ MonoBehaviour:
   m_AntiTargets:
   - {fileID: 1820277924}
   - {fileID: 213184611}
+  m_DefaultBrushTGs:
+  - {fileID: 343902373}
+  - {fileID: 1626019286}
+  - {fileID: 950759062}
+  - {fileID: 707793158}
   m_FocusCancel: {fileID: 2017125844}
   m_FocusAni: {fileID: 703012816}
   m_Grid: {fileID: 1637691684}
@@ -15479,52 +15483,6 @@ MonoBehaviour:
   m_MoveAxis: {fileID: 981357319}
   m_FocusKey: Focus
   m_UnfocusKey: Unfocus
-  m_DefaultBrushTGs:
-  - {fileID: 343902373}
-  - {fileID: 1626019286}
-  - {fileID: 950759062}
-  - {fileID: 707793158}
-  m_DefaultStage:
-    m_ItemType: 0
-    m_Time: 0
-    m_Duration: 0
-    m_X: 0
-    m_Speed: 1000
-    m_Y: 0
-    m_Width: 1000
-    m_Height: 1000
-    m_Rotation: 0
-    Positions: []
-    Rotations: []
-    Widths: []
-    Heights: []
-  m_DefaultTrack:
-    m_ItemType: 0
-    m_Time: 0
-    m_Duration: 0
-    m_X: 0
-    m_Width: 200
-    m_Angle: 0
-    StageIndex: -1
-    Color: 0
-    HasTray: 0
-    Xs: []
-    Widths: []
-    Colors: []
-    Angles: []
-  m_DefaultNote:
-    m_ItemType: 0
-    m_Time: 0
-    m_Duration: 0
-    m_X: 0
-    m_Z: 0
-    m_Width: 200
-    TrackIndex: -1
-    LinkedNoteIndex: -1
-    ClickSoundIndex: -1
-    SoundFxIndex: 0
-    SoundFxParamA: 0
-    SoundFxParamB: 0
 --- !u!1 &1693676914
 GameObject:
   m_ObjectHideFlags: 0
@@ -16448,9 +16406,8 @@ RectTransform:
   - {fileID: 1614147925}
   - {fileID: 827863065}
   - {fileID: 386178316}
-  - {fileID: 1132931636}
   - {fileID: 250612134}
-  - {fileID: 1942699200}
+  - {fileID: 1132931636}
   - {fileID: 1091387902}
   - {fileID: 827280940}
   - {fileID: 797662688}
@@ -17429,7 +17386,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 483078908}
   m_HandleRect: {fileID: 483078907}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -17944,41 +17901,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1928218902}
   m_CullTransparentMesh: 0
---- !u!1 &1942699199
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1942699200}
-  m_Layer: 0
-  m_Name: Root - Welcome
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!224 &1942699200
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1942699199}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 1820277924}
-  m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1955166533
 GameObject:
   m_ObjectHideFlags: 0
@@ -18238,7 +18160,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 4
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1967135109
 MonoBehaviour:
@@ -18664,7 +18586,7 @@ MonoBehaviour:
   - Tip.PInfo.Done
   - Save and close the project info window
   - Tip.ProjectInfo
-  - 'Project info: manage title, music, background, map difficulty, BPM, etc.'
+  - 'Project info: manage title, music, BG, BPM, etc.'
   - Tip.Save
   - Save project (Right click to open menu)
   - Tip.Setting
@@ -18683,6 +18605,8 @@ MonoBehaviour:
   - Music volume
   - Tip.Setting.NormalUI
   - Normal UI, for normal size display
+  - Tip.Setting.NoteBrushWidth
+  - Width of the note painted by brush
   - Tip.Setting.PositiveScroll
   - Only for mouse scrolling inside editor, such as adjusting y-position of notes
   - Tip.Setting.Preview
@@ -18695,20 +18619,24 @@ MonoBehaviour:
   - Use sound effects or not, turning this off will reduce CPU load
   - Tip.Setting.ShowGrid
   - Show grid and auxiliary lines
+  - Tip.Setting.ShowGridOnSelect
+  - Show grid shen selecting stage, track, note.
   - Tip.Setting.ShowIndexLabel
   - Show the index label or not
   - Tip.Setting.SmallUI
   - Small UI, for larger physical size display
-  - Tip.Setting.SnapProgress
-  - Snap music time based on BPM
   - Tip.Setting.SoundVolume
-  - Sound volume
+  - Snap music time based on BPM
+  - Tip.Setting.StageBrushHeight
+  - Height of the stage painted by brush
+  - Tip.Setting.StageBrushWidth
+  - Width of the stage painted by brush
   - Tip.Setting.Tip
   - Show tooltip or not
+  - Tip.Setting.TrackBrushWidth
+  - Width of the track painted by brush
   - Tip.Setting.Wave
   - Show music wave or not
-  - Tip.Setting.Welcome
-  - Show a welcome panel on project open
   - Tip.Setting.Zone
   - Show scope of activities or not
   - Tip.Toolbar.EditSkin
@@ -18741,8 +18669,6 @@ MonoBehaviour:
   - Ratio
   - UI.BeatmapInfo.Shift
   - Shift
-  - UI.BeatmapInfo.Speed
-  - Speed
   - UI.BeatmapInfo.Tag
   - Tag
   - UI.Browse
@@ -18833,6 +18759,8 @@ MonoBehaviour:
   - Framerate
   - UI.Setting.MusicVolume
   - Music Volume
+  - UI.Setting.NoteBrushWidth
+  - Note Brush Width
   - UI.Setting.PositiveScroll
   - Use Positive Mouse Scroll
   - UI.Setting.Preview
@@ -18849,12 +18777,16 @@ MonoBehaviour:
   - Show Keypress History
   - UI.Setting.ShowTip
   - Show Tooltip
-  - UI.Setting.ShowWelcome
-  - Show Welcome Panel
   - UI.Setting.SnapProgress
   - Snap When Setting Music Time with Progressbar
   - UI.Setting.SoundVolume
   - Sound Volume
+  - UI.Setting.StageBrushHeight
+  - Stage Brush Height
+  - UI.Setting.StageBrushWidth
+  - Stage Brush Width
+  - UI.Setting.TrackBrushWidth
+  - Track Brush Width
   - UI.Setting.UIScale
   - UI Scale
   - UI.Setting.UIScale.0
@@ -18919,6 +18851,8 @@ MonoBehaviour:
   - View (Hold)
   - UI.Tab.BeatmapInfo
   - Beatmap
+  - UI.Tab.Brush
+  - Brush
   - UI.Tab.ClickSound
   - Sound
   - UI.Tab.Editor
@@ -19737,7 +19671,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 6
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2029856297
 MonoBehaviour:

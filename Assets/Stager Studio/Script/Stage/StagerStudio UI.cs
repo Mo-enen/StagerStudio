@@ -29,7 +29,6 @@
 			ShowWave,
 			ShowPreview,
 			ShowTip,
-			ShowWelcome,
 			SnapProgressbar,
 			PositiveScroll,
 			ShowIndexLabel,
@@ -46,7 +45,10 @@
 			MusicVolume,
 			SoundVolume,
 			BgBrightness,
-
+			StageBrushWidth,
+			StageBrushHeight,
+			TrackBrushWidth,
+			NoteBrushWidth,
 		}
 
 
@@ -54,9 +56,6 @@
 		private readonly static Dictionary<InputType, (System.Action<string> setHandler, System.Func<string> getHandler, SavingString saving, bool refreshUI)> InputItemMap = new Dictionary<InputType, (System.Action<string>, System.Func<string>, SavingString, bool)>();
 		private readonly static Dictionary<ToggleType, (System.Action<bool> setHandler, System.Func<bool> getHandler, SavingBool saving, bool refreshUI)> ToggleItemMap = new Dictionary<ToggleType, (System.Action<bool>, System.Func<bool>, SavingBool, bool)>();
 		private readonly static Dictionary<SliderType, (System.Action<float> setHandler, System.Func<float> getHandler, SavingFloat saving, bool refreshUI)> SliderItemMap = new Dictionary<SliderType, (System.Action<float>, System.Func<float>, SavingFloat, bool)>();
-
-		// Short
-		private bool ShowWelcome => ToggleItemMap[ToggleType.ShowWelcome].saving.Value;
 
 		// Ser
 		[Header("Spawn Prefab")]
@@ -66,7 +65,6 @@
 		[SerializeField] private DialogUI m_DialogPrefab = null;
 		[SerializeField] private ColorPickerUI m_ColorPickerPrefab = null;
 		[SerializeField] private TweenEditorUI m_TweenEditorPrefab = null;
-		[SerializeField] private WelcomeUI m_WelcomePrefab = null;
 		[SerializeField] private BeatmapSwiperUI m_BeatmapSwiperPrefab = null;
 		[SerializeField] private SkinSwiperUI m_SkinSwiperPrefab = null;
 		[SerializeField] private LoadingUI m_LoadingPrefab = null;
@@ -80,7 +78,6 @@
 		[SerializeField] private RectTransform m_DialogRoot = null;
 		[SerializeField] private RectTransform m_ColorPickerRoot = null;
 		[SerializeField] private RectTransform m_TweenEditorRoot = null;
-		[SerializeField] private RectTransform m_WelcomeRoot = null;
 		[SerializeField] private RectTransform m_BeatmapSwiperRoot = null;
 		[SerializeField] private RectTransform m_SkinSwiperRoot = null;
 		[SerializeField] private RectTransform m_LoadingRoot = null;
@@ -90,6 +87,7 @@
 		// MSG
 		private void Awake_Setting_UI (StageSoundFX sfx, StageMusic music, StageGame game, StageEditor editor) {
 
+
 			// Input
 			InputItemMap.Add(InputType.Frame, ((str) => {
 				if (int.TryParse(str, out int result)) {
@@ -97,7 +95,6 @@
 					InputItemMap[InputType.Frame].saving.Value = result.ToString();
 				}
 			}, () => Application.targetFrameRate.ToString(), new SavingString("SS.FrameRate", "120"), true));
-
 
 
 			// Toggle
@@ -152,10 +149,6 @@
 				TooltipUI.ShowTip.Value = isOn;
 			}, null, TooltipUI.ShowTip, true));
 
-			ToggleItemMap.Add(ToggleType.ShowWelcome, ((isOn) => {
-				ToggleItemMap[ToggleType.ShowWelcome].saving.Value = isOn;
-			}, null, new SavingBool("SS.ShowWelcome", true), true));
-
 			ToggleItemMap.Add(ToggleType.SnapProgressbar, ((isOn) => {
 				m_Progress.Snap = isOn;
 				ToggleItemMap[ToggleType.SnapProgressbar].saving.Value = isOn;
@@ -202,10 +195,29 @@
 			}, () => music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.BgBrightness, ((value) => {
-				value = Mathf.Clamp01(value / 12f);
-				m_Background.SetBrightness(value);
-				SliderItemMap[SliderType.BgBrightness].saving.Value = value * 12f;
+				m_Background.SetBrightness(Mathf.Clamp01(value / 12f));
+				SliderItemMap[SliderType.BgBrightness].saving.Value = value;
 			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
+
+			SliderItemMap.Add(SliderType.StageBrushWidth, ((value) => {
+				editor.StageBrushWidth = Mathf.Clamp01(value / 12f);
+				SliderItemMap[SliderType.StageBrushWidth].saving.Value = value;
+			}, null, new SavingFloat("SS.StageBrushWidth", 12f), true));
+
+			SliderItemMap.Add(SliderType.StageBrushHeight, ((value) => {
+				editor.StageBrushHeight = Mathf.Clamp01(value / 12f);
+				SliderItemMap[SliderType.StageBrushHeight].saving.Value = value;
+			}, null, new SavingFloat("SS.StageBrushHeight", 12f), true));
+
+			SliderItemMap.Add(SliderType.TrackBrushWidth, ((value) => {
+				editor.TrackBrushWidth = Mathf.Clamp01(value / 12f);
+				SliderItemMap[SliderType.TrackBrushWidth].saving.Value = value;
+			}, null, new SavingFloat("SS.TrackBrushWidth", 2.5f), true));
+
+			SliderItemMap.Add(SliderType.NoteBrushWidth, ((value) => {
+				editor.NoteBrushWidth = Mathf.Clamp01(value / 12f);
+				SliderItemMap[SliderType.NoteBrushWidth].saving.Value = value;
+			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
 
 		}
 
@@ -263,13 +275,6 @@
 		}
 
 
-		public void SpawnWelcome () {
-			UI_RemoveUI();
-			var info = ProjectInfoUI.GetProjectInfo();
-			Util.SpawnUI(m_WelcomePrefab, m_WelcomeRoot, "Welcome").Init(info.name, info.bgAuthor, info.musicAuthor, info.mapAuthor, info.description, info.cover);
-		}
-
-
 		public void UI_SpawnBeatmapSwiper () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init();
@@ -295,7 +300,6 @@
 			m_SkinEditorRoot.DestroyAllChildImmediately();
 			m_ColorPickerRoot.DestroyAllChildImmediately();
 			m_TweenEditorRoot.DestroyAllChildImmediately();
-			m_WelcomeRoot.DestroyAllChildImmediately();
 			m_BeatmapSwiperRoot.DestroyAllChildImmediately();
 			m_LoadingRoot.DestroyAllChildImmediately();
 
@@ -304,7 +308,6 @@
 			m_SkinEditorRoot.gameObject.SetActive(false);
 			m_ColorPickerRoot.gameObject.SetActive(false);
 			m_TweenEditorRoot.gameObject.SetActive(false);
-			m_WelcomeRoot.gameObject.SetActive(false);
 			m_BeatmapSwiperRoot.gameObject.SetActive(false);
 			m_LoadingRoot.gameObject.SetActive(false);
 

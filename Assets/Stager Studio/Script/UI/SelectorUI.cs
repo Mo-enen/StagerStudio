@@ -39,7 +39,8 @@
 		// Ser
 		[SerializeField] private RectTransform m_Container_Stage = null;
 		[SerializeField] private RectTransform m_Container_Track = null;
-		[SerializeField] private Grabber m_ItemPrefab = null;
+		[SerializeField] private Grabber m_StagePrefab = null;
+		[SerializeField] private Grabber m_TrackPrefab = null;
 		[SerializeField] private RectTransform m_Highlight = null;
 
 		// Data
@@ -82,7 +83,7 @@
 				m_Container_Stage.FixChildcountImmediately(stageCount);
 			} else if (m_Container_Stage.childCount < stageCount) {
 				for (int i = m_Container_Stage.childCount; i < stageCount; i++) {
-					var grab = Instantiate(m_ItemPrefab, m_Container_Stage);
+					var grab = Instantiate(m_StagePrefab, m_Container_Stage);
 					grab.transform.SetAsLastSibling();
 					grab.Grab<Button>().onClick.AddListener(() => SelectStage(grab.transform.GetSiblingIndex()));
 					grab.Grab<Text>("Label").text = i.ToString("00");
@@ -96,7 +97,7 @@
 				m_Container_Track.FixChildcountImmediately(trackCount);
 			} else if (m_Container_Track.childCount < trackCount) {
 				for (int i = m_Container_Track.childCount; i < trackCount; i++) {
-					var grab = Instantiate(m_ItemPrefab, m_Container_Track);
+					var grab = Instantiate(m_TrackPrefab, m_Container_Track);
 					grab.transform.SetAsLastSibling();
 					grab.Grab<Button>().onClick.AddListener(() => SelectTrack(grab.transform.GetSiblingIndex()));
 					grab.Grab<Text>("Label").text = i.ToString("00");

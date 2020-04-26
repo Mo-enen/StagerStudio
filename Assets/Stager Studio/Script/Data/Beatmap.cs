@@ -199,8 +199,8 @@
 
 			// Cache
 			[System.NonSerialized] public bool Active = false;
-			[System.NonSerialized] public float SpeedMuti = -1f;
-
+			[System.NonSerialized] public bool TimerActive = false;
+			[System.NonSerialized] public float SpeedMuti = 1f;
 
 
 		}
@@ -402,12 +402,6 @@
 
 
 		// API-SER
-		public float DropSpeed {
-			get => m_DropSpeed / 1000f;
-			set {
-				m_DropSpeed = (int)(value * 1000f);
-			}
-		}
 		public float Shift {
 			get => m_Shift / 1000f;
 			set {
@@ -430,7 +424,6 @@
 		public List<Timing> Timings = new List<Timing>();
 
 		// SER
-		public int m_DropSpeed = 1000;
 		public int m_Shift = 0;
 		public int m_Ratio = 1500;
 
@@ -470,7 +463,6 @@
 			if (map == null) { return; }
 			Tag = map.Tag;
 			Level = map.Level;
-			DropSpeed = map.DropSpeed;
 			BPM = map.BPM;
 			Shift = map.Shift;
 			Ratio = map.Ratio;
@@ -511,9 +503,30 @@
 
 
 		// Data
+		public MapItem GetItem (int type, int index) {
+			switch (type) {
+				case 0:
+					return index >= 0 && index < Stages.Count ? Stages[index] : null;
+				case 1:
+					return index >= 0 && index < Tracks.Count ? Tracks[index] : null;
+				case 2:
+					return index >= 0 && index < Notes.Count ? Notes[index] : null;
+				case 3:
+					return index >= 0 && index < Timings.Count ? Timings[index] : null;
+			}
+			return null;
+		}
+
 		public bool GetActive (int type, int index) {
-			var item = GetItem(type, index);
-			return item != null ? item.Active : false;
+			if (type == 4 || type == 5) {
+				// Timer
+				var item = GetItem(type - 4, index);
+				return item != null ? item.TimerActive : false;
+			} else {
+				// Item
+				var item = GetItem(type, index);
+				return item != null ? item.Active : false;
+			}
 		}
 
 		public float GetTime (int type, int index) {
@@ -554,12 +567,6 @@
 			var item = GetItem(type, index);
 			return item != null ? item.SpeedMuti : 1f;
 		}
-		public void SetSpeedMuti (int type, int index, float speedMuti) {
-			var item = GetItem(type, index);
-			if (item != null) {
-				item.SpeedMuti = speedMuti;
-			}
-		}
 
 		public int GetParentIndex (int type, int index) {
 			switch (type) {
@@ -599,27 +606,13 @@
 		}
 
 		public void SetItemIndex (int type, int index, int newIndex) {
+			//switch () {
+			//
+			//}
 
 
 
 
-
-		}
-
-
-		// LGC
-		private MapItem GetItem (int type, int index) {
-			switch (type) {
-				case 0:
-					return index >= 0 && index < Stages.Count ? Stages[index] : null;
-				case 1:
-					return index >= 0 && index < Tracks.Count ? Tracks[index] : null;
-				case 2:
-					return index >= 0 && index < Notes.Count ? Notes[index] : null;
-				case 3:
-					return index >= 0 && index < Timings.Count ? Timings[index] : null;
-			}
-			return null;
 		}
 
 

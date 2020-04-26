@@ -643,6 +643,9 @@ Tip.Setting.MusicVolume
 Tip.Setting.NormalUI
 中等的界面，适合普通显示器
 
+Tip.Setting.NoteBrushWidth
+音符笔刷绘制内容的宽度
+
 Tip.Setting.PositiveScroll
 仅限编辑器内的鼠标滚动，例如调整音符纵向位置等
 
@@ -661,26 +664,32 @@ Tip.Setting.SFX
 Tip.Setting.ShowGrid
 是否显示网格辅助线
 
+Tip.Setting.ShowGridOnSelect
+选择舞台、轨道、音符时显示网格
+
 Tip.Setting.ShowIndexLabel
 是否显示编号标签
 
 Tip.Setting.SmallUI
 较小的界面，适合物理尺寸较大的显示器
 
-Tip.Setting.SnapProgress
+Tip.Setting.SoundVolume
 根据BPM来对齐调整的时间
 
-Tip.Setting.SoundVolume
-音效音量
+Tip.Setting.StageBrushHeight
+舞台笔刷绘制内容的高度
+
+Tip.Setting.StageBrushWidth
+舞台笔刷绘制内容的宽度
 
 Tip.Setting.Tip
 是否显示工具提示
 
+Tip.Setting.TrackBrushWidth
+轨道笔刷绘制内容的宽度
+
 Tip.Setting.Wave
 是否显示声波
-
-Tip.Setting.Welcome
-是否在工程打开时显示欢迎界面
 
 Tip.Setting.Zone
 是否显示活动范围边框
@@ -729,9 +738,6 @@ UI.BeatmapInfo.Ratio
 
 UI.BeatmapInfo.Shift
 节拍偏移
-
-UI.BeatmapInfo.Speed
-下落速度
 
 UI.BeatmapInfo.Tag
 标签
@@ -868,6 +874,9 @@ UI.Setting.Framerate
 UI.Setting.MusicVolume
 音乐音量
 
+UI.Setting.NoteBrushWidth
+音符笔刷宽度
+
 UI.Setting.PositiveScroll
 使用正向的鼠标滚动
 
@@ -892,14 +901,20 @@ UI.Setting.ShowKeypress
 UI.Setting.ShowTip
 显示工具提示
 
-UI.Setting.ShowWelcome
-显示欢迎界面
-
 UI.Setting.SnapProgress
 使用进度条设置时间时对齐到节拍
 
 UI.Setting.SoundVolume
 音效音量
+
+UI.Setting.StageBrushHeight
+舞台笔刷高度
+
+UI.Setting.StageBrushWidth
+舞台笔刷宽度
+
+UI.Setting.TrackBrushWidth
+轨道笔刷宽度
 
 UI.Setting.UIScale
 界面尺寸
@@ -996,6 +1011,9 @@ UI.SkinEditor.View
 
 UI.Tab.BeatmapInfo
 谱面
+
+UI.Tab.Brush
+笔刷
 
 UI.Tab.ClickSound
 按键音

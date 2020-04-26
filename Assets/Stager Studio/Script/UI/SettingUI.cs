@@ -90,7 +90,8 @@
 		public delegate string StringStringHandler (string value);
 		public delegate string StringHandler ();
 		public delegate void VoidStringHandler (string str);
-		public delegate string StringSystemLanguageHandler (SystemLanguage language);
+		public delegate string StringLanguageHandler (SystemLanguage language);
+		public delegate bool BoolLanguageHandler (SystemLanguage language);
 		public delegate List<SystemLanguage> LanguagesHandler ();
 		public delegate string[] StringsHandler ();
 		public delegate void VoidRtHandler (RectTransform rt);
@@ -116,7 +117,8 @@
 		public static VoidHandler ResetAllSettings { get; set; } = null;
 		public static VoidHandler SkinRefreshAllSkinNames { get; set; } = null;
 		public static StringHandler LanguageGetDisplayName { get; set; } = null;
-		public static StringSystemLanguageHandler LanguageGetDisplayName_Language { get; set; } = null;
+		public static StringLanguageHandler LanguageGetDisplayName_Language { get; set; } = null;
+		public static BoolLanguageHandler LoadLanguage { get; set; } = null;
 		public static LanguagesHandler GetAllLanguages { get; set; } = null;
 		public static StringsHandler GetAllSkinNames { get; set; } = null;
 		public static StringHandler GetSkinName { get; set; } = null;
@@ -141,6 +143,7 @@
 		[SerializeField] private Grabber m_ShortcutItemPrefab = null;
 		[SerializeField] private RectTransform m_GeneralContent = null;
 		[SerializeField] private RectTransform m_EditorContent = null;
+		[SerializeField] private RectTransform m_BrushContent = null;
 		[SerializeField] private RectTransform m_SkinContent = null;
 		[SerializeField] private RectTransform m_LanguageContent = null;
 		[SerializeField] private RectTransform m_ShortcutContent = null;
@@ -165,6 +168,7 @@
 			// Content
 			m_GeneralContent.parent.parent.gameObject.SetActive(true);
 			m_EditorContent.parent.parent.gameObject.SetActive(false);
+			m_BrushContent.parent.parent.gameObject.SetActive(false);
 			m_SkinContent.parent.parent.gameObject.SetActive(false);
 			m_LanguageContent.parent.parent.gameObject.SetActive(false);
 			m_ShortcutContent.parent.parent.gameObject.SetActive(false);
@@ -209,7 +213,7 @@
 						graber.Grab<Text>("Text").text = LanguageGetDisplayName_Language(lan);
 						// Func
 						void OnClick () {
-							LanguageGetDisplayName_Language(lan);
+							LoadLanguage(lan);
 							RefreshLanguageTexts();
 						}
 					}

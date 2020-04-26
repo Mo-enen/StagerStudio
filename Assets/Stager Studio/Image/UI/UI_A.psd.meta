@@ -233,6 +233,12 @@ TextureImporter:
   - first:
       213: 1098643313922838400
     second: Save
+  - first:
+      213: -856563916936495532
+    second: Grid
+  - first:
+      213: -686967408958484587
+    second: Shirt
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1261,6 +1267,48 @@ TextureImporter:
       bones: []
       spriteID: 48eaf45e90dbb21d0800000000000000
       internalID: -3374395645584494972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Grid
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 187
+        width: 29
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 45e3593e7afdc14f0800000000000000
+      internalID: -856563916936495532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shirt
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 184
+        width: 39
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59f42c008c66776f0800000000000000
+      internalID: -686967408958484587
       vertices: []
       indices: 
       edges: []

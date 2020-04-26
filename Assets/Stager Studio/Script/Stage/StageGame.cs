@@ -18,9 +18,11 @@
 
 		public delegate void VoidHandler ();
 		public delegate void VoidFloatHandler (float ratio);
+		public delegate float FloatHandler ();
 		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
 		public delegate string StringStringHandler (string str);
 		public delegate void VoidStringBoolHandler (string s, bool b);
+		public delegate bool BoolHandler ();
 		public delegate Beatmap BeatmapHandler ();
 
 
@@ -48,6 +50,13 @@
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
 		public static VoidStringBoolHandler LogHint { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
+		public static FloatHandler GetMusicTime { get; set; } = null;
+		public static VoidFloatHandler MusicSeek { get; set; } = null;
+		public static BoolHandler MusicIsPlaying { get; set; } = null;
+		public static FloatHandler GetPitch { get; set; } = null;
+		public static VoidFloatHandler SetPitch { get; set; } = null;
+		public static VoidHandler MusicPlay { get; set; } = null;
+		public static VoidHandler MusicPause { get; set; } = null;
 
 		// API
 		public float Ratio {
@@ -60,8 +69,7 @@
 		public float SPB => 60f / Mathf.Max(BPM, 0.001f);
 		public float BPM { get; set; } = 120f;
 		public float Shift { get; set; } = 0f;
-		public float MapDropSpeed { get; set; } = 1f;
-		public float GameDropSpeed => Mathf.Clamp(_GameDropSpeed, 0.1f, 10f);
+		public float GameDropSpeed => Mathf.Clamp(_GameDropSpeed, 0.1f, 64f);
 		public bool UseDynamicSpeed => !UseAbreast;
 		public bool UseAbreast => AbreastValue > 0.5f;
 		public float AbreastValue { get; private set; } = 0f;
@@ -70,7 +78,6 @@
 		public bool PositiveScroll { get; set; } = true;
 
 		// Short
-		private StageMusic Music => _Music != null ? _Music : (_Music = FindObjectOfType<StageMusic>());
 		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 		private Transform StageContainer => m_Containers[0];
@@ -95,7 +102,6 @@
 		[SerializeField] private Transform[] m_Containers = null;
 
 		// Data
-		private StageMusic _Music = null;
 		private Camera _Camera = null;
 		private Coroutine AbreastValueCor = null;
 		private Coroutine AbreastWidthCor = null;
@@ -156,7 +162,7 @@
 
 
 		private void Update_Beatmap () {
-			if (Music.IsPlaying) { return; }
+			if (MusicIsPlaying()) { return; }
 			var map = GetBeatmap();
 			if (map != null) {
 				// Delete Parent-Empty Items
@@ -209,6 +215,8 @@
 			int stageCount = map.Stages.Count;
 			var container = StageContainer;
 			var headContainer = StageHeadContainer;
+			float musicTime = GetMusicTime();
+			bool musicPlaying = MusicIsPlaying();
 			for (int i = 0; i < stageCount; i++) {
 				// Stage
 				var stageData = map.Stages[i];
@@ -220,11 +228,12 @@
 						stageTF.gameObject.SetActive(true);
 					}
 				}
-				// Head
-				var headTF = headContainer.GetChild(i);
-				if (!headTF.gameObject.activeSelf) {
-					if (StageHead.GetHeadActive(stageData)) {
-						headTF.gameObject.SetActive(true);
+				// Timer
+				var timerTF = headContainer.GetChild(i);
+				stageData.TimerActive = !musicPlaying && !UseAbreast && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
+				if (!timerTF.gameObject.activeSelf) {
+					if (stageData.TimerActive) {
+						timerTF.gameObject.SetActive(true);
 					}
 				}
 			}
@@ -237,6 +246,9 @@
 			int stageCount = map.Stages.Count;
 			int trackCount = map.Tracks.Count;
 			var container = TrackContainer;
+			var headContainer = TrackHeadContainer;
+			float musicTime = GetMusicTime();
+			bool musicPlaying = MusicIsPlaying();
 			for (int i = 0; i < trackCount; i++) {
 				var tf = container.GetChild(i);
 				var trackData = map.Tracks[i];
@@ -247,6 +259,14 @@
 					trackData.Active = Track.GetTrackActive(trackData);
 					if (trackData.Active) {
 						tf.gameObject.SetActive(true);
+					}
+				}
+				// Head
+				var timerTF = headContainer.GetChild(i);
+				trackData.TimerActive = !musicPlaying && !UseAbreast && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				if (!timerTF.gameObject.activeSelf) {
+					if (trackData.TimerActive) {
+						timerTF.gameObject.SetActive(true);
 					}
 				}
 			}
@@ -262,7 +282,7 @@
 			Beatmap.Note linkedNote;
 			Beatmap.Track linkedTrack;
 			Beatmap.Stage linkedStage;
-			float gameSpeedMuti = MapDropSpeed * GameDropSpeed;
+			float gameSpeedMuti = GameDropSpeed;
 			for (int i = 0; i < noteCount; i++) {
 				var noteData = map.Notes[i];
 				// Note
@@ -309,7 +329,7 @@
 
 
 		private void Update_SpeedCurve () {
-			if (Music.IsPlaying) { return; }
+			if (MusicIsPlaying()) { return; }
 			// Speed Curve
 			if (GetBeatmap() is null) {
 				// No Map
@@ -372,7 +392,7 @@
 						} else if (Input.GetKey(KeyCode.LeftShift)) {
 							delta *= 10f;
 						}
-						Music.Seek(Music.Time + delta * (60f / BPM));
+						MusicSeek(GetMusicTime() + delta * (60f / BPM));
 					}
 				}
 			}
@@ -382,23 +402,24 @@
 					// Right Down
 					if (MouseDownMusicTime > -1.5f) {
 						MouseDownMusicTime = CheckAntiMouse(false) ? GetMusicTimeAt(Input.mousePosition) : -2f;
-						MusicPlayingForMouseDrag = Music.IsPlaying;
-						Music.Pause();
+						MusicPlayingForMouseDrag = MusicIsPlaying();
+						MusicPause();
 					}
 				} else {
 					// Right Drag
 					float mouseTime = GetMusicTimeAt(Input.mousePosition);
-					Music.Seek(FillTime(
+					float musicTime = GetMusicTime();
+					MusicSeek(FillTime(
 						MouseDownMusicTime,
-						Mathf.Sign(Music.Time - mouseTime) * AreaBetween(mouseTime, Music.Time, GameDropSpeed * MapDropSpeed),
-						GameDropSpeed * MapDropSpeed
+						Mathf.Sign(musicTime - mouseTime) * AreaBetween(mouseTime, musicTime, GameDropSpeed),
+						GameDropSpeed
 					));
 				}
 			} else {
 				if (MouseDownMusicTime > -0.5f) {
 					// Up
 					if (MusicPlayingForMouseDrag) {
-						Music.Play();
+						MusicPlay();
 					}
 				}
 				MouseDownMusicTime = -1f;
@@ -419,7 +440,7 @@
 				// Final
 				return true;
 			}
-			float GetMusicTimeAt (Vector2 screenPos) => FillTime(Music.Time, m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed * MapDropSpeed);
+			float GetMusicTimeAt (Vector2 screenPos) => FillTime(GetMusicTime(), m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed);
 		}
 
 
@@ -596,18 +617,18 @@
 
 
 		// Music
-		public void SeekMusic_BPM (float muti) => Music.Seek(Music.Time + 60f / BPM * muti);
+		public void SeekMusic_BPM (float muti) => MusicSeek(GetMusicTime() + 60f / BPM * muti);
 
 
 		public void SetMusicPitch (float delta) {
 			if (Mathf.Abs(delta) < 0.05f) {
-				Music.Pitch = 1f;
+				SetPitch(1f);
 			} else {
-				float pitch = Music.Pitch + Mathf.Round(delta * 10f) / 10f;
+				float pitch = GetPitch() + Mathf.Round(delta * 10f) / 10f;
 				pitch = Mathf.Clamp(pitch, -5f, 5f);
-				Music.Pitch = Mathf.Round(pitch * 10f) / 10f;
+				SetPitch(Mathf.Round(pitch * 10f) / 10f);
 			}
-			LogGameHint_Key(MUSIC_PITCH_HINT, Music.Pitch.ToString("0.0"), false);
+			LogGameHint_Key(MUSIC_PITCH_HINT, GetPitch().ToString("0.0"), false);
 		}
 
 

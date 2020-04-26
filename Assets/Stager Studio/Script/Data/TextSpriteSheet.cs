@@ -8,75 +8,57 @@
 	public class TextSpriteSheet : ScriptableObject {
 
 
+		// Api
+		public readonly Dictionary<char, Sprite> CharSpriteMap = new Dictionary<char, Sprite>();
 
-		public int Length => m_Sprites.Length;
-		public Sprite this[int index] => m_Sprites[index];
-
-
-
-		[SerializeField] private Sprite[] m_Sprites = null;     // 0-9 a-z A-Z
+		// Ser
+		[SerializeField] private Sprite[] m_Numbers = null;     // 0-9
+		[SerializeField] private Sprite[] m_LettersLower = null;     // a-z
+		[SerializeField] private Sprite[] m_LettersChap = null;     // A-Z
 		[SerializeField] private Sprite m_Empty = null;
 		[SerializeField] private Sprite m_Plus = null;          // +
+		[SerializeField] private Sprite m_Pixel = null;
 		[SerializeField] private Sprite m_Percentage = null;    // %
 		[SerializeField] private Sprite[] m_Arrows = null;      // u d l r
 		[SerializeField] private Sprite[] m_KeyChars = null;    //,./;'[]-=\`
-		[SerializeField] private bool m_LowerOnly = false;
 
 
-		public Sprite Char_to_Sprite (char c) {
-			switch (c) {
-				case char _ when c - '0' < m_Sprites.Length && c >= '0' && c <= '9':
-					return m_Sprites[c - '0'];
-				case char _ when c - 'a' + 10 < m_Sprites.Length && c >= 'a' && c <= 'z':
-					return m_Sprites[c - 'a' + 10];
-				case char _ when c - 'A' + (m_LowerOnly ? 10 : 36) < m_Sprites.Length && c >= 'A' && c <= 'Z':
-					return m_Sprites[c - 'A' + (m_LowerOnly ? 10 : 36)];
-				case ' ':
-					return m_Empty;
-				case '↑':
-					return m_Arrows[0];
-				case '↓':
-					return m_Arrows[1];
-				case '←':
-					return m_Arrows[2];
-				case '→':
-					return m_Arrows[3];
-				case '+':
-					return m_Plus;
-				case '%':
-					return m_Percentage;
 
-				case ',':
-					return m_KeyChars[0];
-				case '.':
-					return m_KeyChars[1];
-				case '/':
-					return m_KeyChars[2];
-				case ';':
-					return m_KeyChars[3];
-				case '\'':
-					return m_KeyChars[4];
-				case '[':
-					return m_KeyChars[5];
-				case ']':
-					return m_KeyChars[6];
-				case '-':
-					return m_KeyChars[7];
-				case '=':
-					return m_KeyChars[8];
-				case '\\':
-					return m_KeyChars[9];
-				case '`':
-					return m_KeyChars[10];
-
-
-				default:
-					return null;
+		public void Init () {
+			CharSpriteMap.Clear();
+			CharSpriteMap.Add('\0', m_Pixel);
+			CharSpriteMap.Add(',', m_KeyChars[0]);
+			CharSpriteMap.Add('.', m_KeyChars[1]);
+			CharSpriteMap.Add('/', m_KeyChars[2]);
+			CharSpriteMap.Add(';', m_KeyChars[3]);
+			CharSpriteMap.Add('\'', m_KeyChars[4]);
+			CharSpriteMap.Add('[', m_KeyChars[5]);
+			CharSpriteMap.Add(']', m_KeyChars[6]);
+			CharSpriteMap.Add('-', m_KeyChars[7]);
+			CharSpriteMap.Add('=', m_KeyChars[8]);
+			CharSpriteMap.Add('\\', m_KeyChars[9]);
+			CharSpriteMap.Add('`', m_KeyChars[10]);
+			CharSpriteMap.Add(' ', m_Empty);
+			CharSpriteMap.Add('↑', m_Arrows[0]);
+			CharSpriteMap.Add('↓', m_Arrows[1]);
+			CharSpriteMap.Add('←', m_Arrows[2]);
+			CharSpriteMap.Add('→', m_Arrows[3]);
+			CharSpriteMap.Add('+', m_Plus);
+			CharSpriteMap.Add('%', m_Percentage);
+			for (char c = '0'; c <= '9'; c++) {
+				CharSpriteMap.Add(c, m_Numbers[c - '0']);
 			}
-
-
-
+			for (char c = 'a'; c <= 'z'; c++) {
+				CharSpriteMap.Add(c, m_LettersLower[c - 'a']);
+			}
+			for (char c = 'A'; c <= 'Z'; c++) {
+				CharSpriteMap.Add(c, m_LettersChap[c - 'A']);
+			}
 		}
+
+
+
+		public Sprite Char_to_Sprite (char c) => CharSpriteMap.ContainsKey(c) ? CharSpriteMap[c] : null;
 
 
 	}

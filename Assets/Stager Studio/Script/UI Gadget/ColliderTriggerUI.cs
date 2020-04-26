@@ -29,6 +29,7 @@
 		private void OnDisable () {
 			if (m_Highlight != null) {
 				m_Highlight.gameObject.SetActive(false);
+				Entering = false;
 			}
 		}
 

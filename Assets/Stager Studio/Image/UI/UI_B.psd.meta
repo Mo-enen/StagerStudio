@@ -461,6 +461,12 @@ TextureImporter:
   - first:
       213: -4182881303555017736
     second: Axis Ring
+  - first:
+      213: -3307379733461050231
+    second: Head Note
+  - first:
+      213: -7089468405191809942
+    second: Head Line
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -633,31 +639,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Shirt
-      rect:
-        serializedVersion: 2
-        x: 109
-        y: 2
-        width: 49
-        height: 39
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a64ef2e0c062d9d90800000000000000
-      internalID: -7089468405191809942
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Arrow Up
       rect:
         serializedVersion: 2
-        x: 163
+        x: 4
         y: 1
         width: 37
         height: 21
@@ -678,7 +663,7 @@ TextureImporter:
       name: Arrow Down
       rect:
         serializedVersion: 2
-        x: 163
+        x: 4
         y: 24
         width: 37
         height: 21
@@ -699,8 +684,8 @@ TextureImporter:
       name: Check Small
       rect:
         serializedVersion: 2
-        x: 289
-        y: 4
+        x: 56
+        y: 2
         width: 52
         height: 52
       alignment: 0
@@ -762,13 +747,13 @@ TextureImporter:
       name: Speed Note
       rect:
         serializedVersion: 2
-        x: 352
-        y: 4
-        width: 25
-        height: 25
+        x: 126
+        y: 3
+        width: 27
+        height: 27
       alignment: 6
       pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      border: {x: 2, y: 2, z: 0, w: 2}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -796,27 +781,6 @@ TextureImporter:
       bones: []
       spriteID: 30c032609aa54f240800000000000000
       internalID: 4824580782819576835
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Grid
-      rect:
-        serializedVersion: 2
-        x: 467
-        y: 2
-        width: 44
-        height: 44
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: a5145c45c14803b10800000000000000
-      internalID: 1959211095122329946
       vertices: []
       indices: 
       edges: []
@@ -901,6 +865,48 @@ TextureImporter:
       bones: []
       spriteID: 8f3faf3cd9b63f5c0800000000000000
       internalID: -4182881303555017736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head Note
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 3
+        width: 27
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 3, y: 3, z: 3, w: 3}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 98c5ab9d7a3d912d0800000000000000
+      internalID: -3307379733461050231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Head Line
+      rect:
+        serializedVersion: 2
+        x: 185
+        y: 3
+        width: 28
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 9, z: 0, w: 17}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a64ef2e0c062d9d90800000000000000
+      internalID: -7089468405191809942
       vertices: []
       indices: 
       edges: []

@@ -372,7 +372,6 @@
 					item.Grab<RectTransform>("Loading Sign").gameObject.SetActive(key == GetBeatmapKey());
 					var tag = item.Grab<InputField>("Tag InputField");
 					var level = item.Grab<InputField>("Level InputField");
-					var speed = item.Grab<InputField>("Speed InputField");
 					var bpm = item.Grab<InputField>("BPM InputField");
 					var shift = item.Grab<InputField>("Shift InputField");
 					var ratio = item.Grab<InputField>("Ratio InputField");
@@ -381,13 +380,11 @@
 					}
 					tag.text = map.Tag;
 					level.text = map.Level.ToString();
-					speed.text = map.DropSpeed.ToString();
 					bpm.text = map.BPM.ToString();
 					shift.text = map.Shift.ToString();
 					ratio.text = map.Ratio.ToString();
 					tag.onEndEdit.AddListener(OnTagEdit);
 					level.onEndEdit.AddListener(OnLevelEdit);
-					speed.onEndEdit.AddListener(OnSpeedEdit);
 					bpm.onEndEdit.AddListener(OnBPMEdit);
 					shift.onEndEdit.AddListener(OnShiftEdit);
 					ratio.onEndEdit.AddListener(OnRatioEdit);
@@ -409,14 +406,6 @@
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.Level = value;
-							OnBeatmapInfoChanged(_map);
-							ProjectSetDirty();
-						}
-					}
-					void OnSpeedEdit (string txt) {
-						if (mapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
-							var _map = mapMap[key];
-							_map.DropSpeed = value;
 							OnBeatmapInfoChanged(_map);
 							ProjectSetDirty();
 						}

@@ -614,7 +614,7 @@ Tip.PInfo.Done
 Save and close the project info window
 
 Tip.ProjectInfo
-Project info: manage title, music, background, map difficulty, BPM, etc.
+Project info: manage title, music, BG, BPM, etc.
 
 Tip.Save
 Save project (Right click to open menu)
@@ -643,6 +643,9 @@ Music volume
 Tip.Setting.NormalUI
 Normal UI, for normal size display
 
+Tip.Setting.NoteBrushWidth
+Width of the note painted by brush
+
 Tip.Setting.PositiveScroll
 Only for mouse scrolling inside editor, such as adjusting y-position of notes
 
@@ -661,26 +664,32 @@ Use sound effects or not, turning this off will reduce CPU load
 Tip.Setting.ShowGrid
 Show grid and auxiliary lines
 
+Tip.Setting.ShowGridOnSelect
+Show grid shen selecting stage, track, note.
+
 Tip.Setting.ShowIndexLabel
 Show the index label or not
 
 Tip.Setting.SmallUI
 Small UI, for larger physical size display
 
-Tip.Setting.SnapProgress
+Tip.Setting.SoundVolume
 Snap music time based on BPM
 
-Tip.Setting.SoundVolume
-Sound volume
+Tip.Setting.StageBrushHeight
+Height of the stage painted by brush
+
+Tip.Setting.StageBrushWidth
+Width of the stage painted by brush
 
 Tip.Setting.Tip
 Show tooltip or not
 
+Tip.Setting.TrackBrushWidth
+Width of the track painted by brush
+
 Tip.Setting.Wave
 Show music wave or not
-
-Tip.Setting.Welcome
-Show a welcome panel on project open
 
 Tip.Setting.Zone
 Show scope of activities or not
@@ -729,9 +738,6 @@ Ratio
 
 UI.BeatmapInfo.Shift
 Shift
-
-UI.BeatmapInfo.Speed
-Speed
 
 UI.BeatmapInfo.Tag
 Tag
@@ -868,6 +874,9 @@ Framerate
 UI.Setting.MusicVolume
 Music Volume
 
+UI.Setting.NoteBrushWidth
+Note Brush Width
+
 UI.Setting.PositiveScroll
 Use Positive Mouse Scroll
 
@@ -892,14 +901,20 @@ Show Keypress History
 UI.Setting.ShowTip
 Show Tooltip
 
-UI.Setting.ShowWelcome
-Show Welcome Panel
-
 UI.Setting.SnapProgress
 Snap When Setting Music Time with Progressbar
 
 UI.Setting.SoundVolume
 Sound Volume
+
+UI.Setting.StageBrushHeight
+Stage Brush Height
+
+UI.Setting.StageBrushWidth
+Stage Brush Width
+
+UI.Setting.TrackBrushWidth
+Track Brush Width
 
 UI.Setting.UIScale
 UI Scale
@@ -996,6 +1011,9 @@ View (Hold)
 
 UI.Tab.BeatmapInfo
 Beatmap
+
+UI.Tab.Brush
+Brush
 
 UI.Tab.ClickSound
 Sound
