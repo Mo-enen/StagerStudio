@@ -187,7 +187,7 @@
 					case FxType.Gate:
 						if (Time.unscaledTime > SfxNext) {
 							Source.mute = !Source.mute;
-							SfxNext += SfxGap;
+							SfxNext += SfxGap / 2f;
 						}
 						break;
 					case FxType.SideChain:
@@ -212,7 +212,9 @@
 			}
 			// BitCrush
 			if (BitCrushEnd >= 0f) {
-				BitCrushAmount = Mathf.Clamp(BitCrushAmount + (int)(BitCrushDelta * Time.fixedDeltaTime), 1, 2048);
+				BitCrushAmount = Mathf.Clamp(
+					BitCrushAmount + (int)(BitCrushDelta * Time.fixedDeltaTime), 1, 2048
+				);
 				if (Time.unscaledTime > BitCrushEnd) {
 					TryStopFx(FxType.BitCrush);
 				}
@@ -262,7 +264,7 @@
 				case FxType.SideChain: {
 						SfxType = type;
 						float duration = Mathf.Min(fxDuration / 1000f, 128f);
-						float gap = Mathf.Max(paramA * GetSecondPerBeat() / 100f, 0.001f);
+						float gap = Mathf.Max(fxDuration / 1000f / paramA, 0.001f);
 						SetMusicMute(true);
 						SourceVolume = GetMusicVolume();
 						Source.pitch = GetMusicPitch();

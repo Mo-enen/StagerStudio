@@ -57,6 +57,7 @@
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private Toggle m_TintNoteTG = null;
+		[SerializeField] private Toggle m_FrontPoleTG = null;
 		[SerializeField] private Button m_HighlightTint = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -194,6 +195,12 @@
 				Data.TintNote = isOn;
 			});
 
+			// Front Pole
+			m_FrontPoleTG.onValueChanged.AddListener((isOn) => {
+				if (!UIReady) { return; }
+				Data.FrontPole = isOn;
+			});
+
 			// Type TGs
 			int len = m_TypeTgContainer.childCount;
 			for (int i = 0; i < len; i++) {
@@ -274,6 +281,7 @@
 				m_VanishDurationIF.text = data.VanishDuration_UI.ToString();
 				m_FixedRatioTG.isOn = ani.FixedRatio;
 				m_TintNoteTG.isOn = data.TintNote;
+				m_FrontPoleTG.isOn = data.FrontPole;
 			} catch { }
 			UIReady = true;
 		}

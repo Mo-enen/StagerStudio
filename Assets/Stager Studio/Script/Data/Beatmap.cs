@@ -540,6 +540,17 @@
 			}
 		}
 
+		public float GetDuration (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.Duration : 0f;
+		}
+		public void SetDuration (int type, int index, float duration) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Duration = duration;
+			}
+		}
+
 		public float GetX (int type, int index) {
 			var item = GetItem(type, index);
 			return item != null ? item.X : 0f;

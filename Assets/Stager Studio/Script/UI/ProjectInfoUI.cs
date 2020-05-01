@@ -372,20 +372,20 @@
 					item.Grab<RectTransform>("Loading Sign").gameObject.SetActive(key == GetBeatmapKey());
 					var tag = item.Grab<InputField>("Tag InputField");
 					var level = item.Grab<InputField>("Level InputField");
-					var bpm = item.Grab<InputField>("BPM InputField");
 					var shift = item.Grab<InputField>("Shift InputField");
+					var bpm = item.Grab<InputField>("BPM InputField");
 					var ratio = item.Grab<InputField>("Ratio InputField");
 					foreach (var mTrigger in item.MenuTriggers) {
 						mTrigger.CallbackRight.AddListener(OnMenuTrigger);
 					}
 					tag.text = map.Tag;
 					level.text = map.Level.ToString();
-					bpm.text = map.BPM.ToString();
 					shift.text = map.Shift.ToString();
 					ratio.text = map.Ratio.ToString();
+					bpm.text = map.BPM.ToString();
 					tag.onEndEdit.AddListener(OnTagEdit);
 					level.onEndEdit.AddListener(OnLevelEdit);
-					bpm.onEndEdit.AddListener(OnBPMEdit);
+					bpm.onEndEdit.AddListener(OnBpmEdit);
 					shift.onEndEdit.AddListener(OnShiftEdit);
 					ratio.onEndEdit.AddListener(OnRatioEdit);
 					index++;
@@ -410,7 +410,7 @@
 							ProjectSetDirty();
 						}
 					}
-					void OnBPMEdit (string txt) {
+					void OnBpmEdit (string txt) {
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.BPM = value;
@@ -445,7 +445,9 @@
 					item.Grab<Text>("Index Text").text = _index.ToString();
 					_index++;
 				}
-			} catch { }
+			} catch (System.Exception ex) {
+				Debug.LogError(ex);
+			}
 			ReadyForUI = true;
 		}
 

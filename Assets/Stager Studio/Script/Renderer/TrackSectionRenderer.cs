@@ -10,6 +10,7 @@
 
 		// Handler
 		public delegate float Float4Handler (float a, float b, float c);
+		public delegate float FloatHandler ();
 
 		// Api
 		public static Float4Handler GetAreaBetween { get; set; } = null;
@@ -84,7 +85,6 @@
 			var uvMax = m_SectionBody.uv[1];
 			float sectionTimeGap = BeatPerSection * TimeGap;
 
-
 			// Lines
 			float time = GetSnapedTime(MusicTime, sectionTimeGap, TimeOffset) - sectionTimeGap;
 			float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
@@ -96,6 +96,7 @@
 			for (int i = 0; i < 64 && y01 < 1f; i++) {
 				for (int j = 0; j < BeatPerSection && y01 < 1f; j++) {
 					tint = m_RulerColors[j % m_RulerColors.Length];
+					tint.a = Alpha;
 					if (time >= MusicTime - TimeGap && y01 > 0f) {
 						AddQuad01(
 							0f, 1f,

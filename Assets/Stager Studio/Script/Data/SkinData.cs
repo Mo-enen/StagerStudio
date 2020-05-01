@@ -65,6 +65,7 @@
 		public float LuminousAppendY = 0f;
 		public float VanishDuration = 0.1f;
 		public bool TintNote = false;
+		public bool FrontPole = true;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
 		// API

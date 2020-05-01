@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.FrontPole
+前景连接杆
+
+Author
 Stager 官方
 
 Dialog.Editor.CannotSelectStage
@@ -192,9 +195,6 @@ P-Manager.Error.NewProjectSourceNotExists
 
 P-Manager.Error.ProjectAlreadyExists
 工程已经存在
-
-P-Manager.Hint.NeedDoubleClick
-双击打开工程
 
 P-Manager.NewChapterName
 新章节

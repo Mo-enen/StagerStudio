@@ -67,7 +67,7 @@
 			// Get TrackData
 			int trackIndex = transform.GetSiblingIndex();
 			var trackData = !(Beatmap is null) && trackIndex < Beatmap.Tracks.Count ? Beatmap.Tracks[trackIndex] : null;
-			if (trackData is null) {
+			if (trackData == null) {
 				Update_Gizmos(false, trackIndex, 1f);
 				gameObject.SetActive(false);
 				return;
@@ -79,7 +79,12 @@
 			Duration = trackData.Duration;
 
 			// Get/Check Track/Stage
-			var linkedStage = Beatmap.Stages[trackData.StageIndex];
+			var linkedStage = trackData.StageIndex >= 0 && trackData.StageIndex < Beatmap.Stages.Count ? Beatmap.Stages[trackData.StageIndex] : null;
+			if (linkedStage == null) {
+				Update_Gizmos(false, trackIndex, 1f);
+				gameObject.SetActive(false);
+				return;
+			}
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
 			trackData.Active = active;
 			trackData.SpeedMuti = linkedStage.SpeedMuti;
@@ -180,6 +185,7 @@
 				m_SectionRenderer.TimeOffset = Beatmap.Shift;
 				m_SectionRenderer.BeatPerSection = BeatPerSection;
 				m_SectionRenderer.Scale = MainRenderer.Scale;
+				m_SectionRenderer.Alpha = MainRenderer.Alpha;
 				m_SectionRenderer.SetSortingLayer(SortingLayerID_Gizmos, GetSortingOrder());
 			}
 

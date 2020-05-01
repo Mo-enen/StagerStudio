@@ -38,6 +38,7 @@
 		public delegate SkinData SkinDataStringHandler (string name);
 		public delegate Beatmap BeatmapHandler ();
 		public delegate void VoidHandler ();
+		public delegate bool BoolHandler ();
 		public delegate float FloatHandler ();
 		public delegate string StringStringHandler (string str);
 		public delegate int IntIntHandler (int i);
@@ -85,15 +86,14 @@
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
-		[SerializeField] private Text m_AuthorLabel = null;
 		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
-		[SerializeField] private Text m_TipLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[SerializeField] private Transform m_TutorialBoard = null;
+		[SerializeField] private Text[] m_TipLabels = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -191,7 +191,6 @@
 			TimingNote.MusicTime = musicTime;
 			ObjectTimer.MusicTime = musicTime;
 			ObjectTimer.SpeedMuti = dropSpeed;
-			StageTimer.UseAbreast = aValue > 0.5f;
 		}
 
 
@@ -214,8 +213,11 @@
 			SettingUI.GetLanguage = language.Get;
 			StageEditor.GetLanguage = language.Get;
 			// Misc
-			TooltipUI.SetTip = (tip) => m_TipLabel.text = tip;
-			HomeUI.LogHint = m_Hint.SetHint;
+			TooltipUI.SetTip = (tip) => {
+				foreach (var label in m_TipLabels) {
+					label.text = tip;
+				}
+			};
 			StageProject.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;
 			StageEditor.LogHint = m_Hint.SetHint;
@@ -309,7 +311,8 @@
 			Track.SortingLayerID_TrackTint = SortingLayer.NameToID("TrackTint");
 			Track.SortingLayerID_Track = SortingLayer.NameToID("Track");
 			Track.SortingLayerID_Tray = SortingLayer.NameToID("Tray");
-			Note.SortingLayerID_Pole = SortingLayer.NameToID("Pole");
+			Note.SortingLayerID_Pole_Front = SortingLayer.NameToID("Pole Front");
+			Note.SortingLayerID_Pole_Back = SortingLayer.NameToID("Pole Back");
 			Note.SortingLayerID_Note_Hold = SortingLayer.NameToID("HoldNote");
 			Note.SortingLayerID_Note = SortingLayer.NameToID("Note");
 			TimingNote.SortingLayerID_UI = SortingLayer.NameToID("UI");
@@ -333,7 +336,7 @@
 				game.SetAbreastIndex(0);
 				game.SetUseAbreastView(false);
 				game.SetGameDropSpeed(1f);
-				RefreshAuthorLabel();
+				RefreshInfoLabel();
 			};
 			StageProject.OnProjectLoaded = () => {
 				game.SetSpeedCurveDirty();
@@ -341,7 +344,7 @@
 				music.Seek(0f);
 				UI_RemoveUI();
 				RefreshLoading(-1f);
-				RefreshAuthorLabel();
+				RefreshInfoLabel();
 			};
 			StageProject.OnProjectSavingStart = () => {
 				StartCoroutine(SaveProgressing());
@@ -455,8 +458,7 @@
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
-
+					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration / game.Ratio;
 				}
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
@@ -475,6 +477,10 @@
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
 				m_TimingPreview.SetDirty();
+				RefreshGridRenderer(game);
+				if (!game.UseDynamicSpeed) {
+					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration / game.Ratio;
+				}
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
 			StageGame.GetMusicTime = () => music.Time;
@@ -653,7 +659,7 @@
 				RefreshGridRenderer(game);
 			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
-				RefreshAuthorLabel();
+				RefreshInfoLabel();
 			};
 
 		}
@@ -893,13 +899,6 @@
 		}
 
 
-		private void RefreshAuthorLabel () {
-			var info = ProjectInfoUI.GetProjectInfo();
-			var map = GetBeatmap();
-			m_AuthorLabel.text = $"{info.name} | {info.mapAuthor} & {info.musicAuthor}, {(map != null ? map.Tag : "")} Lv{(map != null ? map.Level : 0)}";
-		}
-
-
 		private void RefreshInfoLabel () {
 			var map = GetBeatmap();
 			int stageCount = 0;
@@ -913,7 +912,10 @@
 				speedCount = map.Timings.Count;
 			}
 			try {
-				m_InfoLabel.text = string.Format(GetLanguage(UI_InfoLabel), stageCount, trackCount, noteCount, speedCount);
+				var info = ProjectInfoUI.GetProjectInfo();
+				var state = string.Format(GetLanguage(UI_InfoLabel), stageCount, trackCount, noteCount, speedCount);
+				var author = $"{info.name} | {info.mapAuthor} & {info.musicAuthor}, {(map != null ? map.Tag : "")} Lv{(map != null ? map.Level : 0)}";
+				m_InfoLabel.text = state + " " + author;
 			} catch {
 				m_InfoLabel.text = "";
 			}

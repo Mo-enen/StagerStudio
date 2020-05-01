@@ -50,6 +50,7 @@
 		public static int MaterialZoneID { get; set; } = 0;
 		public static int SortingLayerID_Gizmos { get; set; } = -1;
 		public static bool TintNote { get; set; } = false;
+		public static bool FrontPole { get; set; } = true;
 
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;
@@ -210,6 +211,7 @@
 			RectSizess = new (Vector3, bool)[typeCount][];
 			HighlightTints = new Color32[typeCount];
 			TintNote = skin.TintNote;
+			FrontPole = skin.FrontPole;
 			if (skin == null) { return; }
 			for (int i = 0; i < RectSizess.Length && i < skin.Items.Count; i++) {
 				int rectCount = skin.Items[i].Rects.Count;

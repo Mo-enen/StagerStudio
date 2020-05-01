@@ -35,11 +35,13 @@
 
 
 		// Const
+		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 1f, };
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";
 		private const string SHOW_GRID_HINT = "Game.Hint.ShowGrid";
-		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 1f, };
+		private const string FOCUS_KEY = "Focus";
+		private const string UNFOCUS_KEY = "Unfocus";
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
@@ -96,16 +98,20 @@
 		private Transform Prefab_Track_Head => m_Prefabs[6];
 
 		// Ser
-		[SerializeField] private RectTransform m_ZoneRT = null;
 		[SerializeField] private Transform[] m_AntiMouseTF = null;
 		[SerializeField] private Transform[] m_Prefabs = null;
 		[SerializeField] private Transform[] m_Containers = null;
+		[SerializeField] private RectTransform m_ZoneRT = null;
+		[SerializeField] private RectTransform m_FocusCancel = null;
+		[SerializeField] private Animator m_FocusAni = null;
 
 		// Data
 		private Camera _Camera = null;
 		private Coroutine AbreastValueCor = null;
 		private Coroutine AbreastWidthCor = null;
 		private Coroutine AbreastIndexCor = null;
+		private Coroutine FocusAniCor = null;
+		private bool FocusMode = false;
 		private float _Ratio = 1.5f;
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
@@ -261,9 +267,9 @@
 						tf.gameObject.SetActive(true);
 					}
 				}
-				// Head
+				// Timer
 				var timerTF = headContainer.GetChild(i);
-				trackData.TimerActive = !musicPlaying && !UseAbreast && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				trackData.TimerActive = !musicPlaying && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
 				if (!timerTF.gameObject.activeSelf) {
 					if (trackData.TimerActive) {
 						timerTF.gameObject.SetActive(true);
@@ -614,6 +620,40 @@
 			GridCountY.Value = Mathf.Clamp(y, 1, 8);
 			OnGridChanged();
 		}
+
+
+		// Focus
+		public void UI_SetFocus (bool focus) {
+			if (!(FocusAniCor is null)) { return; }
+			if (focus != FocusMode) {
+				FocusMode = focus;
+				m_FocusAni.enabled = true;
+				m_FocusAni.SetTrigger(focus ? FOCUS_KEY : UNFOCUS_KEY);
+				if (!(FocusAniCor is null)) {
+					StopCoroutine(FocusAniCor);
+					FocusAniCor = null;
+				}
+				FocusAniCor = StartCoroutine(AniCheck());
+			}
+			// Func
+			IEnumerator AniCheck () {
+				if (focus) {
+					m_FocusCancel.gameObject.SetActive(true);
+				}
+				yield return new WaitForSeconds(0.5f);
+				yield return new WaitUntil(() =>
+					m_FocusAni.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && !m_FocusAni.IsInTransition(0)
+				);
+				if (!focus) {
+					m_FocusCancel.gameObject.SetActive(false);
+				}
+				m_FocusAni.enabled = false;
+				FocusAniCor = null;
+			}
+		}
+
+
+		public void UI_SwitchFocus () => UI_SetFocus(!FocusMode);
 
 
 		// Music

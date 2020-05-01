@@ -43,7 +43,8 @@
 		public static int LayerID_Note_Hold { get; set; } = -1;
 		public static int SortingLayerID_Note { get; set; } = -1;
 		public static int SortingLayerID_Note_Hold { get; set; } = -1;
-		public static int SortingLayerID_Pole { get; set; } = -1;
+		public static int SortingLayerID_Pole_Front { get; set; } = -1;
+		public static int SortingLayerID_Pole_Back { get; set; } = -1;
 		public static Vector3 CameraWorldPos { get; set; } = default;
 
 		// Ser
@@ -167,7 +168,7 @@
 			}
 			if (noteData.CacheTime != noteData.Time) {
 				noteData.CacheTime = noteData.Time;
-				noteData.AppearTime = GetFilledTime(noteData.Time, -1, speedMuti);
+				noteData.AppearTime = GetFilledTime(noteData.Time, -1f, speedMuti);
 				noteData.NoteDropStart = -1f;
 				noteData.SpeedOnDrop = GetDropSpeedAt(noteData.Time);
 			}
@@ -224,9 +225,8 @@
 
 			// Size
 			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
-			var noteBasicSize = GetRectSize(SkinType.Note, 0);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, noteBasicSize.y);
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, Duration > DURATION_GAP ? 0.0001f : noteSize.y);
 			var zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,
@@ -258,11 +258,11 @@
 
 			bool active = !(noteData is null) && noteData.Active && MusicTime < noteData.Time + noteData.Duration;
 
-			// ID
+			// Label
 			if (Label != null) {
 				if (ShowIndexLabel && !MusicPlaying && active) {
 					Label.gameObject.SetActive(true);
-					Label.Text = noteIndex.ToString();
+					Label.Text = noteData.SoundFxIndex <= 0 ? noteIndex.ToString() : (noteIndex.ToString() + " fx");
 					Label.transform.localRotation = MainRenderer.transform.localRotation;
 				} else {
 					Label.gameObject.SetActive(false);
@@ -411,7 +411,7 @@
 			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)SkinType.Pole] : WHITE_32;
 			m_PoleRenderer.Alpha = alpha * Mathf.Clamp01((linkedNote.NoteDropStart - gameOffset) * 16f);
 			m_PoleRenderer.SetSortingLayer(
-				SortingLayerID_Pole,
+				FrontPole ? SortingLayerID_Pole_Front : SortingLayerID_Pole_Back,
 				GetSortingOrder()
 			);
 

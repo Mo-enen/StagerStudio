@@ -16,7 +16,6 @@
 
 
 
-		public delegate void LogHintHandler (string key, bool flash);
 		public delegate string LanguageHandler (string key);
 		public delegate void VoidStringHandler (string str);
 		public delegate string StringHandler ();
@@ -35,7 +34,6 @@
 			public const string UI_TrashProjectItemConfirm = "P-Manager.UI.TrashProjectItemConfirm";
 			public const string UI_DeleteProjectItemConfirm = "P-Manager.UI.DeleteProjectItemConfirm";
 			public const string UI_TrashbinEmpty = "P-Manager.UI.TrashbinEmpty";
-			public const string Hint_DoubleClick = "P-Manager.Hint.NeedDoubleClick";
 		}
 
 
@@ -85,7 +83,6 @@
 
 
 		// Handler
-		public static LogHintHandler LogHint { get; set; } = null;
 		public static LanguageHandler GetLanguage { get; set; } = null;
 		public static VoidStringHandler GotoEditor { get; set; } = null;
 		public static StringHandler GetWorkspace { get; set; } = null;
@@ -259,9 +256,6 @@
 		public void OpenTrashbin () => OpenTrashbinLogic();
 
 
-		public void Invoke_ShowDoubleClickHint () => LogHint(GetLanguage(LanguageData.Hint_DoubleClick), true);
-
-
 		public void Invoke_ExistDialog () => DialogUtil.Dialog_OK(LanguageData.UI_FolderAlreadyExists, DialogUtil.MarkType.Warning);
 
 
@@ -393,7 +387,6 @@
 				var trigger = graber.Grab<TriggerUI>("Root");
 				var item = graber.Grab<ProjectItemUI>();
 				trigger.CallbackDoubleClick.AddListener(OpenProject);
-				trigger.CallbackLeft.AddListener(ShowHint);
 				trigger.CallbackRight.AddListener(OnMenuTriggerClick);
 				graber.Grab<Button>("Start Button").onClick.AddListener(OpenProject);
 				graber.Grab<Text>("Name").text = projectName;
@@ -403,7 +396,6 @@
 					CancelInvoke();
 					GotoEditor(projectPath);
 				}
-				void ShowHint () => Invoke("Invoke_ShowDoubleClickHint", 0.618f);
 				void OnMenuTriggerClick () => OpenMenu(PROJECT_ITEM_MENU_KEY, rt);
 			}
 			SortProjectLogic();

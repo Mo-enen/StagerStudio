@@ -1,4 +1,7 @@
-﻿Author
+﻿UI.SkinEditor.FrontPole
+Front Pole
+
+Author
 Stager Official
 
 Dialog.Editor.CannotSelectStage
@@ -192,9 +195,6 @@ Can not find template for create new project
 
 P-Manager.Error.ProjectAlreadyExists
 Project already exists
-
-P-Manager.Hint.NeedDoubleClick
-Double click to open the project
 
 P-Manager.NewChapterName
 New Chapter

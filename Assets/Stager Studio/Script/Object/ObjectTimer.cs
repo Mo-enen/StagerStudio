@@ -21,53 +21,77 @@
 		public static bool MusicPlaying { get; set; } = false;
 
 		// Short
-		protected SpriteRenderer HeadRenderer => m_HeadRenderer;
-		protected SpriteRenderer TailRenderer => m_TailRenderer;
-		protected SpriteRenderer LineRenderer => m_LineRenderer;
+		protected Transform Head => m_Head;
+		protected Transform Tail => m_Tail;
+		protected Transform Line => m_Line;
 
 		// Ser
-		[SerializeField] private SpriteRenderer m_HeadRenderer = null;
-		[SerializeField] private SpriteRenderer m_TailRenderer = null;
+		[SerializeField] private Transform m_Head = null;
+		[SerializeField] private Transform m_Tail = null;
+		[SerializeField] private Transform m_Line = null;
 		[SerializeField] private SpriteRenderer m_LineRenderer = null;
 
 		// Data
-		protected float Sublength = 0f;
+		protected float LateTime = 0f;
+		protected float LateDuration = 0f;
+		protected float LateScaleY = 0f;
 
 
 		#endregion
 
 
 
+		protected void LateUpdate () {
 
-		#region --- MSG ---
+			// Head
+			bool headActive = GetTimerActive(LateTime);
+			if (Head.gameObject.activeSelf != headActive) {
+				Head.gameObject.SetActive(headActive);
+			}
+			if (headActive) {
+				Head.localPosition = new Vector3(
+					0f, Util.Remap(LateTime, LateTime - 1f, 0f, 1f, MusicTime) * LateScaleY, 0f
+				);
+			}
 
+			// Tail
+			float endTime = LateTime + LateDuration;
+			bool tailActive = GetTimerActive(endTime);
+			if (Tail.gameObject.activeSelf != tailActive) {
+				Tail.gameObject.SetActive(tailActive);
+			}
+			if (tailActive) {
+				Tail.localPosition = new Vector3(
+					0f, Util.Remap(endTime, endTime - 1f, 0f, 1f, MusicTime) * LateScaleY, 0f
+				);
+			}
 
-		private void Awake () {
-			Sublength = m_LineRenderer.size.y * m_LineRenderer.transform.localScale.y;
+			// Line
+			bool lineActive = headActive || tailActive;
+			if (Line.gameObject.activeSelf != lineActive) {
+				Line.gameObject.SetActive(lineActive);
+			}
+			if (m_LineRenderer.gameObject.activeSelf != lineActive) {
+				m_LineRenderer.gameObject.SetActive(lineActive);
+			}
+			if (lineActive) {
+				Line.localScale = new Vector3(Line.localScale.x, LateScaleY, 1f);
+				var size = m_LineRenderer.size;
+				size.y = LateScaleY / m_LineRenderer.transform.localScale.y;
+				m_LineRenderer.size = size;
+			}
 		}
 
 
-		#endregion
+		// API
+		public static bool GetTimerActive (float time) => MusicTime >= time - 1f && MusicTime <= time;
 
 
-
-
-		#region --- API ---
-
-
-
-
-		#endregion
-
-
-
-
-		#region --- LGC ---
-
-
-
-
-		#endregion
+		public static float ZoneToLocalY (float zoneX, float zoneY, float zoneZ, Vector2 stagePos, float stageHeight, float stageRotZ) => Matrix4x4.TRS(
+			stagePos,
+			Quaternion.Euler(0f, 0f, stageRotZ),
+			new Vector3(1f, stageHeight, stageHeight)
+		).inverse.MultiplyPoint3x4(new Vector3(zoneX, zoneY, zoneZ)).y;
 
 
 

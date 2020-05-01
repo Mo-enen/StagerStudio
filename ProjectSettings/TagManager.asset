@@ -18,8 +18,8 @@ TagManager:
   - HoldNote
   - Note
   - Timing
-  - Stage Head
-  - Track Head
+  - Stage Timer
+  - Track Timer
   - 
   - 
   - 
@@ -62,10 +62,13 @@ TagManager:
   - name: HoldNote
     uniqueID: 3463294581
     locked: 0
+  - name: Pole Back
+    uniqueID: 2212264711
+    locked: 0
   - name: Note
     uniqueID: 1274917977
     locked: 0
-  - name: Pole
+  - name: Pole Front
     uniqueID: 4270631489
     locked: 0
   - name: Motion

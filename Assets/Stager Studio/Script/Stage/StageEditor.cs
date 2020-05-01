@@ -37,7 +37,7 @@
 
 		// Const
 		private readonly static string[] ITEM_LAYER_NAMES = {
-			"Stage", "Track", "Note", "Timing", "Stage Head", "Track Head",
+			"Stage", "Track", "Note", "Timing", "Stage Timer", "Track Timer",
 		};
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
 		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
@@ -68,6 +68,7 @@
 		public float StageBrushHeight { get; set; } = 1f;
 		public float TrackBrushWidth { get; set; } = 0.2f;
 		public float NoteBrushWidth { get; set; } = 0.2f;
+		public bool AxisDragging { get; private set; } = false;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -81,25 +82,19 @@
 		[SerializeField] private Transform[] m_Containers = null;
 		[SerializeField] private Transform[] m_AntiTargets = null;
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
-		[SerializeField] private RectTransform m_FocusCancel = null;
-		[SerializeField] private Animator m_FocusAni = null;
 		[SerializeField] private GridRenderer m_Grid = null;
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private Transform m_MoveAxis = null;
-		[SerializeField] private string m_FocusKey = "Focus";
-		[SerializeField] private string m_UnfocusKey = "Unfocus";
 
 		// Data
-		private readonly static Dictionary<int, int> LayerToTypeMap = new Dictionary<int, int>();
+		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
 		private readonly static bool[] ItemLock = { false, false, false, false, false, };
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
 		private Renderer[] AxisRenderers = null;
-		private bool FocusMode = false;
+		private Camera _Camera = null;
 		private bool UIReady = true;
 		private int SortingLayerID_UI = -1;
-		private Coroutine FocusAniCor = null;
-		private Camera _Camera = null;
 		private LayerMask UnlockedMask = default;
 
 		// Mouse
@@ -127,10 +122,10 @@
 			// Init Layer
 			SortingLayerID_UI = SortingLayer.NameToID("UI");
 			for (int i = 0; i < ITEM_LAYER_NAMES.Length; i++) {
-				LayerToTypeMap.Add(LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]), i);
+				LayerToTypeMap.Add(LayerMask.NameToLayer(ITEM_LAYER_NAMES[i]), i + 0.5f);
 			}
 			HoldNoteLayer = LayerMask.NameToLayer(HOLD_NOTE_LAYER_NAME);
-			LayerToTypeMap.Add(HoldNoteLayer, 2);
+			LayerToTypeMap.Add(HoldNoteLayer, 2.4f);
 
 			// Unlock Mask
 			RefreshUnlockedMask();
@@ -192,6 +187,7 @@
 				TrySetTargetActive(m_Hover.gameObject, false);
 				TrySetTargetActive(m_Ghost.gameObject, false);
 				TrySetTargetActive(m_MoveAxis.gameObject, false);
+				AxisDragging = false;
 				return;
 			}
 		}
@@ -311,8 +307,10 @@
 				}
 				// Active
 				TrySetTargetActive(m_MoveAxis.gameObject, true);
+				AxisDragging = AxisDragging && Input.GetMouseButton(0);
 			} else {
 				TrySetTargetActive(m_MoveAxis.gameObject, false);
+				AxisDragging = false;
 			}
 		}
 
@@ -491,20 +489,27 @@
 			}
 			// Hover
 			var ray = GetMouseRay();
-			var (_, _, _, target) = GetCastTypeIndex(ray, UnlockedMask, true);
+			var (type, _, subIndex, target) = GetCastTypeIndex(ray, UnlockedMask, true);
 			if (target != null) {
-				TrySetTargetActive(m_Hover.gameObject, true);
-				m_Hover.transform.position = target.GetChild(0).position;
-				m_Hover.transform.rotation = target.GetChild(0).rotation;
-				m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
-			} else {
-				TrySetTargetActive(m_Hover.gameObject, false);
+				if (type < 4) {
+					// Stage Track Note Timing
+					m_Hover.transform.position = target.GetChild(0).position;
+					m_Hover.transform.rotation = target.GetChild(0).rotation;
+					m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
+				} else if (type < 6) {
+					// Timer
+					m_Hover.transform.position = target.GetChild(subIndex).position;
+					m_Hover.transform.rotation = target.rotation;
+					m_Hover.size = target.GetChild(subIndex).localScale / HoverScaleMuti;
+				}
 			}
+			TrySetTargetActive(m_Hover.gameObject, target != null);
 		}
 
 
 		// Axis
 		public void OnMoveAxisDrag (Vector3 pos, Vector3? downPos, int axis) {
+			AxisDragging = true;
 			var map = GetBeatmap();
 			if (map != null && SelectingItemIndex >= 0) {
 				var (zoneMin, zoneMax_real, zoneSize, _) = GetZoneMinMax();
@@ -532,7 +537,7 @@
 							break;
 						case 1: // Track
 							if (axis == 0 || axis == 2) {
-								var track = index >= 0 && index < map.Tracks.Count ? map.Tracks[index] : null;
+								var track = index < map.Tracks.Count ? map.Tracks[index] : null;
 								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
 								var stage = map.Stages[track.StageIndex];
 								var localPosX = Stage.ZoneToLocal(
@@ -546,7 +551,7 @@
 							}
 							break;
 						case 2: { // Note
-								var note = index >= 0 && index < map.Notes.Count ? map.Notes[index] : null;
+								var note = index < map.Notes.Count ? map.Notes[index] : null;
 								if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
 								var track = map.Tracks[note.TrackIndex];
 								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
@@ -583,17 +588,30 @@
 							}
 							break;
 						case 4: // Stage Timer
-							if (axis == 1 || axis == 2) {
-
-								Debug.Log(Time.time + " Stage Timer");
-
-							}
-							break;
 						case 5: // Track Timer
 							if (axis == 1 || axis == 2) {
-
-								Debug.Log(Time.time + " Track Timer");
-
+								int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
+								var stage = stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
+								if (stage == null) { break; }
+								var localPosY = ObjectTimer.ZoneToLocalY(
+									zonePos.x, zonePos.y, zonePos.z,
+									Stage.GetStagePosition(stage, index),
+									Stage.GetStageHeight(stage),
+									Stage.GetStageWorldRotationZ(stage)
+								);
+								if (SelectingItemSubIndex == 2) {
+									// Head
+									map.SetTime(
+										SelectingItemType - 4, index,
+										Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime, m_Grid.MusicTime + 1f, localPosY), 0f)
+									);
+								} else if (SelectingItemSubIndex == 3) {
+									// Tail
+									map.SetDuration(
+										SelectingItemType - 4, index,
+										Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f)
+									);
+								}
 							}
 							break;
 					}
@@ -651,7 +669,7 @@
 		// Selection
 		public void SetSelection (int type, int index, int subIndex = 0) {
 			// No Stage Selection in Abreast View
-			if (GetUseAbreast() && type == 0) {
+			if (GetUseAbreast() && (type == 0 || type == 4)) {
 				// Switch Abreast Index
 				SetAbreastIndex(index);
 				type = -1;
@@ -695,40 +713,6 @@
 
 
 		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
-
-
-		// Focus
-		public void UI_SetFocus (bool focus) {
-			if (!(FocusAniCor is null)) { return; }
-			if (focus != FocusMode) {
-				FocusMode = focus;
-				m_FocusAni.enabled = true;
-				m_FocusAni.SetTrigger(focus ? m_FocusKey : m_UnfocusKey);
-				if (!(FocusAniCor is null)) {
-					StopCoroutine(FocusAniCor);
-					FocusAniCor = null;
-				}
-				FocusAniCor = StartCoroutine(AniCheck());
-			}
-			// Func
-			IEnumerator AniCheck () {
-				if (focus) {
-					m_FocusCancel.gameObject.SetActive(true);
-				}
-				yield return new WaitForSeconds(0.5f);
-				yield return new WaitUntil(() =>
-					m_FocusAni.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f && !m_FocusAni.IsInTransition(0)
-				);
-				if (!focus) {
-					m_FocusCancel.gameObject.SetActive(false);
-				}
-				m_FocusAni.enabled = false;
-				FocusAniCor = null;
-			}
-		}
-
-
-		public void UI_SwitchFocus () => UI_SetFocus(!FocusMode);
 
 
 		// Brush
@@ -789,7 +773,7 @@
 
 		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
-			int overlapType = -1;
+			float overlapType = -1f;
 			int overlapIndex = -1;
 			int overlapSubIndex = -1;
 			Transform tf = null;
@@ -797,11 +781,11 @@
 				for (int i = 0; i < count; i++) {
 					var hit = CastHits[i];
 					int layer = hit.transform.gameObject.layer;
-					int type = LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1;
+					float typeF = LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1;
 					int itemIndex = hit.transform.parent.GetSiblingIndex();
 					int itemSubIndex = hit.transform.GetSiblingIndex();
-					if (type >= overlapType) {
-						if (type != overlapType) {
+					if (typeF >= overlapType) {
+						if (typeF != overlapType) {
 							overlapIndex = -1;
 							overlapSubIndex = -1;
 						}
@@ -809,12 +793,12 @@
 							tf = CastHits[i].transform.parent;
 						}
 						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-						overlapSubIndex = type == 4 || type == 5 ? Mathf.Max(itemSubIndex, overlapSubIndex) : 0;
-						overlapType = type;
+						overlapSubIndex = (int)typeF == 4 || (int)typeF == 5 ? Mathf.Max(itemSubIndex, overlapSubIndex) : 0;
+						overlapType = typeF;
 					}
 				}
 			}
-			return (overlapType, overlapIndex, overlapSubIndex, tf);
+			return ((int)overlapType, overlapIndex, overlapSubIndex, tf);
 		}
 
 
@@ -833,6 +817,11 @@
 			for (int i = 0; i < ItemLock.Length; i++) {
 				if (!ItemLock[i]) {
 					list.Add(ITEM_LAYER_NAMES[i]);
+					if (i == 0) {
+						list.Add(ITEM_LAYER_NAMES[4]);
+					} else if (i == 1) {
+						list.Add(ITEM_LAYER_NAMES[5]);
+					}
 				}
 			}
 			// Hold Note Layer
@@ -897,110 +886,3 @@
 
 	}
 }
-
-
-
-#if UNITY_EDITOR
-namespace StagerStudio.Editor {
-	using System.Collections;
-	using System.Collections.Generic;
-	using UnityEngine;
-	using UnityEditor;
-	using Stage;
-
-
-	[CustomEditor(typeof(StageEditor))]
-	public class StageEditor_Inspector : Editor {
-
-
-		public override void OnInspectorGUI () {
-			if (EditorApplication.isPlaying) {
-				LayoutV(() => {
-					var editor = target as StageEditor;
-					GUI.Label(GUIRect(0, 18), "Selecting Item Type:\t" + GetItemTypeLabel(editor.SelectingItemType));
-					GUI.Label(GUIRect(0, 18), "Selecting Item Index:\t" + GetItemIndexLabel(editor.SelectingItemIndex));
-					GUI.Label(GUIRect(0, 18), "Selecting Brush Index:\t" + GetBrushTypeLabel(editor.SelectingBrushIndex));
-				}, true);
-				Space(4);
-			}
-			base.OnInspectorGUI();
-		}
-
-
-		private Rect GUIRect (float width, float height) => GUILayoutUtility.GetRect(
-			width, height,
-			GUILayout.ExpandWidth(width == 0),
-			GUILayout.ExpandHeight(height == 0)
-		);
-
-
-		private void LayoutV (System.Action action, bool box = false, GUIStyle style = null) {
-			if (box) {
-				style = GUI.skin.box;
-			}
-			if (style != null) {
-				GUILayout.BeginVertical(style);
-			} else {
-				GUILayout.BeginVertical();
-			}
-			action();
-			GUILayout.EndVertical();
-		}
-
-
-		private void Space (float space = 4f) => GUILayout.Space(space);
-
-
-		private string GetItemTypeLabel (int type) {
-			switch (type) {
-				default:
-					return $"Unknown({type})";
-				case -1:
-					return "None";
-				case 0:
-					return "Stage";
-				case 1:
-					return "Track";
-				case 2:
-					return "Note";
-				case 3:
-					return "Timing";
-				case 4:
-					return "Timer(Stage)";
-				case 5:
-					return "Timer(Track)";
-			}
-		}
-
-
-		private string GetItemIndexLabel (int index) {
-			switch (index) {
-				default:
-					return index.ToString();
-				case -1:
-					return "None";
-			}
-		}
-
-
-		private string GetBrushTypeLabel (int type) {
-			switch (type) {
-				default:
-					return $"Unknown({type})";
-				case -1:
-					return "None";
-				case 0:
-					return "Stage";
-				case 1:
-					return "Track";
-				case 2:
-					return "Note";
-				case 3:
-					return "Timing";
-			}
-		}
-
-
-	}
-}
-#endif

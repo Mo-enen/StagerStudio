@@ -448,7 +448,7 @@ TextureImporter:
     second: Axis X
   - first:
       213: 4436141162012384539
-    second: UI_B_1
+    second: Timer Tail
   - first:
       213: -7519833676518121747
     second: Axis Y
@@ -463,10 +463,10 @@ TextureImporter:
     second: Axis Ring
   - first:
       213: -3307379733461050231
-    second: Head Note
+    second: Timer Head
   - first:
       213: -7089468405191809942
-    second: Head Line
+    second: Timer Line
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -870,16 +870,16 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Head Note
+      name: Timer Head
       rect:
         serializedVersion: 2
-        x: 156
+        x: 187
         y: 3
-        width: 27
-        height: 27
+        width: 20
+        height: 21
       alignment: 7
       pivot: {x: 0.5, y: 0}
-      border: {x: 3, y: 3, z: 3, w: 3}
+      border: {x: 0, y: 9, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
@@ -891,11 +891,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Head Line
+      name: Timer Line
       rect:
         serializedVersion: 2
-        x: 185
-        y: 3
+        x: 156
+        y: 4
         width: 28
         height: 32
       alignment: 7
@@ -907,6 +907,27 @@ TextureImporter:
       bones: []
       spriteID: a64ef2e0c062d9d90800000000000000
       internalID: -7089468405191809942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Timer Tail
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 4
+        width: 20
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 9}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b1d9c3712e6509d30800000000000000
+      internalID: 4436141162012384539
       vertices: []
       indices: 
       edges: []

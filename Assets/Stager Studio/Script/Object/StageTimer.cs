@@ -10,22 +10,13 @@
 
 
 
-		#region --- VAR ---
-
-
-		// Api
-		public static bool UseAbreast { get; set; } = false;
-
-
-		#endregion
-
-
-
-
 		#region --- MSG ---
 
 
-		private void OnEnable () => Update();
+		private void OnEnable () {
+			Update();
+			LateUpdate();
+		}
 
 
 		private void Update () {
@@ -37,64 +28,22 @@
 			}
 
 			// Movement
+			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var stageData = Beatmap.Stages[index];
 			var pos = Stage.GetStagePosition(stageData, index);
-			var (zoneMin, zoneMax, _, _) = ZoneMinMax;
+			LateScaleY = Stage.GetStageHeight(stageData) * zoneSize;
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
 			transform.rotation = Quaternion.Euler(0f, 0f, Stage.GetStageWorldRotationZ(stageData));
+			LateTime = stageData.Time;
+			LateDuration = stageData.Duration;
 
-			// Head
-			bool headActive = GetTimerActive(stageData.Time);
-			if (HeadRenderer.gameObject.activeSelf != headActive) {
-				HeadRenderer.gameObject.SetActive(headActive);
-			}
-			if (headActive) {
-				HeadRenderer.transform.localPosition = new Vector3(
-					0f, Util.Remap(stageData.Time, stageData.Time - 1f, 0f, 1f, MusicTime) * Sublength, 0f
-				);
-			}
-
-			// Tail
-			float endTime = stageData.Time + stageData.Duration;
-			bool tailActive = GetTimerActive(endTime);
-			if (TailRenderer.gameObject.activeSelf != tailActive) {
-				TailRenderer.gameObject.SetActive(tailActive);
-			}
-			if (tailActive) {
-				TailRenderer.transform.localPosition = new Vector3(
-					0f, Util.Remap(endTime, endTime - 1f, 0f, 1f, MusicTime) * Sublength, 0f
-				);
-			}
-
-			// Line
-			bool lineActive = headActive || tailActive;
-			if (LineRenderer.gameObject.activeSelf != lineActive) {
-				LineRenderer.gameObject.SetActive(lineActive);
-			}
 		}
 
 
-		#endregion
 
-
-
-
-		#region --- API ---
 
 
 		#endregion
-
-
-
-
-		#region --- LGC ---
-
-
-		private static bool GetTimerActive (float time) => MusicTime >= time - 1f && MusicTime <= time;
-
-
-		#endregion
-
 
 
 
