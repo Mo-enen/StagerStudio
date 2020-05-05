@@ -61,6 +61,7 @@
 			var stageData = !(Beatmap is null) && stageIndex < Beatmap.Stages.Count ? Beatmap.Stages[stageIndex] : null;
 			if (stageData is null) {
 				gameObject.SetActive(false);
+				Update_Gizmos(false, stageIndex);
 				return;
 			}
 
@@ -91,31 +92,43 @@
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			float width = GetStageWidth(stageData);
 			float height = GetStageHeight(stageData);
+			float pivotY = GetStagePivotY(stageData);
 			var stagePos = GetStagePosition(stageData, stageIndex);
 			var judgeLineSize = GetRectSize(SkinType.JudgeLine, stageData.ItemType);
+			var stageColor = GetStageColor(stageData);
+			float stageAlpha = GetStageAlpha(stageData) * stageColor.a;
+			var rendererPos = new Vector3(0f, -height * pivotY * zoneSize, 0f);
 
 			// Movement
 			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
 			transform.localRotation = stageRot;
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
+			MainRenderer.transform.localPosition = rendererPos;
+			m_JudgelineRenderer.transform.localPosition = rendererPos;
 			m_JudgelineRenderer.transform.localScale = new Vector3(
 				zoneSize * width,
 				Mathf.Max(zoneSize * judgeLineSize.y, 0.00001f),
 				1f
 			);
+			ColPivotY = pivotY;
 
 			// Renderer
-			MainRenderer.RendererEnable = m_JudgelineRenderer.RendererEnable = true;
+			MainRenderer.RendererEnable = true;
 			MainRenderer.ItemType = stageData.ItemType;
 			MainRenderer.Scale = new Vector2(width, height);
-			MainRenderer.Duration = m_JudgelineRenderer.Duration = Duration;
-			MainRenderer.LifeTime = m_JudgelineRenderer.LifeTime = MusicTime - Time;
-			MainRenderer.Alpha = m_JudgelineRenderer.Alpha = GetStageAlpha(stageData);
+			MainRenderer.Duration = Duration;
+			MainRenderer.Tint = stageColor;
+			MainRenderer.Alpha = stageAlpha;
+			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
+
+			m_JudgelineRenderer.RendererEnable = true;
 			m_JudgelineRenderer.ItemType = stageData.ItemType;
+			m_JudgelineRenderer.Tint = stageColor;
+			m_JudgelineRenderer.Alpha = stageAlpha;
+			m_JudgelineRenderer.Duration = Duration;
 			m_JudgelineRenderer.Scale = new Vector2(width, judgeLineSize.y);
 			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Judge, GetSortingOrder());
-			MainRenderer.SetSortingLayer(SortingLayerID_Stage, GetSortingOrder());
 
 		}
 
@@ -128,6 +141,7 @@
 				Label.gameObject.SetActive(active);
 				if (active) {
 					Label.Text = stageIndex.ToString();
+					Label.transform.localPosition = MainRenderer.transform.localPosition;
 				}
 			}
 
@@ -165,6 +179,13 @@
 		public static float GetStageHeight (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0.00001f),
 			Mathf.Clamp(1f / ZoneMinMax.ratio, 0f, 256f),
+			Abreast.value
+		);
+
+
+		public static float GetStagePivotY (Beatmap.Stage data) => Mathf.Lerp(
+			data.PivotY,
+			0f,
 			Abreast.value
 		);
 
@@ -207,20 +228,26 @@
 		}
 
 
+		public static Color GetStageColor (Beatmap.Stage data) => EvaluateColor(
+			data.Colors, MusicTime - data.Time, PaletteColor(data.Color)
+		);
+
+
+
 		// Matrix
 		public static Vector3 LocalToZone (
 			float x01, float y01, float z01,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
+			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ
 		) => Matrix4x4.TRS(
 			stagePos,
 			Quaternion.Euler(0f, 0f, stageRotZ),
 			new Vector3(stageWidth, stageHeight, stageHeight)
-		).MultiplyPoint3x4(new Vector3(x01 - 0.5f, y01, z01));
+		).MultiplyPoint3x4(new Vector3(x01 - 0.5f, y01 - stagePivotY, z01));
 
 
 		public static Vector3 ZoneToLocal (
 			float zoneX, float zoneY, float zoneZ,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ
+			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ
 		) {
 			var pos01 = Matrix4x4.TRS(
 				stagePos,
@@ -228,6 +255,7 @@
 				new Vector3(stageWidth, stageHeight, stageHeight)
 			).inverse.MultiplyPoint3x4(new Vector3(zoneX, zoneY, zoneZ));
 			pos01.x += 0.5f;
+			pos01.y += stagePivotY;
 			return pos01;
 		}
 

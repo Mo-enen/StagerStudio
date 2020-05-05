@@ -834,6 +834,7 @@
 					FixBeatmapTweenValueIndexForDelete(stage.Rotations, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Widths, index);
 					FixBeatmapTweenValueIndexForDelete(stage.Heights, index);
+					FixBeatmapTweenValueIndexForDelete(stage.Colors, index, false);
 				}
 				foreach (var track in map.Tracks) {
 					FixBeatmapTweenValueIndexForDelete(track.Xs, index);
@@ -1309,16 +1310,17 @@
 					FixRange_TFT(stage.Rotations);
 					FixRange_TFT(stage.Widths);
 					FixRange_TFT(stage.Heights);
+					FixRange_TIT(stage.Colors, palLen);
 				}
 				foreach (var track in map.Tracks) {
-					FixRange_TBT(track.Colors, palLen);
+					FixRange_TIT(track.Colors, palLen);
 					FixRange_TFT(track.Xs);
 					FixRange_TFT(track.Widths);
 					FixRange_TFT(track.Angles);
 				}
 			}
 			// Func
-			void FixRange_TBT (List<Beatmap.TimeIntTween> list, int valueLen) {
+			void FixRange_TIT (List<Beatmap.TimeIntTween> list, int valueLen) {
 				if (list is null) { return; }
 				for (int i = 0; i < list.Count; i++) {
 					var c = list[i];

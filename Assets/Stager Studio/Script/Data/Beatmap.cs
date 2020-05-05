@@ -211,13 +211,6 @@
 		[System.Serializable]
 		public class Stage : MapItem {
 
-			public const int MOTION_COUNT = 5;
-			public enum MotionType {
-				Position = 0,
-				Rotation = 1,
-				Width = 2,
-				Height = 3,
-			}
 
 			// API
 			public float Speed {
@@ -241,6 +234,10 @@
 				get => m_Rotation;
 				set => m_Rotation = (int)value;
 			}
+			public float PivotY {
+				get => m_PivotY / 1000f;
+				set => m_PivotY = (int)(value * 1000f);
+			}
 
 			// SER-API
 			public int m_Speed = 1000;
@@ -248,30 +245,17 @@
 			public int m_Width = 1000;
 			public int m_Height = 1000;
 			public int m_Rotation = 0;
+			public int m_PivotY = 0;
+			public int Color = 0;
 			public List<TimeFloatFloatTween> Positions;
 			public List<TimeFloatTween> Rotations;
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
+			public List<TimeIntTween> Colors;
 
 			// Cache
 			[System.NonSerialized] public int TrackCount = 0;
 
-			// API
-			public int GetMotionCount (MotionType type) {
-				switch (type) {
-					default:
-						return 0;
-					case MotionType.Position:
-						return Positions is null ? 0 : Positions.Count;
-					case MotionType.Rotation:
-						return Rotations is null ? 0 : Rotations.Count;
-					case MotionType.Width:
-						return Widths is null ? 0 : Widths.Count;
-					case MotionType.Height:
-						return Heights is null ? 0 : Heights.Count;
-
-				}
-			}
 
 		}
 
@@ -280,13 +264,7 @@
 		[System.Serializable]
 		public class Track : MapItem {
 
-			public const int MOTION_COUNT = 3;
-			public enum MotionType {
-				X = 0,
-				Width = 1,
-				Color = 2,
-				Angle = 3,
-			}
+
 
 			// API
 			public float Width {
@@ -313,22 +291,6 @@
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
 			[System.NonSerialized] public float TrayTime = float.MaxValue;
 			[System.NonSerialized] public Color Tint = UnityEngine.Color.white;
-
-			// API
-			public int GetMotionCount (MotionType type) {
-				switch (type) {
-					default:
-						return 0;
-					case MotionType.X:
-						return Xs is null ? 0 : Xs.Count;
-					case MotionType.Width:
-						return Widths is null ? 0 : Widths.Count;
-					case MotionType.Color:
-						return Colors is null ? 0 : Colors.Count;
-					case MotionType.Angle:
-						return Angles is null ? 0 : Angles.Count;
-				}
-			}
 
 		}
 
@@ -414,6 +376,7 @@
 				m_Ratio = (int)(value * 1000f);
 			}
 		}
+
 		public int BPM = 120;
 		public int Level = 1;
 		public string Tag = "Normal";
@@ -502,7 +465,7 @@
 		}
 
 
-		// Data
+		// Get
 		public MapItem GetItem (int type, int index) {
 			switch (type) {
 				case 0:
@@ -516,7 +479,6 @@
 			}
 			return null;
 		}
-
 		public bool GetActive (int type, int index) {
 			if (type == 4 || type == 5) {
 				// Timer
@@ -528,57 +490,10 @@
 				return item != null ? item.Active : false;
 			}
 		}
-
 		public float GetTime (int type, int index) {
 			var item = GetItem(type, index);
 			return item != null ? item.Time : 0f;
 		}
-		public void SetTime (int type, int index, float time) {
-			var item = GetItem(type, index);
-			if (item != null) {
-				item.Time = time;
-			}
-		}
-
-		public float GetDuration (int type, int index) {
-			var item = GetItem(type, index);
-			return item != null ? item.Duration : 0f;
-		}
-		public void SetDuration (int type, int index, float duration) {
-			var item = GetItem(type, index);
-			if (item != null) {
-				item.Duration = duration;
-			}
-		}
-
-		public float GetX (int type, int index) {
-			var item = GetItem(type, index);
-			return item != null ? item.X : 0f;
-		}
-		public void SetX (int type, int index, float x) {
-			var item = GetItem(type, index);
-			if (item != null) {
-				item.X = x;
-			}
-		}
-
-		public float GetStageY (int index) {
-			if (index >= 0 && index < Stages.Count) {
-				return Stages[index].Y;
-			}
-			return 0f;
-		}
-		public void SetStageY (int index, float y) {
-			if (index >= 0 && index < Stages.Count) {
-				Stages[index].Y = y;
-			}
-		}
-
-		public float GetSpeedMuti (int type, int index) {
-			var item = GetItem(type, index);
-			return item != null ? item.SpeedMuti : 1f;
-		}
-
 		public int GetParentIndex (int type, int index) {
 			switch (type) {
 				case 1:
@@ -594,37 +509,222 @@
 			}
 			return -1;
 		}
-		public void SetParentIndex (int type, int index, int pIndex) {
-			switch (type) {
-				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						Tracks[index].StageIndex = pIndex;
-					}
-					break;
-				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						Notes[index].TrackIndex = pIndex;
-					}
-					break;
+
+
+		// Set
+		public void SetX (int type, int index, float x) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.X = x;
 			}
 		}
-
-		public int GetChildTrackCount (int stageIndex) {
-			if (stageIndex >= 0 && stageIndex < Stages.Count) {
-				return Stages[stageIndex].TrackCount;
+		public void SetTime (int type, int index, float time) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Time = time;
 			}
-			return 0;
 		}
-
+		public void SetItemType (int type, int index, int itemType) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.ItemType = itemType;
+			}
+		}
 		public void SetItemIndex (int type, int index, int newIndex) {
-			//switch () {
-			//
-			//}
+			switch (type) {
+				case 0: // Stage
+					if (index >= 0 && index < Stages.Count && newIndex >= 0 && newIndex < Stages.Count) {
+						var temp = Stages[index];
+						Stages[index] = Stages[newIndex];
+						Stages[newIndex] = temp;
+						for (int i = 0; i < Tracks.Count; i++) {
+							var track = Tracks[i];
+							if (track.StageIndex == index) {
+								track.StageIndex = newIndex;
+							} else if (track.StageIndex == newIndex) {
+								track.StageIndex = index;
+							}
+						}
+					}
+					break;
+				case 1: // Track
+					if (index >= 0 && index < Tracks.Count && newIndex >= 0 && newIndex < Tracks.Count) {
+						var temp = Tracks[index];
+						Tracks[index] = Tracks[newIndex];
+						Tracks[newIndex] = temp;
+						for (int i = 0; i < Notes.Count; i++) {
+							var note = Notes[i];
+							if (note.TrackIndex == index) {
+								note.TrackIndex = newIndex;
+							} else if (note.TrackIndex == newIndex) {
+								note.TrackIndex = index;
+							}
+						}
+					}
+					break;
+				case 2: // Note
+					if (index >= 0 && index < Notes.Count && newIndex >= 0 && newIndex < Notes.Count) {
+						var temp = Notes[index];
+						Notes[index] = Notes[newIndex];
+						Notes[newIndex] = temp;
+						for (int i = 0; i < Notes.Count; i++) {
+							var note = Notes[i];
+							if (note.LinkedNoteIndex == index) {
+								note.LinkedNoteIndex = newIndex;
+							} else if (note.LinkedNoteIndex == newIndex) {
+								note.LinkedNoteIndex = index;
+							}
+						}
+					}
+					break;
+				case 3: // Timing
+					if (index >= 0 && index < Timings.Count && newIndex >= 0 && newIndex < Timings.Count) {
+						var temp = Timings[index];
+						Timings[index] = Timings[newIndex];
+						Timings[newIndex] = temp;
+					}
+					break;
+			}
 
 
 
 
 		}
+		public void SetDuration (int type, int index, float duration) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Duration = duration;
+			}
+		}
+		public float GetSpeedMuti (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.SpeedMuti : 1f;
+		}
+
+		public void SetStageY (int index, float y) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Y = y;
+			}
+		}
+		public void SetStageSpeed (int index, float speed) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Speed = speed;
+			}
+		}
+		public void SetStagePivot (int index, float pivot) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].PivotY = pivot;
+			}
+		}
+		public void SetStageRotation (int index, float rot) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Rotation = rot;
+			}
+		}
+		public void SetStageWidth (int index, float width) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Width = width;
+			}
+		}
+		public void SetStageHeight (int index, float height) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Height = height;
+			}
+		}
+		public void SetStageColor (int index, int color) {
+			if (index >= 0 && index < Stages.Count) {
+				Stages[index].Color = color;
+			}
+		}
+
+		public void SetTrackWidth (int index, float width) {
+			if (index >= 0 && index < Tracks.Count) {
+				Tracks[index].Width = width;
+			}
+		}
+		public void SetTrackAngle (int index, float angle) {
+			if (index >= 0 && index < Tracks.Count) {
+				Tracks[index].Angle = angle;
+			}
+		}
+		public void SetTrackColor (int index, int color) {
+			if (index >= 0 && index < Tracks.Count) {
+				Tracks[index].Color = color;
+			}
+		}
+		public void SetTrackTray (int index, bool tray) {
+			if (index >= 0 && index < Tracks.Count) {
+				Tracks[index].HasTray = tray;
+			}
+		}
+		public void SetTrackStageIndex (int index, int stageIndexForTrack) {
+			if (index >= 0 && index < Tracks.Count) {
+				Tracks[index].StageIndex = stageIndexForTrack;
+			}
+		}
+
+		public void SetNoteWidth (int index, float width) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].Width = width;
+			}
+		}
+		public void SetNoteTrackIndex (int index, int trackIndexForNote) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].TrackIndex = trackIndexForNote;
+			}
+		}
+		public void SetNoteLinkedIndex (int index, int linkedIndex) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].LinkedNoteIndex = linkedIndex;
+			}
+		}
+		public void SetNoteZ (int index, float z) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].Z = z;
+			}
+		}
+		public void SetNoteClickIndex (int index, short click) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].ClickSoundIndex = click;
+			}
+		}
+		public void SetNoteSfxIndex (int index, byte sfx) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].SoundFxIndex = sfx;
+			}
+		}
+		public void SetNoteParamA (int index, int param) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].SoundFxParamA = param;
+			}
+		}
+		public void SetNoteParamB (int index, int param) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].SoundFxParamB = param;
+			}
+		}
+
+		public void SetTimingSpeed (int index, int speed) {
+			if (index >= 0 && index < Timings.Count) {
+				Timings[index].m_X = speed;
+			}
+		}
+		public void SetTimingSfxIndex (int index, byte sfx) {
+			if (index >= 0 && index < Timings.Count) {
+				Timings[index].SoundFxIndex = sfx;
+			}
+		}
+		public void SetTimingParamA (int index, int param) {
+			if (index >= 0 && index < Timings.Count) {
+				Timings[index].SoundFxParamA = param;
+			}
+		}
+		public void SetTimingParamB (int index, int param) {
+			if (index >= 0 && index < Timings.Count) {
+				Timings[index].SoundFxParamB = param;
+			}
+		}
+
 
 
 	}

@@ -60,7 +60,6 @@
 		private const string UI_SelectorStageMenu = "Menu.UI.SelectorStage";
 		private const string UI_SelectorTrackMenu = "Menu.UI.SelectorTrack";
 		private const string UI_OpenWebMSG = "Dialog.OpenWebMSG";
-		private const string UI_InfoLabel = "UI.InfoLabel";
 		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
@@ -76,7 +75,6 @@
 		private IntIntHandler GetGameItemCount { get; set; } = null;
 		private FloatHandler GetMusicTime { get; set; } = null;
 		private VoidHandler MusicPause { get; set; } = null;
-		private BeatmapHandler GetBeatmap { get; set; } = null;
 
 		// Ser
 		[Header("Misc")]
@@ -86,7 +84,6 @@
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
-		[SerializeField] private Text m_InfoLabel = null;
 		[SerializeField] private Text m_VersionLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
@@ -103,6 +100,7 @@
 		[SerializeField] private WaveUI m_Wave = null;
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
+		[SerializeField] private InspectorUI m_Inspector = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
@@ -142,7 +140,6 @@
 			GetAbreastData = () => (game.AbreastValue, game.AbreastIndex, game.AbreastWidth);
 			GetDropSpeed = () => game.GameDropSpeed;
 			GetGameItemCount = game.GetItemCount;
-			GetBeatmap = () => project.Beatmap;
 			GetLanguage = language.Get;
 
 			Awake_Message(language, shortcut);
@@ -152,7 +149,7 @@
 			Awake_Object(project, game, music, sfx);
 			Awake_Project(project, editor, game, music, sfx);
 			Awake_Game(project, game, music, editor);
-			Awake_Music(game, music, sfx);
+			Awake_Music(music, sfx);
 			Awake_Sfx(music, game, sfx);
 			Awake_Editor(editor, game, project, music);
 			Awake_Skin(game);
@@ -212,6 +209,7 @@
 			SkinEditorUI.GetLanguage = language.Get;
 			SettingUI.GetLanguage = language.Get;
 			StageEditor.GetLanguage = language.Get;
+			InspectorUI.GetLanguage = language.Get;
 			// Misc
 			TooltipUI.SetTip = (tip) => {
 				foreach (var label in m_TipLabels) {
@@ -336,7 +334,7 @@
 				game.SetAbreastIndex(0);
 				game.SetUseAbreastView(false);
 				game.SetGameDropSpeed(1f);
-				RefreshInfoLabel();
+				m_Inspector.RefreshUI();
 			};
 			StageProject.OnProjectLoaded = () => {
 				game.SetSpeedCurveDirty();
@@ -344,7 +342,6 @@
 				music.Seek(0f);
 				UI_RemoveUI();
 				RefreshLoading(-1f);
-				RefreshInfoLabel();
 			};
 			StageProject.OnProjectSavingStart = () => {
 				StartCoroutine(SaveProgressing());
@@ -357,9 +354,10 @@
 				music.SetClip(null);
 				sfx.SetClip(null);
 				StageUndo.ClearUndo();
+				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 				m_Preview.SetDirty();
 				editor.ClearSelection();
-				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
+				m_Inspector.RefreshUI();
 			};
 
 			// Beatmap
@@ -383,13 +381,15 @@
 				m_Preview.SetDirty();
 				Resources.UnloadUnusedAssets();
 				RefreshGridRenderer(game);
-				RefreshInfoLabel();
+				m_Inspector.RefreshUI();
 			};
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();
+				m_Inspector.RefreshUI();
 			};
 			StageProject.OnBeatmapCreated = () => {
 				TryRefreshProjectInfo();
+				m_Inspector.RefreshUI();
 			};
 
 			// Assets
@@ -438,10 +438,10 @@
 
 
 		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageEditor editor) {
-			StageGame.OnStageObjectChanged = () => {
+			StageGame.OnItemCountChanged = () => {
 				m_Preview.SetDirty();
 				m_TimingPreview.SetDirty();
-				RefreshInfoLabel();
+				editor.ClearSelection();
 			};
 			StageGame.OnAbreastChanged = () => {
 				m_AbreastTGMark.enabled = game.UseAbreast;
@@ -458,13 +458,12 @@
 			};
 			StageGame.OnSpeedChanged = () => {
 				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration / game.Ratio;
+					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
 				}
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 				RefreshGridRenderer(game);
-				RefreshInfoLabel();
 			};
 			StageGame.OnGridChanged = () => {
 				m_GridTG.isOn = game.ShowGrid;
@@ -479,7 +478,7 @@
 				m_TimingPreview.SetDirty();
 				RefreshGridRenderer(game);
 				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration / game.Ratio;
+					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
 				}
 			};
 			StageGame.GetBeatmap = () => project.Beatmap;
@@ -493,7 +492,7 @@
 		}
 
 
-		private void Awake_Music (StageGame game, StageMusic music, StageSoundFX sfx) {
+		private void Awake_Music (StageMusic music, StageSoundFX sfx) {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetDirty();
@@ -503,7 +502,7 @@
 				sfx.StopAllFx();
 			};
 			StageMusic.OnMusicTimeChanged = (time, duration) => {
-				m_Progress.SetProgress(time, game.BPM);
+				m_Progress.SetProgress(time);
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
 				m_TimingPreview.SetDirty();
@@ -539,6 +538,7 @@
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
+				m_Inspector.RefreshUI();
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				editor.ClearSelection();
@@ -549,14 +549,9 @@
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
 			StageEditor.GetMoveAxisHovering = () => m_MoveHandler.Hovering;
-			StageEditor.OnObjectEdited = (typeIndex) => {
-				m_Preview.SetDirty();
-				Note.SetCacheDirty();
-				TimingNote.SetCacheDirty();
-				if (typeIndex == 3) {
-					m_TimingPreview.SetDirty();
-					game.SetSpeedCurveDirty();
-				}
+			StageEditor.OnObjectEdited = () => {
+				RefreshOnItemChange(game);
+				m_Inspector.RefreshAllInspectors();
 			};
 			StageEditor.GetFilledTime = game.FillTime;
 			StageEditor.SetAbreastIndex = game.SetAbreastIndex;
@@ -649,17 +644,9 @@
 			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => project.BeatmapAuthor = author;
 			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
-			ProjectInfoUI.OnBeatmapInfoChanged = (map) => {
-				if (project.Beatmap != null) {
-					game.BPM = project.Beatmap.BPM;
-					game.Shift = project.Beatmap.Shift;
-					game.Ratio = project.Beatmap.Ratio;
-					m_BeatmapSwiperLabel.text = project.Beatmap.Tag;
-				}
-				RefreshGridRenderer(game);
-			};
+			ProjectInfoUI.OnBeatmapInfoChanged = () => RefreshOnBeatmapInfoChange(project, game);
 			ProjectInfoUI.OnProjectInfoChanged = () => {
-				RefreshInfoLabel();
+
 			};
 
 		}
@@ -735,6 +722,8 @@
 			ProgressUI.PlayMusic = music.Play;
 			ProgressUI.PauseMusic = music.Pause;
 			ProgressUI.SeekMusic = music.Seek;
+			ProgressUI.GetBPM = () => game.BPM;
+			ProgressUI.GetShift = () => game.Shift;
 
 			PreviewUI.GetMusicTime01 = (time) => time / music.Duration;
 			PreviewUI.GetBeatmap = () => project.Beatmap;
@@ -786,6 +775,22 @@
 			SelectorUI.GetSelectionIndex = () => editor.SelectingItemIndex;
 
 			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
+
+			InspectorUI.GetSelectingType = () => {
+				if (editor.SelectingItemType == 4) {
+					return 0;
+				}
+				if (editor.SelectingItemType == 5) {
+					return 1;
+				}
+				return editor.SelectingItemType;
+			};
+			InspectorUI.GetSelectingIndex = () => editor.SelectingItemIndex;
+			InspectorUI.GetBeatmap = () => project.Beatmap;
+			InspectorUI.GetBPM = () => game.BPM;
+			InspectorUI.GetShift = () => game.Shift;
+			InspectorUI.OnItemEdited = () => RefreshOnItemChange(game);
+			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange(project, game);
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
@@ -868,6 +873,28 @@
 		#region --- LGC ---
 
 
+		// Change
+		private void RefreshOnItemChange (StageGame game) {
+			Note.SetCacheDirty();
+			TimingNote.SetCacheDirty();
+			game.SetSpeedCurveDirty();
+			m_Preview.SetDirty();
+			m_TimingPreview.SetDirty();
+		}
+
+
+		private void RefreshOnBeatmapInfoChange (StageProject project, StageGame game) {
+			if (project.Beatmap != null) {
+				game.BPM = project.Beatmap.BPM;
+				game.Shift = project.Beatmap.Shift;
+				game.Ratio = project.Beatmap.Ratio;
+				m_BeatmapSwiperLabel.text = project.Beatmap.Tag;
+			}
+			m_Inspector.RefreshUI();
+			RefreshGridRenderer(game);
+		}
+
+
 		// Try Refresh UI
 		private void TryRefreshSetting () {
 			var setting = m_SettingRoot.childCount > 0 ? m_SettingRoot.GetChild(0).GetComponent<SettingUI>() : null;
@@ -895,29 +922,6 @@
 				RemoveLoading();
 			} else {
 				loading.SetProgress(progress01, hint);
-			}
-		}
-
-
-		private void RefreshInfoLabel () {
-			var map = GetBeatmap();
-			int stageCount = 0;
-			int trackCount = 0;
-			int noteCount = 0;
-			int speedCount = 0;
-			if (map != null) {
-				stageCount = map.Stages.Count;
-				trackCount = map.Tracks.Count;
-				noteCount = map.Notes.Count;
-				speedCount = map.Timings.Count;
-			}
-			try {
-				var info = ProjectInfoUI.GetProjectInfo();
-				var state = string.Format(GetLanguage(UI_InfoLabel), stageCount, trackCount, noteCount, speedCount);
-				var author = $"{info.name} | {info.mapAuthor} & {info.musicAuthor}, {(map != null ? map.Tag : "")} Lv{(map != null ? map.Level : 0)}";
-				m_InfoLabel.text = state + " " + author;
-			} catch {
-				m_InfoLabel.text = "";
 			}
 		}
 

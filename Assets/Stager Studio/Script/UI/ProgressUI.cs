@@ -21,6 +21,8 @@
 		// API
 		public static FloatFloatIntHandler GetSnapTime { get; set; } = null;
 		public static FloatHandler GetDuration { get; set; } = null;
+		public static FloatHandler GetBPM { get; set; } = null;
+		public static FloatHandler GetShift { get; set; } = null;
 		public static ReadyPlayHandler GetReadyPlay { get; set; } = null;
 		public static VoidHandler PlayMusic { get; set; } = null;
 		public static VoidHandler PauseMusic { get; set; } = null;
@@ -55,12 +57,11 @@
 
 
 		// API
-		public void SetProgress (float time, float bpm = -1f) {
+		public void SetProgress (float time) {
 			m_Bar.fillAmount = Mathf.Clamp01(time / GetDuration());
-			if (bpm > 0f) {
-				m_TimeLabel.BPM = bpm;
-			}
 			m_TimeLabel.Time = time;
+			m_TimeLabel.BPM = GetBPM();
+			m_TimeLabel.Shift = GetShift();
 		}
 
 

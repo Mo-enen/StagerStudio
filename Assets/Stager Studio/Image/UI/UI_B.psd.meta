@@ -467,6 +467,9 @@ TextureImporter:
   - first:
       213: -7089468405191809942
     second: Timer Line
+  - first:
+      213: 1959211095122329946
+    second: Phigros Icon
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -928,6 +931,27 @@ TextureImporter:
       bones: []
       spriteID: b1d9c3712e6509d30800000000000000
       internalID: 4436141162012384539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Phigros Icon
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 447
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5145c45c14803b10800000000000000
+      internalID: 1959211095122329946
       vertices: []
       indices: 
       edges: []

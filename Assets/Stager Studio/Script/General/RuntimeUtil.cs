@@ -697,6 +697,11 @@
 		}
 
 
+		public static float Time_to_Beat (float time, float bpm, float shift) => (time - shift) / 60f * bpm;
+		public static float Beat_to_Time (float beat, float bpm, float shift) => 60f * beat / bpm + shift;
+
+
+
 		#endregion
 
 

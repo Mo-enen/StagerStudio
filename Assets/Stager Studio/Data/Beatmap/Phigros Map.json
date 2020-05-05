@@ -1,0 +1,18 @@
+﻿{
+  "BPM": 120,
+  "Level": 1,
+  "Tag": "Normal",
+  "CreatedTime": 637208493784316751,
+  "Stages": [],
+  "Tracks": [],
+  "Notes": [],
+  "SpeedNotes": [
+    {
+      "m_Time": 0,
+      "m_Speed": 1000
+    }
+  ],
+  "m_DropSpeed": 1000,
+  "m_Shift": 0,
+  "m_Ratio": 1500
+}

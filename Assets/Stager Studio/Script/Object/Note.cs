@@ -197,6 +197,7 @@
 
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
+			float stagePivotY = Stage.GetStagePivotY(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			float trackX = Track.GetTrackX(linkedTrack);
@@ -217,7 +218,7 @@
 			// Movement
 			var noteZonePos = Track.LocalToZone(
 				noteData.X, noteY01, noteZ,
-				stagePos, stageWidth, stageHeight, stageRotZ,
+				stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ,
 				trackX, trackWidth, trackAngle
 			);
 			var noteRot = Quaternion.Euler(0f, 0f, stageRotZ) * Quaternion.Euler(trackAngle, 0f, 0f);
@@ -348,6 +349,7 @@
 			Vector2 linkedStagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float linkedStageWidth = Stage.GetStageWidth(linkedStage);
 			float linkedStageHeight = Stage.GetStageHeight(linkedStage);
+			float linkedStagePivotY = Stage.GetStagePivotY(linkedStage);
 			float linkedStageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			float linkedTrackAngle = Track.GetTrackAngle(linkedTrack);
 
@@ -362,6 +364,7 @@
 				linkedStagePos,
 				linkedStageWidth,
 				linkedStageHeight,
+				linkedStagePivotY,
 				linkedStageRotZ,
 				Track.GetTrackX(linkedTrack),
 				Track.GetTrackWidth(linkedTrack),

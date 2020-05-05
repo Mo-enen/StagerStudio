@@ -54,13 +54,14 @@
 
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;
+		protected static SkinData Skin { get; set; } = null;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
 		protected TextRenderer Label => m_Label;
-		protected SpriteRenderer Highlight { get; private set; } = null;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
 		protected Vector2? ColSize { get; set; } = null;
 		protected Quaternion? ColRot { get; set; } = null;
+		protected float ColPivotY { get; set; } = 0f;
 
 		// Ser
 		[SerializeField] private ObjectRenderer m_MainRenderer = null;
@@ -68,10 +69,10 @@
 		[SerializeField] private TextRenderer m_Label = null;
 
 		// Data
-		protected static SkinData Skin = null;
 		private static (Vector3 size, bool fixedRatio)[][] RectSizess = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
+		private float PrevColPivotY = 0f;
 
 
 		#endregion
@@ -99,14 +100,23 @@
 			}
 			if (MusicPlaying) { return; }
 			// Collider
-			if (ColSize.HasValue && (PrevColSize != ColSize.Value || (ColRot.HasValue && ColRot.Value != PrevColRot))) {
+			if (ColSize.HasValue && (
+				PrevColSize != ColSize.Value ||
+				(ColRot.HasValue && ColRot.Value != PrevColRot) ||
+				Mathf.Abs(PrevColPivotY - ColPivotY) > 0.0001f
+			)) {
 				var size = new Vector3(ColSize.Value.x, ColSize.Value.y, 0.01f);
-				var offset = new Vector3(0f, ColSize.Value.y * 0.5f, 0f);
-				PrevColSize = m_Col.size = size;
+				var offset = new Vector3(
+					0f,
+					Mathf.LerpUnclamped(ColSize.Value.y / 2f, -ColSize.Value.y / 2f, ColPivotY),
+					0f
+				);
 				m_Col.center = offset;
 				if (ColRot.HasValue) {
 					PrevColRot = m_Col.transform.rotation = ColRot.Value;
 				}
+				PrevColSize = m_Col.size = size;
+				PrevColPivotY = ColPivotY;
 			}
 		}
 

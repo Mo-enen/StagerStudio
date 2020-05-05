@@ -84,6 +84,7 @@
 			var judgeLineSize = GetRectSize(SkinType.JudgeLine, 0);
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
+			float stagePivotY = Stage.GetStagePivotY(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			float trackX = Track.GetTrackX(linkedTrack);
@@ -92,7 +93,7 @@
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var pos = Track.LocalToZone(
 				noteData.X, stageHeight > 0f ? judgeLineSize.y / 2f / stageHeight : 0f, Note.GetNoteZ(noteData),
-				stagePos, stageWidth, stageHeight, stageRotZ,
+				stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
 			zoneMax.z += zoneSize;

@@ -8,9 +8,6 @@
 	public class ZoneUI : MonoBehaviour {
 
 
-		// API
-		public bool IsShowing => m_ZoneGraphics[0].enabled;
-
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
@@ -18,7 +15,6 @@
 		[SerializeField] private Transform m_ZoneMin = null;
 		[SerializeField] private Transform m_ZoneMax = null;
 		[SerializeField] private AspectRatioFitter m_ZoneFitter = null;
-		[SerializeField] private Graphic[] m_ZoneGraphics = null;
 
 		// Data
 		private Coroutine ZoneCor = null;
@@ -63,13 +59,6 @@
 				}
 				m_ZoneFitter.aspectRatio = ratio;
 				ZoneCor = null;
-			}
-		}
-
-
-		public void ShowZone (bool show) {
-			foreach (var g in m_ZoneGraphics) {
-				g.enabled = show;
 			}
 		}
 

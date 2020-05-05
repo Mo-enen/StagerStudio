@@ -112,7 +112,7 @@
 
 		// Handle
 		public static LanguageHandler GetLanguage { get; set; } = null;
-		public static VoidBeatmapHandler OnBeatmapInfoChanged { get; set; } = null;
+		public static VoidHandler OnBeatmapInfoChanged { get; set; } = null;
 		public static VoidHandler OnProjectInfoChanged { get; set; } = null;
 		public static VoidHandler MusicStopClickSounds { get; set; } = null;
 		public static VoidIntFloatHandler MusicPlayClickSound { get; set; } = null;
@@ -398,7 +398,7 @@
 						if (mapMap.ContainsKey(key)) {
 							var _map = mapMap[key];
 							_map.Tag = txt;
-							OnBeatmapInfoChanged(_map);
+							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
 					}
@@ -406,7 +406,7 @@
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.Level = value;
-							OnBeatmapInfoChanged(_map);
+							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
 					}
@@ -414,7 +414,7 @@
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.BPM = value;
-							OnBeatmapInfoChanged(_map);
+							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
 					}
@@ -422,7 +422,7 @@
 						if (mapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
 							var _map = mapMap[key];
 							_map.Shift = value;
-							OnBeatmapInfoChanged(_map);
+							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
 					}
@@ -430,7 +430,7 @@
 						if (mapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
 							var _map = mapMap[key];
 							_map.Ratio = value;
-							OnBeatmapInfoChanged(_map);
+							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
 					}

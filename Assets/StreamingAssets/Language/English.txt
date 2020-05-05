@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.FrontPole
-Front Pole
-
-Author
+﻿Author
 Stager Official
 
 Dialog.Editor.CannotSelectStage
@@ -42,6 +39,21 @@ Music speed {0}
 
 Game.Hint.ShowGrid
 Grid and Auxiliary {0}
+
+Inspector.Header.Beatmap
+Beatmap
+
+Inspector.Header.Note
+Note
+
+Inspector.Header.Stage
+Stage
+
+Inspector.Header.Timing
+Timing
+
+Inspector.Header.Track
+Track
 
 Menu.Abreast.Width0
 Panorama mode stage width 25%
@@ -330,6 +342,9 @@ Use triple line template
 
 ProjectCreator.Hint.Osu
 Use simple side by side template
+
+ProjectCreator.Hint.Phigros
+Use dynamic stage template
 
 ProjectCreator.Hint.StagerStudio
 Create empty project
@@ -691,8 +706,8 @@ Width of the track painted by brush
 Tip.Setting.Wave
 Show music wave or not
 
-Tip.Setting.Zone
-Show scope of activities or not
+Tip.TimeLabel
+Switch time unit
 
 Tip.Toolbar.EditSkin
 Edit current skin
@@ -778,8 +793,86 @@ Save project and back to home page?
 UI.ImportBeatmap
 Import
 
-UI.InfoLabel
-stage × {0} | track × {1} | note × {2} | timing × {3}
+UI.Inspector.Angle
+Angle
+
+UI.Inspector.Beat
+Beat
+
+UI.Inspector.BPM
+BPM
+
+UI.Inspector.Click
+Click
+
+UI.Inspector.Color
+Color
+
+UI.Inspector.Duration
+Length
+
+UI.Inspector.FX
+FX
+
+UI.Inspector.FxParamA
+Fx A
+
+UI.Inspector.FxParamB
+Fx B
+
+UI.Inspector.Height
+Height
+
+UI.Inspector.Level
+Level
+
+UI.Inspector.Link
+Link
+
+UI.Inspector.Pivot
+Pivot
+
+UI.Inspector.Ratio
+Ratio
+
+UI.Inspector.Rot
+Angle
+
+UI.Inspector.Shift
+Shift
+
+UI.Inspector.Speed
+Speed
+
+UI.Inspector.Stage
+Stage
+
+UI.Inspector.Tag
+Tag
+
+UI.Inspector.Time
+Time
+
+UI.Inspector.Track
+Track
+
+UI.Inspector.Tray
+Tray
+
+UI.Inspector.Type
+Type
+
+UI.Inspector.Width
+Width
+
+UI.Inspector.X
+X
+
+UI.Inspector.Y
+Y
+
+UI.Inspector.Z
+Z
 
 UI.NewBeatmap
 New
@@ -934,9 +1027,6 @@ Sound FX
 UI.Setting.Wave
 Show Sound Wave
 
-UI.Setting.Zone
-Show Stage Range
-
 UI.SkinEditor.DarkBG
 Dark
 
@@ -948,6 +1038,9 @@ Export Image
 
 UI.SkinEditor.FixedRatio
 Fixed Ratio
+
+UI.SkinEditor.FrontPole
+Front Pole
 
 UI.SkinEditor.Highlight
 Highlight

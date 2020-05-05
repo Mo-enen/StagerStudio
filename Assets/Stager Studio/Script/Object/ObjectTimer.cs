@@ -87,13 +87,7 @@
 		public static bool GetTimerActive (float time) => MusicTime >= time - 1f && MusicTime <= time;
 
 
-		public static float ZoneToLocalY (float zoneX, float zoneY, float zoneZ, Vector2 stagePos, float stageHeight, float stageRotZ) => Matrix4x4.TRS(
-			stagePos,
-			Quaternion.Euler(0f, 0f, stageRotZ),
-			new Vector3(1f, stageHeight, stageHeight)
-		).inverse.MultiplyPoint3x4(new Vector3(zoneX, zoneY, zoneZ)).y;
-
-
+		
 
 
 	}

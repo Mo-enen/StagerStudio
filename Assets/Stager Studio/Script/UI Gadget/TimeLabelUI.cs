@@ -28,9 +28,10 @@
 			get => _BPM;
 			set => _BPM = Mathf.Max(value, 1f);
 		}
+		public float Shift { get; set; } = 0f;
 
 		// Short
-		private Text Label => _Label ?? (_Label = GetComponent<Text>());
+		private Text Label => _Label != null ? _Label : (_Label = GetComponent<Text>());
 
 		// Data
 		private Text _Label = null;
@@ -48,7 +49,7 @@
 		// LGC
 		private void RefreshUI () {
 			Label.text = _ShowBeatTime ?
-				$"{(_Time / 60f * _BPM).ToString("0.00")} B" :
+				$"{Util.Time_to_Beat(Time, BPM, Shift).ToString("0.##")} B" :
 				$"{Mathf.FloorToInt(_Time / 60f).ToString()}\' {Mathf.FloorToInt(_Time % 60f).ToString("00")}\" {Mathf.FloorToInt((_Time % 1f) * 100f).ToString("00")}";
 		}
 

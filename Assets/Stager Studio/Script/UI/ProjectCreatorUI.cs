@@ -26,6 +26,7 @@
 			Deemo = 3,
 			Osu = 4,
 			Arcaea = 5,
+			Phigros = 6,
 
 		}
 
@@ -68,6 +69,7 @@
 			"ProjectCreator.Hint.Deemo",
 			"ProjectCreator.Hint.Osu",
 			"ProjectCreator.Hint.Arcaea",
+			"ProjectCreator.Hint.Phigros",
 		};
 		private const string DIALOG_ErrorOnCreateProject = "Dialog.Error.FailCreateProject";
 		private const string DIALOG_NoTitle = "ProjectCreator.Error.NoTitle";

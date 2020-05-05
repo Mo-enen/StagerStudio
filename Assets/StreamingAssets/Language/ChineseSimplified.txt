@@ -1,7 +1,4 @@
-﻿UI.SkinEditor.FrontPole
-前景连接杆
-
-Author
+﻿Author
 Stager 官方
 
 Dialog.Editor.CannotSelectStage
@@ -42,6 +39,21 @@ Game.Hint.Pitch
 
 Game.Hint.ShowGrid
 辅助线网格 {0}
+
+Inspector.Header.Beatmap
+谱面
+
+Inspector.Header.Note
+音符
+
+Inspector.Header.Stage
+舞台
+
+Inspector.Header.Timing
+时间
+
+Inspector.Header.Track
+轨道
 
 Menu.Abreast.Width0
 全景舞台宽度 25%
@@ -330,6 +342,9 @@ ProjectCreator.Hint.Dynamix
 
 ProjectCreator.Hint.Osu
 使用简易的并列轨道模板
+
+ProjectCreator.Hint.Phigros
+使用咕咕咕动态舞台模板
 
 ProjectCreator.Hint.StagerStudio
 创建空白工程
@@ -691,8 +706,8 @@ Tip.Setting.TrackBrushWidth
 Tip.Setting.Wave
 是否显示声波
 
-Tip.Setting.Zone
-是否显示活动范围边框
+Tip.TimeLabel
+切换时间单位
 
 Tip.Toolbar.EditSkin
 编辑当前皮肤
@@ -778,8 +793,86 @@ UI.GoHomeDirtyConfirmMsg
 UI.ImportBeatmap
 导入
 
-UI.InfoLabel
-舞台 × {0} | 轨道 × {1} | 音符 × {2} | 时间 × {3}
+UI.Inspector.Angle
+角度
+
+UI.Inspector.Beat
+节拍
+
+UI.Inspector.BPM
+BPM
+
+UI.Inspector.Click
+按键音
+
+UI.Inspector.Color
+颜色
+
+UI.Inspector.Duration
+时长
+
+UI.Inspector.FX
+特效
+
+UI.Inspector.FxParamA
+变量A
+
+UI.Inspector.FxParamB
+变量B
+
+UI.Inspector.Height
+高度
+
+UI.Inspector.Level
+等级
+
+UI.Inspector.Link
+锁链
+
+UI.Inspector.Pivot
+原点
+
+UI.Inspector.Ratio
+长宽比
+
+UI.Inspector.Rot
+角度
+
+UI.Inspector.Shift
+偏移
+
+UI.Inspector.Speed
+速度
+
+UI.Inspector.Stage
+舞台
+
+UI.Inspector.Tag
+标签
+
+UI.Inspector.Time
+时间
+
+UI.Inspector.Track
+轨道
+
+UI.Inspector.Tray
+托盘
+
+UI.Inspector.Type
+类型
+
+UI.Inspector.Width
+宽度
+
+UI.Inspector.X
+位置X
+
+UI.Inspector.Y
+位置Y
+
+UI.Inspector.Z
+位置Z
 
 UI.NewBeatmap
 新建
@@ -934,9 +1027,6 @@ UI.Setting.UseSFX
 UI.Setting.Wave
 显示声波
 
-UI.Setting.Zone
-显示舞台范围
-
 UI.SkinEditor.DarkBG
 深色
 
@@ -948,6 +1038,9 @@ UI.SkinEditor.ExportImage
 
 UI.SkinEditor.FixedRatio
 固定长宽比
+
+UI.SkinEditor.FrontPole
+前景连接杆
 
 UI.SkinEditor.Highlight
 高光

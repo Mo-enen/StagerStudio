@@ -118,11 +118,12 @@
 			float trackWidth = GetTrackWidth(trackData);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
 			float stageHeight = Stage.GetStageHeight(linkedStage);
+			float stagePivotY = Stage.GetStagePivotY(linkedStage);
 			float stageRotZ = Stage.GetStageWorldRotationZ(linkedStage);
 			var stagePos = Stage.GetStagePosition(linkedStage, trackData.StageIndex);
 			float rotX = GetTrackAngle(trackData);
 			float trackX = GetTrackX(trackData);
-			var pos = Stage.LocalToZone(trackX, 0f, 0f, stagePos, stageWidth, stageHeight, stageRotZ);
+			var pos = Stage.LocalToZone(trackX, 0f, 0f, stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ);
 
 			// Movement
 			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y);
@@ -139,7 +140,7 @@
 				var judgeLineSize = GetRectSize(SkinType.JudgeLine, trackData.ItemType);
 				var trayPos = LocalToZone(
 					TrayX, judgeLineSize.y / 2f / stageHeight, 0f,
-					stagePos, stageWidth, stageHeight, stageRotZ,
+					stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ,
 					trackX, trackWidth, rotX
 				);
 				m_TrayRenderer.transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, trayPos.x, trayPos.y);
@@ -240,7 +241,7 @@
 		// Matrix
 		public static Vector3 LocalToZone (
 			float x01, float y01, float z01,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ,
 			float trackX, float trackWidth, float trackRotX
 		) {
 			var sPos = Matrix4x4.TRS(
@@ -248,18 +249,18 @@
 				Quaternion.Euler(trackRotX, 0f, 0f),
 				new Vector3(trackWidth, 1f, 1f)
 			).MultiplyPoint(new Vector3(x01 - 0.5f, y01, -z01));
-			return Stage.LocalToZone(sPos.x, sPos.y, sPos.z, stagePos, stageWidth, stageHeight, stageRotZ);
+			return Stage.LocalToZone(sPos.x, sPos.y, sPos.z, stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ);
 		}
 
 
 		public static Vector3 ZoneToLocal (
 			float zoneX, float zoneY, float zoneZ,
-			Vector2 stagePos, float stageWidth, float stageHeight, float stageRotZ,
+			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ,
 			float trackX, float trackWidth, float trackRotX
 		) {
 			var sPos01 = Stage.ZoneToLocal(
 				zoneX, zoneY, zoneZ,
-				stagePos, stageWidth, stageHeight, stageRotZ
+				stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ
 			);
 			var tPos01 = Matrix4x4.TRS(
 				new Vector3(trackX, 0f, 0f),

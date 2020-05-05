@@ -25,7 +25,7 @@
 			UIScale_1,
 			UIScale_2,
 			UseSFX,
-			ShowZone,
+			ShowZone, // Removed
 			ShowWave,
 			ShowPreview,
 			ShowTip,
@@ -129,11 +129,6 @@
 				sfx.SetUseFX(isOn);
 				ToggleItemMap[ToggleType.UseSFX].saving.Value = isOn;
 			}, null, sfx.UseFX, true));
-
-			ToggleItemMap.Add(ToggleType.ShowZone, ((isOn) => {
-				m_Zone.ShowZone(isOn);
-				ToggleItemMap[ToggleType.ShowZone].saving.Value = isOn;
-			}, () => m_Zone.IsShowing, new SavingBool("SS.ShowZone", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowWave, ((isOn) => {
 				m_Wave.enabled = isOn;

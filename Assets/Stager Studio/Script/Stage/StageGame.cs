@@ -45,7 +45,7 @@
 
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
-		public static VoidHandler OnStageObjectChanged { get; set; } = null;
+		public static VoidHandler OnItemCountChanged { get; set; } = null;
 		public static VoidHandler OnSpeedChanged { get; set; } = null;
 		public static VoidHandler OnAbreastChanged { get; set; } = null;
 		public static VoidHandler OnGridChanged { get; set; } = null;
@@ -69,7 +69,12 @@
 			}
 		}
 		public float SPB => 60f / Mathf.Max(BPM, 0.001f);
-		public float BPM { get; set; } = 120f;
+		public float BPM {
+			get => _BPM;
+			set {
+				_BPM = Mathf.Clamp(value, 1f, 1024f);
+			}
+		}
 		public float Shift { get; set; } = 0f;
 		public float GameDropSpeed => Mathf.Clamp(_GameDropSpeed, 0.1f, 64f);
 		public bool UseDynamicSpeed => !UseAbreast;
@@ -112,6 +117,7 @@
 		private Coroutine AbreastIndexCor = null;
 		private Coroutine FocusAniCor = null;
 		private bool FocusMode = false;
+		private float _BPM = 120f;
 		private float _Ratio = 1.5f;
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
@@ -171,6 +177,7 @@
 			if (MusicIsPlaying()) { return; }
 			var map = GetBeatmap();
 			if (map != null) {
+				bool changed = false;
 				// Delete Parent-Empty Items
 				int stageCount = map.Stages.Count;
 				int trackCount = map.Tracks.Count;
@@ -180,6 +187,8 @@
 					if (track.StageIndex < 0 || track.StageIndex >= stageCount) {
 						map.Tracks.RemoveAt(i);
 						i--;
+						trackCount--;
+						changed = true;
 					}
 				}
 				for (int i = 0; i < noteCount; i++) {
@@ -187,6 +196,8 @@
 					if (note.TrackIndex < 0 || note.TrackIndex >= trackCount) {
 						map.Notes.RemoveAt(i);
 						i--;
+						noteCount--;
+						changed = true;
 					}
 				}
 				// Sync Container Active
@@ -197,7 +208,6 @@
 					TrackHeadContainer.gameObject.SetActive(TrackContainer.gameObject.activeSelf);
 				}
 				// Has Beatmap
-				bool changed = false;
 				changed = FixObject(Prefab_Stage, StageContainer, map.Stages.Count) || changed;
 				changed = FixObject(Prefab_Track, TrackContainer, map.Tracks.Count) || changed;
 				changed = FixObject(Prefab_Note, NoteContainer, map.Notes.Count) || changed;
@@ -206,7 +216,7 @@
 				changed = FixObject(Prefab_Stage_Head, StageHeadContainer, map.Stages.Count) || changed;
 				changed = FixObject(Prefab_Track_Head, TrackHeadContainer, map.Tracks.Count) || changed;
 				if (changed) {
-					OnStageObjectChanged();
+					OnItemCountChanged();
 				}
 			} else {
 				// No Beatmap
@@ -381,7 +391,7 @@
 			// Reset Zoom
 			if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) && CheckAntiMouse()) {
 				SetGameDropSpeed(1f);
-				LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.0"), false);
+				LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
 			}
 			// Wheel
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
@@ -389,7 +399,7 @@
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom
 						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
-						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.0"), false);
+						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
 					} else {
 						// Seek
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
@@ -668,7 +678,7 @@
 				pitch = Mathf.Clamp(pitch, -5f, 5f);
 				SetPitch(Mathf.Round(pitch * 10f) / 10f);
 			}
-			LogGameHint_Key(MUSIC_PITCH_HINT, GetPitch().ToString("0.0"), false);
+			LogGameHint_Key(MUSIC_PITCH_HINT, GetPitch().ToString("0.#"), false);
 		}
 
 
@@ -752,7 +762,7 @@ namespace StagerStudio.Editor {
 				base.OnInspectorGUI();
 				if (GUI.changed) {
 					(target as StageGame).SetSpeedCurveDirty();
-					StageGame.OnStageObjectChanged();
+					StageGame.OnItemCountChanged();
 				}
 			} else {
 				serializedObject.Update();

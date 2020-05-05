@@ -282,7 +282,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 36
+        value: 100
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -292,8 +292,8 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: m_AnchoredPosition.y
-    path: Canvas - Main/Title BG
+    attribute: m_AnchoredPosition.x
+    path: Canvas - Main/Inspector
     classID: 224
     script: {fileID: 0}
   m_PPtrCurves: []
@@ -382,8 +382,8 @@ AnimationClip:
       customType: 28
       isPPtrCurve: 0
     - serializedVersion: 2
-      path: 150862004
-      attribute: 538195251
+      path: 3002000890
+      attribute: 1460864421
       script: {fileID: 0}
       typeID: 224
       customType: 28
@@ -734,7 +734,7 @@ AnimationClip:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 36
+        value: 100
         inSlope: 0
         outSlope: 0
         tangentMode: 136
@@ -744,8 +744,8 @@ AnimationClip:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    attribute: m_AnchoredPosition.y
-    path: Canvas - Main/Title BG
+    attribute: m_AnchoredPosition.x
+    path: Canvas - Main/Inspector
     classID: 224
     script: {fileID: 0}
   m_EulerEditorCurves: []

@@ -18,7 +18,6 @@
 
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
-		public delegate void VoidIntHandler (int i);
 		public delegate void VoidFloatHandler (float f);
 		public delegate Beatmap BeatmapHandler ();
 		public delegate bool BoolHandler ();
@@ -49,7 +48,7 @@
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
-		public static VoidIntHandler OnObjectEdited { get; set; } = null;
+		public static VoidHandler OnObjectEdited { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
 		public static BoolHandler GetUseDynamicSpeed { get; set; } = null;
 		public static BoolHandler GetUseAbreast { get; set; } = null;
@@ -207,11 +206,14 @@
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
 			if (SelectingBrushIndex < 0) {
 				// Select or Move
-				var (overlapType, overlapIndex, overlapSubIndex, _) = GetCastTypeIndex(GetMouseRay(), UnlockedMask, true);
+				var ray = GetMouseRay();
+				var (overlapType, overlapIndex, overlapSubIndex, _) = GetCastTypeIndex(ray, UnlockedMask, true);
 				ClickStartInsideSelection = SelectingItemIndex >= 0 && overlapType == SelectingItemType && overlapIndex == SelectingItemIndex;
 				if (!ClickStartInsideSelection) {
 					// Select
-					ClearSelection();
+					if (RayInsideZone(ray, true, false)) {
+						ClearSelection();
+					}
 					if (overlapType >= 0 && overlapIndex >= 0) {
 						SetSelection(overlapType, overlapIndex, overlapSubIndex);
 					}
@@ -355,7 +357,7 @@
 					}
 					if (hoverTarget != null) {
 						gridEnable = true;
-						pos = hoverTarget.position;
+						pos = hoverTarget.GetChild(0).position;
 						rot = hoverTarget.rotation;
 						scl = hoverTarget.GetChild(0).localScale;
 						m_Grid.ObjectSpeedMuti = GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) : 1f;
@@ -545,6 +547,7 @@
 									Stage.GetStagePosition(stage, index),
 									Stage.GetStageWidth(stage),
 									Stage.GetStageHeight(stage),
+									Stage.GetStagePivotY(stage),
 									Stage.GetStageWorldRotationZ(stage)
 								).x;
 								map.SetX(1, index, localPosX);
@@ -561,6 +564,7 @@
 									Stage.GetStagePosition(stage, track.StageIndex),
 									Stage.GetStageWidth(stage),
 									Stage.GetStageHeight(stage),
+									Stage.GetStagePivotY(stage),
 									Stage.GetStageWorldRotationZ(stage),
 									Track.GetTrackX(track),
 									Track.GetTrackWidth(track),
@@ -590,14 +594,23 @@
 						case 4: // Stage Timer
 						case 5: // Track Timer
 							if (axis == 1 || axis == 2) {
+								if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
 								int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
-								var stage = stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
+								var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
 								if (stage == null) { break; }
-								var localPosY = ObjectTimer.ZoneToLocalY(
+								var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
 									zonePos.x, zonePos.y, zonePos.z,
 									Stage.GetStagePosition(stage, index),
 									Stage.GetStageHeight(stage),
+									Stage.GetStagePivotY(stage),
 									Stage.GetStageWorldRotationZ(stage)
+								) : TrackTimer.ZoneToLocalY(
+									zonePos.x, zonePos.y, zonePos.z,
+									Stage.GetStagePosition(stage, index),
+									Stage.GetStageHeight(stage),
+									Stage.GetStagePivotY(stage),
+									Stage.GetStageWorldRotationZ(stage),
+									Track.GetTrackAngle(map.Tracks[index])
 								);
 								if (SelectingItemSubIndex == 2) {
 									// Head
@@ -615,7 +628,7 @@
 							}
 							break;
 					}
-					OnObjectEdited(SelectingItemType);
+					OnObjectEdited();
 				}
 			}
 		}
@@ -641,27 +654,27 @@
 
 
 		public void MoveStageItemUp (object target) {
-			if (!(target is RectTransform)) {
+			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(0, index, index--);
+				MoveItem(0, index, index - 1);
 			}
 		}
 		public void MoveStageItemDown (object target) {
-			if (!(target is RectTransform)) {
+			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(0, index, index++);
+				MoveItem(0, index, index + 1);
 			}
 		}
 		public void MoveTrackItemUp (object target) {
-			if (!(target is RectTransform)) {
+			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(1, index, index--);
+				MoveItem(1, index, index - 1);
 			}
 		}
 		public void MoveTrackItemDown (object target) {
-			if (!(target is RectTransform)) {
+			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(1, index, index++);
+				MoveItem(1, index, index + 1);
 			}
 		}
 
@@ -677,12 +690,13 @@
 				subIndex = -1;
 			}
 			// Select
-			if (SelectingItemType != type || SelectingItemIndex != index || SelectingItemSubIndex != subIndex) {
-				OnSelectionChanged();
-			}
+			bool changed = SelectingItemType != type || SelectingItemIndex != index || SelectingItemSubIndex != subIndex;
 			SelectingItemType = type;
 			SelectingItemIndex = index;
 			SelectingItemSubIndex = subIndex;
+			if (changed) {
+				OnSelectionChanged();
+			}
 		}
 
 
@@ -802,11 +816,13 @@
 		}
 
 
-		private bool RayInsideZone (Ray ray) {
+		private bool RayInsideZone (Ray ray, bool checkX = true, bool checkY = true) {
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
 				var point = ray.GetPoint(enter);
-				return point.x > zoneMin.x && point.x < zoneMax.x && point.y > zoneMin.y && point.y < zoneMax.y;
+				return
+					(!checkX || (point.x > zoneMin.x && point.x < zoneMax.x)) &&
+					(!checkY || (point.y > zoneMin.y && point.y < zoneMax.y));
 			}
 			return false;
 		}
