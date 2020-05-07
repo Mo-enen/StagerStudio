@@ -32,13 +32,13 @@
 			public float Time {
 				get => m_Time / 1000f;
 				set {
-					m_Time = (int)(value * 1000f);
+					m_Time = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public float Value {
 				get => m_Value / 1000f;
 				set {
-					m_Value = (int)(value * 1000f);
+					m_Value = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public int Tween {
@@ -78,7 +78,7 @@
 			public float Time {
 				get => m_Time / 1000f;
 				set {
-					m_Time = (int)(value * 1000f);
+					m_Time = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public int Value {
@@ -122,19 +122,19 @@
 			public float Time {
 				get => m_Time / 1000f;
 				set {
-					m_Time = (int)(value * 1000f);
+					m_Time = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public float A {
 				get => m_A / 1000f;
 				set {
-					m_A = (int)(value * 1000f);
+					m_A = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public float B {
 				get => m_B / 1000f;
 				set {
-					m_B = (int)(value * 1000f);
+					m_B = Mathf.RoundToInt(value * 1000f);
 				}
 			}
 			public int Tween {
@@ -176,23 +176,19 @@
 			// Api
 			public float Time {
 				get => m_Time / 1000f;
-				set => m_Time = (int)(value * 1000f);
+				set => m_Time = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Duration {
 				get => m_Duration / 1000f;
-				set => m_Duration = (int)(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
+				set => m_Duration = Mathf.RoundToInt(Mathf.Clamp(value, 0f, int.MaxValue / 1000f - 1f) * 1000f);
 			}
 			public float X {
 				get => m_X / 1000f;
-				set => m_X = (int)(value * 1000f);
-			}
-			public int ItemType {
-				get => m_ItemType;
-				set => m_ItemType = value;
+				set => m_X = Mathf.RoundToInt(value * 1000f);
 			}
 
 			// Api_Ser
-			public int m_ItemType = 0;
+			public int ItemType = 0;
 			public int m_Time = 0;
 			public int m_Duration = 0;
 			public int m_X = 0;
@@ -215,28 +211,28 @@
 			// API
 			public float Speed {
 				get => m_Speed / 1000f;
-				set => m_Speed = (int)(value * 1000f);
+				set => m_Speed = Mathf.RoundToInt(value * 1000f);
 			}
 
 			public float Y {
 				get => m_Y / 1000f;
-				set => m_Y = (int)(value * 1000f);
+				set => m_Y = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Width {
 				get => m_Width / 1000f;
-				set => m_Width = (int)(value * 1000f);
+				set => m_Width = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Height {
 				get => m_Height / 1000f;
-				set => m_Height = (int)(value * 1000f);
+				set => m_Height = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Rotation {
 				get => m_Rotation;
-				set => m_Rotation = (int)value;
+				set => m_Rotation = Mathf.RoundToInt(value);
 			}
 			public float PivotY {
 				get => m_PivotY / 1000f;
-				set => m_PivotY = (int)(value * 1000f);
+				set => m_PivotY = Mathf.RoundToInt(value * 1000f);
 			}
 
 			// SER-API
@@ -269,11 +265,11 @@
 			// API
 			public float Width {
 				get => m_Width / 1000f;
-				set => m_Width = (int)(value * 1000f);
+				set => m_Width = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Angle {
 				get => m_Angle;
-				set => m_Angle = (int)value;
+				set => m_Angle = Mathf.RoundToInt(value);
 			}
 
 			// API - Ser
@@ -302,11 +298,11 @@
 			// API
 			public float Z {
 				get => m_Z / 1000f;
-				set => m_Z = (int)(value * 1000f);
+				set => m_Z = Mathf.RoundToInt(value * 1000f);
 			}
 			public float Width {
 				get => m_Width / 1000f;
-				set => m_Width = (int)(value * 1000f);
+				set => m_Width = Mathf.RoundToInt(value * 1000f);
 			}
 
 			// SER-API
@@ -339,7 +335,7 @@
 			// API
 			public float Speed {
 				get => m_X / 100f;
-				set => m_X = (int)(value * 100f);
+				set => m_X = Mathf.RoundToInt(value * 100f);
 			}
 
 			// SER
@@ -367,13 +363,13 @@
 		public float Shift {
 			get => m_Shift / 1000f;
 			set {
-				m_Shift = (int)(value * 1000f);
+				m_Shift = Mathf.RoundToInt(value * 1000f);
 			}
 		}
 		public float Ratio {
 			get => m_Ratio / 1000f;
 			set {
-				m_Ratio = (int)(value * 1000f);
+				m_Ratio = Mathf.RoundToInt(value * 1000f);
 			}
 		}
 

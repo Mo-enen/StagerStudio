@@ -217,7 +217,8 @@
 				return Vector2.Lerp(GetNormalPos(), GetAbreastPos(), Abreast.value);
 			}
 			// === Func ===
-			Vector3 GetNormalPos () => new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time);
+			Vector3 GetNormalPos () =>
+				new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time);
 			Vector3 GetAbreastPos () {
 				if (StageCount <= 1) {
 					return new Vector2(0.5f, 0f);
@@ -232,6 +233,9 @@
 			data.Colors, MusicTime - data.Time, PaletteColor(data.Color)
 		);
 
+
+		// Motion
+		public static Vector2 GetStagePosition_Motion (Beatmap.Stage data) => Evaluate(data.Positions, MusicTime - data.Time);
 
 
 		// Matrix

@@ -114,10 +114,54 @@
 		public void SetDirty () => MeshDirty = true;
 
 
-		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU, Vector3 offset, Color tint) => AddQuad01(l, r, d, u, uvL, uvR, uvD, uvU, 0, 1, offset, tint);
+		protected void AddNineCliceQuad (
+			bool hasBorderL, bool hasBorderR, bool hasBorderD, bool hasBorderU,
+			float _l, float _r, float _d, float _u,
+			float _uvL, float _uvR, float _uvD, float _uvU,
+			float _uvL0, float _uvR1, float _uvD0, float _uvU1,
+			Vector3 offset, Color tint, bool normalUV = true, bool normalTri = true
+		) {
+			if (hasBorderL) {
+				if (hasBorderD) {
+					// DL
+					AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset, tint, normalUV, normalTri);
+				}
+				if (hasBorderU) {
+					// UL
+					AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset, tint, normalUV, normalTri);
+				}
+				// L Scale
+				AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset, tint, normalUV, normalTri);
+			}
+			if (hasBorderD) {
+				// DM
+				AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset, tint, normalUV, normalTri);
+			}
+			if (hasBorderU) {
+				// UM
+				AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset, tint, normalUV, normalTri);
+			}
+			// MM
+			AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset, tint, normalUV, normalTri);
+			if (hasBorderR) {
+				if (hasBorderD) {
+					// DR
+					AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset, tint, normalUV, normalTri);
+				}
+				if (hasBorderU) {
+					// UR
+					AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset, tint, normalUV, normalTri);
+				}
+				// R
+				AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset, tint, normalUV, normalTri);
+			}
+		}
 
 
-		protected void AddQuad01 (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, int axisA, int axisB, Vector3 offset, Color tint, bool normalUV = true) {
+		protected void AddQuad01 (float l, float r, float d, float u, float uvL, float uvR, float uvD, float uvU, Vector3 offset, Color tint, bool normalUV = true, bool normalTri = true) => AddQuad01(l, r, d, u, uvL, uvR, uvD, uvU, 0, 1, offset, tint, normalUV, normalTri);
+
+
+		protected void AddQuad01 (float a0, float a1, float b0, float b1, float uvL, float uvR, float uvD, float uvU, int axisA, int axisB, Vector3 offset, Color tint, bool normalUV = true, bool normalTri = true) {
 			int vIndex = Vertices.Count;
 			// Rect
 			Vector3 v = Vector3.zero;
@@ -143,12 +187,21 @@
 				UVs.Add(new Vector2(uvR, uvU));
 			}
 			// Tri
-			Triangles.Add(vIndex + 0);
-			Triangles.Add(vIndex + 1);
-			Triangles.Add(vIndex + 2);
-			Triangles.Add(vIndex + 0);
-			Triangles.Add(vIndex + 2);
-			Triangles.Add(vIndex + 3);
+			if (normalTri) {
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 1);
+				Triangles.Add(vIndex + 2);
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 2);
+				Triangles.Add(vIndex + 3);
+			} else {
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 2);
+				Triangles.Add(vIndex + 1);
+				Triangles.Add(vIndex + 0);
+				Triangles.Add(vIndex + 3);
+				Triangles.Add(vIndex + 2);
+			}
 			// Color
 			Colors.Add(tint);
 			Colors.Add(tint);

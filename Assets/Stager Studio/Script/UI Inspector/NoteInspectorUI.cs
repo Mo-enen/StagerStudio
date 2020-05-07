@@ -56,15 +56,15 @@
 		public int GetSfxParamB () => int.TryParse(m_SfxParamBIF.text, out int result) ? Mathf.Max(result, 0) : 0;
 
 
-		public void SetTime (float value) => m_TimeIF.text = value.ToString("0.###");
-		public void SetBeat (float value) => m_BeatIF.text = value.ToString("0.###");
+		public void SetTime (float value) => m_TimeIF.text = value.ToString();
+		public void SetBeat (float value) => m_BeatIF.text = value.ToString();
 		public void SetItemType (int value) => m_TypeIF.text = value.ToString();
-		public void SetDuration (float value) => m_DurationIF.text = value.ToString("0.###");
-		public void SetPosX (float value) => m_PosXIF.text = value.ToString("0.###");
-		public void SetWidth (float value) => m_WidthIF.text = value.ToString("0.###");
+		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
+		public void SetPosX (float value) => m_PosXIF.text = value.ToString();
+		public void SetWidth (float value) => m_WidthIF.text = value.ToString();
 		public void SetIndex (int value) => m_IndexIF.text = value.ToString();
 		public void SetLink (int value) => m_LinkIF.text = value.ToString();
-		public void SetPosZ (float value) => m_PosZIF.text = value.ToString("0.###");
+		public void SetPosZ (float value) => m_PosZIF.text = value.ToString();
 		public void SetClick (short value) => m_ClickIF.text = value.ToString();
 		public void SetSfx (byte value) => m_SfxIF.text = value.ToString();
 		public void SetSfxParamA (int value) => m_SfxParamAIF.text = value.ToString();

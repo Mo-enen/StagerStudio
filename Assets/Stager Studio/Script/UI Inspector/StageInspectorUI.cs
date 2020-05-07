@@ -52,17 +52,17 @@
 		public float GetHeight () => float.TryParse(m_HeightIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
 		public int GetColor () => int.TryParse(m_ColorIF.text, out int result) ? Mathf.Max(result, 0) : 0;
 
-		public void SetTime (float value) => m_TimeIF.text = value.ToString("0.###");
-		public void SetBeat (float value) => m_BeatIF.text = value.ToString("0.###");
+		public void SetTime (float value) => m_TimeIF.text = value.ToString();
+		public void SetBeat (float value) => m_BeatIF.text = value.ToString();
 		public void SetItemType (int value) => m_TypeIF.text = value.ToString();
-		public void SetDuration (float value) => m_DurationIF.text = value.ToString("0.###");
-		public void SetSpeed (float value) => m_SpeedIF.text = value.ToString("0.###");
-		public void SetPivot (float value) => m_PivotIF.text = value.ToString("0.###");
-		public void SetPosX (float value) => m_PosXIF.text = value.ToString("0.###");
-		public void SetPosY (float value) => m_PosYIF.text = value.ToString("0.###");
-		public void SetRot (float value) => m_RotIF.text = value.ToString("0.###");
-		public void SetWidth (float value) => m_WidthIF.text = value.ToString("0.###");
-		public void SetHeight (float value) => m_HeightIF.text = value.ToString("0.###");
+		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
+		public void SetSpeed (float value) => m_SpeedIF.text = value.ToString();
+		public void SetPivot (float value) => m_PivotIF.text = value.ToString();
+		public void SetPosX (float value) => m_PosXIF.text = value.ToString();
+		public void SetPosY (float value) => m_PosYIF.text = value.ToString();
+		public void SetRot (float value) => m_RotIF.text = value.ToString();
+		public void SetWidth (float value) => m_WidthIF.text = value.ToString();
+		public void SetHeight (float value) => m_HeightIF.text = value.ToString();
 		public void SetColor (int value) => m_ColorIF.text = value.ToString();
 
 

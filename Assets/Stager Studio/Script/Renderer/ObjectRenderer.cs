@@ -155,47 +155,28 @@
 					scale.y
 				) / tHeight) : _uvU1;
 				// Quad
-				if (hasBorderL) {
-					if (hasBorderD) {
-						// DL
-						AddQuad01(0f, _l, 0f, _d, _uvL0, _uvL, _uvD0, _uvD, offset, Tint);
-					}
-					if (hasBorderU) {
-						// UL
-						AddQuad01(0f, _l, _u, 1f, _uvL0, _uvL, _uvU, _uvU1, offset, Tint);
-					}
-					// L Scale
-					AddQuad01(0f, _l, _d, _u, _uvL0, _uvL, _uvD, _uvU, offset, Tint);
-				}
-				if (hasBorderD) {
-					// DM
-					AddQuad01(_l, _r, 0f, _d, _uvL, _uvR, _uvD0, _uvD, offset, Tint);
-				}
-				if (hasBorderU) {
-					// UM
-					AddQuad01(_l, _r, _u, 1f, _uvL, _uvR, _uvU, _uvU1, offset, Tint);
-				}
-				// MM
-				AddQuad01(_l, _r, _d, _u, _uvL, _uvR, _uvD, _uvU, offset, Tint);
-				if (hasBorderR) {
-					if (hasBorderD) {
-						// DR
-						AddQuad01(_r, 1f, 0f, _d, _uvR, _uvR1, _uvD0, _uvD, offset, Tint);
-					}
-					if (hasBorderU) {
-						// UR
-						AddQuad01(_r, 1f, _u, 1f, _uvR, _uvR1, _uvU, _uvU1, offset, Tint);
-					}
-					// R
-					AddQuad01(_r, 1f, _d, _u, _uvR, _uvR1, _uvD, _uvU, offset, Tint);
+				AddNineCliceQuad(
+					hasBorderL, hasBorderR, hasBorderD, hasBorderU,
+					_l, _r, _d, _u,
+					_uvL, _uvR, _uvD, _uvU,
+					_uvL0, _uvR1, _uvD0, _uvU1,
+					offset, Tint, true, true
+				);
+				if (is3D) {
+					// Back
+					AddNineCliceQuad(
+						hasBorderL, hasBorderR, hasBorderD, hasBorderU,
+						_l, _r, _d, _u,
+						_uvL, _uvR, _uvD, _uvU,
+						_uvL0, _uvR1, _uvD0, _uvU1,
+						Vector3.zero, Tint, true, false
+					);
 				}
 			}
 			// 3D
 			if (is3D) {
 				float uvL3d = uvL - rData.Thickness3D / tWidth;
 				float uvD3d = uvD - rData.Thickness3D / tHeight;
-				// B
-				AddQuad01(0f, 1f, 1f, 0f, uvL, uvR, uvD, uvU, new Vector3(0f, 0f, 0f), Tint);
 				// L
 				AddQuad01(0f, 1f, 0f, thickness3D, uvL3d, uvL, uvD, uvU, 1, 2, new Vector3(-Pivot.x, 0f, -thickness3D), Tint, false);
 				// R

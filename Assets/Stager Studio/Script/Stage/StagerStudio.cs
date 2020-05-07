@@ -101,6 +101,7 @@
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[SerializeField] private InspectorUI m_Inspector = null;
+		[SerializeField] private AxisHandleUI m_AxisHandle = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
@@ -548,13 +549,14 @@
 			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
 			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => game.UseAbreast;
-			StageEditor.GetMoveAxisHovering = () => m_MoveHandler.Hovering;
+			StageEditor.GetMoveAxisHovering = m_MoveHandler.GetEntering;
 			StageEditor.OnObjectEdited = () => {
 				RefreshOnItemChange(game);
 				m_Inspector.RefreshAllInspectors();
 			};
 			StageEditor.GetFilledTime = game.FillTime;
 			StageEditor.SetAbreastIndex = game.SetAbreastIndex;
+			StageEditor.LogAxisMessage = m_AxisHandle.LogAxisMessage;
 		}
 
 

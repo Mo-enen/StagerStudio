@@ -47,13 +47,13 @@
 		public int GetIndex () => int.TryParse(m_IndexIF.text, out int result) ? Mathf.Max(result, 0) : 0;
 		public bool GetTray () => m_TrayTG.isOn;
 
-		public void SetTime (float value) => m_TimeIF.text = value.ToString("0.###");
-		public void SetBeat (float value) => m_BeatIF.text = value.ToString("0.###");
+		public void SetTime (float value) => m_TimeIF.text = value.ToString();
+		public void SetBeat (float value) => m_BeatIF.text = value.ToString();
 		public void SetItemType (int value) => m_TypeIF.text = value.ToString();
-		public void SetDuration (float value) => m_DurationIF.text = value.ToString("0.###");
-		public void SetPosX (float value) => m_PosXIF.text = value.ToString("0.###");
-		public void SetWidth (float value) => m_WidthIF.text = value.ToString("0.###");
-		public void SetAngle (float value) => m_AngleIF.text = value.ToString("0");
+		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
+		public void SetPosX (float value) => m_PosXIF.text = value.ToString();
+		public void SetWidth (float value) => m_WidthIF.text = value.ToString();
+		public void SetAngle (float value) => m_AngleIF.text = ((int)value).ToString();
 		public void SetColor (int value) => m_ColorIF.text = value.ToString();
 		public void SetIndex (int value) => m_IndexIF.text = value.ToString();
 		public void SetTray (bool value) => m_TrayTG.isOn = value;

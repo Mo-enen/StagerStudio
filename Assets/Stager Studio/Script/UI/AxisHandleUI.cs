@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.Events;
-
+	using Rendering;
 
 
 	public class AxisHandleUI : MonoBehaviour {
@@ -14,7 +14,7 @@
 		#region --- SUB ---
 
 
-		[System.Serializable] public class AxisEventHandler : UnityEvent<Vector3, Vector3?, int> { }
+		[System.Serializable] public class AxisEventHandler : UnityEvent<Vector3, Vector3, int> { }
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 
 
@@ -27,18 +27,18 @@
 
 		// Api
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
-		public bool Hovering => m_TriggerX.Entering || m_TriggerY.Entering || m_TriggerXY.Entering;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
+		private ColliderTriggerUI[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<ColliderTriggerUI>(true));
 
 		// Ser
-		[SerializeField] private ColliderTriggerUI m_TriggerX = null;
-		[SerializeField] private ColliderTriggerUI m_TriggerY = null;
-		[SerializeField] private ColliderTriggerUI m_TriggerXY = null;
 		[SerializeField] private AxisEventHandler m_OnDrag = null;
+		[SerializeField] private TextRenderer m_Hint = null;
+		[SerializeField] private Color[] m_HintTints = null;
 
 		// Data
+		private ColliderTriggerUI[] _Triggers = null;
 		private Camera _Camera = null;
 		private Vector3? MouseDown = null;
 
@@ -52,35 +52,36 @@
 
 
 		private void Update () {
-			if (MouseDown.HasValue && !Input.GetMouseButton(0) && !Input.GetMouseButton(1)) {
-				MouseDown = null;
+			if (!Input.GetMouseButton(0)) {
+				if (MouseDown.HasValue) {
+					MouseDown = null;
+				}
+				m_Hint.RendererEnable = false;
 			}
 		}
 
 
-		public void OnAxisDown (int axis) {
+		public void OnAxisDown (int axis) { // 0:x  1:y  2:xy  3: width
 			if (m_OnDrag == null) { return; }
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var downPos = Util.GetRayPosition(GetMouseRay(), zoneMin, zoneMax, transform, false);
 			if (downPos.HasValue) {
 				MouseDown = downPos.Value;
-				m_OnDrag.Invoke(downPos.Value, downPos, axis);
+				m_OnDrag.Invoke(downPos.Value, downPos.Value, -axis - 1);
 			} else {
 				MouseDown = null;
 			}
 		}
 
 
-
-		public void OnAxisDrag (int axis) { // 0:x  1:y  2:xy
+		public void OnAxisDrag (int axis) { // 0:x  1:y  2:xy  3: width
 			if (m_OnDrag == null || !MouseDown.HasValue) { return; }
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var mousePos = Util.GetRayPosition(GetMouseRay(), zoneMin, zoneMax, transform, false);
 			if (mousePos.HasValue) {
-				m_OnDrag.Invoke(mousePos.Value, null, axis);
+				m_OnDrag.Invoke(mousePos.Value, MouseDown.Value, axis + 1);
 			}
 		}
-
 
 
 		#endregion
@@ -91,6 +92,21 @@
 		#region --- API ---
 
 
+		public bool GetEntering () {
+			foreach (var t in Triggers) {
+				if (t.Entering) { return true; }
+			}
+			return false;
+		}
+
+
+		public void LogAxisMessage (int axis, string hint) {
+			m_Hint.RendererEnable = true;
+			m_Hint.Text = hint;
+			if (axis >= 0 && axis < m_HintTints.Length) {
+				m_Hint.Tint = m_HintTints[axis];
+			}
+		}
 
 
 		#endregion

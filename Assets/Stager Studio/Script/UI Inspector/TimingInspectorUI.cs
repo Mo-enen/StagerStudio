@@ -38,9 +38,9 @@
 		public int GetSfxParamB () => int.TryParse(m_SfxParamBIF.text, out int result) ? Mathf.Max(result, 0) : 0;
 
 
-		public void SetTime (float value) => m_TimeIF.text = value.ToString("0.###");
-		public void SetBeat (float value) => m_BeatIF.text = value.ToString("0.###");
-		public void SetDuration (float value) => m_DurationIF.text = value.ToString("0.###");
+		public void SetTime (float value) => m_TimeIF.text = value.ToString();
+		public void SetBeat (float value) => m_BeatIF.text = value.ToString();
+		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
 		public void SetSpeed (int value) => m_SpeedIF.text = value.ToString();
 		public void SetSfx (byte value) => m_SfxIF.text = value.ToString();
 		public void SetSfxParamA (int value) => m_SfxParamAIF.text = value.ToString();

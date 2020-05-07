@@ -34,9 +34,10 @@
 
 		public void SetBpm (int value) => m_BpmIF.text = value.ToString();
 		public void SetShift (int value) => m_ShiftIF.text = value.ToString();
-		public void SetRatio (float value) => m_RatioIF.text = value.ToString("0.##");
+		public void SetRatio (float value) => m_RatioIF.text = value.ToString();
 		public void SetLevel (float value) => m_LevelIF.text = value.ToString();
 		public void SetTag (string value) => m_TagIF.text = value;
+
 
 
 	}

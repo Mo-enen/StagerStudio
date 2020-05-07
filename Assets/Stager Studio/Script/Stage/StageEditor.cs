@@ -24,6 +24,7 @@
 		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate string StringStringHandler (string str);
 		public delegate float FillHandler (float time, float fill, float muti);
+		public delegate void LogAxisHintHandler (int axis, string hint);
 
 
 		#endregion
@@ -57,6 +58,7 @@
 		public static BoolHandler GetMoveAxisHovering { get; set; } = null;
 		public static FillHandler GetFilledTime { get; set; } = null;
 		public static VoidFloatHandler SetAbreastIndex { get; set; } = null;
+		public static LogAxisHintHandler LogAxisMessage { get; set; } = null;
 
 		// Api
 		public int SelectingItemType { get; private set; } = -1;
@@ -74,6 +76,7 @@
 		private Transform AxisMoveX => m_MoveAxis.GetChild(0);
 		private Transform AxisMoveY => m_MoveAxis.GetChild(1);
 		private Transform AxisMoveXY => m_MoveAxis.GetChild(2);
+		private Transform AxisMoveWidth => m_MoveAxis.GetChild(3);
 
 		// Ser
 		[SerializeField] private Toggle[] m_EyeTGs = null;
@@ -85,12 +88,14 @@
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private Transform m_MoveAxis = null;
+		[SerializeField] private Sprite m_HoverSP_Item = null;
+		[SerializeField] private Sprite m_HoverSP_Timer = null;
+		[SerializeField] private Renderer[] AxisRenderers = null;
 
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
 		private readonly static bool[] ItemLock = { false, false, false, false, false, };
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
-		private Renderer[] AxisRenderers = null;
 		private Camera _Camera = null;
 		private bool UIReady = true;
 		private int SortingLayerID_UI = -1;
@@ -102,6 +107,7 @@
 		private int HoldNoteLayer = -1;
 		private Vector2 HoverScaleMuti = Vector2.one;
 		private Vector3 DragOffsetWorld = default;
+		private float MouseDownWidth = 1f;
 
 		// Saving
 		public SavingBool UseGlobalBrushScale { get; set; } = new SavingBool("StageEditor.UseGlobalBrushScale", true);
@@ -167,7 +173,6 @@
 
 			// UI
 			HoverScaleMuti = m_Hover.transform.localScale;
-			AxisRenderers = m_MoveAxis.GetComponentsInChildren<Renderer>(true);
 
 		}
 
@@ -291,6 +296,7 @@
 				bool editorActive = GetEditorActive();
 				bool xActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool yActive = editorActive && SelectingItemType != 1;
+				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool xyActive = xActive || yActive;
 				if (AxisMoveX.gameObject.activeSelf != xActive) {
 					AxisMoveX.gameObject.SetActive(xActive);
@@ -300,6 +306,9 @@
 				}
 				if (AxisMoveXY.gameObject.activeSelf != xyActive) {
 					AxisMoveXY.gameObject.SetActive(xyActive);
+				}
+				if (AxisMoveWidth.gameObject.activeSelf != wActive) {
+					AxisMoveWidth.gameObject.SetActive(wActive);
 				}
 				// Axis Renderers
 				foreach (var renderer in AxisRenderers) {
@@ -498,11 +507,17 @@
 					m_Hover.transform.position = target.GetChild(0).position;
 					m_Hover.transform.rotation = target.GetChild(0).rotation;
 					m_Hover.size = target.GetChild(0).localScale / HoverScaleMuti;
+					if (m_Hover.sprite != m_HoverSP_Item) {
+						m_Hover.sprite = m_HoverSP_Item;
+					}
 				} else if (type < 6) {
 					// Timer
 					m_Hover.transform.position = target.GetChild(subIndex).position;
 					m_Hover.transform.rotation = target.rotation;
 					m_Hover.size = target.GetChild(subIndex).localScale / HoverScaleMuti;
+					if (m_Hover.sprite != m_HoverSP_Timer) {
+						m_Hover.sprite = m_HoverSP_Timer;
+					}
 				}
 			}
 			TrySetTargetActive(m_Hover.gameObject, target != null);
@@ -510,126 +525,189 @@
 
 
 		// Axis
-		public void OnMoveAxisDrag (Vector3 pos, Vector3? downPos, int axis) {
+		public void OnMoveAxisDrag (Vector3 pos, Vector3 downPos, int axis) {
 			AxisDragging = true;
 			var map = GetBeatmap();
-			if (map != null && SelectingItemIndex >= 0) {
-				var (zoneMin, zoneMax_real, zoneSize, _) = GetZoneMinMax();
-				var zoneMax = zoneMax_real;
-				zoneMax.y = zoneMin.y + zoneSize;
-				if (downPos.HasValue) {
-					// Down
-					DragOffsetWorld = downPos.Value - m_MoveAxis.position;
-				} else {
-					// Drag
-					pos = m_Grid.SnapWorld(
-						pos - DragOffsetWorld,
-						SelectingItemType == 1
-					);
-					var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
-					int index = SelectingItemIndex;
-					switch (SelectingItemType) {
-						case 0:  // Stage
-							if (axis == 0 || axis == 2) {
-								map.SetX(0, index, zonePos.x);
+			if (map == null || SelectingItemIndex < 0) { return; }
+			var (zoneMin, zoneMax_real, zoneSize, _) = GetZoneMinMax();
+			var zoneMax = zoneMax_real;
+			zoneMax.y = zoneMin.y + zoneSize;
+			// Fix Axis
+			var axisWorldPos = m_MoveAxis.position;
+			bool isDown = axis < 0;
+			axis = Mathf.Abs(axis) - 1;
+			if (isDown) {
+				DragOffsetWorld = downPos - axisWorldPos;
+			}
+			// Dragging
+			int index = SelectingItemIndex;
+			switch (SelectingItemType) {
+				case 0: { // Stage
+						if (index >= map.Stages.Count) { break; }
+						var stage = map.Stages[index];
+						Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld - worldMotion, SelectingItemType == 1);
+						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+						if (axis == 0 || axis == 2) {
+							map.SetX(0, index, snappedZonePos.x);
+							LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
+						}
+						if (axis == 1 || axis == 2) {
+							map.SetStageY(index, snappedZonePos.y);
+							LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
+						}
+						if (axis == 3) {
+							if (isDown) {
+								MouseDownWidth = stage.Width;
+							} else {
+								float newWidth = Mathf.Abs(GetAxisWidth());
+								map.SetStageWidth(index, newWidth);
+								LogAxisMSG(axis, newWidth);
 							}
-							if (axis == 1 || axis == 2) {
-								map.SetStageY(index, zonePos.y);
-							}
-							break;
-						case 1: // Track
-							if (axis == 0 || axis == 2) {
-								var track = index < map.Tracks.Count ? map.Tracks[index] : null;
-								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-								var stage = map.Stages[track.StageIndex];
-								var localPosX = Stage.ZoneToLocal(
-									zonePos.x, zonePos.y, zonePos.z,
-									Stage.GetStagePosition(stage, index),
-									Stage.GetStageWidth(stage),
-									Stage.GetStageHeight(stage),
-									Stage.GetStagePivotY(stage),
-									Stage.GetStageWorldRotationZ(stage)
-								).x;
-								map.SetX(1, index, localPosX);
-							}
-							break;
-						case 2: { // Note
-								var note = index < map.Notes.Count ? map.Notes[index] : null;
-								if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
-								var track = map.Tracks[note.TrackIndex];
-								if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-								var stage = map.Stages[track.StageIndex];
-								var localPos = Track.ZoneToLocal(
-									zonePos.x, zonePos.y, zonePos.z,
-									Stage.GetStagePosition(stage, track.StageIndex),
-									Stage.GetStageWidth(stage),
-									Stage.GetStageHeight(stage),
-									Stage.GetStagePivotY(stage),
-									Stage.GetStageWorldRotationZ(stage),
-									Track.GetTrackX(track),
-									Track.GetTrackWidth(track),
-									Track.GetTrackAngle(track)
-								);
-								if (axis == 0 || axis == 2) {
-									map.SetX(2, index, localPos.x);
-								}
-								if (axis == 1 || axis == 2) {
-									map.SetTime(2, index, GetFilledTime(
-										m_Grid.MusicTime,
-										localPos.y,
-										m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
-									));
-								}
-							}
-							break;
-						case 3:  // Timing
-							if (axis == 1 || axis == 2) {
-								var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, pos.x, pos.y, pos.z);
-								map.SetTime(
-									3, index,
-									Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f)
-								);
-							}
-							break;
-						case 4: // Stage Timer
-						case 5: // Track Timer
-							if (axis == 1 || axis == 2) {
-								if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
-								int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
-								var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
-								if (stage == null) { break; }
-								var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
-									zonePos.x, zonePos.y, zonePos.z,
-									Stage.GetStagePosition(stage, index),
-									Stage.GetStageHeight(stage),
-									Stage.GetStagePivotY(stage),
-									Stage.GetStageWorldRotationZ(stage)
-								) : TrackTimer.ZoneToLocalY(
-									zonePos.x, zonePos.y, zonePos.z,
-									Stage.GetStagePosition(stage, index),
-									Stage.GetStageHeight(stage),
-									Stage.GetStagePivotY(stage),
-									Stage.GetStageWorldRotationZ(stage),
-									Track.GetTrackAngle(map.Tracks[index])
-								);
-								if (SelectingItemSubIndex == 2) {
-									// Head
-									map.SetTime(
-										SelectingItemType - 4, index,
-										Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime, m_Grid.MusicTime + 1f, localPosY), 0f)
-									);
-								} else if (SelectingItemSubIndex == 3) {
-									// Tail
-									map.SetDuration(
-										SelectingItemType - 4, index,
-										Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f)
-									);
-								}
-							}
-							break;
+						}
 					}
-					OnObjectEdited();
+					break;
+				case 1: {// Track
+						var track = index < map.Tracks.Count ? map.Tracks[index] : null;
+						if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+						if (axis == 0 || axis == 2) {
+							var stage = map.Stages[track.StageIndex];
+							var sPos = Stage.GetStagePosition(stage, index);
+							var sWidth = Stage.GetStageWidth(stage);
+							var sHeight = Stage.GetStageHeight(stage);
+							var sPivotY = Stage.GetStagePivotY(stage);
+							var sRotZ = Stage.GetStageWorldRotationZ(stage);
+							var basicZonePos = Stage.LocalToZone(
+								track.X, 0f, 0f,
+								sPos, sWidth, sHeight, sPivotY, sRotZ
+							);
+							var snappedPos = m_Grid.SnapWorld(
+								pos + axisWorldPos - DragOffsetWorld - Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z),
+								SelectingItemType == 1
+							);
+							var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+							float newX = Stage.ZoneToLocal(
+								snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+								sPos, sWidth, sHeight, sPivotY, sRotZ
+							).x;
+							map.SetX(1, index, newX);
+							LogAxisMSG(axis, newX);
+						}
+						if (axis == 3) {
+							if (isDown) {
+								MouseDownWidth = track.Width;
+							} else {
+								float newWidth = Mathf.Abs(GetAxisWidth());
+								map.SetTrackWidth(index, newWidth);
+								LogAxisMSG(axis, newWidth);
+							}
+						}
+					}
+					break;
+				case 2: { // Note
+						var note = index < map.Notes.Count ? map.Notes[index] : null;
+						if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
+						var track = map.Tracks[note.TrackIndex];
+						if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+						var stage = map.Stages[track.StageIndex];
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, SelectingItemType == 1);
+						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+						var localPos = Track.ZoneToLocal(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+							Stage.GetStagePosition(stage, track.StageIndex),
+							Stage.GetStageWidth(stage),
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage),
+							Track.GetTrackX(track),
+							Track.GetTrackWidth(track),
+							Track.GetTrackAngle(track)
+						);
+						if (axis == 0 || axis == 2) {
+							map.SetX(2, index, localPos.x);
+							LogAxisMSG(axis, localPos.x);
+						}
+						if (axis == 1 || axis == 2) {
+							float newTime = GetFilledTime(
+								m_Grid.MusicTime,
+								localPos.y,
+								m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
+							);
+							map.SetTime(2, index, newTime);
+							LogAxisMSG(axis, localPos.x, newTime);
+						}
+						if (axis == 3) {
+							if (isDown) {
+								MouseDownWidth = note.Width;
+							} else {
+								float newWidth = Mathf.Abs(GetAxisWidth());
+								map.SetNoteWidth(index, newWidth);
+								LogAxisMSG(axis, newWidth);
+							}
+						}
+					}
+					break;
+				case 3: { // Timing
+						if (axis == 1 || axis == 2) {
+							var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, SelectingItemType == 1);
+							var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
+							float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f);
+							map.SetTime(3, index, newTime);
+							LogAxisMSG(axis, newTime);
+						}
+					}
+					break;
+				case 4: // Stage Timer
+				case 5: // Track Timer
+					if (axis == 1 || axis == 2) {
+						if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
+						int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
+						var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
+						if (stage == null) { break; }
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, SelectingItemType == 1);
+						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+						var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+							Stage.GetStagePosition(stage, index),
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage)
+						) : TrackTimer.ZoneToLocalY(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+							Stage.GetStagePosition(stage, index),
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage),
+							Track.GetTrackAngle(map.Tracks[index])
+						);
+						if (SelectingItemSubIndex == 2) {
+							// Head
+							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime, m_Grid.MusicTime + 1f, localPosY), 0f);
+							map.SetTime(SelectingItemType - 4, index, newTime);
+							LogAxisMSG(axis, newTime);
+						} else if (SelectingItemSubIndex == 3) {
+							// Tail
+							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f);
+							map.SetDuration(SelectingItemType - 4, index, newTime);
+							LogAxisMSG(axis, newTime);
+						}
+					}
+					break;
+			}
+			OnObjectEdited();
+			// === Func ===
+			float GetAxisWidth () {
+				var axisLeft = -m_MoveAxis.right;
+				float downPro = Vector3.Project(downPos - axisWorldPos, axisLeft).magnitude;
+				float posPro = Vector3.Project(pos - axisWorldPos, axisLeft).magnitude;
+				if (Vector2.Angle(pos - axisWorldPos, axisLeft) > 90f) {
+					posPro = -posPro;
 				}
+				float newWidth = MouseDownWidth + (posPro - downPro) / zoneSize;
+				if (m_Grid.RendererEnable) {
+					newWidth = Util.Snap(newWidth, 20);
+				}
+				return newWidth;
 			}
 		}
 
@@ -892,6 +970,25 @@
 			if (map != null) {
 				ClearSelection();
 				map.SetItemIndex(type, index, newIndex);
+			}
+		}
+
+
+		private void LogAxisMSG (int axis, float value) => LogAxisMessage(axis, value.ToString("0.##"));
+		private void LogAxisMSG (int axis, float value0, float value1) {
+			switch (axis) {
+				case 0:
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
+				case 1:
+					LogAxisMessage(axis, value1.ToString("0.##"));
+					break;
+				case 2:
+					LogAxisMessage(axis, value0.ToString("0.##") + ", " + value1.ToString("0.##"));
+					break;
+				case 3:
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
 			}
 		}
 
