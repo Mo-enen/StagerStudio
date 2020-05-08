@@ -465,13 +465,13 @@
 		public MapItem GetItem (int type, int index) {
 			switch (type) {
 				case 0:
-					return index >= 0 && index < Stages.Count ? Stages[index] : null;
+				return index >= 0 && index < Stages.Count ? Stages[index] : null;
 				case 1:
-					return index >= 0 && index < Tracks.Count ? Tracks[index] : null;
+				return index >= 0 && index < Tracks.Count ? Tracks[index] : null;
 				case 2:
-					return index >= 0 && index < Notes.Count ? Notes[index] : null;
+				return index >= 0 && index < Notes.Count ? Notes[index] : null;
 				case 3:
-					return index >= 0 && index < Timings.Count ? Timings[index] : null;
+				return index >= 0 && index < Timings.Count ? Timings[index] : null;
 			}
 			return null;
 		}
@@ -490,18 +490,22 @@
 			var item = GetItem(type, index);
 			return item != null ? item.Time : 0f;
 		}
+		public float GetDuration (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.Duration : 0f;
+		}
 		public int GetParentIndex (int type, int index) {
 			switch (type) {
 				case 1:
-					if (index >= 0 && index < Tracks.Count) {
-						return Tracks[index].StageIndex;
-					}
-					break;
+				if (index >= 0 && index < Tracks.Count) {
+					return Tracks[index].StageIndex;
+				}
+				break;
 				case 2:
-					if (index >= 0 && index < Notes.Count) {
-						return Notes[index].TrackIndex;
-					}
-					break;
+				if (index >= 0 && index < Notes.Count) {
+					return Notes[index].TrackIndex;
+				}
+				break;
 			}
 			return -1;
 		}
@@ -529,57 +533,57 @@
 		public void SetItemIndex (int type, int index, int newIndex) {
 			switch (type) {
 				case 0: // Stage
-					if (index >= 0 && index < Stages.Count && newIndex >= 0 && newIndex < Stages.Count) {
-						var temp = Stages[index];
-						Stages[index] = Stages[newIndex];
-						Stages[newIndex] = temp;
-						for (int i = 0; i < Tracks.Count; i++) {
-							var track = Tracks[i];
-							if (track.StageIndex == index) {
-								track.StageIndex = newIndex;
-							} else if (track.StageIndex == newIndex) {
-								track.StageIndex = index;
-							}
+				if (index >= 0 && index < Stages.Count && newIndex >= 0 && newIndex < Stages.Count) {
+					var temp = Stages[index];
+					Stages[index] = Stages[newIndex];
+					Stages[newIndex] = temp;
+					for (int i = 0; i < Tracks.Count; i++) {
+						var track = Tracks[i];
+						if (track.StageIndex == index) {
+							track.StageIndex = newIndex;
+						} else if (track.StageIndex == newIndex) {
+							track.StageIndex = index;
 						}
 					}
-					break;
+				}
+				break;
 				case 1: // Track
-					if (index >= 0 && index < Tracks.Count && newIndex >= 0 && newIndex < Tracks.Count) {
-						var temp = Tracks[index];
-						Tracks[index] = Tracks[newIndex];
-						Tracks[newIndex] = temp;
-						for (int i = 0; i < Notes.Count; i++) {
-							var note = Notes[i];
-							if (note.TrackIndex == index) {
-								note.TrackIndex = newIndex;
-							} else if (note.TrackIndex == newIndex) {
-								note.TrackIndex = index;
-							}
+				if (index >= 0 && index < Tracks.Count && newIndex >= 0 && newIndex < Tracks.Count) {
+					var temp = Tracks[index];
+					Tracks[index] = Tracks[newIndex];
+					Tracks[newIndex] = temp;
+					for (int i = 0; i < Notes.Count; i++) {
+						var note = Notes[i];
+						if (note.TrackIndex == index) {
+							note.TrackIndex = newIndex;
+						} else if (note.TrackIndex == newIndex) {
+							note.TrackIndex = index;
 						}
 					}
-					break;
+				}
+				break;
 				case 2: // Note
-					if (index >= 0 && index < Notes.Count && newIndex >= 0 && newIndex < Notes.Count) {
-						var temp = Notes[index];
-						Notes[index] = Notes[newIndex];
-						Notes[newIndex] = temp;
-						for (int i = 0; i < Notes.Count; i++) {
-							var note = Notes[i];
-							if (note.LinkedNoteIndex == index) {
-								note.LinkedNoteIndex = newIndex;
-							} else if (note.LinkedNoteIndex == newIndex) {
-								note.LinkedNoteIndex = index;
-							}
+				if (index >= 0 && index < Notes.Count && newIndex >= 0 && newIndex < Notes.Count) {
+					var temp = Notes[index];
+					Notes[index] = Notes[newIndex];
+					Notes[newIndex] = temp;
+					for (int i = 0; i < Notes.Count; i++) {
+						var note = Notes[i];
+						if (note.LinkedNoteIndex == index) {
+							note.LinkedNoteIndex = newIndex;
+						} else if (note.LinkedNoteIndex == newIndex) {
+							note.LinkedNoteIndex = index;
 						}
 					}
-					break;
+				}
+				break;
 				case 3: // Timing
-					if (index >= 0 && index < Timings.Count && newIndex >= 0 && newIndex < Timings.Count) {
-						var temp = Timings[index];
-						Timings[index] = Timings[newIndex];
-						Timings[newIndex] = temp;
-					}
-					break;
+				if (index >= 0 && index < Timings.Count && newIndex >= 0 && newIndex < Timings.Count) {
+					var temp = Timings[index];
+					Timings[index] = Timings[newIndex];
+					Timings[newIndex] = temp;
+				}
+				break;
 			}
 
 
@@ -721,7 +725,86 @@
 			}
 		}
 
+		// Add
+		public void AddStage (
+			float time, float duration,
+			float x = 0f, float y = 0f,
+			float width = 1f, float height = 1f,
+			int itemType = 0, float pivotY = 0f,
+			float rotation = 0f, float speed = 1f,
+			int color = 0
+		) => Stages.Add(new Stage() {
+			Time = time,
+			Duration = duration,
+			X = x,
+			Y = y,
+			Width = width,
+			Height = height,
+			ItemType = itemType,
+			PivotY = pivotY,
+			Rotation = rotation,
+			Speed = speed,
+			Color = color,
+			Rotations = { },
+			Widths = { },
+			Heights = { },
+			Colors = { },
+			Positions = { },
+		});
 
+
+		public void AddTrack (
+			int stageIndex, float time, float duration,
+			float x = 0f, float width = 0f, float angle = 0f,
+			int color = 0, int itemType = 0,
+			bool hasTray = false
+		) => Tracks.Add(new Track() {
+			StageIndex = stageIndex,
+			Time = time,
+			Duration = duration,
+			X = x,
+			Width = width,
+			Angle = angle,
+			Color = color,
+			ItemType = itemType,
+			Widths = { },
+			Xs = { },
+			HasTray = hasTray,
+			Colors = { },
+			Angles = { },
+		});
+
+
+		public void AddNote (
+			int trackIndex, float time, float duration,
+			float x = 0f, float width = 0f,
+			int linkedNoteIndex = -1, int itemType = 0,
+			float z = 0f, byte clickSoundIndex = 0
+		) => Notes.Add(new Note() {
+			TrackIndex = trackIndex,
+			Time = time,
+			Duration = duration,
+			X = x,
+			Z = z,
+			Width = width,
+			ItemType = itemType,
+			ClickSoundIndex = clickSoundIndex,
+			LinkedNoteIndex = linkedNoteIndex,
+			SoundFxIndex = 0,
+			SoundFxParamA = 0,
+			SoundFxParamB = 0,
+		});
+
+
+		public void AddTiming (
+			float time, float speed, float duration = 0f
+		) => Timings.Add(new Timing(time, speed) {
+			Duration = duration,
+			ItemType = 0,
+			SoundFxIndex = 0,
+			SoundFxParamA = 0,
+			SoundFxParamB = 0,
+		});
 
 	}
 

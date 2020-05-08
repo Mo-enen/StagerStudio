@@ -195,7 +195,7 @@
 				VanishDuration < DURATION_GAP ? 1f :
 				Mathf.Min(data.Time + data.Duration - MusicTime, MusicTime - data.Time) / VanishDuration
 			), 1f,
-			Abreast.value
+			MusicPlaying ? Abreast.value : 1f
 		);
 
 

@@ -29,13 +29,13 @@
 
 
 		// API
-		public float GetTime () => float.TryParse(m_TimeIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetBeat () => float.TryParse(m_BeatIF.text, out float result) ? result : 0f;
-		public int GetSpeed () => int.TryParse(m_SpeedIF.text, out int result) ? Mathf.Clamp(result, -51200, 51200) : 100;
-		public float GetDuration () => float.TryParse(m_DurationIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public byte GetSfx () => byte.TryParse(m_SfxIF.text, out byte result) ? (byte)Mathf.Max(result, 0) : (byte)0;
-		public int GetSfxParamA () => int.TryParse(m_SfxParamAIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public int GetSfxParamB () => int.TryParse(m_SfxParamBIF.text, out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetBeat () => m_BeatIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public int GetSpeed () => m_SpeedIF.text.TryParseIntForInspector(out int result) ? Mathf.Clamp(result, -51200, 51200) : 100;
+		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public byte GetSfx () => m_SfxIF.text.TryParseIntForInspector(out int result) ? (byte)Mathf.Max(result, 0) : (byte)0;
+		public int GetSfxParamA () => m_SfxParamAIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetSfxParamB () => m_SfxParamBIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 
 
 		public void SetTime (float value) => m_TimeIF.text = value.ToString();

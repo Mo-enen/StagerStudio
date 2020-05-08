@@ -25,11 +25,12 @@
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
 
+
 		// API
-		public int GetBpm () => int.TryParse(m_BpmIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public int GetShift () => int.TryParse(m_ShiftIF.text, out int result) ? result : 0;
-		public float GetRatio () => float.TryParse(m_RatioIF.text, out float result) ? Mathf.Max(result, 0.1f) : 0f;
-		public int GetLevel () => int.TryParse(m_LevelIF.text, out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetBpm () => m_BpmIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetShift () => m_ShiftIF.text.TryParseIntForInspector(out int result) ? result : 0;
+		public float GetRatio () => m_RatioIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0.1f) : 0f;
+		public int GetLevel () => m_LevelIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 		public string GetTag () => m_TagIF.text;
 
 		public void SetBpm (int value) => m_BpmIF.text = value.ToString();

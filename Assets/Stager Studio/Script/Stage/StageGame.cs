@@ -116,6 +116,7 @@
 		private Coroutine AbreastWidthCor = null;
 		private Coroutine AbreastIndexCor = null;
 		private Coroutine FocusAniCor = null;
+		private Vector2? MouseMiddlePrevPos = null;
 		private bool FocusMode = false;
 		private float _BPM = 120f;
 		private float _Ratio = 1.5f;
@@ -397,11 +398,11 @@
 			if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.01f) {
 				if (CheckAntiMouse()) {
 					if (Input.GetKey(KeyCode.LeftControl)) {
-						// Zoom
+						// Zoom Speed
 						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
 						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
 					} else {
-						// Seek
+						// Seek Music
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
 						if (Input.GetKey(KeyCode.LeftAlt)) {
 							delta *= 0.1f;
@@ -414,6 +415,7 @@
 			}
 			// Right
 			if (Input.GetMouseButton(1)) {
+				// Seek Music
 				if (MouseDownMusicTime < -0.5f) {
 					// Right Down
 					if (MouseDownMusicTime > -1.5f) {
@@ -440,6 +442,25 @@
 				}
 				MouseDownMusicTime = -1f;
 			}
+			// Middle
+			if (Input.GetMouseButton(2)) {
+				if (MouseMiddlePrevPos.HasValue) {
+					// Swipe Abreast Index
+					if (UseAbreast) {
+						var map = GetBeatmap();
+						if (map != null) {
+							AbreastIndex = Mathf.Clamp(
+								AbreastIndex - (Input.mousePosition.x - MouseMiddlePrevPos.Value.x) / AbreastWidth * 0.001f,
+								0, map.Stages.Count - 1
+							);
+						}
+					}
+				}
+				MouseMiddlePrevPos = Input.mousePosition;
+			} else if (MouseMiddlePrevPos.HasValue) {
+				MouseMiddlePrevPos = null;
+			}
+
 			// Func
 			bool CheckAntiMouse (bool mustInZone = true) {
 				// Transform

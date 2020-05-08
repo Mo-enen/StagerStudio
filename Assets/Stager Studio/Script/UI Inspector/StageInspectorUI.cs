@@ -39,18 +39,18 @@
 
 
 		// API
-		public float GetTime () => float.TryParse(m_TimeIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetBeat () => float.TryParse(m_BeatIF.text, out float result) ? result : 0f;
-		public int GetItemType () => int.TryParse(m_TypeIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public float GetDuration () => float.TryParse(m_DurationIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetSpeed () => float.TryParse(m_SpeedIF.text, out float result) ? Mathf.Max(result, 0f) : 1f;
-		public float GetPivot () => float.TryParse(m_PivotIF.text, out float result) ? result : 0f;
-		public float GetPosX () => float.TryParse(m_PosXIF.text, out float result) ? result : 0f;
-		public float GetPosY () => float.TryParse(m_PosYIF.text, out float result) ? result : 0f;
-		public float GetRot () => float.TryParse(m_RotIF.text, out float result) ? result : 0f;
-		public float GetWidth () => float.TryParse(m_WidthIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetHeight () => float.TryParse(m_HeightIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public int GetColor () => int.TryParse(m_ColorIF.text, out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetBeat () => m_BeatIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public int GetItemType () => m_TypeIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetSpeed () => m_SpeedIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 1f;
+		public float GetPivot () => m_PivotIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetPosX () => m_PosXIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetPosY () => m_PosYIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetRot () => m_RotIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetWidth () => m_WidthIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetHeight () => m_HeightIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public int GetColor () => m_ColorIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 
 		public void SetTime (float value) => m_TimeIF.text = value.ToString();
 		public void SetBeat (float value) => m_BeatIF.text = value.ToString();

@@ -85,7 +85,7 @@
 
 
 		// MSG
-		private void Awake_Setting_UI (StageSoundFX sfx, StageMusic music, StageGame game, StageEditor editor) {
+		private void Awake_Setting_UI () {
 
 
 			// Input
@@ -126,9 +126,9 @@
 			}, null, new SavingBool("SS.UIScale2", false), false));
 
 			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
-				sfx.SetUseFX(isOn);
+				m_SoundFX.SetUseFX(isOn);
 				ToggleItemMap[ToggleType.UseSFX].saving.Value = isOn;
-			}, null, sfx.UseFX, true));
+			}, null, m_SoundFX.UseFX, true));
 
 			ToggleItemMap.Add(ToggleType.ShowWave, ((isOn) => {
 				m_Wave.enabled = isOn;
@@ -150,9 +150,9 @@
 			}, () => m_Progress.Snap, new SavingBool("SS.SnapProgress", true), true));
 
 			ToggleItemMap.Add(ToggleType.PositiveScroll, ((isOn) => {
-				game.PositiveScroll = isOn;
+				m_Game.PositiveScroll = isOn;
 				ToggleItemMap[ToggleType.PositiveScroll].saving.Value = isOn;
-			}, () => game.PositiveScroll, new SavingBool("StageGame.PositiveScroll", true), true));
+			}, () => m_Game.PositiveScroll, new SavingBool("StageGame.PositiveScroll", true), true));
 
 			ToggleItemMap.Add(ToggleType.ShowIndexLabel, ((isOn) => {
 				Object.StageObject.ShowIndexLabel = isOn;
@@ -160,8 +160,8 @@
 			}, () => Object.StageObject.ShowIndexLabel, new SavingBool("StageGame.ShowIndexLabel", false), true));
 
 			ToggleItemMap.Add(ToggleType.ShowGrid, ((isOn) => {
-				game.SetShowGrid(isOn);
-			}, () => game.ShowGrid, game.ShowGrid, true));
+				m_Game.SetShowGrid(isOn);
+			}, () => m_Game.ShowGrid, m_Game.ShowGrid, true));
 
 			ToggleItemMap.Add(ToggleType.ShowKeypress, ((isOn) => {
 				m_Keypress.gameObject.SetActive(isOn);
@@ -169,25 +169,25 @@
 			}, () => m_Keypress.gameObject.activeSelf, new SavingBool("StageGame.ShowKeypress", false), true));
 
 			ToggleItemMap.Add(ToggleType.BrushScale, ((isOn) => {
-				editor.UseGlobalBrushScale.Value = isOn;
-			}, () => editor.UseGlobalBrushScale.Value, editor.UseGlobalBrushScale, true));
+				m_Editor.UseGlobalBrushScale.Value = isOn;
+			}, () => m_Editor.UseGlobalBrushScale.Value, m_Editor.UseGlobalBrushScale, true));
 
 			ToggleItemMap.Add(ToggleType.ShowGridOnSelect, ((isOn) => {
-				editor.ShowGridOnSelect.Value = isOn;
-			}, () => editor.ShowGridOnSelect.Value, editor.ShowGridOnSelect, true));
+				m_Editor.ShowGridOnSelect.Value = isOn;
+			}, () => m_Editor.ShowGridOnSelect.Value, m_Editor.ShowGridOnSelect, true));
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
 				value = Mathf.Clamp01(value / 12f);
-				music.Volume = value;
+				m_Music.Volume = value;
 				SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
-			}, () => music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
+			}, () => m_Music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.SoundVolume, ((value) => {
 				value = Mathf.Clamp01(value / 12f);
-				music.SfxVolume = value;
+				m_Music.SfxVolume = value;
 				SliderItemMap[SliderType.SoundVolume].saving.Value = value * 12f;
-			}, () => music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
+			}, () => m_Music.SfxVolume * 12f, new SavingFloat("SS.SoundVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.BgBrightness, ((value) => {
 				m_Background.SetBrightness(Mathf.Clamp01(value / 12f));
@@ -195,22 +195,22 @@
 			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushWidth, ((value) => {
-				editor.StageBrushWidth = Mathf.Clamp01(value / 12f);
+				m_Editor.StageBrushWidth = Mathf.Clamp01(value / 12f);
 				SliderItemMap[SliderType.StageBrushWidth].saving.Value = value;
 			}, null, new SavingFloat("SS.StageBrushWidth", 12f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushHeight, ((value) => {
-				editor.StageBrushHeight = Mathf.Clamp01(value / 12f);
+				m_Editor.StageBrushHeight = Mathf.Clamp01(value / 12f);
 				SliderItemMap[SliderType.StageBrushHeight].saving.Value = value;
 			}, null, new SavingFloat("SS.StageBrushHeight", 12f), true));
 
 			SliderItemMap.Add(SliderType.TrackBrushWidth, ((value) => {
-				editor.TrackBrushWidth = Mathf.Clamp01(value / 12f);
+				m_Editor.TrackBrushWidth = Mathf.Clamp01(value / 12f);
 				SliderItemMap[SliderType.TrackBrushWidth].saving.Value = value;
 			}, null, new SavingFloat("SS.TrackBrushWidth", 2.5f), true));
 
 			SliderItemMap.Add(SliderType.NoteBrushWidth, ((value) => {
-				editor.NoteBrushWidth = Mathf.Clamp01(value / 12f);
+				m_Editor.NoteBrushWidth = Mathf.Clamp01(value / 12f);
 				SliderItemMap[SliderType.NoteBrushWidth].saving.Value = value;
 			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
 

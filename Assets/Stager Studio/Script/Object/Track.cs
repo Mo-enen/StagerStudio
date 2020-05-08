@@ -226,9 +226,9 @@
 		public static Color GetTrackColor (Beatmap.Track data) => EvaluateColor(data.Colors, MusicTime - data.Time, PaletteColor(data.Color));
 
 
-		public static float GetTrackAlpha (Beatmap.Track data) => Mathf.Clamp01(
+		public static float GetTrackAlpha (Beatmap.Track data) => MusicPlaying ? Mathf.Clamp01(
 			VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration
-		);
+		) : 1f;
 
 
 		public static float GetTrackAngle (Beatmap.Track data) => Mathf.LerpAngle(

@@ -35,16 +35,17 @@
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
 
+
 		// API
-		public float GetTime () => float.TryParse(m_TimeIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetBeat () => float.TryParse(m_BeatIF.text, out float result) ? result : 0f;
-		public int GetItemType () => int.TryParse(m_TypeIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public float GetDuration () => float.TryParse(m_DurationIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetPosX () => float.TryParse(m_PosXIF.text, out float result) ? result : 0f;
-		public float GetWidth () => float.TryParse(m_WidthIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetAngle () => float.TryParse(m_AngleIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public int GetColor () => int.TryParse(m_ColorIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public int GetIndex () => int.TryParse(m_IndexIF.text, out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetBeat () => m_BeatIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public int GetItemType () => m_TypeIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetPosX () => m_PosXIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetWidth () => m_WidthIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetAngle () => m_AngleIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0f) : 0f;
+		public int GetColor () => m_ColorIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetIndex () => m_IndexIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 		public bool GetTray () => m_TrayTG.isOn;
 
 		public void SetTime (float value) => m_TimeIF.text = value.ToString();

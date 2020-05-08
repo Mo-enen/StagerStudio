@@ -41,19 +41,19 @@
 
 
 		// API
-		public float GetTime () => float.TryParse(m_TimeIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetBeat () => float.TryParse(m_BeatIF.text, out float result) ? result : 0f;
-		public int GetItemType () => int.TryParse(m_TypeIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public float GetDuration () => float.TryParse(m_DurationIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetPosX () => float.TryParse(m_PosXIF.text, out float result) ? result : 0f;
-		public float GetWidth () => float.TryParse(m_WidthIF.text, out float result) ? Mathf.Max(result, 0f) : 0f;
-		public int GetIndex () => int.TryParse(m_IndexIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public int GetLink () => int.TryParse(m_LinkIF.text, out int result) ? Mathf.Max(result, -1) : -1;
-		public float GetPosZ () => float.TryParse(m_PosZIF.text, out float result) ? result : 0;
+		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetBeat () => m_BeatIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public int GetItemType () => m_TypeIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetPosX () => m_PosXIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetWidth () => m_WidthIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public int GetIndex () => m_IndexIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetLink () => m_LinkIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, -1) : -1;
+		public float GetPosZ () => m_PosZIF.text.TryParseFloatForInspector(out float result) ? result : 0;
 		public short GetClick () => short.TryParse(m_ClickIF.text, out short result) ? (short)Mathf.Max(result, -1) : (short)0;
 		public byte GetSfx () => byte.TryParse(m_SfxIF.text, out byte result) ? (byte)Mathf.Max(result, 0) : (byte)0;
-		public int GetSfxParamA () => int.TryParse(m_SfxParamAIF.text, out int result) ? Mathf.Max(result, 0) : 0;
-		public int GetSfxParamB () => int.TryParse(m_SfxParamBIF.text, out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetSfxParamA () => m_SfxParamAIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
+		public int GetSfxParamB () => m_SfxParamBIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 
 
 		public void SetTime (float value) => m_TimeIF.text = value.ToString();

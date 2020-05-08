@@ -122,5 +122,31 @@
 		}
 
 
+		public static bool TryParseFloatForInspector (this string text, out float result) {
+			result = 0f;
+			if (string.IsNullOrEmpty(text)) { return false; }
+			for (int i = 0; i < text.Length; i++) {
+				if (text[i] == '.' && (i == 0 || text[i - 1] < '0' || text[i - 1] > '9')) {
+					text = text.Insert(i, "0");
+					i++;
+				}
+			}
+			text = System.Text.RegularExpressions.Regex.Replace(text, @"[^0-9.+\-*/]+", string.Empty);
+			text = new System.Data.DataTable().Compute(text, null).ToString();
+			return float.TryParse(text, out result);
+		}
+
+
+		public static bool TryParseIntForInspector (this string text, out int result) {
+			result = 0;
+			if (string.IsNullOrEmpty(text)) { return false; }
+			text = System.Text.RegularExpressions.Regex.Replace(text, @"[^0-9+\-*/]+", string.Empty);
+			text = new System.Data.DataTable().Compute(text, null).ToString();
+			bool success = float.TryParse(text, out float fResult);
+			result = Mathf.RoundToInt(fResult);
+			return success;
+		}
+
+
 	}
 }

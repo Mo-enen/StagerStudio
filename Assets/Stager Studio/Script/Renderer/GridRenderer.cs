@@ -126,7 +126,7 @@
 			ForAllY((y) => AddQuad01(
 				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
 				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero, Tint
-			), false);
+			), m_Mode != GridMode.XX);
 
 		}
 
@@ -182,7 +182,7 @@
 							resY = y;
 							minDis = Mathf.Abs(pos.y - y);
 						}
-					}, false);
+					}, true);
 					pos.y = resY;
 				}
 			} else if (groundY) {
@@ -211,41 +211,33 @@
 		}
 
 
-		private void ForAllY (System.Action<float> action, bool doZero = false) {
-			switch (m_Mode) {
-				case GridMode.XX: {
-						if (doZero) {
-							action(0f);
-						}
-						int countY = Mathf.Clamp(CountX + 1, 1, 32);
-						for (int i = 0; i <= countY; i++) {
-							action((float)i / countY);
-						}
-					}
-					break;
-				case GridMode.XY:
-				case GridMode._Y: {
-						float speedMuti = SpeedMuti * ObjectSpeedMuti;
-						float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
-						float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
-							Mathf.Min(MusicTime, time),
-							Mathf.Max(MusicTime, time),
-							speedMuti, IgnoreDynamicSpeed
-						);
-						if (doZero) {
-							action(0f);
-						}
-						for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
-							if (y01 >= 0f) { action(y01); }
-							y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
-							time += TimeGap;
-						}
-					}
-					break;
+		private void ForAllY (System.Action<float> action, bool yIsTime) {
+			if (yIsTime) {
+				float speedMuti = SpeedMuti * ObjectSpeedMuti;
+				float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
+				float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
+					Mathf.Min(MusicTime, time),
+					Mathf.Max(MusicTime, time),
+					speedMuti, IgnoreDynamicSpeed
+				);
+				for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
+					if (y01 >= 0f) { action(y01); }
+					y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
+					time += TimeGap;
+				}
+			} else {
+				int countY = Mathf.Clamp(CountX + 1, 1, 32);
+				for (int i = 0; i <= countY; i++) {
+					action((float)i / countY);
+				}
 			}
+
 		}
 
 
 
 	}
+
+
+
 }

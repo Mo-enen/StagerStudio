@@ -77,6 +77,17 @@
 		private VoidHandler MusicPause { get; set; } = null;
 
 		// Ser
+		[Header("Stage")]
+		[SerializeField] private StageMusic m_Music = null;
+		[SerializeField] private StageProject m_Project = null;
+		[SerializeField] private StageGame m_Game = null;
+		[SerializeField] private StageSoundFX m_SoundFX = null;
+		[SerializeField] private StageEditor m_Editor = null;
+		[SerializeField] private StageLanguage m_Language = null;
+		[SerializeField] private StageSkin m_Skin = null;
+		[SerializeField] private StageShortcut m_Shortcut = null;
+		[SerializeField] private StageMenu m_Menu = null;
+		[SerializeField] private StageState m_State = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -121,42 +132,31 @@
 
 		private void Awake () {
 
-			var music = FindObjectOfType<StageMusic>();
-			var project = FindObjectOfType<StageProject>();
-			var game = FindObjectOfType<StageGame>();
-			var sfx = FindObjectOfType<StageSoundFX>();
-			var editor = FindObjectOfType<StageEditor>();
-			var language = FindObjectOfType<StageLanguage>();
-			var skin = FindObjectOfType<StageSkin>();
-			var shortcut = FindObjectOfType<StageShortcut>();
-			var menu = FindObjectOfType<StageMenu>();
-			var state = FindObjectOfType<StageState>();
+			GetSkinFromDisk = m_Skin.GetSkinFromDisk;
+			MusicPause = m_Music.Pause;
+			GetMusicTime = () => m_Music.Time;
+			ProjectRemoveClickSound = m_Project.RemoveClickSound;
+			ProjectRemoveTweenAt = m_Project.RemoveTweenAt;
+			ProjectRemovePaletteAt = m_Project.RemovePaletteAt;
+			GetAbreastData = () => (m_Game.AbreastValue, m_Game.AbreastIndex, m_Game.AbreastWidth);
+			GetDropSpeed = () => m_Game.GameDropSpeed;
+			GetGameItemCount = m_Game.GetItemCount;
+			GetLanguage = m_Language.Get;
 
-			GetSkinFromDisk = skin.GetSkinFromDisk;
-			MusicPause = music.Pause;
-			GetMusicTime = () => music.Time;
-			ProjectRemoveClickSound = project.RemoveClickSound;
-			ProjectRemoveTweenAt = project.RemoveTweenAt;
-			ProjectRemovePaletteAt = project.RemovePaletteAt;
-			GetAbreastData = () => (game.AbreastValue, game.AbreastIndex, game.AbreastWidth);
-			GetDropSpeed = () => game.GameDropSpeed;
-			GetGameItemCount = game.GetItemCount;
-			GetLanguage = language.Get;
-
-			Awake_Message(language, shortcut);
-			Awake_Setting(skin, language, shortcut, menu);
-			Awake_Setting_UI(sfx, music, game, editor);
-			Awake_Menu(menu, game, project);
-			Awake_Object(project, game, music, sfx);
-			Awake_Project(project, editor, game, music, sfx);
-			Awake_Game(project, game, music, editor);
-			Awake_Music(music, sfx);
-			Awake_Sfx(music, game, sfx);
-			Awake_Editor(editor, game, project, music);
-			Awake_Skin(game);
-			Awake_Undo(project, editor, music);
-			Awake_ProjectInfo(project, game, music, menu);
-			Awake_UI(project, game, editor, skin, state, menu, music);
+			Awake_Message();
+			Awake_Setting();
+			Awake_Setting_UI();
+			Awake_Menu();
+			Awake_Object();
+			Awake_Project();
+			Awake_Game();
+			Awake_Music();
+			Awake_Sfx();
+			Awake_Editor();
+			Awake_Skin();
+			Awake_Undo();
+			Awake_ProjectInfo();
+			Awake_UI();
 
 		}
 
@@ -192,25 +192,25 @@
 		}
 
 
-		private void Awake_Message (StageLanguage language, StageShortcut shortcut) {
+		private void Awake_Message () {
 			// Language
-			StageProject.GetLanguage = language.Get;
-			StageGame.GetLanguage = language.Get;
-			StageMenu.GetLanguage = language.Get;
-			StageState.GetLanguage = language.Get;
-			StageSkin.GetLanguage = language.Get;
-			DialogUtil.GetLanguage = language.Get;
-			HomeUI.GetLanguage = language.Get;
-			ProjectInfoUI.GetLanguage = language.Get;
-			TooltipUI.GetLanguage = language.Get;
-			ColorPickerUI.GetLanguage = language.Get;
-			DialogUI.GetLanguage = language.Get;
-			TweenEditorUI.GetLanguage = language.Get;
-			ProjectCreatorUI.GetLanguage = language.Get;
-			SkinEditorUI.GetLanguage = language.Get;
-			SettingUI.GetLanguage = language.Get;
-			StageEditor.GetLanguage = language.Get;
-			InspectorUI.GetLanguage = language.Get;
+			StageProject.GetLanguage = m_Language.Get;
+			StageGame.GetLanguage = m_Language.Get;
+			StageMenu.GetLanguage = m_Language.Get;
+			StageState.GetLanguage = m_Language.Get;
+			StageSkin.GetLanguage = m_Language.Get;
+			DialogUtil.GetLanguage = m_Language.Get;
+			HomeUI.GetLanguage = m_Language.Get;
+			ProjectInfoUI.GetLanguage = m_Language.Get;
+			TooltipUI.GetLanguage = m_Language.Get;
+			ColorPickerUI.GetLanguage = m_Language.Get;
+			DialogUI.GetLanguage = m_Language.Get;
+			TweenEditorUI.GetLanguage = m_Language.Get;
+			ProjectCreatorUI.GetLanguage = m_Language.Get;
+			SkinEditorUI.GetLanguage = m_Language.Get;
+			SettingUI.GetLanguage = m_Language.Get;
+			StageEditor.GetLanguage = m_Language.Get;
+			InspectorUI.GetLanguage = m_Language.Get;
 			// Misc
 			TooltipUI.SetTip = (tip) => {
 				foreach (var label in m_TipLabels) {
@@ -224,13 +224,13 @@
 				TryRefreshSetting();
 				foreach (var text in m_LanguageTexts) {
 					if (text != null) {
-						text.text = language.Get(text.name);
+						text.text = m_Language.Get(text.name);
 					}
 				}
 			};
 			DialogUtil.GetRoot = () => m_DialogRoot;
 			DialogUtil.GetPrefab = () => m_DialogPrefab;
-			TooltipUI.GetHotKey = shortcut.GetHotkeyLabel;
+			TooltipUI.GetHotKey = m_Shortcut.GetHotkeyLabel;
 			// Quit
 			bool willQuit = false;
 			Application.wantsToQuit += () => {
@@ -250,59 +250,59 @@
 			// Reload Language Texts
 			foreach (var text in m_LanguageTexts) {
 				if (text != null) {
-					text.text = language.Get(text.name);
+					text.text = m_Language.Get(text.name);
 				}
 			}
 		}
 
 
-		private void Awake_Menu (StageMenu menu, StageGame game, StageProject project) {
+		private void Awake_Menu () {
 			// Grid
-			menu.AddCheckerFunc("Menu.Grid.x00", () => game.GridCountX0 == 1);
-			menu.AddCheckerFunc("Menu.Grid.x01", () => game.GridCountX0 == 7);
-			menu.AddCheckerFunc("Menu.Grid.x02", () => game.GridCountX0 == 15);
+			m_Menu.AddCheckerFunc("Menu.Grid.x00", () => m_Game.GridCountX0 == 1);
+			m_Menu.AddCheckerFunc("Menu.Grid.x01", () => m_Game.GridCountX0 == 7);
+			m_Menu.AddCheckerFunc("Menu.Grid.x02", () => m_Game.GridCountX0 == 15);
 
-			menu.AddCheckerFunc("Menu.Grid.x10", () => game.GridCountX1 == 1);
-			menu.AddCheckerFunc("Menu.Grid.x11", () => game.GridCountX1 == 7);
-			menu.AddCheckerFunc("Menu.Grid.x12", () => game.GridCountX1 == 15);
+			m_Menu.AddCheckerFunc("Menu.Grid.x10", () => m_Game.GridCountX1 == 1);
+			m_Menu.AddCheckerFunc("Menu.Grid.x11", () => m_Game.GridCountX1 == 7);
+			m_Menu.AddCheckerFunc("Menu.Grid.x12", () => m_Game.GridCountX1 == 15);
 
-			menu.AddCheckerFunc("Menu.Grid.x20", () => game.GridCountX2 == 1);
-			menu.AddCheckerFunc("Menu.Grid.x21", () => game.GridCountX2 == 7);
-			menu.AddCheckerFunc("Menu.Grid.x22", () => game.GridCountX2 == 15);
+			m_Menu.AddCheckerFunc("Menu.Grid.x20", () => m_Game.GridCountX2 == 1);
+			m_Menu.AddCheckerFunc("Menu.Grid.x21", () => m_Game.GridCountX2 == 7);
+			m_Menu.AddCheckerFunc("Menu.Grid.x22", () => m_Game.GridCountX2 == 15);
 
-			menu.AddCheckerFunc("Menu.Grid.y0", () => game.GridCountY == 1);
-			menu.AddCheckerFunc("Menu.Grid.y1", () => game.GridCountY == 2);
-			menu.AddCheckerFunc("Menu.Grid.y2", () => game.GridCountY == 4);
-			menu.AddCheckerFunc("Menu.Grid.y3", () => game.GridCountY == 8);
+			m_Menu.AddCheckerFunc("Menu.Grid.y0", () => m_Game.GridCountY == 1);
+			m_Menu.AddCheckerFunc("Menu.Grid.y1", () => m_Game.GridCountY == 2);
+			m_Menu.AddCheckerFunc("Menu.Grid.y2", () => m_Game.GridCountY == 4);
+			m_Menu.AddCheckerFunc("Menu.Grid.y3", () => m_Game.GridCountY == 8);
 			// Auto Save
-			menu.AddCheckerFunc("Menu.AutoSave.0", () => Mathf.Abs(project.UI_AutoSaveTime - 30f) < 1f);
-			menu.AddCheckerFunc("Menu.AutoSave.1", () => Mathf.Abs(project.UI_AutoSaveTime - 120f) < 1f);
-			menu.AddCheckerFunc("Menu.AutoSave.2", () => Mathf.Abs(project.UI_AutoSaveTime - 300f) < 1f);
-			menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(project.UI_AutoSaveTime - 600f) < 1f);
-			menu.AddCheckerFunc("Menu.AutoSave.Off", () => project.UI_AutoSaveTime < 0f);
+			m_Menu.AddCheckerFunc("Menu.AutoSave.0", () => Mathf.Abs(m_Project.UI_AutoSaveTime - 30f) < 1f);
+			m_Menu.AddCheckerFunc("Menu.AutoSave.1", () => Mathf.Abs(m_Project.UI_AutoSaveTime - 120f) < 1f);
+			m_Menu.AddCheckerFunc("Menu.AutoSave.2", () => Mathf.Abs(m_Project.UI_AutoSaveTime - 300f) < 1f);
+			m_Menu.AddCheckerFunc("Menu.AutoSave.3", () => Mathf.Abs(m_Project.UI_AutoSaveTime - 600f) < 1f);
+			m_Menu.AddCheckerFunc("Menu.AutoSave.Off", () => m_Project.UI_AutoSaveTime < 0f);
 			// Beat per Section
-			menu.AddCheckerFunc("Menu.Grid.bps0", () => game.BeatPerSection == 2);
-			menu.AddCheckerFunc("Menu.Grid.bps1", () => game.BeatPerSection == 3);
-			menu.AddCheckerFunc("Menu.Grid.bps2", () => game.BeatPerSection == 4);
+			m_Menu.AddCheckerFunc("Menu.Grid.bps0", () => m_Game.BeatPerSection == 2);
+			m_Menu.AddCheckerFunc("Menu.Grid.bps1", () => m_Game.BeatPerSection == 3);
+			m_Menu.AddCheckerFunc("Menu.Grid.bps2", () => m_Game.BeatPerSection == 4);
 			// Abreast Width
-			menu.AddCheckerFunc("Menu.Abreast.Width0", () => game.AbreastWidthIndex == 0);
-			menu.AddCheckerFunc("Menu.Abreast.Width1", () => game.AbreastWidthIndex == 1);
-			menu.AddCheckerFunc("Menu.Abreast.Width2", () => game.AbreastWidthIndex == 2);
-			menu.AddCheckerFunc("Menu.Abreast.Width3", () => game.AbreastWidthIndex == 3);
+			m_Menu.AddCheckerFunc("Menu.Abreast.Width0", () => m_Game.AbreastWidthIndex == 0);
+			m_Menu.AddCheckerFunc("Menu.Abreast.Width1", () => m_Game.AbreastWidthIndex == 1);
+			m_Menu.AddCheckerFunc("Menu.Abreast.Width2", () => m_Game.AbreastWidthIndex == 2);
+			m_Menu.AddCheckerFunc("Menu.Abreast.Width3", () => m_Game.AbreastWidthIndex == 3);
 		}
 
 
-		private void Awake_Object (StageProject project, StageGame game, StageMusic music, StageSoundFX sfx) {
-			StageObject.TweenEvaluate = (x, index) => project.Tweens[Mathf.Clamp(index, 0, project.Tweens.Count - 1)].curve.Evaluate(x);
-			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : project.Palette[Mathf.Min(index, project.Palette.Count - 1)];
+		private void Awake_Object () {
+			StageObject.TweenEvaluate = (x, index) => m_Project.Tweens[Mathf.Clamp(index, 0, m_Project.Tweens.Count - 1)].curve.Evaluate(x);
+			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : m_Project.Palette[Mathf.Min(index, m_Project.Palette.Count - 1)];
 			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
-			Note.GetFilledTime = game.FillTime;
-			Note.GetDropSpeedAt = game.GetDropSpeedAt;
-			Note.GetGameDropOffset = (muti) => game.AreaBetween(0f, music.Time, muti);
-			Note.GetDropOffset = (time, muti) => game.AreaBetween(0f, time, muti);
-			Note.PlayClickSound = music.PlayClickSound;
-			Note.PlaySfx = sfx.PlayFX;
-			TimingNote.PlaySfx = sfx.PlayFX;
+			Note.GetFilledTime = m_Game.FillTime;
+			Note.GetDropSpeedAt = m_Game.GetDropSpeedAt;
+			Note.GetGameDropOffset = (muti) => m_Game.AreaBetween(0f, m_Music.Time, muti);
+			Note.GetDropOffset = (time, muti) => m_Game.AreaBetween(0f, time, muti);
+			Note.PlayClickSound = m_Music.PlayClickSound;
+			Note.PlaySfx = m_SoundFX.PlayFX;
+			TimingNote.PlaySfx = m_SoundFX.PlayFX;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
@@ -321,26 +321,26 @@
 		}
 
 
-		private void Awake_Project (StageProject project, StageEditor editor, StageGame game, StageMusic music, StageSoundFX sfx) {
+		private void Awake_Project () {
 
 			// Project
 			StageProject.OnProjectLoadingStart = () => {
-				music.SetClip(null);
-				sfx.SetClip(null);
-				game.SetSpeedCurveDirty();
+				m_Music.SetClip(null);
+				m_SoundFX.SetClip(null);
+				m_Game.SetSpeedCurveDirty();
 				m_Preview.SetDirty();
 				UI_RemoveUI();
 				StageUndo.ClearUndo();
 				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
-				game.SetAbreastIndex(0);
-				game.SetUseAbreastView(false);
-				game.SetGameDropSpeed(1f);
+				m_Game.SetAbreastIndex(0);
+				m_Game.SetUseAbreastView(false);
+				m_Game.SetGameDropSpeed(1f);
 				m_Inspector.RefreshUI();
 			};
 			StageProject.OnProjectLoaded = () => {
-				game.SetSpeedCurveDirty();
-				music.Pitch = 1f;
-				music.Seek(0f);
+				m_Game.SetSpeedCurveDirty();
+				m_Music.Pitch = 1f;
+				m_Music.Seek(0f);
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 			};
@@ -348,40 +348,40 @@
 				StartCoroutine(SaveProgressing());
 			};
 			StageProject.OnProjectClosed = () => {
-				game.SetSpeedCurveDirty();
-				game.SetUseAbreastView(false);
-				game.SetGameDropSpeed(1f);
-				music.Pitch = 1f;
-				music.SetClip(null);
-				sfx.SetClip(null);
+				m_Game.SetSpeedCurveDirty();
+				m_Game.SetUseAbreastView(false);
+				m_Game.SetGameDropSpeed(1f);
+				m_Music.Pitch = 1f;
+				m_Music.SetClip(null);
+				m_SoundFX.SetClip(null);
 				StageUndo.ClearUndo();
 				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 				m_Preview.SetDirty();
-				editor.ClearSelection();
+				m_Editor.ClearSelection();
 				m_Inspector.RefreshUI();
 			};
 
 			// Beatmap
 			StageProject.OnBeatmapOpened = (map, key) => {
 				if (!(map is null)) {
-					game.BPM = map.BPM;
-					game.Shift = map.Shift;
-					game.Ratio = map.Ratio;
+					m_Game.BPM = map.BPM;
+					m_Game.Shift = map.Shift;
+					m_Game.Ratio = map.Ratio;
 					m_BeatmapSwiperLabel.text = map.Tag;
 					StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = map;
 				}
 				TryRefreshProjectInfo();
 				RefreshLoading(-1f);
-				editor.ClearSelection();
-				game.SetSpeedCurveDirty();
-				game.ClearAllContainers();
-				music.Pitch = 1f;
-				music.Seek(0f);
+				m_Editor.ClearSelection();
+				m_Game.SetSpeedCurveDirty();
+				m_Game.ClearAllContainers();
+				m_Music.Pitch = 1f;
+				m_Music.Seek(0f);
 				StageUndo.ClearUndo();
 				StageUndo.RegisterUndo();
 				m_Preview.SetDirty();
 				Resources.UnloadUnusedAssets();
-				RefreshGridRenderer(game);
+				RefreshGridRenderer();
 				m_Inspector.RefreshUI();
 			};
 			StageProject.OnBeatmapRemoved = () => {
@@ -395,12 +395,12 @@
 
 			// Assets
 			StageProject.OnMusicLoaded = (clip) => {
-				music.SetClip(clip);
-				sfx.SetClip(clip);
+				m_Music.SetClip(clip);
+				m_SoundFX.SetClip(clip);
 				TryRefreshProjectInfo();
 				m_Wave.LoadWave(clip);
-				music.Pitch = 1f;
-				music.Seek(0f);
+				m_Music.Pitch = 1f;
+				m_Music.Seek(0f);
 			};
 			StageProject.OnBackgroundLoaded = (sprite) => {
 				try {
@@ -414,7 +414,7 @@
 
 			};
 			StageProject.OnClickSoundsLoaded = (clips) => {
-				music.SetClickSounds(clips);
+				m_Music.SetClickSounds(clips);
 				TryRefreshProjectInfo();
 
 			};
@@ -427,9 +427,9 @@
 			IEnumerator SaveProgressing () {
 				float pg = 0f;
 				m_Hint.SetProgress(0f);
-				while (project.SavingProject) {
-					yield return new WaitUntil(() => project.SavingProgress != pg);
-					pg = project.SavingProgress;
+				while (m_Project.SavingProject) {
+					yield return new WaitUntil(() => m_Project.SavingProgress != pg);
+					pg = m_Project.SavingProgress;
 					m_Hint.SetProgress(pg);
 				}
 				m_Hint.SetProgress(-1f);
@@ -438,69 +438,69 @@
 		}
 
 
-		private void Awake_Game (StageProject project, StageGame game, StageMusic music, StageEditor editor) {
+		private void Awake_Game () {
 			StageGame.OnItemCountChanged = () => {
 				m_Preview.SetDirty();
 				m_TimingPreview.SetDirty();
-				editor.ClearSelection();
+				m_Editor.ClearSelection();
 			};
 			StageGame.OnAbreastChanged = () => {
-				m_AbreastTGMark.enabled = game.UseAbreast;
-				m_Wave.SetAlpha(game.AbreastValue);
+				m_AbreastTGMark.enabled = m_Game.UseAbreast;
+				m_Wave.SetAlpha(m_Game.AbreastValue);
 				m_TimingPreview.SetDirty();
-				if (editor.SelectingBrushIndex != -1) {
-					editor.SetBrush(-1);
+				if (m_Editor.SelectingBrushIndex != -1) {
+					m_Editor.SetBrush(-1);
 				}
-				if (editor.SelectingItemIndex != -1) {
-					editor.ClearSelection();
+				if (m_Editor.SelectingItemIndex != -1) {
+					m_Editor.ClearSelection();
 				}
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 			};
 			StageGame.OnSpeedChanged = () => {
-				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
+				if (!m_Game.UseDynamicSpeed) {
+					m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
 				}
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
-				RefreshGridRenderer(game);
+				RefreshGridRenderer();
 			};
 			StageGame.OnGridChanged = () => {
-				m_GridTG.isOn = game.ShowGrid;
-				m_GridRenderer.SetShow(game.ShowGrid);
+				m_GridTG.isOn = m_Game.ShowGrid;
+				m_GridRenderer.SetShow(m_Game.ShowGrid);
 				m_TimingPreview.SetDirty();
-				Track.BeatPerSection = game.BeatPerSection;
-				StageObject.ShowGrid = game.ShowGrid;
-				RefreshGridRenderer(game);
+				Track.BeatPerSection = m_Game.BeatPerSection;
+				StageObject.ShowGrid = m_Game.ShowGrid;
+				RefreshGridRenderer();
 			};
 			StageGame.OnRatioChanged = (ratio) => {
 				m_Zone.SetFitterRatio(ratio);
 				m_TimingPreview.SetDirty();
-				RefreshGridRenderer(game);
-				if (!game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / game.GameDropSpeed / music.Duration;
+				RefreshGridRenderer();
+				if (!m_Game.UseDynamicSpeed) {
+					m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
 				}
 			};
-			StageGame.GetBeatmap = () => project.Beatmap;
-			StageGame.GetMusicTime = () => music.Time;
-			StageGame.MusicSeek = music.Seek;
-			StageGame.MusicIsPlaying = () => music.IsPlaying;
-			StageGame.GetPitch = () => music.Pitch;
-			StageGame.SetPitch = (p) => music.Pitch = p;
-			StageGame.MusicPlay = music.Play;
-			StageGame.MusicPause = music.Pause;
+			StageGame.GetBeatmap = () => m_Project.Beatmap;
+			StageGame.GetMusicTime = () => m_Music.Time;
+			StageGame.MusicSeek = m_Music.Seek;
+			StageGame.MusicIsPlaying = () => m_Music.IsPlaying;
+			StageGame.GetPitch = () => m_Music.Pitch;
+			StageGame.SetPitch = (p) => m_Music.Pitch = p;
+			StageGame.MusicPlay = m_Music.Play;
+			StageGame.MusicPause = m_Music.Pause;
 		}
 
 
-		private void Awake_Music (StageMusic music, StageSoundFX sfx) {
+		private void Awake_Music () {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetDirty();
-				m_GridRenderer.MusicTime = music.Time;
+				m_GridRenderer.MusicTime = m_Music.Time;
 				StageObject.MusicPlaying = playing;
 				TimingNote.MusicPlaying = playing;
-				sfx.StopAllFx();
+				m_SoundFX.StopAllFx();
 			};
 			StageMusic.OnMusicTimeChanged = (time, duration) => {
 				m_Progress.SetProgress(time);
@@ -510,81 +510,85 @@
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
-				m_GridRenderer.MusicTime = music.Time;
+				m_GridRenderer.MusicTime = m_Music.Time;
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetDirty();
 			};
 			StageMusic.OnPitchChanged = () => {
-				m_PitchWarningBlock.gameObject.SetActive(music.Pitch < 0.05f);
-				sfx.StopAllFx();
+				m_PitchWarningBlock.gameObject.SetActive(m_Music.Pitch < 0.05f);
+				m_SoundFX.StopAllFx();
 			};
 		}
 
 
-		private void Awake_Sfx (StageMusic music, StageGame game, StageSoundFX sfx) {
-			StageSoundFX.GetMusicPlaying = () => music.IsPlaying;
-			StageSoundFX.GetMusicTime = () => music.Time;
+		private void Awake_Sfx () {
+			StageSoundFX.GetMusicPlaying = () => m_Music.IsPlaying;
+			StageSoundFX.GetMusicTime = () => m_Music.Time;
 			StageSoundFX.GetMusicVolume = () => SliderItemMap[SliderType.MusicVolume].saving.Value / 12f;
-			StageSoundFX.SetMusicVolume = (volume) => music.Volume = SliderItemMap[SliderType.MusicVolume].saving.Value / 12f * volume;
-			StageSoundFX.GetMusicPitch = () => music.Pitch;
-			StageSoundFX.GetMusicMute = () => music.Mute;
-			StageSoundFX.SetMusicMute = (mute) => music.Mute = mute;
-			StageSoundFX.GetSecondPerBeat = () => game.SPB;
-			StageSoundFX.OnUseFxChanged = () => music.UseMixer(sfx.UseFX);
+			StageSoundFX.SetMusicVolume = (volume) => m_Music.Volume = SliderItemMap[SliderType.MusicVolume].saving.Value / 12f * volume;
+			StageSoundFX.GetMusicPitch = () => m_Music.Pitch;
+			StageSoundFX.GetMusicMute = () => m_Music.Mute;
+			StageSoundFX.SetMusicMute = (mute) => m_Music.Mute = mute;
+			StageSoundFX.GetSecondPerBeat = () => m_Game.SPB;
+			StageSoundFX.OnUseFxChanged = () => m_Music.UseMixer(m_SoundFX.UseFX);
 
 		}
 
 
-		private void Awake_Editor (StageEditor editor, StageGame game, StageProject project, StageMusic music) {
-			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
+		private void Awake_Editor () {
+			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax();
+			StageEditor.GetRealZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
 				m_Inspector.RefreshUI();
 			};
 			StageEditor.OnLockEyeChanged = () => {
-				editor.ClearSelection();
+				m_Editor.ClearSelection();
 				m_TimingPreview.SetDirty();
 			};
-			StageEditor.GetBeatmap = () => project.Beatmap;
-			StageEditor.GetEditorActive = () => project.Beatmap != null && !music.IsPlaying;
-			StageEditor.GetUseDynamicSpeed = () => game.UseDynamicSpeed;
-			StageEditor.GetUseAbreast = () => game.UseAbreast;
+			StageEditor.GetBeatmap = () => m_Project.Beatmap;
+			StageEditor.GetEditorActive = () => m_Project.Beatmap != null && !m_Music.IsPlaying;
+			StageEditor.GetUseDynamicSpeed = () => m_Game.UseDynamicSpeed;
+			StageEditor.GetUseAbreast = () => m_Game.UseAbreast;
 			StageEditor.GetMoveAxisHovering = m_MoveHandler.GetEntering;
 			StageEditor.OnObjectEdited = () => {
-				RefreshOnItemChange(game);
+				RefreshOnItemChange();
 				m_Inspector.RefreshAllInspectors();
 			};
-			StageEditor.GetFilledTime = game.FillTime;
-			StageEditor.SetAbreastIndex = game.SetAbreastIndex;
+			StageEditor.GetFilledTime = m_Game.FillTime;
+			StageEditor.SetAbreastIndex = m_Game.SetAbreastIndex;
 			StageEditor.LogAxisMessage = m_AxisHandle.LogAxisMessage;
+			StageEditor.GetMusicTime = () => m_Music.Time;
+			StageEditor.GetMusicDuration = () => m_Music.Duration;
+			StageEditor.GetSnapedTime = m_Game.SnapTime;
 		}
 
 
-		private void Awake_Skin (StageGame game) {
+		private void Awake_Skin () {
 			StageSkin.OnSkinLoaded = (data) => {
 				TryRefreshSetting();
 				StageObject.LoadSkin(data);
 				Luminous.SetLuminousSkin(data);
 				Resources.UnloadUnusedAssets();
-				game.ClearAllContainers();
+				m_Game.ClearAllContainers();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();
-				game.ClearAllContainers();
+				m_Game.ClearAllContainers();
 			};
 		}
 
 
-		private void Awake_Undo (StageProject project, StageEditor editor, StageMusic music) {
+		private void Awake_Undo () {
 			StageUndo.GetObjectData = () => new UndoData() {
-				Beatmap = Util.ObjectToBytes(project.Beatmap),
-				MusicTime = music.Time,
+				Beatmap = Util.ObjectToBytes(m_Project.Beatmap),
+				MusicTime = m_Music.Time,
 				ContainerActive = new bool[4] {
-					editor.GetContainerActive(0),
-					editor.GetContainerActive(1),
-					editor.GetContainerActive(2),
-					editor.GetContainerActive(3),
+					m_Editor.GetContainerActive(0),
+					m_Editor.GetContainerActive(1),
+					m_Editor.GetContainerActive(2),
+					m_Editor.GetContainerActive(3),
 				},
 			};
 			StageUndo.OnUndo = (bytes) => {
@@ -592,61 +596,61 @@
 				var step = Util.BytesToObject(bytes) as UndoData;
 				if (step is null || step.Beatmap is null) { return; }
 				// Map
-				project.Beatmap.LoadFromBytes(step.Beatmap);
+				m_Project.Beatmap.LoadFromBytes(step.Beatmap);
 				// Music Time
-				music.Seek(step.MusicTime);
+				m_Music.Seek(step.MusicTime);
 				// Container Active
 				for (int i = 0; i < step.ContainerActive.Length; i++) {
-					editor.SetContainerActive(i, step.ContainerActive[i]);
+					m_Editor.SetContainerActive(i, step.ContainerActive[i]);
 				}
 				// Final
-				editor.ClearSelection();
+				m_Editor.ClearSelection();
 			};
 		}
 
 
-		private void Awake_ProjectInfo (StageProject project, StageGame game, StageMusic music, StageMenu menu) {
+		private void Awake_ProjectInfo () {
 
-			ProjectInfoUI.MusicStopClickSounds = music.StopClickSounds;
-			ProjectInfoUI.MusicPlayClickSound = music.PlayClickSound;
-			ProjectInfoUI.OpenMenu = menu.OpenMenu;
-			ProjectInfoUI.ProjectImportPalette = project.UI_ImportPalette;
-			ProjectInfoUI.ProjectSaveProject = project.SaveProject;
-			ProjectInfoUI.ProjectSetDirty = project.SetDirty;
-			ProjectInfoUI.ProjectNewBeatmap = project.NewBeatmap;
-			ProjectInfoUI.ProjectImportBeatmap = project.UI_ImportBeatmap;
-			ProjectInfoUI.ProjectAddPaletteColor = project.UI_AddPaletteColor;
-			ProjectInfoUI.ProjectExportPalette = project.UI_ExportPalette;
-			ProjectInfoUI.ProjectImportClickSound = project.ImportClickSound;
-			ProjectInfoUI.ProjectAddTween = project.UI_AddTween;
-			ProjectInfoUI.ProjectImportTween = project.UI_ImportTween;
-			ProjectInfoUI.ProjectExportTween = project.UI_ExportTween;
-			ProjectInfoUI.GetBeatmapMap = () => project.BeatmapMap;
-			ProjectInfoUI.ProjectSetPaletteColor = project.SetPaletteColor;
-			ProjectInfoUI.GetProjectPalette = () => project.Palette;
-			ProjectInfoUI.GetProjectTweens = () => project.Tweens;
-			ProjectInfoUI.SetProjectTweenCurve = project.SetTweenCurve;
-			ProjectInfoUI.GetProjectClickSounds = () => project.ClickSounds;
+			ProjectInfoUI.MusicStopClickSounds = m_Music.StopClickSounds;
+			ProjectInfoUI.MusicPlayClickSound = m_Music.PlayClickSound;
+			ProjectInfoUI.OpenMenu = m_Menu.OpenMenu;
+			ProjectInfoUI.ProjectImportPalette = m_Project.UI_ImportPalette;
+			ProjectInfoUI.ProjectSaveProject = m_Project.SaveProject;
+			ProjectInfoUI.ProjectSetDirty = m_Project.SetDirty;
+			ProjectInfoUI.ProjectNewBeatmap = m_Project.NewBeatmap;
+			ProjectInfoUI.ProjectImportBeatmap = m_Project.UI_ImportBeatmap;
+			ProjectInfoUI.ProjectAddPaletteColor = m_Project.UI_AddPaletteColor;
+			ProjectInfoUI.ProjectExportPalette = m_Project.UI_ExportPalette;
+			ProjectInfoUI.ProjectImportClickSound = m_Project.ImportClickSound;
+			ProjectInfoUI.ProjectAddTween = m_Project.UI_AddTween;
+			ProjectInfoUI.ProjectImportTween = m_Project.UI_ImportTween;
+			ProjectInfoUI.ProjectExportTween = m_Project.UI_ExportTween;
+			ProjectInfoUI.GetBeatmapMap = () => m_Project.BeatmapMap;
+			ProjectInfoUI.ProjectSetPaletteColor = m_Project.SetPaletteColor;
+			ProjectInfoUI.GetProjectPalette = () => m_Project.Palette;
+			ProjectInfoUI.GetProjectTweens = () => m_Project.Tweens;
+			ProjectInfoUI.SetProjectTweenCurve = m_Project.SetTweenCurve;
+			ProjectInfoUI.GetProjectClickSounds = () => m_Project.ClickSounds;
 			ProjectInfoUI.GetProjectInfo = () => (
-				project.ProjectName, project.ProjectDescription,
-				project.BeatmapAuthor, project.MusicAuthor, project.BackgroundAuthor,
-				project.Background.sprite, project.FrontCover.sprite, project.Music.data
+				m_Project.ProjectName, m_Project.ProjectDescription,
+				m_Project.BeatmapAuthor, m_Project.MusicAuthor, m_Project.BackgroundAuthor,
+				m_Project.Background.sprite, m_Project.FrontCover.sprite, m_Project.Music.data
 			);
-			ProjectInfoUI.GetBeatmapKey = () => project.BeatmapKey;
-			ProjectInfoUI.ProjectImportBackground = project.ImportBackground;
-			ProjectInfoUI.ProjectImportCover = project.ImportCover;
-			ProjectInfoUI.ProjectImportMusic = project.ImportMusic;
-			ProjectInfoUI.ProjectRemoveBackground = project.RemoveBackground;
-			ProjectInfoUI.ProjectRemoveCover = project.RemoveCover;
-			ProjectInfoUI.ProjectRemoveMusic = project.RemoveMusic;
-			ProjectInfoUI.SetProjectInfo_Name = (name) => project.ProjectName = name;
-			ProjectInfoUI.SetProjectInfo_Description = (des) => project.ProjectDescription = des;
-			ProjectInfoUI.SetProjectInfo_BgAuthor = (author) => project.BackgroundAuthor = author;
-			ProjectInfoUI.SetProjectInfo_MusicAuthor = (author) => project.MusicAuthor = author;
-			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => project.BeatmapAuthor = author;
+			ProjectInfoUI.GetBeatmapKey = () => m_Project.BeatmapKey;
+			ProjectInfoUI.ProjectImportBackground = m_Project.ImportBackground;
+			ProjectInfoUI.ProjectImportCover = m_Project.ImportCover;
+			ProjectInfoUI.ProjectImportMusic = m_Project.ImportMusic;
+			ProjectInfoUI.ProjectRemoveBackground = m_Project.RemoveBackground;
+			ProjectInfoUI.ProjectRemoveCover = m_Project.RemoveCover;
+			ProjectInfoUI.ProjectRemoveMusic = m_Project.RemoveMusic;
+			ProjectInfoUI.SetProjectInfo_Name = (name) => m_Project.ProjectName = name;
+			ProjectInfoUI.SetProjectInfo_Description = (des) => m_Project.ProjectDescription = des;
+			ProjectInfoUI.SetProjectInfo_BgAuthor = (author) => m_Project.BackgroundAuthor = author;
+			ProjectInfoUI.SetProjectInfo_MusicAuthor = (author) => m_Project.MusicAuthor = author;
+			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => m_Project.BeatmapAuthor = author;
 			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
-			ProjectInfoUI.OnBeatmapInfoChanged = () => RefreshOnBeatmapInfoChange(project, game);
+			ProjectInfoUI.OnBeatmapInfoChanged = () => RefreshOnBeatmapInfoChange();
 			ProjectInfoUI.OnProjectInfoChanged = () => {
 
 			};
@@ -654,33 +658,33 @@
 		}
 
 
-		private void Awake_Setting (StageSkin skin, StageLanguage language, StageShortcut shortcut, StageMenu menu) {
+		private void Awake_Setting () {
 			SettingUI.ResetAllSettings = () => {
 				ResetAllSettings();
 				LoadAllSettings();
 			};
-			SettingUI.SkinRefreshAllSkinNames = skin.RefreshAllSkinNames;
-			SettingUI.LanguageGetDisplayName = language.GetDisplayName;
-			SettingUI.LanguageGetDisplayName_Language = language.GetDisplayName;
-			SettingUI.GetAllLanguages = () => language.AllLanguages;
-			SettingUI.GetAllSkinNames = () => skin.AllSkinNames;
+			SettingUI.SkinRefreshAllSkinNames = m_Skin.RefreshAllSkinNames;
+			SettingUI.LanguageGetDisplayName = m_Language.GetDisplayName;
+			SettingUI.LanguageGetDisplayName_Language = m_Language.GetDisplayName;
+			SettingUI.GetAllLanguages = () => m_Language.AllLanguages;
+			SettingUI.GetAllSkinNames = () => m_Skin.AllSkinNames;
 			SettingUI.GetSkinName = () => StageSkin.Data.Name;
-			SettingUI.SkinLoadSkin = skin.LoadSkin;
-			SettingUI.SkinDeleteSkin = skin.UI_DeleteSkin;
-			SettingUI.SkinNewSkin = skin.UI_NewSkin;
-			SettingUI.OpenMenu = menu.OpenMenu;
-			SettingUI.ShortcutCount = () => shortcut.Datas.Length;
+			SettingUI.SkinLoadSkin = m_Skin.LoadSkin;
+			SettingUI.SkinDeleteSkin = m_Skin.UI_DeleteSkin;
+			SettingUI.SkinNewSkin = m_Skin.UI_NewSkin;
+			SettingUI.OpenMenu = m_Menu.OpenMenu;
+			SettingUI.ShortcutCount = () => m_Shortcut.Datas.Length;
 			SettingUI.GetShortcutAt = (i) => {
-				var data = shortcut.Datas[i];
+				var data = m_Shortcut.Datas[i];
 				return (data.Name, data.Key, data.Ctrl, data.Shift, data.Alt);
 			};
 			SettingUI.SaveShortcut = () => {
-				shortcut.SaveToFile();
-				shortcut.ReloadMap();
+				m_Shortcut.SaveToFile();
+				m_Shortcut.ReloadMap();
 			};
-			SettingUI.CheckShortcut = shortcut.CheckShortcut;
+			SettingUI.CheckShortcut = m_Shortcut.CheckShortcut;
 			SettingUI.SetShortcut = (index, key, ctrl, shift, alt) => {
-				var data = shortcut.Datas[index];
+				var data = m_Shortcut.Datas[index];
 				data.Key = key;
 				data.Ctrl = ctrl;
 				data.Shift = shift;
@@ -688,111 +692,111 @@
 				return index;
 			};
 			SettingUI.SpawnSkinEditor = SpawnSkinEditor;
-			SettingUI.LoadLanguage = language.LoadLanguage;
+			SettingUI.LoadLanguage = m_Language.LoadLanguage;
 
 		}
 
 
-		private void Awake_UI (StageProject project, StageGame game, StageEditor editor, StageSkin skin, StageState state, StageMenu menu, StageMusic music) {
+		private void Awake_UI () {
 
 			CursorUI.GetCursorTexture = (index) => (
 				index >= 0 ? m_Cursors[index].Cursor : null,
 				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
 			);
 
-			ProgressUI.GetSnapTime = (time, step) => game.SnapTime(time, step);
+			ProgressUI.GetSnapTime = (time, step) => m_Game.SnapTime(time, step);
 
-			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : game.AreaBetween(timeA, timeB, muti);
-			GridRenderer.GetSnapedTime = game.SnapTime;
+			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : m_Game.AreaBetween(timeA, timeB, muti);
+			GridRenderer.GetSnapedTime = m_Game.SnapTime;
 
-			TrackSectionRenderer.GetAreaBetween = game.AreaBetween;
-			TrackSectionRenderer.GetSnapedTime = game.SnapTime;
+			TrackSectionRenderer.GetAreaBetween = m_Game.AreaBetween;
+			TrackSectionRenderer.GetSnapedTime = m_Game.SnapTime;
 
-			BeatmapSwiperUI.GetBeatmapMap = () => project.BeatmapMap;
+			BeatmapSwiperUI.GetBeatmapMap = () => m_Project.BeatmapMap;
 			BeatmapSwiperUI.TriggerSwitcher = (key) => {
-				project.SaveProject();
-				project.OpenBeatmap(key);
+				m_Project.SaveProject();
+				m_Project.OpenBeatmap(key);
 			};
 
-			HomeUI.GotoEditor = state.GotoEditor;
-			HomeUI.GetWorkspace = () => project.Workspace;
-			HomeUI.OpenMenu = menu.OpenMenu;
+			HomeUI.GotoEditor = m_State.GotoEditor;
+			HomeUI.GetWorkspace = () => m_Project.Workspace;
+			HomeUI.OpenMenu = m_Menu.OpenMenu;
 			HomeUI.SpawnProjectCreator = SpawnProjectCreator;
 
-			ProgressUI.GetDuration = () => music.Duration;
-			ProgressUI.GetReadyPlay = () => (music.IsReady, music.IsPlaying);
-			ProgressUI.PlayMusic = music.Play;
-			ProgressUI.PauseMusic = music.Pause;
-			ProgressUI.SeekMusic = music.Seek;
-			ProgressUI.GetBPM = () => game.BPM;
-			ProgressUI.GetShift = () => game.Shift;
+			ProgressUI.GetDuration = () => m_Music.Duration;
+			ProgressUI.GetReadyPlay = () => (m_Music.IsReady, m_Music.IsPlaying);
+			ProgressUI.PlayMusic = m_Music.Play;
+			ProgressUI.PauseMusic = m_Music.Pause;
+			ProgressUI.SeekMusic = m_Music.Seek;
+			ProgressUI.GetBPM = () => m_Game.BPM;
+			ProgressUI.GetShift = () => m_Game.Shift;
 
-			PreviewUI.GetMusicTime01 = (time) => time / music.Duration;
-			PreviewUI.GetBeatmap = () => project.Beatmap;
+			PreviewUI.GetMusicTime01 = (time) => time / m_Music.Duration;
+			PreviewUI.GetBeatmap = () => m_Project.Beatmap;
 
 			ProjectCreatorUI.ImportMusic = () => {
-				project.ImportMusic((data, _) => {
+				m_Project.ImportMusic((data, _) => {
 					if (data is null) { return; }
 					ProjectCreatorUI.MusicData = data;
 					ProjectCreatorUI.SetMusicSizeDirty();
 				});
 			};
-			ProjectCreatorUI.GotoEditor = state.GotoEditor;
+			ProjectCreatorUI.GotoEditor = m_State.GotoEditor;
 
-			SkinEditorUI.MusicSeek_Add = (add) => music.Seek(music.Time + add);
-			SkinEditorUI.SkinReloadSkin = skin.ReloadSkin;
-			SkinEditorUI.OpenMenu = menu.OpenMenu;
-			SkinEditorUI.SkinGetPath = skin.GetPath;
-			SkinEditorUI.SkinSaveSkin = skin.SaveSkin;
+			SkinEditorUI.MusicSeek_Add = (add) => m_Music.Seek(m_Music.Time + add);
+			SkinEditorUI.SkinReloadSkin = m_Skin.ReloadSkin;
+			SkinEditorUI.OpenMenu = m_Menu.OpenMenu;
+			SkinEditorUI.SkinGetPath = m_Skin.GetPath;
+			SkinEditorUI.SkinSaveSkin = m_Skin.SaveSkin;
 			SkinEditorUI.SpawnSetting = UI_SpawnSetting;
 			SkinEditorUI.RemoveUI = UI_RemoveUI;
 
-			SkinSwiperUI.GetAllSkinNames = () => skin.AllSkinNames;
-			SkinSwiperUI.SkinLoadSkin = skin.LoadSkin;
+			SkinSwiperUI.GetAllSkinNames = () => m_Skin.AllSkinNames;
+			SkinSwiperUI.SkinLoadSkin = m_Skin.LoadSkin;
 
-			TimingPreviewUI.GetBeatmap = () => project.Beatmap;
-			TimingPreviewUI.GetMusicTime = () => music.Time;
-			TimingPreviewUI.GetSpeedMuti = () => game.GameDropSpeed;
-			TimingPreviewUI.ShowPreview = () => game.ShowGrid && editor.GetContainerActive(3);
+			TimingPreviewUI.GetBeatmap = () => m_Project.Beatmap;
+			TimingPreviewUI.GetMusicTime = () => m_Music.Time;
+			TimingPreviewUI.GetSpeedMuti = () => m_Game.GameDropSpeed;
+			TimingPreviewUI.ShowPreview = () => m_Game.ShowGrid && m_Editor.GetContainerActive(3);
 
 			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 
-			SelectorUI.GetBeatmap = () => project.Beatmap;
+			SelectorUI.GetBeatmap = () => m_Project.Beatmap;
 			SelectorUI.SelectStage = (index) => {
-				editor.SetSelection(0, index);
-				var map = project.Beatmap;
+				m_Editor.SetSelection(0, index);
+				var map = m_Project.Beatmap;
 				if (map != null && !map.GetActive(0, index)) {
-					music.Seek(map.GetTime(0, index));
+					m_Music.Seek(map.GetTime(0, index));
 				}
 			};
 			SelectorUI.SelectTrack = (index) => {
-				editor.SetSelection(1, index);
-				var map = project.Beatmap;
+				m_Editor.SetSelection(1, index);
+				var map = m_Project.Beatmap;
 				if (map != null && !map.GetActive(1, index)) {
-					music.Seek(map.GetTime(1, index));
+					m_Music.Seek(map.GetTime(1, index));
 				}
 			};
-			SelectorUI.OpenItemMenu = (rt, type) => menu.OpenMenu(type == 0 ? UI_SelectorStageMenu : UI_SelectorTrackMenu, rt);
-			SelectorUI.GetSelectionType = () => editor.SelectingItemType;
-			SelectorUI.GetSelectionIndex = () => editor.SelectingItemIndex;
+			SelectorUI.OpenItemMenu = (rt, type) => m_Menu.OpenMenu(type == 0 ? UI_SelectorStageMenu : UI_SelectorTrackMenu, rt);
+			SelectorUI.GetSelectionType = () => m_Editor.SelectingItemType;
+			SelectorUI.GetSelectionIndex = () => m_Editor.SelectingItemIndex;
 
 			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
 
 			InspectorUI.GetSelectingType = () => {
-				if (editor.SelectingItemType == 4) {
+				if (m_Editor.SelectingItemType == 4) {
 					return 0;
 				}
-				if (editor.SelectingItemType == 5) {
+				if (m_Editor.SelectingItemType == 5) {
 					return 1;
 				}
-				return editor.SelectingItemType;
+				return m_Editor.SelectingItemType;
 			};
-			InspectorUI.GetSelectingIndex = () => editor.SelectingItemIndex;
-			InspectorUI.GetBeatmap = () => project.Beatmap;
-			InspectorUI.GetBPM = () => game.BPM;
-			InspectorUI.GetShift = () => game.Shift;
-			InspectorUI.OnItemEdited = () => RefreshOnItemChange(game);
-			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange(project, game);
+			InspectorUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
+			InspectorUI.GetBeatmap = () => m_Project.Beatmap;
+			InspectorUI.GetBPM = () => m_Game.BPM;
+			InspectorUI.GetShift = () => m_Game.Shift;
+			InspectorUI.OnItemEdited = () => RefreshOnItemChange();
+			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
@@ -876,24 +880,25 @@
 
 
 		// Change
-		private void RefreshOnItemChange (StageGame game) {
+		private void RefreshOnItemChange () {
 			Note.SetCacheDirty();
 			TimingNote.SetCacheDirty();
-			game.SetSpeedCurveDirty();
+			m_Game.SetSpeedCurveDirty();
+			m_Project.SetDirty();
 			m_Preview.SetDirty();
 			m_TimingPreview.SetDirty();
 		}
 
 
-		private void RefreshOnBeatmapInfoChange (StageProject project, StageGame game) {
-			if (project.Beatmap != null) {
-				game.BPM = project.Beatmap.BPM;
-				game.Shift = project.Beatmap.Shift;
-				game.Ratio = project.Beatmap.Ratio;
-				m_BeatmapSwiperLabel.text = project.Beatmap.Tag;
+		private void RefreshOnBeatmapInfoChange () {
+			if (m_Project.Beatmap != null) {
+				m_Game.BPM = m_Project.Beatmap.BPM;
+				m_Game.Shift = m_Project.Beatmap.Shift;
+				m_Game.Ratio = m_Project.Beatmap.Ratio;
+				m_BeatmapSwiperLabel.text = m_Project.Beatmap.Tag;
 			}
 			m_Inspector.RefreshUI();
-			RefreshGridRenderer(game);
+			RefreshGridRenderer();
 		}
 
 
@@ -928,14 +933,14 @@
 		}
 
 
-		private void RefreshGridRenderer (StageGame game) {
-			m_GridRenderer.SetCountX(0, game.GridCountX0);
-			m_GridRenderer.SetCountX(1, game.GridCountX1);
-			m_GridRenderer.SetCountX(2, game.GridCountX2);
-			m_GridRenderer.TimeGap = 60f / game.BPM / game.GridCountY;
-			m_GridRenderer.TimeGap_Main = 60f / game.BPM;
-			m_GridRenderer.TimeOffset = game.Shift;
-			m_GridRenderer.SpeedMuti = game.GameDropSpeed;
+		private void RefreshGridRenderer () {
+			m_GridRenderer.SetCountX(0, m_Game.GridCountX0);
+			m_GridRenderer.SetCountX(1, m_Game.GridCountX1);
+			m_GridRenderer.SetCountX(2, m_Game.GridCountX2);
+			m_GridRenderer.TimeGap = 60f / m_Game.BPM / m_Game.GridCountY;
+			m_GridRenderer.TimeGap_Main = 60f / m_Game.BPM;
+			m_GridRenderer.TimeOffset = m_Game.Shift;
+			m_GridRenderer.SpeedMuti = m_Game.GameDropSpeed;
 		}
 
 
