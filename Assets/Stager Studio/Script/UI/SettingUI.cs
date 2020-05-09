@@ -141,6 +141,7 @@
 		[SerializeField] private Grabber m_LanguageItemPrefab = null;
 		[SerializeField] private Grabber m_SkinItemPrefab = null;
 		[SerializeField] private Grabber m_ShortcutItemPrefab = null;
+		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_GeneralContent = null;
 		[SerializeField] private RectTransform m_EditorContent = null;
 		[SerializeField] private RectTransform m_BrushContent = null;
@@ -150,6 +151,20 @@
 		[SerializeField] private Text m_LanguageHint = null;
 		[SerializeField] private ComponentData m_Component = default;
 		[SerializeField] private Text[] m_LanguageLabels = null;
+
+
+		#endregion
+
+
+
+
+		#region --- MSG ---
+
+
+		private void Awake () => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
+
+
+		private void Update () => m_Window.LerpUI(Vector2.zero, 8f);
 
 
 		#endregion

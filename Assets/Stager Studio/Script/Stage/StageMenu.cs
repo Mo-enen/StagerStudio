@@ -175,9 +175,6 @@
 					line.SetAsLastSibling();
 				}
 			}
-
-			// Clamp Position
-			Invoke("Invoke_ClampWindow", 0.1f);
 		}
 
 
@@ -185,14 +182,6 @@
 			m_MenuRoot.DestroyAllChildImmediately();
 			m_MenuRoot.gameObject.SetActive(false);
 			m_MenuRoot.parent.InactiveIfNoChildActive();
-		}
-
-
-
-		public void Invoke_ClampWindow () {
-			if (m_MenuRoot.childCount > 0) {
-				Util.ClampRectTransform(m_MenuRoot.GetChild(0) as RectTransform);
-			}
 		}
 
 

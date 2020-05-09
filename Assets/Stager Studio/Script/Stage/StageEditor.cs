@@ -44,6 +44,7 @@
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
 		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
 		private const string DIALOG_SelectingLayerLocked = "Dialog.Editor.SelectingLayerLocked";
+		private const string DIALOG_SelectingLayerInactive = "Dialog.Editor.SelectingLayerInactive";
 		private const string HOLD_NOTE_LAYER_NAME = "HoldNote";
 
 		// Handle
@@ -877,6 +878,12 @@
 				index = -1;
 				subIndex = -1;
 			}
+			// No Selecting When Locked or unEyed
+			if (GetItemLock(type) || !GetContainerActive(type)) {
+				type = -1;
+				index = -1;
+				subIndex = -1;
+			}
 			// Select
 			bool changed = SelectingItemType != type || SelectingItemIndex != index || SelectingItemSubIndex != subIndex;
 			SelectingItemType = type;
@@ -904,14 +911,14 @@
 		public void UI_SwitchContainerActive (int index) => SetEye(index, !GetContainerActive(index));
 
 
-		public bool GetContainerActive (int index) => m_Containers[index].gameObject.activeSelf;
+		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
 
 
 		public void SetContainerActive (int index, bool active) => SetEye(index, active);
 
 
 		// Item Lock
-		public bool GetItemLock (int item) => item >= 0 ? ItemLock[item] : false;
+		public bool GetItemLock (int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
 
 
 		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
@@ -961,6 +968,7 @@
 
 
 		private void SetEye (int index, bool see) {
+			if (index < 0 || index >= m_Containers.Length) { return; }
 			m_Containers[index].gameObject.SetActive(see);
 			// UI
 			UIReady = false;
@@ -1050,26 +1058,31 @@
 		}
 
 
-		private void SetBrushLogic (int index) {
-			if (!enabled) { index = -1; }
+		private void SetBrushLogic (int brushIndex) {
+			if (!enabled) { brushIndex = -1; }
 			UIReady = false;
 			try {
 				// No Stage in Abreast
-				if (index == 0 && GetUseAbreast()) {
-					index = -1;
+				if (brushIndex == 0 && GetUseAbreast()) {
+					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_CannotSelectStageBrush), true);
 				}
 				// Layer Lock
-				if (GetItemLock(index)) {
-					index = -1;
+				if (GetItemLock(brushIndex)) {
+					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_SelectingLayerLocked), true);
+				}
+				// Layer Invisible
+				if (!GetContainerActive(brushIndex)) {
+					brushIndex = -1;
+					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
 				}
 				// Brushs TG
 				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
-					m_DefaultBrushTGs[i].isOn = i == index;
+					m_DefaultBrushTGs[i].isOn = i == brushIndex;
 				}
 				// Logic
-				SelectingBrushIndex = index;
+				SelectingBrushIndex = brushIndex;
 			} catch { }
 			UIReady = true;
 		}

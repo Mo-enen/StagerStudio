@@ -61,6 +61,7 @@
 		[SerializeField] private Button m_HighlightTint = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
+		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
@@ -80,6 +81,9 @@
 		#region --- MSG ---
 
 
+		private void Awake () => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
+
+
 		private void Update () {
 			if (transform.localScale.x < 0.5f) {
 				if (Input.GetMouseButton(0)) {
@@ -90,6 +94,7 @@
 					transform.localScale = Vector3.one;
 				}
 			}
+			m_Window.LerpUI(Vector2.zero, 8f);
 		}
 
 

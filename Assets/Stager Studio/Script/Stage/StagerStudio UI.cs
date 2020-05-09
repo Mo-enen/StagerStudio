@@ -69,6 +69,7 @@
 		[SerializeField] private SkinSwiperUI m_SkinSwiperPrefab = null;
 		[SerializeField] private LoadingUI m_LoadingPrefab = null;
 		[SerializeField] private ProjectCreatorUI m_ProjectCreatorPrefab = null;
+		[SerializeField] private CommandUI m_CommandPrefab = null;
 
 		[Header("Spawn Root")]
 		[SerializeField] private RectTransform m_Root = null;
@@ -82,6 +83,7 @@
 		[SerializeField] private RectTransform m_SkinSwiperRoot = null;
 		[SerializeField] private RectTransform m_LoadingRoot = null;
 		[SerializeField] private RectTransform m_ProjectCreatorRoot = null;
+		[SerializeField] private RectTransform m_CommandRoot = null;
 
 
 		// MSG
@@ -288,23 +290,37 @@
 		}
 
 
+		public void UI_SpawnCommand () {
+			UI_RemoveUI();
+			Util.SpawnUI(m_CommandPrefab, m_CommandRoot, "Command");
+		}
+
+
 		public void UI_RemoveUI () {
 
 			m_SettingRoot.DestroyAllChildImmediately();
 			m_ProjectInfoRoot.DestroyAllChildImmediately();
 			m_SkinEditorRoot.DestroyAllChildImmediately();
-			m_ColorPickerRoot.DestroyAllChildImmediately();
+			//m_DialogRoot.DestroyAllChildImmediately();
+			//m_ColorPickerRoot.DestroyAllChildImmediately();
 			m_TweenEditorRoot.DestroyAllChildImmediately();
 			m_BeatmapSwiperRoot.DestroyAllChildImmediately();
+			m_SkinSwiperRoot.DestroyAllChildImmediately();
 			m_LoadingRoot.DestroyAllChildImmediately();
+			m_ProjectCreatorRoot.DestroyAllChildImmediately();
+			m_CommandRoot.DestroyAllChildImmediately();
 
 			m_SettingRoot.gameObject.SetActive(false);
 			m_ProjectInfoRoot.gameObject.SetActive(false);
 			m_SkinEditorRoot.gameObject.SetActive(false);
-			m_ColorPickerRoot.gameObject.SetActive(false);
+			//m_DialogRoot.gameObject.SetActive(false);
+			//m_ColorPickerRoot.gameObject.SetActive(false);
 			m_TweenEditorRoot.gameObject.SetActive(false);
 			m_BeatmapSwiperRoot.gameObject.SetActive(false);
+			m_SkinSwiperRoot.gameObject.SetActive(false);
 			m_LoadingRoot.gameObject.SetActive(false);
+			m_ProjectCreatorRoot.gameObject.SetActive(false);
+			m_CommandRoot.gameObject.SetActive(false);
 
 			m_Root.InactiveIfNoChildActive();
 
@@ -390,6 +406,23 @@
 					StageUndo.ClearUndo();
 				}, null, () => { }
 			);
+		}
+
+
+		// Command
+		public void UI_TrySetCommand_Target (int index) {
+			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
+			if (command != null) {
+				command.SetTargetIndex(index);
+			}
+		}
+
+
+		public void UI_TrySetCommand_Command (int index) {
+			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
+			if (command != null) {
+				command.SetCommandIndex(index);
+			}
 		}
 
 

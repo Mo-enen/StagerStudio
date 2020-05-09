@@ -148,5 +148,22 @@
 		}
 
 
+		public static void LerpUI (this RectTransform rt, Vector2 aimAnchoredPos, float lerp = 20f) {
+			if (
+				Mathf.Abs(rt.anchoredPosition.x - aimAnchoredPos.x) > 0.001f ||
+				Mathf.Abs(rt.anchoredPosition.y - aimAnchoredPos.y) > 0.001f
+			) {
+				var pos = rt.anchoredPosition;
+				pos.x = Mathf.Lerp(pos.x, aimAnchoredPos.x, Mathf.Min(Time.deltaTime, 0.1f) * lerp);
+				pos.y = Mathf.Lerp(pos.y, aimAnchoredPos.y, Mathf.Min(Time.deltaTime, 0.1f) * lerp);
+				if (Mathf.Abs(pos.x - aimAnchoredPos.x) < 0.01f && Mathf.Abs(pos.y - aimAnchoredPos.y) < 0.01f) {
+					pos.x = aimAnchoredPos.x;
+					pos.y = aimAnchoredPos.y;
+				}
+				rt.anchoredPosition3D = pos;
+			}
+		}
+
+
 	}
 }

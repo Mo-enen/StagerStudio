@@ -60,7 +60,6 @@
 				}
 			}
 		}
-		public float TimeGap_Main { get; set; } = 1f;
 		public float TimeOffset {
 			get => _TimeOffset;
 			set {

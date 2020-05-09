@@ -4862,8 +4862,8 @@ GameObject:
   - component: {fileID: 5053396275890381664}
   - component: {fileID: 5053396275890381667}
   - component: {fileID: 5053396275890381676}
-  - component: {fileID: 5053396275890381666}
   - component: {fileID: 5053396275890381665}
+  - component: {fileID: -1696448747948767322}
   m_Layer: 0
   m_Name: Setting
   m_TagString: Untagged
@@ -4917,6 +4917,7 @@ MonoBehaviour:
     type: 3}
   m_ShortcutItemPrefab: {fileID: 7456078180531877632, guid: 9e560ef5d2e03d541954327f3eadd429,
     type: 3}
+  m_Window: {fileID: 5053396277487902561}
   m_GeneralContent: {fileID: 5053396276924978401}
   m_EditorContent: {fileID: 5053396276428258345}
   m_BrushContent: {fileID: 8741119898405027165}
@@ -5007,35 +5008,6 @@ MonoBehaviour:
   - {fileID: 8693680476240520024}
   - {fileID: 126450610651072822}
   - {fileID: 1057101962930399972}
---- !u!114 &5053396275890381666
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5053396275890381671}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 0.21960784}
-  m_RaycastTarget: 1
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!114 &5053396275890381665
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5075,7 +5047,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 5053396275890381666}
+  m_TargetGraphic: {fileID: 0}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -5090,6 +5062,21 @@ MonoBehaviour:
           m_StringArgument: Menu.Grid
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &-1696448747948767322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396275890381671}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74eb2ad2e7ef2e84bb2d8677aa3f9379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
 --- !u!1 &5053396275908637197
 GameObject:
   m_ObjectHideFlags: 0

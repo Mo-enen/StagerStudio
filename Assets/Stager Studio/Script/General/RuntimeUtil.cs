@@ -445,13 +445,13 @@
 			var ex = GetExtension(path);
 			switch (ex) {
 				default:
-					return AudioType.UNKNOWN;
+				return AudioType.UNKNOWN;
 				case ".mp3":
-					return AudioType.MPEG;
+				return AudioType.MPEG;
 				case ".ogg":
-					return AudioType.OGGVORBIS;
+				return AudioType.OGGVORBIS;
 				case ".wav":
-					return AudioType.WAV;
+				return AudioType.WAV;
 			}
 		}
 

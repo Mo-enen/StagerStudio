@@ -49,20 +49,20 @@
 				switch (Mode) {
 					default:
 					case BeatmapSortMode.Tag:
-						result = x.Tag.CompareTo(y.Tag);
-						result = result != 0 ? result : x.Level.CompareTo(y.Level);
-						result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
-						break;
+					result = x.Tag.CompareTo(y.Tag);
+					result = result != 0 ? result : x.Level.CompareTo(y.Level);
+					result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
+					break;
 					case BeatmapSortMode.Level:
-						result = x.Level.CompareTo(y.Level);
-						result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
-						result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
-						break;
+					result = x.Level.CompareTo(y.Level);
+					result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
+					result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
+					break;
 					case BeatmapSortMode.Time:
-						result = x.CreatedTime.CompareTo(y.CreatedTime);
-						result = result != 0 ? result : x.Level.CompareTo(y.Level);
-						result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
-						break;
+					result = x.CreatedTime.CompareTo(y.CreatedTime);
+					result = result != 0 ? result : x.Level.CompareTo(y.Level);
+					result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
+					break;
 				}
 				return result;
 			}
@@ -97,7 +97,6 @@
 
 
 		#endregion
-
 
 
 
@@ -162,6 +161,7 @@
 		[SerializeField] private Grabber m_PaletteItemPrefab = null;
 		[SerializeField] private Grabber m_TweenItemPrefab = null;
 		[SerializeField] private Grabber m_SoundItemPrefab = null;
+		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_BeatmapContent = null;
 		[SerializeField] private RectTransform m_PaletteContent = null;
 		[SerializeField] private RectTransform m_TweenContent = null;
@@ -188,8 +188,12 @@
 			foreach (var tx in m_LanguageLabels) {
 				tx.text = GetLanguage(tx.name);
 			}
+			m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
 			Awake_ProjectInfo();
 		}
+
+
+		private void Update () => m_Window.LerpUI(Vector2.zero, 8f);
 
 
 		private void OnDisable () {

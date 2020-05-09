@@ -7,6 +7,9 @@ Can not select stage in panoramic mode
 Dialog.Editor.CannotSelectStageBrush
 Can not select stage brush in panoramic mode
 
+Dialog.Editor.SelectingLayerInactive
+Layer not visible
+
 Dialog.Editor.SelectingLayerLocked
 Layer locked
 
@@ -99,6 +102,42 @@ Rename
 
 Menu.ChapterItem.ShowInExplorer
 Show in Explorer
+
+Menu.Command.Command.Delete
+Delete item.
+
+Menu.Command.Command.None
+(Do nothing)
+
+Menu.Command.Command.Time
+Set time to:
+
+Menu.Command.Command.Width
+Set width to:
+
+Menu.Command.Command.X
+Set x to:
+
+Menu.Command.Target.None
+(No Target)
+
+Menu.Command.Target.Note
+All notes,
+
+Menu.Command.Target.NoteInside
+All notes which inside track:
+
+Menu.Command.Target.Stage
+All stages,
+
+Menu.Command.Target.Timing
+All timings,
+
+Menu.Command.Target.Track
+All tracks,
+
+Menu.Command.Target.TrackInside
+All tracks which inside stage:
 
 Menu.Grid.bps0
 2 Beats per Section
@@ -574,6 +613,93 @@ Trushbin, completely remove or restore the deleted project
 Tip.Home.Tutorial
 Open tutorial
 
+Tip.Inspector.Angle
+Tilt angle
+
+Tip.Inspector.Beat
+Time in unit of beat
+
+Tip.Inspector.BPM
+Beat per minute
+
+Tip.Inspector.Click
+Index of the click sound, set to -1 for no click sound
+
+Tip.Inspector.Color
+Color index of the object
+
+Tip.Inspector.DropSpeed
+Drop speed of notes which inside this stage
+
+Tip.Inspector.Duration
+Length of time the object lasts (sec)
+
+Tip.Inspector.FX
+Index of the sound effect, set to 0 for no effect
+
+Tip.Inspector.Height
+Height of the object
+
+Tip.Inspector.Level
+Difficulty of this beatmap
+
+Tip.Inspector.Link
+Index of note that linked with this note, set to -1 for no linked note
+
+Tip.Inspector.OpenCommand
+Open command window
+
+Tip.Inspector.Param
+Param for the sound effect
+
+Tip.Inspector.Pivot
+Y of the stage pivot
+
+Tip.Inspector.Ratio
+Aspect ratio of this beatmap
+
+Tip.Inspector.Rot
+Rotation of the stage
+
+Tip.Inspector.Shift
+Offset of the beat in millisecond. Only effect the grid, don't effect the time of notes
+
+Tip.Inspector.StageIndex
+Index of stage for this track
+
+Tip.Inspector.Tag
+Tag of this beatmap (like EZ, HD)
+
+Tip.Inspector.Time
+The corresponding time of the object in the music (sec)
+
+Tip.Inspector.TimingDuration
+Duration of the sound effect
+
+Tip.Inspector.TimingSpeed
+Drop speed for notes
+
+Tip.Inspector.TrackIndex
+Index of track for this note
+
+Tip.Inspector.Tray
+Has tray of not
+
+Tip.Inspector.Type
+Number that indicate the type of object
+
+Tip.Inspector.Width
+Width of the object
+
+Tip.Inspector.X
+Position x of the object
+
+Tip.Inspector.Y
+Position y of the object
+
+Tip.Inspector.Z
+Z position
+
 Tip.Lib.Note
 Note brush
 
@@ -742,6 +868,9 @@ Show/Hide tracks
 Tip.ViewContainer.TrackLock
 Lock track
 
+UI.Apply
+Apply
+
 UI.BeatmapInfo.BPM
 BPM
 
@@ -807,6 +936,9 @@ Click
 
 UI.Inspector.Color
 Color
+
+UI.Inspector.Command
+Command
 
 UI.Inspector.Duration
 Length

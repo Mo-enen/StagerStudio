@@ -88,6 +88,7 @@
 		[SerializeField] private StageShortcut m_Shortcut = null;
 		[SerializeField] private StageMenu m_Menu = null;
 		[SerializeField] private StageState m_State = null;
+		[SerializeField] private StageCommand m_Command = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -211,6 +212,7 @@
 			SettingUI.GetLanguage = m_Language.Get;
 			StageEditor.GetLanguage = m_Language.Get;
 			InspectorUI.GetLanguage = m_Language.Get;
+			CommandUI.GetLanguage = m_Language.Get;
 			// Misc
 			TooltipUI.SetTip = (tip) => {
 				foreach (var label in m_TipLabels) {
@@ -543,7 +545,8 @@
 				m_Inspector.RefreshUI();
 			};
 			StageEditor.OnLockEyeChanged = () => {
-				m_Editor.ClearSelection();
+				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
+				m_Editor.SetBrush(m_Editor.SelectingBrushIndex);
 				m_TimingPreview.SetDirty();
 			};
 			StageEditor.GetBeatmap = () => m_Project.Beatmap;
@@ -798,6 +801,9 @@
 			InspectorUI.OnItemEdited = () => RefreshOnItemChange();
 			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
 
+			CommandUI.DoCommand = m_Command.DoCommand;
+			CommandUI.OpenMenu = m_Menu.OpenMenu;
+
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
 			m_TextSheet.Init();
@@ -938,7 +944,6 @@
 			m_GridRenderer.SetCountX(1, m_Game.GridCountX1);
 			m_GridRenderer.SetCountX(2, m_Game.GridCountX2);
 			m_GridRenderer.TimeGap = 60f / m_Game.BPM / m_Game.GridCountY;
-			m_GridRenderer.TimeGap_Main = 60f / m_Game.BPM;
 			m_GridRenderer.TimeOffset = m_Game.Shift;
 			m_GridRenderer.SpeedMuti = m_Game.GameDropSpeed;
 		}

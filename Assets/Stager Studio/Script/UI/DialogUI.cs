@@ -86,7 +86,7 @@
 
 
 		public void Close () {
-			if (gameObject is null) { return; }
+			if (gameObject == null) { return; }
 			transform.parent.gameObject.SetActive(false);
 			transform.parent.parent.InactiveIfNoChildActive();
 			transform.parent.DestroyAllChildImmediately();

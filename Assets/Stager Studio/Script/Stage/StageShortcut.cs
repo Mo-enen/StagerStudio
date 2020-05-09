@@ -199,7 +199,7 @@ namespace StagerStudio.Editor {
 				var key = (KeyCode)keyCodes.GetValue(i);
 				str += $"\t{key.ToString()}\r\n";
 			}
-			Util.TextToFile(str, Util.CombinePaths(Application.streamingAssetsPath, "Shortcut", "Keycode Helper.txt"));
+			Util.TextToFile(str, Util.CombinePaths(Application.streamingAssetsPath, "Shortcut", "Helper.txt"));
 		}
 
 
