@@ -1,6 +1,9 @@
 ﻿Author
 Stager 官方
 
+Command.Hint.CommandDone
+指令已完成
+
 Dialog.Editor.CannotSelectStage
 全景模式下不能选择舞台
 
@@ -103,38 +106,44 @@ Menu.ChapterItem.Rename
 Menu.ChapterItem.ShowInExplorer
 查看
 
-Menu.Command.Command.Delete
-删除物体。
-
 Menu.Command.Command.None
 （什么都不做）
 
 Menu.Command.Command.Time
-将时间赋值为：
+将时间赋值为
+
+Menu.Command.Command.TimeAdd
+将时间增加
 
 Menu.Command.Command.Width
-将宽度赋值为：
+将宽度赋值为
+
+Menu.Command.Command.WidthAdd
+将宽度增加
 
 Menu.Command.Command.X
-将X位置赋值为：
+将X位置赋值为
+
+Menu.Command.Command.XAdd
+将X位置增加
 
 Menu.Command.Target.None
 （无目标）
 
 Menu.Command.Target.Note
-所有音符，
+所有音符
 
 Menu.Command.Target.NoteInside
 所有音符，若轨道编号为
 
 Menu.Command.Target.Stage
-所有舞台，
+所有舞台
 
 Menu.Command.Target.Timing
-所有时间点，
+所有时间点
 
 Menu.Command.Target.Track
-所有轨道，
+所有轨道
 
 Menu.Command.Target.TrackInside
 所有轨道，若舞台编号为

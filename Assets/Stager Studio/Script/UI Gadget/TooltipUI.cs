@@ -1,10 +1,9 @@
 ﻿namespace StagerStudio.UI {
-	using global::StagerStudio.Saving;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.EventSystems;
-	using UnityEngine.UI;
+	using Saving;
 
 
 	public class TooltipUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {

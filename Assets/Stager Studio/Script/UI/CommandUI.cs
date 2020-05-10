@@ -22,27 +22,33 @@
 
 		// Const
 		private const string TARGET_MENU_KEY = "Menu.Command.Target";
-		private static readonly string[] TARGET_MENU = {
-			"Menu.Command.Target.None",
-			"Menu.Command.Target.Stage",
-			"Menu.Command.Target.Track",
-			"Menu.Command.Target.TrackInside",
-			"Menu.Command.Target.Note",
-			"Menu.Command.Target.NoteInside",
-			"Menu.Command.Target.Timing",
+		private static readonly (string key, bool hasIndex)[] TARGET_MENU = {
+			("Menu.Command.Target.None", false),
+			("Menu.Command.Target.Stage", false),
+			("Menu.Command.Target.Track", false),
+			("Menu.Command.Target.TrackInside", true),
+			("Menu.Command.Target.Note", false),
+			("Menu.Command.Target.NoteInside", true),
+			("Menu.Command.Target.Timing", false),
 		};
-		private static readonly string[] COMMAND_MENU = {
-			"Menu.Command.Command.None",
-			"Menu.Command.Command.Time",
-			"Menu.Command.Command.X",
-			"Menu.Command.Command.Width",
-			"Menu.Command.Command.Delete",
+		private static readonly (string key, bool hasValue)[] COMMAND_MENU = {
+			("Menu.Command.Command.None", false),
+			("Menu.Command.Command.Time", true),
+			("Menu.Command.Command.TimeAdd", true),
+			("Menu.Command.Command.X", true),
+			("Menu.Command.Command.XAdd", true),
+			("Menu.Command.Command.Width", true),
+			("Menu.Command.Command.WidthAdd", true),
 		};
 
 		// Handler
 		public static CommandHandler DoCommand { get; set; } = null;
 		public static MenuHandler OpenMenu { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
+
+		// Api
+		public static int TargetIndex { get; private set; } = 0;
+		public static int CommandIndex { get; private set; } = 0;
 
 		// Ser
 		[SerializeField] private RectTransform m_Window = null;
@@ -54,8 +60,6 @@
 
 		// Data
 		private bool UIReady = true;
-		private int TargetIndex = 0;
-		private int CommandIndex = 0;
 
 
 		// MSG
@@ -78,7 +82,19 @@
 
 		public void SetTargetIndex (int index) {
 			TargetIndex = index;
-			CommandIndex = 0;
+			if (TargetIndex >= 0 && TargetIndex < Menus.Length) {
+				var menu = Menus[TargetIndex];
+				bool needResetCommandIndex = true;
+				foreach (var cIndex in menu.CommandIndexs) {
+					if (cIndex == CommandIndex) {
+						needResetCommandIndex = false;
+						break;
+					}
+				}
+				if (needResetCommandIndex) {
+					CommandIndex = 0;
+				}
+			}
 			RefreshUI();
 		}
 
@@ -120,19 +136,22 @@
 					m_ValueIF.text = value.ToString();
 				}
 
+				bool hasIndex = false;
 				if (TargetIndex >= 0 && TargetIndex < TARGET_MENU.Length) {
-					m_TargetLabel.text = GetLanguage(TARGET_MENU[TargetIndex]);
+					var tPair = TARGET_MENU[TargetIndex];
+					m_TargetLabel.text = GetLanguage(tPair.key);
+					hasIndex = tPair.hasIndex;
 				}
 
-				if (TargetIndex >= 0 && TargetIndex < Menus.Length) {
-					var menu = Menus[TargetIndex];
-					if (CommandIndex >= 0 && CommandIndex < menu.CommandIndexs.Length) {
-						m_CommandLabel.text = GetLanguage(COMMAND_MENU[menu.CommandIndexs[CommandIndex]]);
-					}
+				bool hasValue = false;
+				if (CommandIndex >= 0 && CommandIndex < COMMAND_MENU.Length) {
+					var cPair = COMMAND_MENU[CommandIndex];
+					m_CommandLabel.text = GetLanguage(cPair.key);
+					hasValue = cPair.hasValue;
 				}
 
-				m_IndexIF.gameObject.SetActive(TargetIndex == 3 || TargetIndex == 5);
-				m_ValueIF.gameObject.SetActive(CommandIndex == 1 || CommandIndex == 2 || CommandIndex == 3);
+				m_IndexIF.gameObject.SetActive(hasIndex);
+				m_ValueIF.gameObject.SetActive(hasValue);
 
 			} catch { }
 			UIReady = true;

@@ -6,6 +6,7 @@
 	using UI;
 	using UnityEngine.UI;
 	using Saving;
+	using UndoRedo;
 
 
 	public partial class StagerStudio { /// --- Spawn UI ---
@@ -375,7 +376,7 @@
 				DialogUtil.MarkType.Warning, null, null, () => {
 					ProjectRemovePaletteAt(index);
 					TryRefreshProjectInfo();
-					StageUndo.ClearUndo();
+					UndoRedo.ClearUndo();
 				}, null, () => { }
 			);
 		}
@@ -389,7 +390,7 @@
 				DialogUtil.MarkType.Warning, null, null, () => {
 					ProjectRemoveClickSound(index);
 					TryRefreshProjectInfo();
-					StageUndo.ClearUndo();
+					UndoRedo.ClearUndo();
 				}, null, () => { }
 			);
 		}
@@ -403,7 +404,7 @@
 				DialogUtil.MarkType.Warning, null, null, () => {
 					ProjectRemoveTweenAt(index);
 					TryRefreshProjectInfo();
-					StageUndo.ClearUndo();
+					UndoRedo.ClearUndo();
 				}, null, () => { }
 			);
 		}

@@ -102,21 +102,70 @@
 
 		public static byte[] ObjectToBytes (object obj) {
 			if (obj == null) { return new byte[0]; }
-			using (var ms = new MemoryStream()) {
-				new BinaryFormatter().Serialize(ms, obj);
-				return ms.ToArray();
+			try {
+				using (var ms = new MemoryStream()) {
+					new BinaryFormatter().Serialize(ms, obj);
+					return ms.ToArray();
+				}
+			} catch (System.Exception ex) {
+				Debug.LogError(ex);
 			}
+			return new byte[0];
+		}
+
+
+		public static int ObjectToBytes (object obj, byte[] buffer, int offset) {
+			if (obj == null) { return offset; }
+			int len = 0;
+			int realLen = 0;
+			try {
+				using (var ms = new MemoryStream()) {
+					new BinaryFormatter().Serialize(ms, obj);
+					ms.Seek(0, SeekOrigin.Begin);
+					len = (int)ms.Length;
+					if (offset + len < buffer.Length) {
+						realLen = ms.Read(buffer, offset, len);
+						if (realLen == 0) {
+							realLen = len;
+						}
+					}
+				}
+			} catch (System.Exception ex) {
+				Debug.LogError(ex);
+			}
+			return len == realLen ? offset + len : offset;
 		}
 
 
 		public static object BytesToObject (byte[] bytes) {
 			if (bytes == null || bytes.Length == 0) { return null; }
-			using (var memStream = new MemoryStream()) {
-				memStream.Write(bytes, 0, bytes.Length);
-				memStream.Seek(0, SeekOrigin.Begin);
-				var obj = new BinaryFormatter().Deserialize(memStream);
-				return obj;
+			try {
+				using (var memStream = new MemoryStream()) {
+					memStream.Write(bytes, 0, bytes.Length);
+					memStream.Seek(0, SeekOrigin.Begin);
+					var obj = new BinaryFormatter().Deserialize(memStream);
+					return obj;
+				}
+			} catch (System.Exception ex) {
+				Debug.LogError(ex);
 			}
+			return null;
+		}
+
+
+		public static object BytesToObject (byte[] bytes, int offset, int len) {
+			if (bytes == null || bytes.Length == 0) { return null; }
+			try {
+				using (var memStream = new MemoryStream()) {
+					memStream.Write(bytes, offset, len);
+					memStream.Seek(0, SeekOrigin.Begin);
+					var obj = new BinaryFormatter().Deserialize(memStream);
+					return obj;
+				}
+			} catch (System.Exception ex) {
+				Debug.LogError(ex);
+			}
+			return null;
 		}
 
 
@@ -445,13 +494,13 @@
 			var ex = GetExtension(path);
 			switch (ex) {
 				default:
-				return AudioType.UNKNOWN;
+					return AudioType.UNKNOWN;
 				case ".mp3":
-				return AudioType.MPEG;
+					return AudioType.MPEG;
 				case ".ogg":
-				return AudioType.OGGVORBIS;
+					return AudioType.OGGVORBIS;
 				case ".wav":
-				return AudioType.WAV;
+					return AudioType.WAV;
 			}
 		}
 

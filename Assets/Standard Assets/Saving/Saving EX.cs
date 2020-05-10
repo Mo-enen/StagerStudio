@@ -1,4 +1,4 @@
-﻿namespace StagerStudio.Saving {
+﻿namespace Saving {
 	using UnityEngine;
 
 

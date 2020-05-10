@@ -11902,7 +11902,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &740101816
@@ -12884,7 +12884,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-        - m_Target: {fileID: 1688303050}
+        - m_Target: {fileID: 1340495427}
           m_MethodName: UI_SetFocus
           m_Mode: 6
           m_Arguments:
@@ -14066,42 +14066,52 @@ MonoBehaviour:
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
+    - Menu.Command.Command.TimeAdd
     - Menu.Command.Command.X
+    - Menu.Command.Command.XAdd
     - Menu.Command.Command.Width
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.WidthAdd
   - Key: Menu.Command.Track
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
+    - Menu.Command.Command.TimeAdd
     - Menu.Command.Command.X
+    - Menu.Command.Command.XAdd
     - Menu.Command.Command.Width
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.WidthAdd
   - Key: Menu.Command.TrackInside
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
+    - Menu.Command.Command.TimeAdd
     - Menu.Command.Command.X
+    - Menu.Command.Command.XAdd
     - Menu.Command.Command.Width
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.WidthAdd
   - Key: Menu.Command.Note
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
+    - Menu.Command.Command.TimeAdd
     - Menu.Command.Command.X
+    - Menu.Command.Command.XAdd
     - Menu.Command.Command.Width
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.WidthAdd
   - Key: Menu.Command.NoteInside
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
+    - Menu.Command.Command.TimeAdd
     - Menu.Command.Command.X
+    - Menu.Command.Command.XAdd
     - Menu.Command.Command.Width
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.WidthAdd
   - Key: Menu.Command.Timing
     CallbackKeys:
     - Menu.Command.Command.None
     - Menu.Command.Command.Time
-    - Menu.Command.Command.Delete
+    - Menu.Command.Command.TimeAdd
   m_Callbacks:
   - Key: Stager.About
     Icon: {fileID: 0}
@@ -15031,7 +15041,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Key: Menu.Command.Command.X
+  - Key: Menu.Command.Command.TimeAdd
     Icon: {fileID: 0}
     Callback:
       m_PersistentCalls:
@@ -15047,7 +15057,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Key: Menu.Command.Command.Width
+  - Key: Menu.Command.Command.X
     Icon: {fileID: 0}
     Callback:
       m_PersistentCalls:
@@ -15063,7 +15073,7 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
-  - Key: Menu.Command.Command.Delete
+  - Key: Menu.Command.Command.XAdd
     Icon: {fileID: 0}
     Callback:
       m_PersistentCalls:
@@ -15075,6 +15085,54 @@ MonoBehaviour:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 4
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Command.Command.Width
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: UI_TrySetCommand_Command
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 5
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Command.Command.WidthAdd
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: UI_TrySetCommand_Command
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 6
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Command.Command.Delete
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: UI_TrySetCommand_Command
+          m_Mode: 3
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 7
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17808,7 +17866,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 10, y: -55.99994}
+  m_AnchoredPosition: {x: 10, y: -56}
   m_SizeDelta: {x: 96, y: -112}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &1040074351
@@ -24209,7 +24267,6 @@ MonoBehaviour:
   m_Shortcut: {fileID: 798248423}
   m_Menu: {fileID: 826612610}
   m_State: {fileID: 949943523}
-  m_Command: {fileID: 995548659}
   m_CanvasRoot: {fileID: 1286156989}
   m_DirtyMark: {fileID: 640388017}
   m_BeatmapSwiperLabel: {fileID: 1999224471}
@@ -30799,7 +30856,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 483078908}
   m_HandleRect: {fileID: 483078907}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -32332,6 +32389,8 @@ MonoBehaviour:
   m_DefaultData:
   - Author
   - Stager Official
+  - Command.Hint.CommandDone
+  - Command done
   - Dialog.Editor.CannotSelectStage
   - Can not select stage in panoramic mode
   - Dialog.Editor.CannotSelectStageBrush
@@ -32400,30 +32459,34 @@ MonoBehaviour:
   - Rename
   - Menu.ChapterItem.ShowInExplorer
   - Show in Explorer
-  - Menu.Command.Command.Delete
-  - Delete item.
   - Menu.Command.Command.None
   - (Do nothing)
   - Menu.Command.Command.Time
-  - 'Set time to:'
+  - Set time to
+  - Menu.Command.Command.TimeAdd
+  - Add time by
   - Menu.Command.Command.Width
-  - 'Set width to:'
+  - Set width to
+  - Menu.Command.Command.WidthAdd
+  - Add width by
   - Menu.Command.Command.X
-  - 'Set x to:'
+  - Set x to
+  - Menu.Command.Command.XAdd
+  - Add x by
   - Menu.Command.Target.None
   - (No Target)
   - Menu.Command.Target.Note
-  - All notes,
+  - All notes
   - Menu.Command.Target.NoteInside
-  - 'All notes which inside track:'
+  - All notes which inside track
   - Menu.Command.Target.Stage
-  - All stages,
+  - All stages
   - Menu.Command.Target.Timing
-  - All timings,
+  - All timings
   - Menu.Command.Target.Track
-  - All tracks,
+  - All tracks
   - Menu.Command.Target.TrackInside
-  - 'All tracks which inside stage:'
+  - All tracks which inside stage
   - Menu.Grid.bps0
   - 2 Beats per Section
   - Menu.Grid.bps1

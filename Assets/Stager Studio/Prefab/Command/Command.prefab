@@ -1127,17 +1127,17 @@ MonoBehaviour:
   - TargetMenuKey: Menu.Command.None
     CommandIndexs: 00000000
   - TargetMenuKey: Menu.Command.Stage
-    CommandIndexs: 0000000001000000020000000300000004000000
+    CommandIndexs: 00000000010000000200000003000000040000000500000006000000
   - TargetMenuKey: Menu.Command.Track
-    CommandIndexs: 0000000001000000020000000300000004000000
+    CommandIndexs: 00000000010000000200000003000000040000000500000006000000
   - TargetMenuKey: Menu.Command.TrackInside
-    CommandIndexs: 0000000001000000020000000300000004000000
+    CommandIndexs: 00000000010000000200000003000000040000000500000006000000
   - TargetMenuKey: Menu.Command.Note
-    CommandIndexs: 0000000001000000020000000300000004000000
+    CommandIndexs: 00000000010000000200000003000000040000000500000006000000
   - TargetMenuKey: Menu.Command.NoteInside
-    CommandIndexs: 0000000001000000020000000300000004000000
+    CommandIndexs: 00000000010000000200000003000000040000000500000006000000
   - TargetMenuKey: Menu.Command.Timing
-    CommandIndexs: 000000000100000004000000
+    CommandIndexs: 000000000100000002000000
 --- !u!222 &6273449872490280168
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1588,7 +1588,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 6273449872490280170}
-        m_MethodName: Close
+        m_MethodName: UI_Close
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

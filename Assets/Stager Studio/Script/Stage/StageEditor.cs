@@ -456,58 +456,58 @@
 			int gridingItemType = selectingMode ? SelectingItemType : SelectingBrushIndex;
 			switch (gridingItemType) {
 				case 0: // Stage
-				gridEnable = true;
-				pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
-				rot = Quaternion.identity;
-				scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
-				m_Grid.Mode = 0;
-				m_Grid.IgnoreDynamicSpeed = false;
-				m_Grid.ObjectSpeedMuti = 1f;
-				break;
+					gridEnable = true;
+					pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
+					rot = Quaternion.identity;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					m_Grid.Mode = 0;
+					m_Grid.IgnoreDynamicSpeed = false;
+					m_Grid.ObjectSpeedMuti = 1f;
+					break;
 				case 1: // Track
 				case 2:  // Note
-				int hoverItemType, hoverItemIndex;
-				Transform hoverTarget;
-				if (selectingMode) {
-					hoverItemType = gridingItemType - 1;
-					hoverItemIndex = map.GetParentIndex(gridingItemType, SelectingItemIndex);
-					hoverTarget = hoverItemIndex >= 0 ? m_Containers[hoverItemType].GetChild(hoverItemIndex) : null;
-				} else {
-					(hoverItemType, hoverItemIndex, _, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[gridingItemType - 1], true);
-				}
-				if (hoverTarget != null) {
-					gridEnable = true;
-					pos = hoverTarget.GetChild(0).position;
-					rot = hoverTarget.rotation;
-					scl = hoverTarget.GetChild(0).localScale;
-					m_Grid.ObjectSpeedMuti = GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) : 1f;
-				} else {
-					m_Grid.ObjectSpeedMuti = 1f;
-				}
-				m_Grid.Mode = gridingItemType;
-				m_Grid.IgnoreDynamicSpeed = false;
-				break;
+					int hoverItemType, hoverItemIndex;
+					Transform hoverTarget;
+					if (selectingMode) {
+						hoverItemType = gridingItemType - 1;
+						hoverItemIndex = map.GetParentIndex(gridingItemType, SelectingItemIndex);
+						hoverTarget = hoverItemIndex >= 0 ? m_Containers[hoverItemType].GetChild(hoverItemIndex) : null;
+					} else {
+						(hoverItemType, hoverItemIndex, _, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[gridingItemType - 1], true);
+					}
+					if (hoverTarget != null) {
+						gridEnable = true;
+						pos = hoverTarget.GetChild(0).position;
+						rot = hoverTarget.rotation;
+						scl = hoverTarget.GetChild(0).localScale;
+						m_Grid.ObjectSpeedMuti = GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) : 1f;
+					} else {
+						m_Grid.ObjectSpeedMuti = 1f;
+					}
+					m_Grid.Mode = gridingItemType;
+					m_Grid.IgnoreDynamicSpeed = false;
+					break;
 				case 3: // Timing
-				gridEnable = true;
-				scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
-				pos = new Vector3((zoneMin.x + zoneMax.x) / 2f, zoneMin.y, zoneMin.z);
-				rot = Quaternion.identity;
-				m_Grid.ObjectSpeedMuti = 1f;
-				m_Grid.Mode = 3;
-				m_Grid.IgnoreDynamicSpeed = true;
-				break;
+					gridEnable = true;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					pos = new Vector3((zoneMin.x + zoneMax.x) / 2f, zoneMin.y, zoneMin.z);
+					rot = Quaternion.identity;
+					m_Grid.ObjectSpeedMuti = 1f;
+					m_Grid.Mode = 3;
+					m_Grid.IgnoreDynamicSpeed = true;
+					break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
-				if (!selectingMode) { break; }
-				var target = m_Containers[gridingItemType].GetChild(SelectingItemIndex);
-				gridEnable = true;
-				pos = target.position;
-				rot = target.rotation;
-				scl = target.GetChild(0).localScale;
-				m_Grid.Mode = 3;
-				m_Grid.IgnoreDynamicSpeed = true;
-				m_Grid.ObjectSpeedMuti = 1f / m_Grid.SpeedMuti;
-				break;
+					if (!selectingMode) { break; }
+					var target = m_Containers[gridingItemType].GetChild(SelectingItemIndex);
+					gridEnable = true;
+					pos = target.position;
+					rot = target.rotation;
+					scl = target.GetChild(0).localScale;
+					m_Grid.Mode = 3;
+					m_Grid.IgnoreDynamicSpeed = true;
+					m_Grid.ObjectSpeedMuti = 1f / m_Grid.SpeedMuti;
+					break;
 			}
 			m_Grid.SetGridTransform(gridEnable, ShowGridOnSelect.Value || !selectingMode, pos, rot, scl);
 		}
@@ -530,48 +530,48 @@
 			if (RayInsideZone(ray)) {
 				switch (SelectingBrushIndex) {
 					case 0: // Stage
-					if (!GetUseAbreast()) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = zoneSize * StageBrushWidth;
-							ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos);
-							ghostPivotX = 0.5f;
+						if (!GetUseAbreast()) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = zoneSize * StageBrushWidth;
+								ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos);
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 1: // Track
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
-					if (hoverTarget != null) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = UseGlobalBrushScale ? TrackBrushWidth * zoneSize : TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
-							ghostSize.y = hoverTarget.GetChild(0).localScale.y;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, true);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
+						if (hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = UseGlobalBrushScale ? TrackBrushWidth * zoneSize : TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, true);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 2: // Note
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
-					if (hoverTarget != null) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = UseGlobalBrushScale ? NoteBrushWidth * zoneSize : NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
-							ghostSize.y = GHOST_NOTE_Y / zoneSize;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
+						if (hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = UseGlobalBrushScale ? NoteBrushWidth * zoneSize : NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.y = GHOST_NOTE_Y / zoneSize;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 3: { // Speed
 						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
 						ghostEnable = mousePos.HasValue;
@@ -770,40 +770,40 @@
 				break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
-				if (axis == 1 || axis == 2) {
-					if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
-					int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
-					var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
-					if (stage == null) { break; }
-					var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld);
-					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
-					var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
-						snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-						Stage.GetStagePosition(stage, index),
-						Stage.GetStageHeight(stage),
-						Stage.GetStagePivotY(stage),
-						Stage.GetStageWorldRotationZ(stage)
-					) : TrackTimer.ZoneToLocalY(
-						snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-						Stage.GetStagePosition(stage, index),
-						Stage.GetStageHeight(stage),
-						Stage.GetStagePivotY(stage),
-						Stage.GetStageWorldRotationZ(stage),
-						Track.GetTrackAngle(map.Tracks[index])
-					);
-					if (SelectingItemSubIndex == 2) {
-						// Head
-						float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime, m_Grid.MusicTime + 1f, localPosY), 0f);
-						map.SetTime(SelectingItemType - 4, index, newTime);
-						LogAxisMSG(axis, newTime);
-					} else if (SelectingItemSubIndex == 3) {
-						// Tail
-						float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f);
-						map.SetDuration(SelectingItemType - 4, index, newTime);
-						LogAxisMSG(axis, newTime);
+					if (axis == 1 || axis == 2) {
+						if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
+						int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
+						var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
+						if (stage == null) { break; }
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld);
+						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+						var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+							Stage.GetStagePosition(stage, index),
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage)
+						) : TrackTimer.ZoneToLocalY(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+							Stage.GetStagePosition(stage, index),
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage),
+							Track.GetTrackAngle(map.Tracks[index])
+						);
+						if (SelectingItemSubIndex == 2) {
+							// Head
+							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime, m_Grid.MusicTime + 1f, localPosY), 0f);
+							map.SetTime(SelectingItemType - 4, index, newTime);
+							LogAxisMSG(axis, newTime);
+						} else if (SelectingItemSubIndex == 3) {
+							// Tail
+							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f);
+							map.SetDuration(SelectingItemType - 4, index, newTime);
+							LogAxisMSG(axis, newTime);
+						}
 					}
-				}
-				break;
+					break;
 			}
 			OnObjectEdited();
 			// === Func ===
@@ -1068,12 +1068,12 @@
 					LogHint(GetLanguage(DIALOG_CannotSelectStageBrush), true);
 				}
 				// Layer Lock
-				if (GetItemLock(brushIndex)) {
+				if (brushIndex >= 0 && GetItemLock(brushIndex)) {
 					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_SelectingLayerLocked), true);
 				}
 				// Layer Invisible
-				if (!GetContainerActive(brushIndex)) {
+				if (brushIndex >= 0 && !GetContainerActive(brushIndex)) {
 					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
 				}
@@ -1101,17 +1101,17 @@
 		private void LogAxisMSG (int axis, float value0, float value1) {
 			switch (axis) {
 				case 0:
-				LogAxisMessage(axis, value0.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
 				case 1:
-				LogAxisMessage(axis, value1.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value1.ToString("0.##"));
+					break;
 				case 2:
-				LogAxisMessage(axis, value0.ToString("0.##") + ", " + value1.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##") + ", " + value1.ToString("0.##"));
+					break;
 				case 3:
-				LogAxisMessage(axis, value0.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
 			}
 		}
 

@@ -3,13 +3,14 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
-	using UnityEngine.Audio;
 	using UI;
 	using Stage;
 	using Object;
 	using Rendering;
 	using Data;
-	using global::StagerStudio.Saving;
+	using Saving;
+	using UndoRedo;
+
 
 	public partial class StagerStudio : MonoBehaviour {
 
@@ -28,7 +29,7 @@
 
 		[System.Serializable]
 		private class UndoData {
-			public byte[] Beatmap;
+			public Beatmap Map;
 			public float MusicTime;
 			public bool[] ContainerActive;
 		}
@@ -63,6 +64,7 @@
 		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
+		private const string Hint_CommandDone = "Command.Hint.CommandDone";
 
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
@@ -88,7 +90,6 @@
 		[SerializeField] private StageShortcut m_Shortcut = null;
 		[SerializeField] private StageMenu m_Menu = null;
 		[SerializeField] private StageState m_State = null;
-		[SerializeField] private StageCommand m_Command = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -157,7 +158,7 @@
 			Awake_Skin();
 			Awake_Undo();
 			Awake_ProjectInfo();
-			Awake_UI();
+			Awake_Misc();
 
 		}
 
@@ -177,7 +178,9 @@
 			var dropSpeed = GetDropSpeed();
 			float musicTime = GetMusicTime();
 			CursorUI.GlobalUpdate();
-			StageUndo.GlobalUpdate();
+			if (!Input.anyKey) {
+				UndoRedo.RegisterUndoIfDirty();
+			}
 			StageObject.ZoneMinMax = ObjectTimer.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
@@ -291,6 +294,23 @@
 			m_Menu.AddCheckerFunc("Menu.Abreast.Width1", () => m_Game.AbreastWidthIndex == 1);
 			m_Menu.AddCheckerFunc("Menu.Abreast.Width2", () => m_Game.AbreastWidthIndex == 2);
 			m_Menu.AddCheckerFunc("Menu.Abreast.Width3", () => m_Game.AbreastWidthIndex == 3);
+			// Command
+			m_Menu.AddCheckerFunc("Menu.Command.Target.None", () => CommandUI.TargetIndex == 0);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.Stage", () => CommandUI.TargetIndex == 1);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.Track", () => CommandUI.TargetIndex == 2);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.TrackInside", () => CommandUI.TargetIndex == 3);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.Note", () => CommandUI.TargetIndex == 4);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.NoteInside", () => CommandUI.TargetIndex == 5);
+			m_Menu.AddCheckerFunc("Menu.Command.Target.Timing", () => CommandUI.TargetIndex == 6);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.None", () => CommandUI.CommandIndex == 0);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.Time", () => CommandUI.CommandIndex == 1);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.TimeAdd", () => CommandUI.CommandIndex == 2);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.X", () => CommandUI.CommandIndex == 3);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.XAdd", () => CommandUI.CommandIndex == 4);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.Width", () => CommandUI.CommandIndex == 5);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.WidthAdd", () => CommandUI.CommandIndex == 6);
+			m_Menu.AddCheckerFunc("Menu.Command.Command.Delete", () => CommandUI.CommandIndex == 7);
+
 		}
 
 
@@ -332,7 +352,7 @@
 				m_Game.SetSpeedCurveDirty();
 				m_Preview.SetDirty();
 				UI_RemoveUI();
-				StageUndo.ClearUndo();
+				UndoRedo.ClearUndo();
 				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 				m_Game.SetAbreastIndex(0);
 				m_Game.SetUseAbreastView(false);
@@ -356,7 +376,7 @@
 				m_Music.Pitch = 1f;
 				m_Music.SetClip(null);
 				m_SoundFX.SetClip(null);
-				StageUndo.ClearUndo();
+				UndoRedo.ClearUndo();
 				StageObject.Beatmap = TimingNote.Beatmap = ObjectTimer.Beatmap = null;
 				m_Preview.SetDirty();
 				m_Editor.ClearSelection();
@@ -379,8 +399,8 @@
 				m_Game.ClearAllContainers();
 				m_Music.Pitch = 1f;
 				m_Music.Seek(0f);
-				StageUndo.ClearUndo();
-				StageUndo.RegisterUndo();
+				UndoRedo.ClearUndo();
+				UndoRedo.SetDirty();
 				m_Preview.SetDirty();
 				Resources.UnloadUnusedAssets();
 				RefreshGridRenderer();
@@ -556,6 +576,7 @@
 			StageEditor.GetMoveAxisHovering = m_MoveHandler.GetEntering;
 			StageEditor.OnObjectEdited = () => {
 				RefreshOnItemChange();
+				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
@@ -584,8 +605,8 @@
 
 
 		private void Awake_Undo () {
-			StageUndo.GetObjectData = () => new UndoData() {
-				Beatmap = Util.ObjectToBytes(m_Project.Beatmap),
+			UndoRedo.GetStepData = () => new UndoData() {
+				Map = m_Project.Beatmap,
 				MusicTime = m_Music.Time,
 				ContainerActive = new bool[4] {
 					m_Editor.GetContainerActive(0),
@@ -594,12 +615,11 @@
 					m_Editor.GetContainerActive(3),
 				},
 			};
-			StageUndo.OnUndo = (bytes) => {
-				if (bytes == null) { return; }
-				var step = Util.BytesToObject(bytes) as UndoData;
-				if (step is null || step.Beatmap is null) { return; }
+			UndoRedo.OnUndoRedo = (stepObj) => {
+				var step = stepObj as UndoData;
+				if (step == null || step.Map == null) { return; }
 				// Map
-				m_Project.Beatmap.LoadFromBytes(step.Beatmap);
+				m_Project.Beatmap.LoadFromOtherMap(step.Map);
 				// Music Time
 				m_Music.Seek(step.MusicTime);
 				// Container Active
@@ -608,6 +628,7 @@
 				}
 				// Final
 				m_Editor.ClearSelection();
+				RefreshOnItemChange();
 			};
 		}
 
@@ -700,7 +721,12 @@
 		}
 
 
-		private void Awake_UI () {
+		private void Awake_Misc () {
+
+			StageCommand.OnCommandDone = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+			};
 
 			CursorUI.GetCursorTexture = (index) => (
 				index >= 0 ? m_Cursors[index].Cursor : null,
@@ -798,10 +824,23 @@
 			InspectorUI.GetBeatmap = () => m_Project.Beatmap;
 			InspectorUI.GetBPM = () => m_Game.BPM;
 			InspectorUI.GetShift = () => m_Game.Shift;
-			InspectorUI.OnItemEdited = () => RefreshOnItemChange();
+			InspectorUI.OnItemEdited = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+			};
 			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
 
-			CommandUI.DoCommand = m_Command.DoCommand;
+			CommandUI.DoCommand = (type, command, index, value) => {
+				bool success = StageCommand.DoCommand(
+					m_Project.Beatmap,
+					(StageCommand.TargetType)type,
+					(StageCommand.CommandType)command,
+					index, value
+				);
+				if (success) {
+					m_Hint.SetHint(m_Language.Get(Hint_CommandDone), true);
+				}
+			};
 			CommandUI.OpenMenu = m_Menu.OpenMenu;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
@@ -810,13 +849,13 @@
 
 			// Tutorial
 			if (TutorialOpened.Value) {
-				//Destroy(m_TutorialBoard.gameObject);
+				Destroy(m_TutorialBoard.gameObject);
 			} else {
 				m_TutorialBoard.gameObject.SetActive(true);
+				///////////////// No Tutorial Yet ///////////////
+				Destroy(m_TutorialBoard.gameObject);
+				/////////////////////////////////////////////////
 			}
-			///////////////// No Tutorial Yet ///////////////
-			Destroy(m_TutorialBoard.gameObject);
-			/////////////////////////////////////////////////
 
 		}
 
@@ -871,10 +910,10 @@
 		}
 
 
-		public void Undo () => StageUndo.Undo();
+		public void Undo () => UndoRedo.Undo();
 
 
-		public void Redo () => StageUndo.Redo();
+		public void Redo () => UndoRedo.Redo();
 
 
 		#endregion
@@ -956,3 +995,67 @@
 
 	}
 }
+
+
+#if UNITY_EDITOR
+namespace StagerStudio.Editor {
+	using System.Collections;
+	using System.Collections.Generic;
+	using UnityEngine;
+	using UnityEditor;
+	using UndoRedo;
+
+
+	[CustomEditor(typeof(StagerStudio))]
+	public class StagerStudio_Inspector : Editor {
+
+
+
+		public override void OnInspectorGUI () {
+			if (EditorApplication.isPlaying) {
+				LayoutH(() => {
+					GUIRect(0, 18);
+					if (GUI.Button(GUIRect(48, 18), "⇦")) {
+						UndoRedo.Undo();
+					}
+					Space(2);
+					if (GUI.Button(GUIRect(48, 18), "⇨")) {
+						UndoRedo.Redo();
+					}
+					GUIRect(0, 18);
+				});
+				Space(4);
+			}
+			base.OnInspectorGUI();
+		}
+
+
+
+		// UTL
+		private Rect GUIRect (float width, float height) => GUILayoutUtility.GetRect(
+			width, height,
+			GUILayout.ExpandWidth(width == 0),
+			GUILayout.ExpandHeight(height == 0)
+		);
+
+
+		private void LayoutH (System.Action action, bool box = false, GUIStyle style = null) {
+			if (box) {
+				style = GUI.skin.box;
+			}
+			if (style != null) {
+				GUILayout.BeginHorizontal(style);
+			} else {
+				GUILayout.BeginHorizontal();
+			}
+			action();
+			GUILayout.EndHorizontal();
+		}
+
+
+		private void Space (float space = 4f) => GUILayout.Space(space);
+
+
+	}
+}
+#endif
