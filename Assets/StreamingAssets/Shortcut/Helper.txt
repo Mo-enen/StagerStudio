@@ -29,7 +29,6 @@ Available Actions:
 	Shortcut.LockTrack
 	Shortcut.Lock.Note
 	Shortcut.Lock.Speed
-	Shortcut.SwitchFocus
 	Shortcut.Seek.Positive
 	Shortcut.Seek.Negative
 	Shortcut.PitchUp

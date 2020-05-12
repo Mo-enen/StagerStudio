@@ -105,6 +105,7 @@
 		[SerializeField] private Transform m_TutorialBoard = null;
 		[SerializeField] private Text m_TipLabelA = null;
 		[SerializeField] private Text m_TipLabelB = null;
+		[SerializeField] private RectTransform m_MotionInspector = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -381,6 +382,7 @@
 				m_Preview.SetDirty();
 				m_Editor.ClearSelection();
 				m_Inspector.RefreshUI();
+				UI_RemoveUI();
 			};
 
 			// Beatmap
@@ -563,6 +565,7 @@
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
 				m_Inspector.RefreshUI();
+				m_Inspector.StopEditMotion(false);
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
@@ -570,7 +573,10 @@
 				m_TimingPreview.SetDirty();
 			};
 			StageEditor.GetBeatmap = () => m_Project.Beatmap;
-			StageEditor.GetEditorActive = () => m_Project.Beatmap != null && !m_Music.IsPlaying;
+			StageEditor.GetEditorActive = () =>
+				m_Project.Beatmap != null &&
+				!m_Music.IsPlaying &&
+				!m_MotionInspector.gameObject.activeSelf;
 			StageEditor.GetUseDynamicSpeed = () => m_Game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => m_Game.UseAbreast;
 			StageEditor.GetMoveAxisHovering = m_MoveHandler.GetEntering;
@@ -842,6 +848,8 @@
 				}
 			};
 			CommandUI.OpenMenu = m_Menu.OpenMenu;
+
+			MotionPainterUI.GetBeatmap = () => m_Project.Beatmap;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

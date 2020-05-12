@@ -372,9 +372,10 @@ namespace StagerStudio.Editor {
 					var builder = new System.Text.StringBuilder();
 					var values = Datas[index];
 					foreach (var value in values) {
-						bool hasLetter = System.Text.RegularExpressions.Regex.IsMatch(value.key, @"[a-zA-Z]");
+						string key = System.Text.RegularExpressions.Regex.Replace(value.key, @"[^a-zA-Z0-9.]", "");
+						bool hasLetter = System.Text.RegularExpressions.Regex.IsMatch(key, @"[a-zA-Z]");
 						if (!hasLetter) { continue; }
-						builder.AppendLine(value.key);
+						builder.AppendLine(key);
 						builder.AppendLine(value.value);
 						builder.AppendLine();
 					}

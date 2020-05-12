@@ -1,21 +1,22 @@
 ﻿
-
 /*
 
-	☆☆☆★  Quick Access v1.0.0  ★☆☆☆
+	★★★★★  Quick Access v1.0.0  ★★★★★
 	
-	An extra panel in the corner of the scene shows your commonly used objects.
+
+	An extra panel in the corner of the scene view shows your commonly used objects.
 
 
 	How to use:
 	- Copy QuickAccess.cs to anywhere in the Assets folder.
 	- Add objects by dragging them into the quick access panel from Hierarchy, Project or Inspector.
-	- Click an object to open or select it.
+	- Click an object to select it.
+	- Click open button to open prefab or script.
 	- Right click an object to open the menu.
 	- Click the button at the bottom to show or hide the panel (hotkey A).
 
 
-	Created by 楠瓜Moenen, Free to use, do not sale, enjoy.
+	Created by 楠瓜Moenen, Free to use, not for sale, enjoy.
 	
 
 	Email moenen6@gmail.com, moenenn@163.com
@@ -300,104 +301,110 @@ namespace QuickAccess {
 			Handles.EndGUI();
 
 			// Main GUI
-			Handles.BeginGUI();
-			GUILayout.BeginArea(new Rect(
-				!Folded ? 0 : -AREA_WIDTH,
-				view.position.height - AreaHeight - ITEM_HEIGHT - SCENE_GAP_FIX,
-				AREA_WIDTH,
-				AreaHeight
-			));
-			var areaRect = new Rect(0, 0, AREA_WIDTH, AreaHeight);
+			if (!Folded) {
 
-			// System
-			bool mouseDown = Event.current.type == EventType.MouseDown;
-			bool mouseDownInItem = false;
-			bool mouseInArea = areaRect.Contains(Event.current.mousePosition);
-			if (mouseInArea) {
-				HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
-			}
+				Handles.BeginGUI();
+				GUILayout.BeginArea(new Rect(
+					0,
+					view.position.height - AreaHeight - ITEM_HEIGHT - SCENE_GAP_FIX,
+					AREA_WIDTH,
+					AreaHeight
+				));
+				var areaRect = new Rect(0, 0, AREA_WIDTH, AreaHeight);
 
-			// Drag
-			switch (Event.current.type) {
-				case EventType.DragUpdated:
-					if (mouseInArea && DragAndDrop.objectReferences.Length > 0) {
-						DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
-						Event.current.Use();
-					}
-					break;
-				case EventType.DragPerform:
-					if (mouseInArea && DragAndDrop.objectReferences.Length > 0) {
-						foreach (var obj in DragAndDrop.objectReferences) {
-							if (obj is null) { continue; }
-							var itemData = ItemsJsonData.ObjectToData(obj);
-							if (itemData != null) {
-								ItemData.Items.Add(itemData);
-							}
-						}
-						RefreshList();
-						SaveToDisk();
-						DragAndDrop.AcceptDrag();
-						Event.current.Use();
-					}
-					break;
-			}
-
-			// Background
-			{
-				var oldColor = GUI.color;
-				GUI.color = new Color(0.2f, 0.2f, 0.2f, 1f);
-				GUI.DrawTexture(areaRect, Texture2D.whiteTexture);
-				GUI.color = oldColor;
-			}
-
-			// Content
-			Space(2);
-			for (int i = 0; i < ItemList.Count; i++) {
-				int index = i;
-				var item = ItemList[index].obj;
-				if (item == null) { continue; }
-				var rect = GUIRect(0, ITEM_HEIGHT);
-				rect.width += 18;
-				if (mouseDown && !mouseDownInItem && mouseInArea && rect.Contains(Event.current.mousePosition)) {
-					mouseDownInItem = true;
-					if (Event.current.button == 0) {
-						// Select
-						InvokeItem(item);
-					} else if (Event.current.button == 1) {
-						// Menu
-						SpawnMenu(index);
-					}
-					Event.current.Use();
+				// System
+				bool mouseDown = Event.current.type == EventType.MouseDown;
+				bool mouseDownInItem = false;
+				bool mouseInArea = areaRect.Contains(Event.current.mousePosition);
+				if (mouseInArea) {
+					HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 				}
-				// Field
-				EditorGUI.ObjectField(rect, item, item.GetType(), true);
-				// Highlight
-				if (item == Selection.activeObject) {
+
+				// Drag
+				switch (Event.current.type) {
+					case EventType.DragUpdated:
+						if (mouseInArea && DragAndDrop.objectReferences.Length > 0) {
+							DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+							Event.current.Use();
+						}
+						break;
+					case EventType.DragPerform:
+						if (mouseInArea && DragAndDrop.objectReferences.Length > 0) {
+							foreach (var obj in DragAndDrop.objectReferences) {
+								if (obj is null) { continue; }
+								var itemData = ItemsJsonData.ObjectToData(obj);
+								if (itemData != null) {
+									ItemData.Items.Add(itemData);
+								}
+							}
+							RefreshList();
+							SaveToDisk();
+							DragAndDrop.AcceptDrag();
+							Event.current.Use();
+						}
+						break;
+				}
+
+				// Background
+				{
 					var oldColor = GUI.color;
-					GUI.color = new Color(0.1f, 0.6f, 1f, 0.4f);
-					GUI.DrawTexture(rect, Texture2D.whiteTexture);
+					GUI.color = new Color(0.2f, 0.2f, 0.2f, 1f);
+					GUI.DrawTexture(areaRect, Texture2D.whiteTexture);
 					GUI.color = oldColor;
 				}
-				// Space
-				Space(ITEM_SPACE);
-			}
 
-			// Helpbox
-			if (ItemList.Count == 0) {
-				EditorGUI.LabelField(GUIRect(0, 36), "Drag object here to add", EditorStyles.centeredGreyMiniLabel);
-			} else {
-				Space(END_SPACE);
-			}
+				// Content
+				Space(2);
+				for (int i = 0; i < ItemList.Count; i++) {
+					int index = i;
+					var item = ItemList[index].obj;
+					if (item == null) { continue; }
+					var rect = GUIRect(0, ITEM_HEIGHT);
+					rect.width += 18;
+					if (mouseDown && !mouseDownInItem && mouseInArea && rect.Contains(Event.current.mousePosition)) {
+						mouseDownInItem = true;
+						if (Event.current.button == 0) {
+							// Select
+							InvokeItem(item, false);
+						} else if (Event.current.button == 1) {
+							// Menu
+							SpawnMenu(index);
+						}
+						Event.current.Use();
+					}
 
-			GUILayout.EndArea();
-			Handles.EndGUI();
+					// Field
+					EditorGUI.ObjectField(rect, item, item.GetType(), true);
 
-			// Final
-			if (mouseInArea && (Event.current.isMouse || Event.current.isKey || Event.current.isScrollWheel)) {
-				Event.current.Use();
-			}
-			if (mouseInArea && mouseDown && !mouseDownInItem) {
-				Selection.activeObject = null;
+					// Highlight
+					if (item == Selection.activeObject) {
+						var oldColor = GUI.color;
+						GUI.color = new Color(0.1f, 0.6f, 1f, 0.4f);
+						GUI.DrawTexture(rect, Texture2D.whiteTexture);
+						GUI.color = oldColor;
+					}
+
+					// Space
+					Space(ITEM_SPACE);
+				}
+
+				// Helpbox
+				if (ItemList.Count == 0) {
+					EditorGUI.LabelField(GUIRect(0, 36), "Drag object here to add", EditorStyles.centeredGreyMiniLabel);
+				} else {
+					Space(END_SPACE);
+				}
+
+				GUILayout.EndArea();
+				Handles.EndGUI();
+
+				// Final
+				if (mouseInArea && (Event.current.isMouse || Event.current.isKey || Event.current.isScrollWheel)) {
+					Event.current.Use();
+				}
+				if (mouseInArea && mouseDown && !mouseDownInItem) {
+					Selection.activeObject = null;
+				}
 			}
 
 		}
@@ -407,17 +414,27 @@ namespace QuickAccess {
 
 
 
+
 		#region --- LGC ---
 
 
 		private static void SpawnMenu (int index) {
+			var item = ItemList[index];
+			if (item.obj == null) { return; }
 			GenericMenu menu = new GenericMenu();
+			if (CheckOpenable(item.obj)) {
+				menu.AddItem(new GUIContent("Open"), false, () => {
+					var _item = ItemList[index];
+					if (_item.obj == null) { return; }
+					InvokeItem(_item.obj, true);
+				});
+			}
 			menu.AddItem(new GUIContent("Delete"), false, () => {
-				var item = ItemList[index];
-				if (item.obj == null) { return; }
-				if (EditorUtility.DisplayDialog("", "Remove \"" + item.obj.name + "\" from Quick Access?", "Delete", "Cancel")) {
-					if (item.index >= 0 && item.index < ItemData.Items.Count) {
-						ItemData.Items.RemoveAt(item.index);
+				var _item = ItemList[index];
+				if (_item.obj == null) { return; }
+				if (EditorUtility.DisplayDialog("", "Remove \"" + _item.obj.name + "\" from Quick Access?", "Delete", "Cancel")) {
+					if (_item.index >= 0 && _item.index < ItemData.Items.Count) {
+						ItemData.Items.RemoveAt(_item.index);
 					}
 					RefreshList();
 					SaveToDisk();
@@ -427,32 +444,51 @@ namespace QuickAccess {
 		}
 
 
-		private static void InvokeItem (Object item) {
+		private static void InvokeItem (Object item, bool tryOpen) {
 			switch (item) {
 				case MonoBehaviour mItem: {
-						var script = MonoScript.FromMonoBehaviour(mItem);
-						if (AssetDatabase.GetAssetPath(script).StartsWith("Assets")) {
-							AssetDatabase.OpenAsset(script.GetInstanceID());
-						} else {
-							Selection.activeObject = mItem.gameObject;
-						}
+					var script = MonoScript.FromMonoBehaviour(mItem);
+					if (tryOpen && AssetDatabase.GetAssetPath(script).StartsWith("Assets")) {
+						AssetDatabase.OpenAsset(script.GetInstanceID());
+					} else {
+						Selection.activeObject = mItem.gameObject;
 					}
-					break;
+				}
+				break;
 				case MonoScript sItem: {
+					if (tryOpen) {
 						AssetDatabase.OpenAsset(sItem.GetInstanceID());
+					} else {
+						Selection.activeObject = sItem;
 					}
-					break;
+				}
+				break;
 				case GameObject gItem: {
-						if (PrefabUtility.GetPrefabAssetType(gItem) == PrefabAssetType.Regular) {
-							AssetDatabase.OpenAsset(gItem.GetInstanceID());
-						} else {
-							Selection.activeObject = item;
-						}
+					if (tryOpen && PrefabUtility.GetPrefabAssetType(gItem) == PrefabAssetType.Regular) {
+						AssetDatabase.OpenAsset(gItem.GetInstanceID());
+					} else {
+						Selection.activeObject = item;
 					}
-					break;
+				}
+				break;
 				default:
 					Selection.activeObject = item;
 					break;
+			}
+		}
+
+
+		private static bool CheckOpenable (Object item) {
+			switch (item) {
+				case MonoBehaviour mItem:
+					var script = MonoScript.FromMonoBehaviour(mItem);
+					return AssetDatabase.GetAssetPath(script).StartsWith("Assets");
+				case MonoScript _:
+					return true;
+				case GameObject gItem:
+					return PrefabUtility.GetPrefabAssetType(gItem) == PrefabAssetType.Regular;
+				default:
+					return false;
 			}
 		}
 

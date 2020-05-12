@@ -41,8 +41,10 @@
 		private TimingInspectorUI TimingInspector => _TimingInspector != null ? _TimingInspector : (_TimingInspector = m_Container.GetChild(4).GetComponent<TimingInspectorUI>());
 
 		// Ser
-		[SerializeField] private RectTransform m_Container = null;
 		[SerializeField] private Text m_Header = null;
+		[SerializeField] private RectTransform m_Container = null;
+		[SerializeField] private RectTransform m_MotionInspector = null;
+		[SerializeField] private MotionPainterUI m_MotionPainter = null;
 
 		// Data
 		private BeatmapInspectorUI _BeatmapInspector = null;
@@ -50,6 +52,7 @@
 		private TrackInspectorUI _TrackInspector = null;
 		private NoteInspectorUI _NoteInspector = null;
 		private TimingInspectorUI _TimingInspector = null;
+		private Coroutine MotionInspectorCor = null;
 		private bool UIReady = true;
 
 
@@ -64,6 +67,7 @@
 		}
 
 
+		// API
 		public void RefreshAllInspectors () {
 			RefreshBeatmapInspector();
 			RefreshStageInspector();
@@ -108,6 +112,30 @@
 				m_Header.text = "";
 				SetInspectorActive(-1);
 			}
+		}
+
+
+		public void StartEditMotion_Stage (int motion) {
+			m_MotionPainter.TypeIndex = 0;
+			m_MotionPainter.MotionIndex = motion;
+			m_MotionPainter.SetVerticesDirty();
+			PlayMotionAnimation(true, true);
+		}
+
+
+		public void StartEditMotion_Track (int motion) {
+			m_MotionPainter.TypeIndex = 1;
+			m_MotionPainter.MotionIndex = motion;
+			m_MotionPainter.SetVerticesDirty();
+			PlayMotionAnimation(true, true);
+		}
+
+
+		public void StopEditMotion (bool useAnimation) {
+			m_MotionPainter.TypeIndex = -1;
+			m_MotionPainter.MotionIndex = -1;
+			m_MotionPainter.SetVerticesDirty();
+			PlayMotionAnimation(false, useAnimation);
 		}
 
 
@@ -642,6 +670,36 @@
 			int count = m_Container.childCount;
 			for (int i = 0; i < count; i++) {
 				m_Container.GetChild(i).gameObject.SetActive(i == index);
+			}
+		}
+
+
+		// Motion
+		private void PlayMotionAnimation (bool showMotion, bool useAnimation) {
+			if (MotionInspectorCor != null) {
+				StopCoroutine(MotionInspectorCor);
+			}
+			MotionInspectorCor = StartCoroutine(ShowingMotion(showMotion));
+			IEnumerator ShowingMotion (bool show) {
+				const float POS_LEFT = 0f;
+				const float POS_RIGHT = 106f;
+				var motionRT = m_MotionInspector.transform as RectTransform;
+				float conPosY = m_Container.anchoredPosition.y;
+				float motionPosY = motionRT.anchoredPosition.y;
+				float fromX = show ? POS_RIGHT : POS_LEFT;
+				float toX = show ? POS_LEFT : POS_RIGHT;
+				m_Container.gameObject.SetActive(true);
+				m_MotionInspector.gameObject.SetActive(true);
+				for (float lerp = 0f; useAnimation && lerp < 0.999f; lerp = Mathf.Lerp(lerp, 1f, Time.deltaTime * 20f)) {
+					m_Container.anchoredPosition = new Vector2(Mathf.Lerp(toX, fromX, lerp), conPosY);
+					motionRT.anchoredPosition = new Vector2(Mathf.Lerp(fromX, toX, lerp), motionPosY);
+					yield return new WaitForEndOfFrame();
+				}
+				m_Container.anchoredPosition = new Vector2(fromX, conPosY);
+				motionRT.anchoredPosition = new Vector2(toX, conPosY);
+				m_Container.gameObject.SetActive(!show);
+				m_MotionInspector.gameObject.SetActive(show);
+				MotionInspectorCor = null;
 			}
 		}
 

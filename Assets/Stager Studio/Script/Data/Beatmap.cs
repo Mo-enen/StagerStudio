@@ -5,6 +5,7 @@
 
 
 
+
 	[System.Serializable]
 	public class Beatmap {
 
@@ -279,9 +280,9 @@
 			public int Color = 0;
 			public bool HasTray = false;
 			public List<TimeFloatTween> Xs;
+			public List<TimeFloatTween> Angles;
 			public List<TimeFloatTween> Widths;
 			public List<TimeIntTween> Colors;
-			public List<TimeFloatTween> Angles;
 
 			// Cache
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);

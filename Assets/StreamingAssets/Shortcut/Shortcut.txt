@@ -20,7 +20,6 @@ Shortcut.Lock.Stage,	Alpha1,	False,	False,	True#
 Shortcut.LockTrack,	Alpha2,	False,	False,	True#
 Shortcut.Lock.Note,	Alpha3,	False,	False,	True#
 Shortcut.Lock.Speed,	Alpha4,	False,	False,	True#
-Shortcut.SwitchFocus,	F,	False,	False,	False#
 Shortcut.Seek.Positive,	RightArrow,	False,	False,	False#
 Shortcut.Seek.Negative,	LeftArrow,	False,	False,	False#
 Shortcut.PitchUp,	UpArrow,	True,	False,	False#

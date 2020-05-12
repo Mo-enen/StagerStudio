@@ -7,6 +7,9 @@
 	using Rendering;
 	using Saving;
 	using Object;
+	using UI;
+
+
 
 	public class StageEditor : MonoBehaviour {
 
@@ -80,11 +83,11 @@
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
-		private Transform AxisMoveX => m_MoveAxis.GetChild(0);
-		private Transform AxisMoveY => m_MoveAxis.GetChild(1);
-		private Transform AxisMoveXY => m_MoveAxis.GetChild(2);
-		private Transform AxisWidth => m_MoveAxis.GetChild(3);
-		private Transform AxisDuration => m_MoveAxis.GetChild(4);
+		private Transform AxisMoveX => m_MoveAxis.transform.GetChild(0);
+		private Transform AxisMoveY => m_MoveAxis.transform.GetChild(1);
+		private Transform AxisMoveXY => m_MoveAxis.transform.GetChild(2);
+		private Transform AxisWidth => m_MoveAxis.transform.GetChild(3);
+		private Transform AxisDuration => m_MoveAxis.transform.GetChild(4);
 
 		// Ser
 		[SerializeField] private Toggle[] m_EyeTGs = null;
@@ -92,12 +95,11 @@
 		[SerializeField] private Transform[] m_Containers = null;
 		[SerializeField] private Transform[] m_AntiTargets = null;
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
-		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private GridRenderer m_Grid = null;
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private LoopUvRenderer m_Highlight = null;
-		[SerializeField] private Transform m_MoveAxis = null;
+		[SerializeField] private AxisHandleUI m_MoveAxis = null;
 		[SerializeField] private Sprite m_HoverSP_Item = null;
 		[SerializeField] private Sprite m_HoverSP_Timer = null;
 
@@ -204,6 +206,9 @@
 				TrySetTargetActive(m_MoveAxis.gameObject, false);
 				TrySetTargetActive(m_Highlight.gameObject, false);
 				AxisDragging = false;
+				if (SelectingBrushIndex != -1) {
+					SetBrushLogic(-1);
+				}
 				return;
 			}
 		}
@@ -385,8 +390,8 @@
 				}
 				// Pos
 				var pos = target.position;
-				if (m_MoveAxis.position != pos) {
-					m_MoveAxis.position = pos;
+				if (m_MoveAxis.transform.position != pos) {
+					m_MoveAxis.transform.position = pos;
 				}
 				// Rot
 				Quaternion rot;
@@ -406,8 +411,8 @@
 					// Timer
 					rot = target.rotation;
 				}
-				if (m_MoveAxis.rotation != rot) {
-					m_MoveAxis.rotation = rot;
+				if (m_MoveAxis.transform.rotation != rot) {
+					m_MoveAxis.transform.rotation = rot;
 				}
 				// Handle Active
 				bool editorActive = GetEditorActive();
@@ -442,11 +447,8 @@
 					AxisDuration.transform.position = target0.position + target0.up * target0.localScale.y;
 				}
 				// Axis Renderers
-				foreach (var renderer in AxisRenderers) {
-					if (renderer.enabled != targetActive) {
-						renderer.enabled = targetActive;
-					}
-				}
+				m_MoveAxis.SetAxisRendererActive(targetActive);
+
 				// Active
 				TrySetTargetActive(m_MoveAxis.gameObject, true);
 				AxisDragging = AxisDragging && Input.GetMouseButton(0);
@@ -572,7 +574,7 @@
 								ghostSize.x = zoneSize * StageBrushWidth;
 								ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
 								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos);
+								ghostPos = m_Grid.SnapWorld(ghostPos, false);
 								ghostPivotX = 0.5f;
 							}
 						}
@@ -586,7 +588,7 @@
 								ghostSize.x = UseGlobalBrushScale ? TrackBrushWidth * zoneSize : TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
 								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos, true);
+								ghostPos = m_Grid.SnapWorld(ghostPos, true, true);
 								ghostRot = hoverTarget.transform.rotation;
 								ghostPivotX = 0.5f;
 							}
@@ -601,7 +603,7 @@
 								ghostSize.x = UseGlobalBrushScale ? NoteBrushWidth * zoneSize : NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = GHOST_NOTE_Y / zoneSize;
 								ghostPos = mousePos.Value;
-								ghostPos = m_Grid.SnapWorld(ghostPos);
+								ghostPos = m_Grid.SnapWorld(ghostPos, true);
 								ghostRot = hoverTarget.transform.rotation;
 								ghostPivotX = 0.5f;
 							}
@@ -614,7 +616,7 @@
 							ghostSize.x = 0.12f / zoneSize;
 							ghostSize.y = GHOST_NOTE_Y / zoneSize;
 							ghostPos.x = zoneMin.x;
-							ghostPos.y = m_Grid.SnapWorld(mousePos.Value).y;
+							ghostPos.y = m_Grid.SnapWorld(mousePos.Value, true).y;
 							ghostPos.z = zoneMin.z;
 							ghostRot = Quaternion.identity;
 							ghostPivotX = 0f;
@@ -679,7 +681,7 @@
 			var zoneMax = zoneMax_real;
 			zoneMax.y = zoneMin.y + zoneSize;
 			// Fix Axis
-			var axisWorldPos = m_MoveAxis.position;
+			var axisWorldPos = m_MoveAxis.transform.position;
 			bool isDown = axis < 0;
 			axis = Mathf.Abs(axis) - 1;
 			if (isDown) {
@@ -696,7 +698,7 @@
 					var stage = map.Stages[index];
 					Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
 					var worldPos = pos - DragOffsetWorld;
-					var snappedPos = m_Grid.SnapWorld(worldPos - worldMotion);
+					var snappedPos = m_Grid.SnapWorld(worldPos - worldMotion, false);
 					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 					if (axis == 0 || axis == 2) {
 						map.SetX(0, index, snappedZonePos.x);
@@ -743,7 +745,7 @@
 					);
 					var worldPos = pos - DragOffsetWorld;
 					if (axis == 0 || axis == 2) {
-						var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true);
+						var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true, true);
 						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 						float newX = Stage.ZoneToLocal(
 							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -788,7 +790,7 @@
 					var tWidth = Track.GetTrackWidth(track);
 					var tAngle = Track.GetTrackAngle(track);
 					var worldPos = pos - DragOffsetWorld;
-					var snappedPos = m_Grid.SnapWorld(worldPos);
+					var snappedPos = m_Grid.SnapWorld(worldPos, true);
 					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 					var localPos = Track.ZoneToLocal(
 						snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -836,7 +838,7 @@
 				break;
 				case 3: { // Timing
 					if (axis == 1 || axis == 2) {
-						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld);
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
 						var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
 						float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f);
 						map.SetTime(3, index, newTime);
@@ -851,7 +853,7 @@
 						int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
 						var stage = stageIndex >= 0 && stageIndex < map.Stages.Count ? map.Stages[stageIndex] : null;
 						if (stage == null) { break; }
-						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld);
+						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
 						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 						var localPosY = SelectingItemType == 4 ? StageTimer.ZoneToLocalY(
 							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -1122,7 +1124,7 @@
 
 
 		private void SetBrushLogic (int brushIndex) {
-			if (!enabled) { brushIndex = -1; }
+			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
 			UIReady = false;
 			try {
 				// No Stage in Abreast

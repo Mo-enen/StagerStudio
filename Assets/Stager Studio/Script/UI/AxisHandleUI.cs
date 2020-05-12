@@ -35,6 +35,7 @@
 		// Ser
 		[SerializeField] private AxisEventHandler m_OnDrag = null;
 		[SerializeField] private TextRenderer m_Hint = null;
+		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private Color[] m_HintTints = null;
 
 		// Data
@@ -105,6 +106,15 @@
 			m_Hint.Text = hint;
 			if (axis >= 0 && axis < m_HintTints.Length) {
 				m_Hint.Tint = m_HintTints[axis];
+			}
+		}
+
+
+		public void SetAxisRendererActive (bool active) {
+			foreach (var renderer in AxisRenderers) {
+				if (renderer.enabled != active) {
+					renderer.enabled = active;
+				}
 			}
 		}
 

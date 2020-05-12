@@ -247,31 +247,31 @@ Move to Previous
 Menu.UI.QuitConfirm
 Are you sure to quit now?
 
-P-Manager.Error.ChapterAlreadyExists
+PManager.Error.ChapterAlreadyExists
 Chapter already exists
 
-P-Manager.Error.NewProjectSourceNotExists
+PManager.Error.NewProjectSourceNotExists
 Can not find template for create new project
 
-P-Manager.Error.ProjectAlreadyExists
+PManager.Error.ProjectAlreadyExists
 Project already exists
 
-P-Manager.NewChapterName
+PManager.NewChapterName
 New Chapter
 
-P-Manager.UI.DeleteProjectItemConfirm
+PManager.UI.DeleteProjectItemConfirm
 Delete project {0}? This will delete the file in disk.
 
-P-Manager.UI.FolderAlreadyExists
+PManager.UI.FolderAlreadyExists
 Some folder didn't move because there already exists a folder with same name
 
-P-Manager.UI.OverlapProjectConfirm
+PManager.UI.OverlapProjectConfirm
 Already has a file named {0}, overwrite or not?
 
-P-Manager.UI.TrashbinEmpty
+PManager.UI.TrashbinEmpty
 Trashbin is empty
 
-P-Manager.UI.TrashProjectItemConfirm
+PManager.UI.TrashProjectItemConfirm
 Move project {0} into the trashbin?
 
 Project.Error.AudioFormatNotSupport
@@ -520,9 +520,6 @@ Fast Forward
 Shortcut.ShowGrid
 Show Grid
 
-Shortcut.SwitchFocus
-Focus Mode
-
 Shortcut.Undo
 Undo
 
@@ -595,9 +592,6 @@ Panorama mode (Right click to open menu)
 Tip.BeatmapSwiper
 Select beatmap and open
 
-Tip.CancelFocus
-Cancel focus mode
-
 Tip.GotoWeb
 Open offical website www.stager.studio
 
@@ -621,6 +615,27 @@ Trushbin, completely remove or restore the deleted project
 
 Tip.Home.Tutorial
 Open tutorial
+
+Tip.Insoector.MotionAngle
+Edit motion of angle
+
+Tip.Insoector.MotionColor
+Edit motion of color
+
+Tip.Insoector.MotionHeight
+Edit motion of height
+
+Tip.Insoector.MotionPos
+Edit motion of position
+
+Tip.Insoector.MotionRot
+Edit motion of rotation
+
+Tip.Insoector.MotionWidth
+Edit motion of width
+
+Tip.Insoector.MotionX
+Edit motion of position x
 
 Tip.Inspector.Angle
 Tilt angle
@@ -949,6 +964,9 @@ Color
 UI.Inspector.Command
 Command
 
+UI.Inspector.Done
+Done
+
 UI.Inspector.Duration
 Length
 
@@ -969,6 +987,27 @@ Level
 
 UI.Inspector.Link
 Link
+
+UI.Inspector.Motion.Angle
+Motion Angle
+
+UI.Inspector.Motion.Color
+Motion Color
+
+UI.Inspector.Motion.Height
+Motion Height
+
+UI.Inspector.Motion.Pos
+Motion Pos
+
+UI.Inspector.Motion.Rot
+Motion Rot
+
+UI.Inspector.Motion.Width
+Motion Width
+
+UI.Inspector.Motion.X
+Motion X
 
 UI.Inspector.Pivot
 Pivot
@@ -1027,13 +1066,13 @@ Open Shortcut Folder
 UI.OpenSkinFolder
 Open Skin Folder
 
-UI.P-Manager.ImportProject
+UI.PManager.ImportProject
 Import Project
 
-UI.P-Manager.NewProject
+UI.PManager.NewProject
 New Project
 
-UI.P-Manager.ProjectEmptyHint
+UI.PManager.ProjectEmptyHint
 This chapter is empty, click the button below to create or import a project.
 
 UI.Progress.NoMusicHint

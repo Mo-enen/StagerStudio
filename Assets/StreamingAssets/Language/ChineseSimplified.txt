@@ -247,31 +247,31 @@ Menu.Selector.Track.MoveUp
 Menu.UI.QuitConfirm
 确认退出吗？
 
-P-Manager.Error.ChapterAlreadyExists
+PManager.Error.ChapterAlreadyExists
 章节已经存在
 
-P-Manager.Error.NewProjectSourceNotExists
+PManager.Error.NewProjectSourceNotExists
 找不到新工程模板
 
-P-Manager.Error.ProjectAlreadyExists
+PManager.Error.ProjectAlreadyExists
 工程已经存在
 
-P-Manager.NewChapterName
+PManager.NewChapterName
 新章节
 
-P-Manager.UI.DeleteProjectItemConfirm
+PManager.UI.DeleteProjectItemConfirm
 是否删除"{0}"？这将删除硬盘中的文件。
 
-P-Manager.UI.FolderAlreadyExists
+PManager.UI.FolderAlreadyExists
 部分文件夹没有移动，因为存在同名文件夹
 
-P-Manager.UI.OverlapProjectConfirm
+PManager.UI.OverlapProjectConfirm
 已包含一个名为"{0}"的文件，是否覆盖文件？
 
-P-Manager.UI.TrashbinEmpty
+PManager.UI.TrashbinEmpty
 回收站是空的
 
-P-Manager.UI.TrashProjectItemConfirm
+PManager.UI.TrashProjectItemConfirm
 是否将"{0}"移入回收站？
 
 Project.Error.AudioFormatNotSupport
@@ -520,9 +520,6 @@ Shortcut.Seek.Positive
 Shortcut.ShowGrid
 显示辅助线网格
 
-Shortcut.SwitchFocus
-专注模式
-
 Shortcut.Undo
 撤销
 
@@ -595,9 +592,6 @@ Tip.AbreastView
 Tip.BeatmapSwiper
 选择谱面并打开
 
-Tip.CancelFocus
-取消专注模式
-
 Tip.GotoWeb
 打开官网 www.stager.studio
 
@@ -621,6 +615,27 @@ Tip.Home.Trushbin
 
 Tip.Home.Tutorial
 查看教程
+
+Tip.Insoector.MotionAngle
+编辑角度运动
+
+Tip.Insoector.MotionColor
+编辑颜色运动
+
+Tip.Insoector.MotionHeight
+编辑高度运动
+
+Tip.Insoector.MotionPos
+编辑位置运动
+
+Tip.Insoector.MotionRot
+编辑旋转运动
+
+Tip.Insoector.MotionWidth
+编辑宽度运动
+
+Tip.Insoector.MotionX
+编辑X位置运动
 
 Tip.Inspector.Angle
 倾斜角度
@@ -949,6 +964,9 @@ UI.Inspector.Color
 UI.Inspector.Command
 命令行
 
+UI.Inspector.Done
+完 成
+
 UI.Inspector.Duration
 时长
 
@@ -969,6 +987,27 @@ UI.Inspector.Level
 
 UI.Inspector.Link
 锁链
+
+UI.Inspector.Motion.Angle
+角度 运动
+
+UI.Inspector.Motion.Color
+颜色 运动
+
+UI.Inspector.Motion.Height
+高度 运动
+
+UI.Inspector.Motion.Pos
+位置 运动
+
+UI.Inspector.Motion.Rot
+旋转 运动
+
+UI.Inspector.Motion.Width
+宽度 运动
+
+UI.Inspector.Motion.X
+位置 运动
 
 UI.Inspector.Pivot
 原点
@@ -1027,13 +1066,13 @@ UI.OpenShortcutFolder
 UI.OpenSkinFolder
 打开皮肤文件夹
 
-UI.P-Manager.ImportProject
+UI.PManager.ImportProject
 导入工程
 
-UI.P-Manager.NewProject
+UI.PManager.NewProject
 新建工程
 
-UI.P-Manager.ProjectEmptyHint
+UI.PManager.ProjectEmptyHint
 这个章节是空的，点击下面的按钮创建或导入工程
 
 UI.Progress.NoMusicHint

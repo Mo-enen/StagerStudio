@@ -111,21 +111,44 @@
 
 			// X
 			if (Mode != (int)GridMode._Y) {
-				ForAllX((x) => AddQuad01(
-					x - thick / Scale.x,
-					x + thick / Scale.x,
-					0f, 1f,
-					uvMin0.x, uvMax0.x,
-					uvMin0.y, uvMax0.y,
-					Vector3.zero, Tint
-				));
+				int countX = Mathf.Clamp(CountX + 1, 1, 32);
+				for (int i = CountX > 1 ? 0 : 1; i <= (CountX > 1 ? countX : countX - 1); i++) {
+					float x = (float)i / countX;
+					AddQuad01(
+						x - thick / Scale.x,
+						x + thick / Scale.x,
+						0f, 1f,
+						uvMin0.x, uvMax0.x,
+						uvMin0.y, uvMax0.y,
+						Vector3.zero, Tint
+					);
+				}
 			}
 
 			// Y
-			ForAllY((y) => AddQuad01(
-				0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
-				uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero, Tint
-			), m_Mode != GridMode.XX);
+			switch (m_Mode) {
+				case GridMode.XX:
+					int countX = Mathf.Clamp(CountX + 1, 1, 32);
+					for (int i = CountX > 1 ? 0 : 1; i <= (CountX > 1 ? countX : countX - 1); i++) {
+						float y = (float)i / countX;
+						AddQuad01(
+							0f, 1f,
+							y - thick / Scale.x,
+							y + thick / Scale.x,
+							uvMin0.x, uvMax0.x,
+							uvMin0.y, uvMax0.y,
+							Vector3.zero, Tint, false
+						);
+					}
+					break;
+				case GridMode.XY:
+				case GridMode._Y:
+					ForAllY((y) => AddQuad01(
+						0f, 1f, y - thick / Scale.y, y + thick / Scale.y,
+						uvMin1.x, uvMax1.x, uvMin1.y, uvMax1.y, Vector3.zero, Tint
+					));
+					break;
+			}
 
 		}
 
@@ -166,14 +189,14 @@
 		}
 
 
-		public Vector3 SnapWorld (Vector3 pos, bool groundY = false) {
+		public Vector3 SnapWorld (Vector3 pos, bool yIsTime, bool groundY = false) {
 			if (!RendererEnable && !groundY) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
 			if (RendererEnable) {
 				pos.x = CountX > 1 ? Util.Snap(pos.x, CountX + 1) : 0f;
 				if (groundY) {
 					pos.y = 0f;
-				} else {
+				} else if (yIsTime) {
 					float minDis = float.MaxValue;
 					float resY = pos.y;
 					ForAllY((y) => {
@@ -181,8 +204,10 @@
 							resY = y;
 							minDis = Mathf.Abs(pos.y - y);
 						}
-					}, true);
+					});
 					pos.y = resY;
+				} else {
+					pos.y = CountX > 1 ? Util.Snap(pos.y, CountX + 1) : 0f;
 				}
 			} else if (groundY) {
 				pos.y = 0f;
@@ -202,35 +227,19 @@
 
 
 		// LGC
-		private void ForAllX (System.Action<float> action) {
-			int countX = Mathf.Clamp(CountX + 1, 1, 32);
-			for (int i = CountX > 1 ? 0 : 1; i <= (CountX > 1 ? countX : countX - 1); i++) {
-				action((float)i / countX);
+		private void ForAllY (System.Action<float> action) {
+			float speedMuti = SpeedMuti * ObjectSpeedMuti;
+			float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
+			float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
+				Mathf.Min(MusicTime, time),
+				Mathf.Max(MusicTime, time),
+				speedMuti, IgnoreDynamicSpeed
+			);
+			for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
+				if (y01 >= 0f) { action(y01); }
+				y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
+				time += TimeGap;
 			}
-		}
-
-
-		private void ForAllY (System.Action<float> action, bool yIsTime) {
-			if (yIsTime) {
-				float speedMuti = SpeedMuti * ObjectSpeedMuti;
-				float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
-				float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
-					Mathf.Min(MusicTime, time),
-					Mathf.Max(MusicTime, time),
-					speedMuti, IgnoreDynamicSpeed
-				);
-				for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
-					if (y01 >= 0f) { action(y01); }
-					y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
-					time += TimeGap;
-				}
-			} else {
-				int countY = Mathf.Clamp(CountX + 1, 1, 32);
-				for (int i = 0; i <= countY; i++) {
-					action((float)i / countY);
-				}
-			}
-
 		}
 
 

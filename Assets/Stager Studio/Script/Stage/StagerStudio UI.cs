@@ -324,6 +324,7 @@
 			m_CommandRoot.gameObject.SetActive(false);
 
 			m_Root.InactiveIfNoChildActive();
+			m_Inspector.StopEditMotion(false);
 
 			MusicPause();
 		}
