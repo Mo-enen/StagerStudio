@@ -20,10 +20,11 @@
 		private static Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private UnityEvent m_CallbackLeft = null;
-		[SerializeField] private UnityEvent m_CallbackDrag = null;
 		[SerializeField] private Transform m_Highlight = null;
 		[SerializeField] private LayerMask m_AxisMask = 0;
+		[Space]
+		[SerializeField] private UnityEvent m_CallbackLeft = null;
+		[SerializeField] private UnityEvent m_CallbackDrag = null;
 
 		// Data
 		private static Camera _Camera = null;

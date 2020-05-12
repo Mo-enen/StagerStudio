@@ -239,7 +239,7 @@ namespace StagerStudio.Editor {
 
 		// VAR
 		private List<SystemLanguage> Languages { get; } = new List<SystemLanguage>();
-		private (string, string)[][] Datas { get; set; } = new (string, string)[0][];
+		private (string key, string value)[][] Datas { get; set; } = new (string, string)[0][];
 
 
 
@@ -328,7 +328,7 @@ namespace StagerStudio.Editor {
 			string prevKey = "";
 			for (int i = 0; i < Datas[0].Length; i++) {
 				// Tag
-				var key = Datas[0][i].Item1 ?? "";
+				var key = Datas[0][i].key ?? "";
 				int index = key.IndexOf('.');
 				if (index >= 0) {
 					key = key.Substring(0, index);
@@ -340,19 +340,19 @@ namespace StagerStudio.Editor {
 				prevKey = key;
 				// Content
 				LayoutH(() => {
-					var newKey = EditorGUI.DelayedTextField(GUIRect(0, 18), Datas[0][i].Item1);
+					var newKey = EditorGUI.DelayedTextField(GUIRect(0, 18), Datas[0][i].key);
 					// Key
-					if (newKey != Datas[0][i].Item1) {
+					if (newKey != Datas[0][i].key) {
 						for (int j = 0; j < Datas.Length; j++) {
-							Datas[j][i] = (newKey, Datas[j][i].Item2);
+							Datas[j][i] = (newKey, Datas[j][i].value);
 						}
 					}
 					// Languages
 					for (int j = 0; j < Datas.Length; j++) {
-						string value = Datas[j][i].Item2;
+						string value = Datas[j][i].value;
 						string newValue = EditorGUI.DelayedTextField(GUIRect(0, 18), value);
 						if (newValue != value) {
-							Datas[j][i] = (Datas[j][i].Item1, newValue);
+							Datas[j][i] = (Datas[j][i].key, newValue);
 						}
 					}
 				});
@@ -372,9 +372,10 @@ namespace StagerStudio.Editor {
 					var builder = new System.Text.StringBuilder();
 					var values = Datas[index];
 					foreach (var value in values) {
-						if (string.IsNullOrEmpty(value.Item1)) { continue; }
-						builder.AppendLine(value.Item1);
-						builder.AppendLine(value.Item2);
+						bool hasLetter = System.Text.RegularExpressions.Regex.IsMatch(value.key, @"[a-zA-Z]");
+						if (!hasLetter) { continue; }
+						builder.AppendLine(value.key);
+						builder.AppendLine(value.value);
 						builder.AppendLine();
 					}
 					Util.TextToFile(builder.ToString(), path);
@@ -393,9 +394,9 @@ namespace StagerStudio.Editor {
 			var dataValues = Datas[defaultIndex];
 			for (int i = 0; i < dataValues.Length; i++) {
 				var prop = prop_DefaultData.GetArrayElementAtIndex(i * 2 + 0);
-				prop.stringValue = dataValues[i].Item1;
+				prop.stringValue = dataValues[i].key;
 				prop = prop_DefaultData.GetArrayElementAtIndex(i * 2 + 1);
-				prop.stringValue = dataValues[i].Item2;
+				prop.stringValue = dataValues[i].value;
 			}
 			serializedObject.ApplyModifiedProperties();
 			// Save Helper

@@ -103,7 +103,8 @@
 		[SerializeField] private RectTransform m_Keypress = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[SerializeField] private Transform m_TutorialBoard = null;
-		[SerializeField] private Text[] m_TipLabels = null;
+		[SerializeField] private Text m_TipLabelA = null;
+		[SerializeField] private Text m_TipLabelB = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -218,9 +219,8 @@
 			CommandUI.GetLanguage = m_Language.Get;
 			// Misc
 			TooltipUI.SetTip = (tip) => {
-				foreach (var label in m_TipLabels) {
-					label.text = tip;
-				}
+				m_TipLabelA.text = tip;
+				m_TipLabelB.text = tip;
 			};
 			StageProject.LogHint = m_Hint.SetHint;
 			StageGame.LogHint = m_Hint.SetHint;

@@ -217,7 +217,12 @@
 		public static bool GetTrackActive (Beatmap.Track data) => MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
-		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Clamp(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f, 128f);
+		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Max(
+			data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f
+		);
+
+
+		public static float GetTrackWidth_Motion (Beatmap.Track data) => Evaluate(data.Widths, MusicTime - data.Time, 1f);
 
 
 		public static float GetTrackX (Beatmap.Track data) => data.X + Evaluate(data.Xs, MusicTime - data.Time);

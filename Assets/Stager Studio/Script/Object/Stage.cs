@@ -170,10 +170,13 @@
 
 
 		public static float GetStageWidth (Beatmap.Stage data) => Mathf.Lerp(
-			Mathf.Max(data.Width + Evaluate(data.Widths, MusicTime - data.Time), 0f),
+			Mathf.Max(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f),
 			Abreast.width - ABREAST_GAP,
 			Abreast.value
 		);
+
+
+		public static float GetStageWidth_Motion (Beatmap.Stage data) => Evaluate(data.Widths, MusicTime - data.Time);
 
 
 		public static float GetStageHeight (Beatmap.Stage data) => Mathf.Lerp(

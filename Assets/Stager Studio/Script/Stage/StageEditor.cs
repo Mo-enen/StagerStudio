@@ -83,7 +83,8 @@
 		private Transform AxisMoveX => m_MoveAxis.GetChild(0);
 		private Transform AxisMoveY => m_MoveAxis.GetChild(1);
 		private Transform AxisMoveXY => m_MoveAxis.GetChild(2);
-		private Transform AxisMoveWidth => m_MoveAxis.GetChild(3);
+		private Transform AxisWidth => m_MoveAxis.GetChild(3);
+		private Transform AxisDuration => m_MoveAxis.GetChild(4);
 
 		// Ser
 		[SerializeField] private Toggle[] m_EyeTGs = null;
@@ -91,13 +92,14 @@
 		[SerializeField] private Transform[] m_Containers = null;
 		[SerializeField] private Transform[] m_AntiTargets = null;
 		[SerializeField] private Toggle[] m_DefaultBrushTGs = null;
+		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private GridRenderer m_Grid = null;
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
+		[SerializeField] private LoopUvRenderer m_Highlight = null;
 		[SerializeField] private Transform m_MoveAxis = null;
 		[SerializeField] private Sprite m_HoverSP_Item = null;
 		[SerializeField] private Sprite m_HoverSP_Timer = null;
-		[SerializeField] private Renderer[] AxisRenderers = null;
 
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
@@ -113,7 +115,6 @@
 		private int HoldNoteLayer = -1;
 		private Vector2 HoverScaleMuti = Vector2.one;
 		private Vector3 DragOffsetWorld = default;
-		private float MouseDownWidth = 1f;
 
 		// Saving
 		public SavingBool UseGlobalBrushScale { get; set; } = new SavingBool("StageEditor.UseGlobalBrushScale", true);
@@ -180,6 +181,9 @@
 			// UI
 			HoverScaleMuti = m_Hover.transform.localScale;
 
+			m_Ghost.SetSortingLayer(SortingLayerID_UI, 0);
+			m_Highlight.SetSortingLayer(SortingLayerID_UI, 0);
+
 		}
 
 
@@ -191,12 +195,14 @@
 				LateUpdate_Hover(map);
 				LateUpdate_Down();
 				LateUpdate_Axis(map);
+				LateUpdate_Highlight();
 			} else {
 				// Editor InActive
 				TrySetGridInactive();
 				TrySetTargetActive(m_Hover.gameObject, false);
 				TrySetTargetActive(m_Ghost.gameObject, false);
 				TrySetTargetActive(m_MoveAxis.gameObject, false);
+				TrySetTargetActive(m_Highlight.gameObject, false);
 				AxisDragging = false;
 				return;
 			}
@@ -407,8 +413,9 @@
 				bool editorActive = GetEditorActive();
 				bool xActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool yActive = editorActive && SelectingItemType != 1;
-				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool xyActive = xActive || yActive;
+				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
+				bool dActive = editorActive && SelectingItemType == 2;
 				if (AxisMoveX.gameObject.activeSelf != xActive) {
 					AxisMoveX.gameObject.SetActive(xActive);
 				}
@@ -418,8 +425,21 @@
 				if (AxisMoveXY.gameObject.activeSelf != xyActive) {
 					AxisMoveXY.gameObject.SetActive(xyActive);
 				}
-				if (AxisMoveWidth.gameObject.activeSelf != wActive) {
-					AxisMoveWidth.gameObject.SetActive(wActive);
+				if (AxisWidth.gameObject.activeSelf != wActive) {
+					AxisWidth.gameObject.SetActive(wActive);
+				}
+				if (AxisDuration.gameObject.activeSelf != dActive) {
+					AxisDuration.gameObject.SetActive(dActive);
+				}
+				// Width Position
+				if (wActive) {
+					var target0 = target.GetChild(0);
+					AxisWidth.transform.position = target0.position - target0.right * target0.localScale.x * 0.5f;
+				}
+				// Duration Position
+				if (dActive) {
+					var target0 = target.GetChild(0);
+					AxisDuration.transform.position = target0.position + target0.up * target0.localScale.y;
 				}
 				// Axis Renderers
 				foreach (var renderer in AxisRenderers) {
@@ -433,6 +453,21 @@
 			} else {
 				TrySetTargetActive(m_MoveAxis.gameObject, false);
 				AxisDragging = false;
+			}
+		}
+
+
+		private void LateUpdate_Highlight () {
+			var con = SelectingItemType >= 0 && SelectingItemType < 3 ? m_Containers[SelectingItemType] : null;
+			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount;
+			TrySetTargetActive(m_Highlight.gameObject, active);
+			if (active) {
+				var target = con.GetChild(SelectingItemIndex).GetChild(0);
+				var scale = target.localScale;
+				m_Highlight.transform.position = target.position;
+				m_Highlight.transform.rotation = target.rotation;
+				m_Highlight.transform.localScale = scale;
+				m_Highlight.Size = scale * 24f;
 			}
 		}
 
@@ -648,7 +683,10 @@
 			bool isDown = axis < 0;
 			axis = Mathf.Abs(axis) - 1;
 			if (isDown) {
-				DragOffsetWorld = downPos - axisWorldPos;
+				DragOffsetWorld =
+					axis == 3 ? downPos - AxisWidth.position :
+					axis == 4 ? downPos - AxisDuration.position :
+					downPos - axisWorldPos;
 			}
 			// Dragging
 			int index = SelectingItemIndex;
@@ -657,7 +695,8 @@
 					if (index >= map.Stages.Count) { break; }
 					var stage = map.Stages[index];
 					Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
-					var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld - worldMotion);
+					var worldPos = pos - DragOffsetWorld;
+					var snappedPos = m_Grid.SnapWorld(worldPos - worldMotion);
 					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 					if (axis == 0 || axis == 2) {
 						map.SetX(0, index, snappedZonePos.x);
@@ -668,34 +707,43 @@
 						LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
 					}
 					if (axis == 3) {
-						if (isDown) {
-							MouseDownWidth = stage.Width;
-						} else {
-							float newWidth = Mathf.Abs(GetAxisWidth());
-							map.SetStageWidth(index, newWidth);
-							LogAxisMSG(axis, newWidth);
+						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+						float oldWidth = Stage.GetStageWidth(stage);
+						float motionWidth = Mathf.Max(Stage.GetStageWidth_Motion(stage), 0.001f);
+						float localPosX = Stage.ZoneToLocal(
+							zonePos.x, zonePos.y, zonePos.z,
+							Stage.GetStagePosition(stage, index),
+							oldWidth,
+							Stage.GetStageHeight(stage),
+							Stage.GetStagePivotY(stage),
+							Stage.GetStageWorldRotationZ(stage)
+						).x;
+						float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
+						if (m_Grid.RendererEnable) {
+							newWidth = Util.Snap(newWidth, 20f);
 						}
+						newWidth = Mathf.Max(newWidth, 0.001f);
+						map.SetStageWidth(index, newWidth);
+						LogAxisMSG(axis, newWidth);
 					}
 				}
 				break;
 				case 1: {// Track
 					var track = index < map.Tracks.Count ? map.Tracks[index] : null;
 					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+					var stage = map.Stages[track.StageIndex];
+					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
+					var sWidth = Stage.GetStageWidth(stage);
+					var sHeight = Stage.GetStageHeight(stage);
+					var sPivotY = Stage.GetStagePivotY(stage);
+					var sRotZ = Stage.GetStageWorldRotationZ(stage);
+					var basicZonePos = Stage.LocalToZone(
+						track.X, 0f, 0f,
+						sPos, sWidth, sHeight, sPivotY, sRotZ
+					);
+					var worldPos = pos - DragOffsetWorld;
 					if (axis == 0 || axis == 2) {
-						var stage = map.Stages[track.StageIndex];
-						var sPos = Stage.GetStagePosition(stage, index);
-						var sWidth = Stage.GetStageWidth(stage);
-						var sHeight = Stage.GetStageHeight(stage);
-						var sPivotY = Stage.GetStagePivotY(stage);
-						var sRotZ = Stage.GetStageWorldRotationZ(stage);
-						var basicZonePos = Stage.LocalToZone(
-							track.X, 0f, 0f,
-							sPos, sWidth, sHeight, sPivotY, sRotZ
-						);
-						var snappedPos = m_Grid.SnapWorld(
-							pos - DragOffsetWorld - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z),
-							true
-						);
+						var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true);
 						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 						float newX = Stage.ZoneToLocal(
 							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -705,13 +753,23 @@
 						LogAxisMSG(axis, newX);
 					}
 					if (axis == 3) {
-						if (isDown) {
-							MouseDownWidth = track.Width;
-						} else {
-							float newWidth = Mathf.Abs(GetAxisWidth());
-							map.SetTrackWidth(index, newWidth);
-							LogAxisMSG(axis, newWidth);
+						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+						float oldWidth = Track.GetTrackWidth(track);
+						float motionWidth = Mathf.Max(Track.GetTrackWidth_Motion(track), 0.0001f);
+						float localPosX = Track.ZoneToLocal(
+							zonePos.x, zonePos.y, zonePos.z,
+							sPos, sWidth, sHeight, sPivotY, sRotZ,
+							Track.GetTrackX(track),
+							oldWidth,
+							Track.GetTrackAngle(track)
+						).x;
+						float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
+						if (m_Grid.RendererEnable) {
+							newWidth = Util.Snap(newWidth, 20f);
 						}
+						newWidth = Mathf.Max(newWidth, 0.001f);
+						map.SetTrackWidth(index, newWidth);
+						LogAxisMSG(axis, newWidth);
 					}
 				}
 				break;
@@ -721,18 +779,21 @@
 					var track = map.Tracks[note.TrackIndex];
 					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
 					var stage = map.Stages[track.StageIndex];
-					var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld);
+					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
+					var sWidth = Stage.GetStageWidth(stage);
+					var sHeight = Stage.GetStageHeight(stage);
+					var sPivotY = Stage.GetStagePivotY(stage);
+					var sRotZ = Stage.GetStageWorldRotationZ(stage);
+					var tX = Track.GetTrackX(track);
+					var tWidth = Track.GetTrackWidth(track);
+					var tAngle = Track.GetTrackAngle(track);
+					var worldPos = pos - DragOffsetWorld;
+					var snappedPos = m_Grid.SnapWorld(worldPos);
 					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 					var localPos = Track.ZoneToLocal(
 						snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-						Stage.GetStagePosition(stage, track.StageIndex),
-						Stage.GetStageWidth(stage),
-						Stage.GetStageHeight(stage),
-						Stage.GetStagePivotY(stage),
-						Stage.GetStageWorldRotationZ(stage),
-						Track.GetTrackX(track),
-						Track.GetTrackWidth(track),
-						Track.GetTrackAngle(track)
+						sPos, sWidth, sHeight, sPivotY, sRotZ,
+						tX, tWidth, tAngle
 					);
 					if (axis == 0 || axis == 2) {
 						map.SetX(2, index, localPos.x);
@@ -747,14 +808,29 @@
 						map.SetTime(2, index, newTime);
 						LogAxisMSG(axis, localPos.x, newTime);
 					}
+					if (axis == 4) {
+						float newDuration = GetFilledTime(
+							m_Grid.MusicTime,
+							localPos.y,
+							m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
+						) - note.Time;
+						map.SetDuration(2, index, Mathf.Max(newDuration, 0f));
+						LogAxisMSG(axis, newDuration);
+					}
 					if (axis == 3) {
-						if (isDown) {
-							MouseDownWidth = note.Width;
-						} else {
-							float newWidth = Mathf.Abs(GetAxisWidth());
-							map.SetNoteWidth(index, newWidth);
-							LogAxisMSG(axis, newWidth);
+						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+						float localPosX = Track.ZoneToLocal(
+							zonePos.x, zonePos.y, zonePos.z,
+							sPos, sWidth, sHeight, sPivotY, sRotZ,
+							tX, tWidth, tAngle
+						).x;
+						float newWidth = Mathf.Abs(note.X - localPosX) * 2f;
+						if (m_Grid.RendererEnable) {
+							newWidth = Util.Snap(newWidth, 20f);
 						}
+						newWidth = Mathf.Max(newWidth, 0.001f);
+						map.SetNoteWidth(index, newWidth);
+						LogAxisMSG(axis, newWidth);
 					}
 				}
 				break;
@@ -798,7 +874,8 @@
 							LogAxisMSG(axis, newTime);
 						} else if (SelectingItemSubIndex == 3) {
 							// Tail
-							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - stage.Time, m_Grid.MusicTime - stage.Time + 1f, localPosY), 0f);
+							float startTime = map.GetTime(SelectingItemType - 4, index);
+							float newTime = Mathf.Max(Util.Remap(0f, 1f, m_Grid.MusicTime - startTime, m_Grid.MusicTime - startTime + 1f, localPosY), 0f);
 							map.SetDuration(SelectingItemType - 4, index, newTime);
 							LogAxisMSG(axis, newTime);
 						}
@@ -806,20 +883,6 @@
 					break;
 			}
 			OnObjectEdited();
-			// === Func ===
-			float GetAxisWidth (float snapCount = 20f) {
-				var axisLeft = -m_MoveAxis.right;
-				float downPro = Vector3.Project(downPos - axisWorldPos, axisLeft).magnitude;
-				float posPro = Vector3.Project(pos - axisWorldPos, axisLeft).magnitude;
-				if (Vector2.Angle(pos - axisWorldPos, axisLeft) > 90f) {
-					posPro = -posPro;
-				}
-				float newWidth = MouseDownWidth + (posPro - downPro) / zoneSize;
-				if (m_Grid.RendererEnable) {
-					newWidth = Util.Snap(newWidth, snapCount);
-				}
-				return newWidth;
-			}
 		}
 
 
