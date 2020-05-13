@@ -461,13 +461,13 @@
 
 		private void LateUpdate_Highlight () {
 			var con = SelectingItemType >= 0 && SelectingItemType < 3 ? m_Containers[SelectingItemType] : null;
-			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount;
+			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount && con.GetChild(SelectingItemIndex).gameObject.activeSelf;
 			TrySetTargetActive(m_Highlight.gameObject, active);
 			if (active) {
-				var target = con.GetChild(SelectingItemIndex).GetChild(0);
-				var scale = target.localScale;
-				m_Highlight.transform.position = target.position;
-				m_Highlight.transform.rotation = target.rotation;
+				var target0 = con.GetChild(SelectingItemIndex).GetChild(0);
+				var scale = target0.localScale;
+				m_Highlight.transform.position = target0.position;
+				m_Highlight.transform.rotation = target0.rotation;
 				m_Highlight.transform.localScale = scale;
 				m_Highlight.Size = scale * 24f;
 			}

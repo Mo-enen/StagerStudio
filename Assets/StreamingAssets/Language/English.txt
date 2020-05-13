@@ -643,6 +643,9 @@ Tilt angle
 Tip.Inspector.Beat
 Time in unit of beat
 
+Tip.Inspector.BeatDivide
+Subdivision of beat time
+
 Tip.Inspector.BPM
 Beat per minute
 
@@ -948,9 +951,6 @@ Import
 
 UI.Inspector.Angle
 Angle
-
-UI.Inspector.Beat
-Beat
 
 UI.Inspector.BPM
 BPM

@@ -643,6 +643,9 @@ Tip.Inspector.Angle
 Tip.Inspector.Beat
 单位为节拍数的时间
 
+Tip.Inspector.BeatDivide
+节拍的细分程度
+
 Tip.Inspector.BPM
 每分钟节拍数
 
@@ -948,9 +951,6 @@ UI.ImportBeatmap
 
 UI.Inspector.Angle
 角度
-
-UI.Inspector.Beat
-节拍
 
 UI.Inspector.BPM
 BPM

@@ -202,13 +202,13 @@
 				RefreshStageInspector();
 			});
 			// Beat
-			StageInspector.BeatIF.onEndEdit.AddListener((_) => {
+			StageInspector.BeatIF.OnEndEdit = () => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetTime(0, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(StageInspector.GetBeat(), map.BPM, map.Shift), 0f));
 				OnItemEdited();
 				RefreshStageInspector();
-			});
+			};
 			// Type
 			StageInspector.TypeIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
@@ -306,13 +306,13 @@
 				RefreshTrackInspector();
 			});
 			// Beat
-			TrackInspector.BeatIF.onEndEdit.AddListener((_) => {
+			TrackInspector.BeatIF.OnEndEdit = () => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetTime(1, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(TrackInspector.GetBeat(), map.BPM, map.Shift), 0f));
 				OnItemEdited();
 				RefreshTrackInspector();
-			});
+			};
 			// Type
 			TrackInspector.TypeIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
@@ -394,13 +394,13 @@
 				RefreshNoteInspector();
 			});
 			// Beat
-			NoteInspector.BeatIF.onEndEdit.AddListener((_) => {
+			NoteInspector.BeatIF.OnEndEdit = () => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetTime(2, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(NoteInspector.GetBeat(), map.BPM, map.Shift), 0f));
 				OnItemEdited();
 				RefreshNoteInspector();
-			});
+			};
 			// Type
 			NoteInspector.TypeIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
@@ -506,13 +506,13 @@
 				RefreshTimingInspector();
 			});
 			// Beat
-			TimingInspector.BeatIF.onEndEdit.AddListener((_) => {
+			TimingInspector.BeatIF.OnEndEdit = () => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetTime(3, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(TimingInspector.GetBeat(), map.BPM, map.Shift), 0f));
 				OnItemEdited();
 				RefreshTimingInspector();
-			});
+			};
 			// Duration
 			TimingInspector.DurationIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();

@@ -9,7 +9,7 @@
 
 		// Api
 		public InputField TimeIF => m_TimeIF;
-		public InputField BeatIF => m_BeatIF;
+		public BeatInputUI BeatIF => m_BeatIF;
 		public InputField DurationIF => m_DurationIF;
 		public InputField SpeedIF => m_SpeedIF;
 		public InputField SfxIF => m_SfxIF;
@@ -19,7 +19,7 @@
 
 		// Ser
 		[SerializeField] private InputField m_TimeIF = null;
-		[SerializeField] private InputField m_BeatIF = null;
+		[SerializeField] private BeatInputUI m_BeatIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private InputField m_SpeedIF = null;
 		[SerializeField] private InputField m_SfxIF = null;
@@ -30,7 +30,7 @@
 
 		// API
 		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
-		public float GetBeat () => m_BeatIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
+		public float GetBeat () => m_BeatIF.GetBeat();
 		public int GetSpeed () => m_SpeedIF.text.TryParseIntForInspector(out int result) ? Mathf.Clamp(result, -51200, 51200) : 100;
 		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
 		public byte GetSfx () => m_SfxIF.text.TryParseIntForInspector(out int result) ? (byte)Mathf.Max(result, 0) : (byte)0;
@@ -39,7 +39,7 @@
 
 
 		public void SetTime (float value) => m_TimeIF.text = value.ToString();
-		public void SetBeat (float value) => m_BeatIF.text = value.ToString();
+		public void SetBeat (float value) => m_BeatIF.SetBeatToUI(value);
 		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
 		public void SetSpeed (int value) => m_SpeedIF.text = value.ToString();
 		public void SetSfx (byte value) => m_SfxIF.text = value.ToString();

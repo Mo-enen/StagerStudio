@@ -1,4 +1,4 @@
-﻿namespace Hierponent { // v1.0.4
+﻿namespace Hierponent { // v1.0.5
 	using UnityEngine;
 	using UnityEditor;
 	using System.Collections.Generic;
@@ -80,7 +80,7 @@
 				Texture2D texture = AssetPreview.GetMiniThumbnail(com);
 
 				if (texture) {
-					GUI.color = com.gameObject.activeSelf ? Color.white : new Color(1, 1, 1, 0.4f);
+					GUI.color = com.gameObject.activeInHierarchy ? Color.white : new Color(1, 1, 1, 0.4f);
 					var _r = new Rect(
 						rect.width - (iconSize + 1) * i + GLOBAL_OFFSET,
 						rect.y + y,

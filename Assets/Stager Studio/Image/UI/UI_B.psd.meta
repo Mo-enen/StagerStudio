@@ -485,6 +485,21 @@ TextureImporter:
   - first:
       213: -6423150161576652754
     second: Axis Duration
+  - first:
+      213: 7897921642572680099
+    second: Music Note 0
+  - first:
+      213: -3170009298675182269
+    second: Music Note 1
+  - first:
+      213: 7403753262310920633
+    second: Music Note 2
+  - first:
+      213: -4407426048428970923
+    second: Music Note 3
+  - first:
+      213: 1100434533997383660
+    second: Music Note 4
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1051,6 +1066,90 @@ TextureImporter:
       bones: []
       spriteID: e201b3895f26cd6a0800000000000000
       internalID: -6423150161576652754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Music Note 1
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 1
+        width: 31
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 345d7c9965dd104d0800000000000000
+      internalID: -3170009298675182269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Music Note 2
+      rect:
+        serializedVersion: 2
+        x: 455
+        y: 0
+        width: 56
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9b19ea48d5a6fb660800000000000000
+      internalID: 7403753262310920633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Music Note 3
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 84
+        width: 52
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55c66994c5da5d2c0800000000000000
+      internalID: -4407426048428970923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Music Note 4
+      rect:
+        serializedVersion: 2
+        x: 459
+        y: 83
+        width: 53
+        height: 80
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cef8c79d067854f00800000000000000
+      internalID: 1100434533997383660
       vertices: []
       indices: 
       edges: []
