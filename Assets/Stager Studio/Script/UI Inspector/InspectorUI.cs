@@ -116,24 +116,27 @@
 
 
 		public void StartEditMotion_Stage (int motion) {
-			m_MotionPainter.TypeIndex = 0;
-			m_MotionPainter.MotionIndex = motion;
+			m_MotionPainter.ItemType = 0;
+			m_MotionPainter.ItemIndex = GetSelectingIndex();
+			m_MotionPainter.MotionType = motion;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(true, true);
 		}
 
 
 		public void StartEditMotion_Track (int motion) {
-			m_MotionPainter.TypeIndex = 1;
-			m_MotionPainter.MotionIndex = motion;
+			m_MotionPainter.ItemType = 1;
+			m_MotionPainter.ItemIndex = GetSelectingIndex();
+			m_MotionPainter.MotionType = motion;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(true, true);
 		}
 
 
 		public void StopEditMotion (bool useAnimation) {
-			m_MotionPainter.TypeIndex = -1;
-			m_MotionPainter.MotionIndex = -1;
+			m_MotionPainter.ItemType = -1;
+			m_MotionPainter.MotionType = -1;
+			m_MotionPainter.ItemIndex = -1;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(false, useAnimation);
 		}

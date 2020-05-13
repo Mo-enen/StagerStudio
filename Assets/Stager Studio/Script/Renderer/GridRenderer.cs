@@ -135,9 +135,9 @@
 							0f, 1f,
 							y - thick / Scale.x,
 							y + thick / Scale.x,
-							uvMin0.x, uvMax0.x,
-							uvMin0.y, uvMax0.y,
-							Vector3.zero, Tint, false
+							uvMin1.x, uvMin1.x,
+							uvMin1.y, uvMin1.y,
+							Vector3.zero, Tint
 						);
 					}
 					break;

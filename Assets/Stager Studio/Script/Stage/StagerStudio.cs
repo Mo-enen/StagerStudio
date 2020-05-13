@@ -117,6 +117,7 @@
 		[SerializeField] private AxisHandleUI m_MoveHandler = null;
 		[SerializeField] private InspectorUI m_Inspector = null;
 		[SerializeField] private AxisHandleUI m_AxisHandle = null;
+		[SerializeField] private MotionPainterUI m_MotionPainter = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
@@ -565,7 +566,13 @@
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
 				m_Inspector.RefreshUI();
-				m_Inspector.StopEditMotion(false);
+				if (m_Editor.SelectingItemType < 0) {
+					m_Inspector.StopEditMotion(false);
+				} else if (m_MotionPainter.ItemType >= 0) {
+					m_MotionPainter.ItemType = m_Editor.SelectingItemType;
+					m_MotionPainter.ItemIndex = m_Editor.SelectingItemIndex;
+					m_MotionPainter.SetVerticesDirty();
+				}
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
@@ -584,6 +591,7 @@
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
+				m_MotionPainter.SetVerticesDirty();
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
 			StageEditor.SetAbreastIndex = m_Game.SetAbreastIndex;
@@ -850,6 +858,9 @@
 			CommandUI.OpenMenu = m_Menu.OpenMenu;
 
 			MotionPainterUI.GetBeatmap = () => m_Project.Beatmap;
+			MotionPainterUI.GetMusicTime = () => m_Music.Time;
+			MotionPainterUI.GetBPM = () => m_Game.BPM;
+			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

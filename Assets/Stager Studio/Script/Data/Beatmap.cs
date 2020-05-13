@@ -801,6 +801,102 @@
 			SoundFxParamB = 0,
 		});
 
+
+		// Motion
+		private IList GetMotionList (int itemType, int itemIndex, int motionType) {
+			switch (itemType) {
+				case 0:
+					if (itemIndex < 0 || itemIndex >= Stages.Count) { return null; }
+					var stage = Stages[itemIndex];
+					switch (motionType) {
+						case 0:
+							return stage.Positions;
+						case 1:
+							return stage.Rotations;
+						case 2:
+							return stage.Widths;
+						case 3:
+							return stage.Heights;
+						case 4:
+							return stage.Colors;
+						default:
+							return null;
+					}
+				case 1:
+					if (itemIndex < 0 || itemIndex >= Tracks.Count) { return null; }
+					var track = Tracks[itemIndex];
+					switch (motionType) {
+						case 0:
+							return track.Xs;
+						case 1:
+							return track.Angles;
+						case 2:
+							return track.Widths;
+						case 3:
+							return track.Colors;
+						default:
+							return null;
+					}
+				default:
+					return null;
+			}
+		}
+
+
+		public int GetMotionCount (int itemType, int itemIndex, int motionType) {
+			var list = GetMotionList(itemType, itemIndex, motionType);
+			return list != null ? list.Count : 0;
+		}
+
+
+		private object GetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex) {
+			var list = GetMotionList(itemType, itemIndex, motionType);
+			return list != null && motionIndex >= 0 && motionIndex < list.Count ? list[motionIndex] : null;
+		}
+
+
+		private void SetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex, object item) {
+			var list = GetMotionList(itemType, itemIndex, motionType);
+			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
+				list[motionIndex] = item;
+			}
+		}
+
+
+		public float? GetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex) {
+			var item = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+			if (item == null) { return null; }
+			if (item is TimeIntTween) {
+				return ((TimeIntTween)item).Time;
+			} else if (item is TimeFloatTween) {
+				return ((TimeFloatTween)item).Time;
+			} else if (item is TimeFloatFloatTween) {
+				return ((TimeFloatFloatTween)item).Time;
+			} else {
+				return null;
+			}
+		}
+
+
+		public void SetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex, float time) {
+			var item = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+			if (item == null) { return; }
+			if (item is TimeIntTween tiItem) {
+				tiItem.Time = time;
+				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tiItem);
+			} else if (item is TimeFloatTween tfItem) {
+				tfItem.Time = time;
+				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tfItem);
+			} else if (item is TimeFloatFloatTween tffItem) {
+				tffItem.Time = time;
+				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tffItem);
+			}
+		}
+
+
+
+
+
 	}
 
 }
