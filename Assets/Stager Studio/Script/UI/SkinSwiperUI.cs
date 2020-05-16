@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using UIGadget;
 
 
 	public class SkinSwiperUI : MonoBehaviour {

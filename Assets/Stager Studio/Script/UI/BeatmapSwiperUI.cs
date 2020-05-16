@@ -4,6 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Data;
+	using UIGadget;
 
 
 	public class BeatmapSwiperUI : MonoBehaviour {

@@ -36,7 +36,7 @@
 		public Dictionary<string, string> Map { get; } = new Dictionary<string, string>();
 
 		// Ser
-		[SerializeField, HideInInspector] private string[] m_DefaultData = null;
+		[SerializeField] private string[] m_DefaultData = null;
 
 		// Data
 		private static readonly Dictionary<SystemLanguage, string> DISPLAY_NAME_MAP = new Dictionary<SystemLanguage, string>() {
@@ -358,6 +358,9 @@ namespace StagerStudio.Editor {
 				});
 			}
 			Space(4);
+
+			base.OnInspectorGUI();
+
 		}
 
 

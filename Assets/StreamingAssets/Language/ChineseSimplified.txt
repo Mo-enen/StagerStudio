@@ -673,6 +673,12 @@ Tip.Inspector.Level
 Tip.Inspector.Link
 链接音符的编号，不链接时为-1
 
+Tip.Inspector.Motion.Div
+细分程度
+
+Tip.Inspector.Motion.Painter
+左键点击添加运动，右键点击删除运动
+
 Tip.Inspector.OpenCommand
 打开命令行窗口
 
@@ -786,6 +792,12 @@ Tip.ProjectInfo
 
 Tip.Save
 保存工程 (右键打开菜单)
+
+Tip.Selector.Stage
+选择舞台
+
+Tip.Selector.Track
+选择轨道
 
 Tip.Setting
 设置：本地设置

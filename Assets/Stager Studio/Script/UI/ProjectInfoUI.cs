@@ -5,6 +5,7 @@
 	using UnityEngine.UI;
 	using Saving;
 	using Data;
+	using UIGadget;
 
 
 	public class ProjectInfoUI : MonoBehaviour {
@@ -49,20 +50,20 @@
 				switch (Mode) {
 					default:
 					case BeatmapSortMode.Tag:
-					result = x.Tag.CompareTo(y.Tag);
-					result = result != 0 ? result : x.Level.CompareTo(y.Level);
-					result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
-					break;
+						result = x.Tag.CompareTo(y.Tag);
+						result = result != 0 ? result : x.Level.CompareTo(y.Level);
+						result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
+						break;
 					case BeatmapSortMode.Level:
-					result = x.Level.CompareTo(y.Level);
-					result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
-					result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
-					break;
+						result = x.Level.CompareTo(y.Level);
+						result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
+						result = result != 0 ? result : x.CreatedTime.CompareTo(y.CreatedTime);
+						break;
 					case BeatmapSortMode.Time:
-					result = x.CreatedTime.CompareTo(y.CreatedTime);
-					result = result != 0 ? result : x.Level.CompareTo(y.Level);
-					result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
-					break;
+						result = x.CreatedTime.CompareTo(y.CreatedTime);
+						result = result != 0 ? result : x.Level.CompareTo(y.Level);
+						result = result != 0 ? result : x.Tag.CompareTo(y.Tag);
+						break;
 				}
 				return result;
 			}

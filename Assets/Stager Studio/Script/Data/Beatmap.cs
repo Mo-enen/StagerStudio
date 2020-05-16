@@ -21,9 +21,19 @@
 		public class NoteComparer : IComparer<Note> {
 			public int Compare (Note x, Note y) => x.Time.CompareTo(y.Time);
 		}
-		public class SpeedNoteComparer : IComparer<Timing> {
+		public class TimingComparer : IComparer<Timing> {
 			public int Compare (Timing x, Timing y) => x.Time.CompareTo(y.Time);
 		}
+		public class TimeFloatTweenComparer : IComparer<TimeFloatTween> {
+			public int Compare (TimeFloatTween x, TimeFloatTween y) => x.Time.CompareTo(y.Time);
+		}
+		public class TimeIntTweenComparer : IComparer<TimeIntTween> {
+			public int Compare (TimeIntTween x, TimeIntTween y) => x.Time.CompareTo(y.Time);
+		}
+		public class TimeFloatFloatTweenComparer : IComparer<TimeFloatFloatTween> {
+			public int Compare (TimeFloatFloatTween x, TimeFloatFloatTween y) => x.Time.CompareTo(y.Time);
+		}
+
 
 
 		// SUB
@@ -254,6 +264,36 @@
 			[System.NonSerialized] public int TrackCount = 0;
 
 
+			// API
+			public void SortMotion (int index = -1) {
+				if (index == -1) {
+					Positions.Sort(new TimeFloatFloatTweenComparer());
+					Rotations.Sort(new TimeFloatTweenComparer());
+					Widths.Sort(new TimeFloatTweenComparer());
+					Heights.Sort(new TimeFloatTweenComparer());
+					Colors.Sort(new TimeIntTweenComparer());
+				} else {
+					switch (index) {
+						case 0:
+							Positions.Sort(new TimeFloatFloatTweenComparer());
+							break;
+						case 1:
+							Rotations.Sort(new TimeFloatTweenComparer());
+							break;
+						case 2:
+							Widths.Sort(new TimeFloatTweenComparer());
+							break;
+						case 3:
+							Heights.Sort(new TimeFloatTweenComparer());
+							break;
+						case 4:
+							Colors.Sort(new TimeIntTweenComparer());
+							break;
+					}
+				}
+			}
+
+
 		}
 
 
@@ -288,6 +328,33 @@
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
 			[System.NonSerialized] public float TrayTime = float.MaxValue;
 			[System.NonSerialized] public Color Tint = UnityEngine.Color.white;
+
+
+			// API
+			public void SortMotion (int index = -1) {
+				if (index == -1) {
+					Xs.Sort(new TimeFloatTweenComparer());
+					Angles.Sort(new TimeFloatTweenComparer());
+					Widths.Sort(new TimeFloatTweenComparer());
+					Colors.Sort(new TimeIntTweenComparer());
+				} else {
+					switch (index) {
+						case 0:
+							Xs.Sort(new TimeFloatTweenComparer());
+							break;
+						case 1:
+							Angles.Sort(new TimeFloatTweenComparer());
+							break;
+						case 2:
+							Widths.Sort(new TimeFloatTweenComparer());
+							break;
+						case 3:
+							Colors.Sort(new TimeIntTweenComparer());
+							break;
+					}
+				}
+			}
+
 
 		}
 
@@ -409,6 +476,13 @@
 			}
 			if (Timings is null) {
 				Timings = new List<Timing>();
+			}
+			// Sort Motion 
+			foreach (var stage in Stages) {
+				stage.SortMotion();
+			}
+			foreach (var track in Tracks) {
+				track.SortMotion();
 			}
 		}
 
@@ -802,101 +876,278 @@
 		});
 
 
+		// Delete
+		public bool DeleteItem (int type, int index) {
+			switch (type) {
+				case 0:
+					if (index >= 0 && index < Stages.Count) {
+						Stages.RemoveAt(index);
+						foreach (var track in Tracks) {
+							if (track.StageIndex > index) {
+								track.StageIndex--;
+							}
+						}
+						for (int i = 0; i < Tracks.Count; i++) {
+							var track = Tracks[i];
+							if (track.StageIndex == index && DeleteItem(1, i)) {
+								i--;
+							}
+						}
+						return true;
+					}
+					break;
+				case 1:
+					if (index >= 0 && index < Tracks.Count) {
+						Tracks.RemoveAt(index);
+						foreach (var note in Notes) {
+							if (note.TrackIndex > index) {
+								note.TrackIndex--;
+							}
+						}
+						for (int i = 0; i < Notes.Count; i++) {
+							var note = Notes[i];
+							if (note.TrackIndex == index && DeleteItem(2, i)) {
+								i--;
+							}
+						}
+						return true;
+					}
+					break;
+				case 2:
+					if (index >= 0 && index < Notes.Count) {
+						Notes.RemoveAt(index);
+						foreach (var note in Notes) {
+							if (note.LinkedNoteIndex > index) {
+								note.LinkedNoteIndex--;
+							} else if (note.LinkedNoteIndex == index) {
+								note.LinkedNoteIndex = -1;
+							}
+						}
+						return true;
+					}
+					break;
+				case 3:
+					if (index >= 0 && index < Timings.Count) {
+						Timings.RemoveAt(index);
+						return true;
+					}
+					break;
+			}
+			return false;
+		}
+
+
 		// Motion
-		private IList GetMotionList (int itemType, int itemIndex, int motionType) {
+		private (IList list, MapItem item) GetMotionList (int itemType, int itemIndex, int motionType) {
 			switch (itemType) {
 				case 0:
-					if (itemIndex < 0 || itemIndex >= Stages.Count) { return null; }
+					if (itemIndex < 0 || itemIndex >= Stages.Count) { return (null, null); }
 					var stage = Stages[itemIndex];
 					switch (motionType) {
 						case 0:
-							return stage.Positions;
+							return (stage.Positions, stage); // -1f～1f
 						case 1:
-							return stage.Rotations;
+							return (stage.Rotations, stage); // -360f～360f
 						case 2:
-							return stage.Widths;
+							return (stage.Widths, stage); // 0～1f
 						case 3:
-							return stage.Heights;
+							return (stage.Heights, stage); // 0～1f
 						case 4:
-							return stage.Colors;
+							return (stage.Colors, stage); // 0～...
 						default:
-							return null;
+							return (null, null);
 					}
 				case 1:
-					if (itemIndex < 0 || itemIndex >= Tracks.Count) { return null; }
+					if (itemIndex < 0 || itemIndex >= Tracks.Count) { return (null, null); }
 					var track = Tracks[itemIndex];
 					switch (motionType) {
 						case 0:
-							return track.Xs;
+							return (track.Xs, track); // -1f～1f
 						case 1:
-							return track.Angles;
+							return (track.Angles, track); // -360f～360f
 						case 2:
-							return track.Widths;
+							return (track.Widths, track); // 0～1f
 						case 3:
-							return track.Colors;
+							return (track.Colors, track); // 0～...
 						default:
-							return null;
+							return (null, null);
 					}
 				default:
-					return null;
+					return (null, null);
 			}
 		}
 
 
 		public int GetMotionCount (int itemType, int itemIndex, int motionType) {
-			var list = GetMotionList(itemType, itemIndex, motionType);
+			var list = GetMotionList(itemType, itemIndex, motionType).list;
 			return list != null ? list.Count : 0;
 		}
 
 
-		private object GetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex) {
-			var list = GetMotionList(itemType, itemIndex, motionType);
-			return list != null && motionIndex >= 0 && motionIndex < list.Count ? list[motionIndex] : null;
+		private (object motionObj, MapItem item) GetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex) {
+			var (list, item) = GetMotionList(itemType, itemIndex, motionType);
+			return (list != null && motionIndex >= 0 && motionIndex < list.Count ? list[motionIndex] : null, item);
 		}
 
 
 		private void SetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex, object item) {
-			var list = GetMotionList(itemType, itemIndex, motionType);
+			var list = GetMotionList(itemType, itemIndex, motionType).list;
 			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
 				list[motionIndex] = item;
 			}
 		}
 
 
-		public float? GetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex) {
-			var item = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
-			if (item == null) { return null; }
-			if (item is TimeIntTween) {
-				return ((TimeIntTween)item).Time;
-			} else if (item is TimeFloatTween) {
-				return ((TimeFloatTween)item).Time;
-			} else if (item is TimeFloatFloatTween) {
-				return ((TimeFloatFloatTween)item).Time;
+		public bool GetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex, out float time, out float itemTime) {
+			var (motionObj, item) = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+			time = itemTime = 0f;
+			if (motionObj == null || item == null) { return false; }
+			itemTime = item.Time;
+			if (motionObj is TimeIntTween) {
+				time = ((TimeIntTween)motionObj).Time;
+				return true;
+			} else if (motionObj is TimeFloatTween) {
+				time = ((TimeFloatTween)motionObj).Time;
+				return true;
+			} else if (motionObj is TimeFloatFloatTween) {
+				time = ((TimeFloatFloatTween)motionObj).Time;
+				return true;
 			} else {
-				return null;
+				return false;
 			}
 		}
 
 
 		public void SetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex, float time) {
-			var item = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
-			if (item == null) { return; }
-			if (item is TimeIntTween tiItem) {
+			var motionObj = GetMotionItem(itemType, itemIndex, motionType, motionIndex).motionObj;
+			if (motionObj == null) { return; }
+			if (motionObj is TimeIntTween tiItem) {
 				tiItem.Time = time;
 				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tiItem);
-			} else if (item is TimeFloatTween tfItem) {
+			} else if (motionObj is TimeFloatTween tfItem) {
 				tfItem.Time = time;
 				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tfItem);
-			} else if (item is TimeFloatFloatTween tffItem) {
+			} else if (motionObj is TimeFloatFloatTween tffItem) {
 				tffItem.Time = time;
 				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tffItem);
 			}
 		}
 
 
+		public (bool hasA, bool hasB) GetMotionValue (int itemType, int itemIndex, int motionType, int motionIndex, out float valueA, out float valueB) {
+			valueA = valueB = 0f;
+			var (motionObj, item) = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+			if (motionObj == null || item == null) { return (false, false); }
+			if (motionObj is TimeIntTween) {
+				valueA = valueB = ((TimeIntTween)motionObj).Value;
+				return (true, false);
+			} else if (motionObj is TimeFloatTween) {
+				valueA = valueB = ((TimeFloatTween)motionObj).Value;
+				return (true, false);
+			} else if (motionObj is TimeFloatFloatTween) {
+				valueA = ((TimeFloatFloatTween)motionObj).A;
+				valueB = ((TimeFloatFloatTween)motionObj).B;
+				return (true, true);
+			} else {
+				return (false, false);
+			}
+		}
 
+
+		public void AddMotion (int itemType, int itemIndex, int motionType, float time, float? value) {
+			if (itemType == 0) {
+				// Stage
+				if (itemIndex >= 0 && itemIndex < Stages.Count) {
+					var stage = Stages[itemIndex];
+					switch (motionType) {
+						case 0:
+							stage.Positions.Add(new TimeFloatFloatTween() {
+								Time = time,
+								Tween = 0,
+								A = value ?? 0f,
+								B = value ?? 0f,
+							});
+							break;
+						case 1:
+							stage.Rotations.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 0f,
+							});
+							break;
+						case 2:
+							stage.Widths.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+						case 3:
+							stage.Heights.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+						case 4:
+							stage.Colors.Add(new TimeIntTween() {
+								Time = time,
+								Tween = 0,
+								Value = (int)(value ?? 0),
+							});
+							break;
+					}
+					stage.SortMotion(motionType);
+				}
+			} else if (itemType == 1) {
+				// Track
+				if (itemIndex >= 0 && itemIndex < Tracks.Count) {
+					var track = Tracks[itemIndex];
+					switch (motionType) {
+						case 0:
+							track.Xs.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 0f,
+							});
+							break;
+						case 1:
+							track.Angles.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 0f,
+							});
+							break;
+						case 2:
+							track.Widths.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+						case 3:
+							track.Colors.Add(new TimeIntTween() {
+								Time = time,
+								Tween = 0,
+								Value = (int)(value ?? 0),
+							});
+							break;
+					}
+					track.SortMotion(motionType);
+				}
+			}
+		}
+
+
+		public bool DeleteMotion (int itemType, int itemIndex, int motionType, int motionIndex) {
+			var list = GetMotionList(itemType, itemIndex, motionType).list;
+			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
+				list.RemoveAt(motionIndex);
+				return true;
+			}
+			return false;
+		}
 
 
 	}
-
 }

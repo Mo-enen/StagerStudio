@@ -4,10 +4,26 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Data;
+	using Object;
 
 
 	public class MotionPainterUI : Image {
 
+
+
+
+		#region --- SUB ---
+
+
+		// Handler
+		public delegate Beatmap BeatmapHandler ();
+		public delegate float FloatHandler ();
+		public delegate int IntHandler ();
+		public delegate void VoidHandler ();
+		public delegate Sprite CharToSpriteHandler (char c);
+
+
+		#endregion
 
 
 
@@ -17,44 +33,56 @@
 
 		// Const
 		private static readonly int[] BEAT_DIVs = { 4, 8, 16, };
+		private const float DIV_LINE_SIZE = 1f;
+		private const float SECTION_LINE_SIZE = 1f;
+		private const float ITEM_HEIGHT = 24f;
+		private const float LABEL_WIDTH = 6;
+		private const float LABEL_HEIGHT = 8;
+		private const float SCROLL_BAR_WIDTH = 2;
 
 		// Handler
-		public delegate Beatmap BeatmapHandler ();
-		public delegate float FloatHandler ();
-		public delegate int IntHandler ();
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static IntHandler GetBeatPerSection { get; set; } = null;
+		public static VoidHandler OnItemEdit { get; set; } = null;
+		public static CharToSpriteHandler GetSprite { get; set; } = null;
 
 		// Api
-		public int ItemType { get; set; } = -1; // -1: None   0:Stage   1:Track
+		public int ItemType { get; set; } = -1;
 		public int ItemIndex { get; set; } = -1;
-		public int MotionType { get; set; } = -1; // Stage: Pos Rot Width Height Color // Track: X Angle Width Color
+		public int MotionType { get; set; } = -1;
+		public float ScrollValue { get; set; } = 0f;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 
 		// Ser
-		[SerializeField] private Image m_DivIMG = null;
 		[SerializeField] private Sprite m_Line = null;
 		[SerializeField] private Sprite m_SectionLine = null;
+		[SerializeField] private MotionItem m_ItemPrefab = null;
 		[SerializeField] private Sprite[] m_DivIcons = null;
+		[SerializeField] private Image m_DivIMG = null;
 		[SerializeField] private Transform m_MotionContainer = null;
-		[SerializeField] private float m_ItemHeight = 24f;
-		[SerializeField] private float m_DivLineSize = 1f;
-		[SerializeField] private float m_SectionLineSize = 1f;
+		[SerializeField] private InputField m_Field = null;
 		[SerializeField] private Color m_BgTintA = Color.white;
 		[SerializeField] private Color m_BgTintB = Color.white;
 		[SerializeField] private Color m_DivTint = Color.black;
 		[SerializeField] private Color m_SectionTint = Color.black;
+		[SerializeField] private Color m_SectionTint_End = Color.red;
 		[SerializeField] private Color m_HighlightTint = Color.green;
+		[SerializeField] private Color m_MusicHighlightTint = Color.green;
+		[SerializeField] private Color m_ItemTint = Color.green;
+		[SerializeField] private Color m_LabelTint = Color.white;
+		[SerializeField] private Color m_ScrollbarTint = Color.white;
 
 		// Data
 		private static readonly UIVertex[] VertexCache = new UIVertex[4] { default, default, default, default };
-		private (bool active, bool down, Vector3 pos, Vector2 pos01) Mouse = default;
-		private float ScrollValue = 0f;
+		private (bool active, bool leftDown, bool rightDown, Vector3 pos, Vector2 pos01) Mouse = default;
 		private int DivisionIndex = 1;
+		private int HoveredBeat = -1;
+		private int HoveredDiv = -1;
+		private bool UIReady = true;
 		private Camera _Camera = null;
 
 
@@ -80,32 +108,113 @@
 #if UNITY_EDITOR
 			if (!UnityEditor.EditorApplication.isPlaying) { return; }
 #endif
-			// Mouse
+			Update_Mouse();
+			Update_Item();
+		}
+
+
+		private void Update_Mouse () {
 			var rt = transform as RectTransform;
 			var pos01 = rt.Get01Position(Input.mousePosition, Camera);
 			pos01.y = 1f - pos01.y;
 			if (pos01.x >= 0f && pos01.x <= 1f && pos01.y >= 0f && pos01.y <= 1f) {
-				bool getLeftDown = Input.GetMouseButton(0);
-				if (!Mouse.active || Input.mousePosition != Mouse.pos || getLeftDown != Mouse.down) {
+				// Inside
+				bool leftDown = Input.GetMouseButton(0);
+				bool rightDown = Input.GetMouseButton(1);
+				bool prevLeftDown = Mouse.leftDown;
+				bool prevRightDown = Mouse.rightDown;
+				// Pos Changed, Down Changed
+				if (!Mouse.active || Input.mousePosition != Mouse.pos || leftDown != Mouse.leftDown || rightDown != Mouse.rightDown) {
+					Mouse = (true, leftDown, rightDown, Input.mousePosition, pos01);
 					SetVerticesDirty();
-					Mouse = (true, getLeftDown, Input.mousePosition, pos01);
 				}
+				// Scroll
 				if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.001f) {
-					ScrollValue = Mathf.Clamp01(ScrollValue - Input.mouseScrollDelta.y * 0.1f);
-					SetVerticesDirty();
+					var (cStart, cEnd) = GetContentStartYEndY();
+					if (cStart < cEnd) {
+						ScrollValue = Mathf.Clamp01(ScrollValue - Input.mouseScrollDelta.y / (cEnd - cStart) * 0.1f);
+						SetVerticesDirty();
+					}
+				}
+				// L Down
+				if (leftDown && !prevLeftDown) {
+					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
+						var map = GetBeatmap();
+						if (map != null) {
+							float bps = GetBPM() / 60f;
+							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
+							float localTimeR = (HoveredBeat + (HoveredDiv + 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
+							int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+							bool overlap = false;
+							for (int i = 0; i < motionCount; i++) {
+								if (map.GetMotionTime(ItemType, ItemIndex, MotionType, i, out float time, out _)) {
+									if (time > localTimeL && time < localTimeR) {
+										overlap = true;
+										break;
+									}
+								}
+							}
+							if (!overlap) {
+								float localTime = (HoveredBeat + (HoveredDiv + 0f) / BEAT_DIVs[DivisionIndex]) / bps;
+								map.AddMotion(ItemType, ItemIndex, MotionType, localTime, null);
+								SetVerticesDirty();
+								OnItemEdit();
+							}
+						}
+					}
+				}
+				// R Down
+				if (rightDown && !prevRightDown) {
+					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
+						var map = GetBeatmap();
+						if (map != null) {
+							float bps = GetBPM() / 60f;
+							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
+							float localTimeR = (HoveredBeat + (HoveredDiv + 0.9f) / BEAT_DIVs[DivisionIndex]) / bps;
+							int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+							for (int i = 0; i < motionCount; i++) {
+								if (map.GetMotionTime(ItemType, ItemIndex, MotionType, i, out float time, out _)) {
+									if (time >= localTimeL && time <= localTimeR) {
+										if (map.DeleteMotion(ItemType, ItemIndex, MotionType, i)) {
+											i--;
+											motionCount--;
+										}
+									}
+								}
+							}
+							SetVerticesDirty();
+							OnItemEdit();
+						}
+					}
 				}
 			} else {
-				if (Mouse.active || Mouse.down) {
-					SetVerticesDirty();
+				// Outside
+				if (Mouse.active || Mouse.leftDown || Mouse.rightDown) {
 					Mouse.active = false;
-					Mouse.down = false;
+					Mouse.leftDown = false;
+					Mouse.rightDown = false;
+					SetVerticesDirty();
 				}
 			}
-			// Items
-			// m_MotionContainer
+		}
 
 
-
+		private void Update_Item () {
+			var map = GetBeatmap();
+			if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionType >= 0) {
+				int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+				int childCount = m_MotionContainer.childCount;
+				if (childCount < motionCount) {
+					var item = Instantiate(m_ItemPrefab, m_MotionContainer);
+					item.ItemType = ItemType;
+					item.ItemIndex = ItemIndex;
+					item.MotionType = MotionType;
+				} else if (childCount > motionCount) {
+					m_MotionContainer.FixChildcountImmediately(motionCount);
+				}
+			} else {
+				m_MotionContainer.DestroyAllChildImmediately();
+			}
 		}
 
 
@@ -128,19 +237,21 @@
 
 			var (contentStartY01, contentEndY01) = GetContentStartYEndY();
 			if (contentStartY01 >= contentEndY01) { return; }
-			int beatCount = Mathf.CeilToInt(GetBeatmap().GetDuration(ItemType, ItemIndex) * (60f / GetBPM()));
+			var map = GetBeatmap();
+			float bps = GetBPM() / 60f;
+			float beatDuration = map.GetDuration(ItemType, ItemIndex) * bps;
+			int beatCount = Mathf.CeilToInt(beatDuration) + 1;
+			int division = BEAT_DIVs[DivisionIndex];
 			var rect = GetPixelAdjustedRect();
 
 			// Main BG
-			float itemHeight01 = m_ItemHeight / rect.height;
+			float itemHeight01 = ITEM_HEIGHT / rect.height;
 			int beatPerSection = GetBeatPerSection();
 			int highlightBeat = -1;
 			float yMin = float.MaxValue;
 			float yMax = float.MinValue;
 			for (int beat = 0; beat < beatCount; beat++) {
-				float y01 = Mathf.LerpUnclamped(contentStartY01, contentEndY01, (float)beat / (beatCount - 1));
-				float up = Mathf.LerpUnclamped(rect.y + rect.height, rect.y, y01);
-				float down = up - m_ItemHeight;
+				var (up, down, y01) = GetItemUpDown(rect, contentStartY01, contentEndY01, beat, beatCount);
 				if (down > rect.y + rect.height || up < rect.y) { continue; }
 				if (Mouse.pos01.y >= y01 && Mouse.pos01.y <= y01 + itemHeight01) {
 					highlightBeat = beat;
@@ -152,41 +263,102 @@
 				SetCacheUV(sprite);
 				SetCacheColor(beat % 2 == 0 ? m_BgTintA : m_BgTintB);
 				toFill.AddUIVertexQuad(VertexCache);
-				// Section
-				if (beat % beatPerSection == 0) {
-					down = up - m_SectionLineSize;
-					SetCachePosition(rect.x, rect.x + rect.width, down, up);
-					SetCacheUV(m_SectionLine);
-					SetCacheColor(m_SectionTint);
+				// Label
+				Sprite labelSP = null;
+				int labelBeat = beat % (beatPerSection % 3 == 0 ? 12 : 16);
+				if (labelBeat < 10) {
+					labelSP = GetSprite((char)(labelBeat + '0'));
+				} else {
+					labelSP = GetSprite((char)(labelBeat - 10 + 'A'));
+				}
+				if (labelSP) {
+					float labelGap = (ITEM_HEIGHT - LABEL_HEIGHT) / 2f;
+					SetCachePosition(
+						rect.x - 10f, rect.x - 10f + LABEL_WIDTH,
+						down + labelGap, up - labelGap
+					);
+					SetCacheUV(labelSP);
+					SetCacheColor(m_LabelTint);
 					toFill.AddUIVertexQuad(VertexCache);
 				}
+				// Section || End
+				bool endBeat = beat == beatCount - 1;
+				if (endBeat || beat % beatPerSection == 0) {
+					down = up - (endBeat ? 2f * SECTION_LINE_SIZE : SECTION_LINE_SIZE);
+					SetCachePosition(rect.x, rect.x + rect.width, down, up);
+					SetCacheUV(m_SectionLine);
+					SetCacheColor(endBeat ? m_SectionTint_End : m_SectionTint);
+					toFill.AddUIVertexQuad(VertexCache);
+				}
+			}
+			HoveredBeat = highlightBeat;
+
+			// Scroll Bar
+			if (contentStartY01 < contentEndY01) {
+				SetCachePosition(
+					rect.x + rect.width + SCROLL_BAR_WIDTH,
+					rect.x + rect.width + SCROLL_BAR_WIDTH * 2f,
+					rect.y + rect.height * ((contentEndY01 - 0f) / (contentEndY01 - contentStartY01)),
+					rect.y + rect.height * ((contentEndY01 - 1f) / (contentEndY01 - contentStartY01))
+				);
+				SetCacheUV(sprite);
+				SetCacheColor(m_ScrollbarTint);
+				toFill.AddUIVertexQuad(VertexCache);
 			}
 
 			// Div Line
-			int div = BEAT_DIVs[DivisionIndex];
 			if (yMin < yMax) {
 				SetCacheUV(m_Line);
 				SetCacheColor(m_DivTint);
-				for (int i = 0; i < div; i++) {
-					float x = Mathf.Lerp(rect.x, rect.x + rect.width, (float)i / div);
-					SetCachePosition(x - m_DivLineSize, x + m_DivLineSize, yMin, yMax);
+				for (int i = 1; i < division; i++) {
+					float x = Mathf.Lerp(rect.x, rect.x + rect.width, GetItemLeftRight(rect, i).x01);
+					SetCachePosition(x - DIV_LINE_SIZE, x + DIV_LINE_SIZE, yMin, yMax);
 					toFill.AddUIVertexQuad(VertexCache);
 				}
 			}
 
+			// Items
+			int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+			if (motionCount > 0) {
+				SetCacheUV(sprite);
+				SetCacheColor(m_ItemTint);
+				for (int motion = 0; motion < motionCount; motion++) {
+					if (map.GetMotionTime(ItemType, ItemIndex, MotionType, motion, out float time, out _)) {
+						float beatTime = time * bps;
+						int beat = Mathf.FloorToInt(
+							Mathf.Round(beatTime * division * 2f) / (division * 2f)
+						);
+						var (up, down, _) = GetItemUpDown(rect, contentStartY01, contentEndY01, beat, beatCount);
+						var (left, right, _) = GetItemLeftRight(rect, (beatTime - beat) * division);
+						SetCachePosition(left, right, down, up);
+						toFill.AddUIVertexQuad(VertexCache);
+					}
+				}
+			}
+
+			// Music Highlight
+			float localMusicBeat = (GetMusicTime() - map.GetTime(ItemType, ItemIndex)) * bps;
+			if (localMusicBeat >= 0f && localMusicBeat <= beatDuration) {
+				var (up, down, _) = GetItemUpDown(rect, contentStartY01, contentEndY01, (int)localMusicBeat, beatCount);
+				var (left, _, _) = GetItemLeftRight(rect, (localMusicBeat % 1f) * division);
+				SetCacheUV(sprite);
+				SetCacheColor(m_MusicHighlightTint);
+				SetCachePosition(left, left + SECTION_LINE_SIZE, down, up);
+				toFill.AddUIVertexQuad(VertexCache);
+			}
+
 			// Highlight
+			int hoverDiv = -1;
 			if (Mouse.active && highlightBeat >= 0) {
-				float y01 = Mathf.LerpUnclamped(contentStartY01, contentEndY01, (float)highlightBeat / (beatCount - 1));
-				float up = Mathf.Lerp(rect.y + rect.height, rect.y, y01);
-				float down = up - m_ItemHeight;
-				float left = Mathf.Lerp(rect.x, rect.x + rect.width, Mathf.Floor(Mouse.pos01.x * div) / div);
-				float right = left + rect.width / div;
+				hoverDiv = Mathf.FloorToInt(Mathf.Clamp(Mouse.pos01.x, 0f, 0.9999f) * division);
+				var (up, down, _) = GetItemUpDown(rect, contentStartY01, contentEndY01, highlightBeat, beatCount);
+				var (left, right, _) = GetItemLeftRight(rect, hoverDiv);
 				SetCacheUV(sprite);
 				SetCacheColor(m_HighlightTint);
 				SetCachePosition(left, right, down, up);
 				toFill.AddUIVertexQuad(VertexCache);
 			}
-
+			HoveredDiv = hoverDiv;
 
 		}
 
@@ -206,6 +378,35 @@
 		}
 
 
+		public void TrySetDirty () {
+			if (ItemType >= 0 && ItemIndex >= 0) {
+				SetVerticesDirty();
+			}
+		}
+
+
+		public void UI_OnFieldEdit (string text) {
+			if (!UIReady) { return; }
+			if (text.TryParseFloatForInspector(out float value)) {
+
+
+
+			}
+			RefreshFieldUI();
+		}
+
+
+		public void RefreshFieldUI () {
+			UIReady = false;
+			try {
+
+				//m_Field.text = ;
+
+			} catch { }
+			UIReady = true;
+		}
+
+
 		#endregion
 
 
@@ -215,10 +416,10 @@
 
 
 		private void SetCacheUV (Sprite sp) {
-			VertexCache[0].uv0 = sp.uv[3];
-			VertexCache[1].uv0 = sp.uv[1];
-			VertexCache[2].uv0 = sp.uv[0];
-			VertexCache[3].uv0 = sp.uv[2];
+			VertexCache[0].uv0 = sp.uv[2];
+			VertexCache[1].uv0 = sp.uv[0];
+			VertexCache[2].uv0 = sp.uv[1];
+			VertexCache[3].uv0 = sp.uv[3];
 		}
 
 
@@ -240,15 +441,34 @@
 		private (float start, float end) GetContentStartYEndY () {
 			var map = GetBeatmap();
 			if (map == null || ItemType < 0 || MotionType < 0 || ItemIndex < 0) { return (0f, -1f); }
-			float beatDuration = map.GetDuration(ItemType, ItemIndex) * (60f / GetBPM());
-			int beatCount = Mathf.CeilToInt(beatDuration);
+			int beatCount = Mathf.CeilToInt(map.GetDuration(ItemType, ItemIndex) * (GetBPM() / 60f));
 			var rect = GetPixelAdjustedRect();
 			if (beatCount <= 0 || rect.height < 0.001f) { return (0f, -1f); }
-			float contentHeight01 = rect.height / (beatCount * m_ItemHeight);
+			float contentHeight01 = rect.height / (beatCount * ITEM_HEIGHT);
 			float realScrollValue = contentHeight01 < 1f ? Mathf.Lerp(0f, 1f - contentHeight01, ScrollValue) : 0f;
 			float contentStartY01 = -realScrollValue / contentHeight01;
 			float contentEndY01 = 1f / contentHeight01 + contentStartY01;
 			return (contentStartY01, contentEndY01);
+		}
+
+
+		private (float up, float down, float y01) GetItemUpDown (Rect rect, float contentStartY01, float contentEndY01, int beat, int beatCount) {
+			float y01 = Mathf.LerpUnclamped(
+				contentStartY01,
+				contentEndY01,
+				beatCount > 1 ? (float)beat / beatCount : 0f
+			);
+			float up = Mathf.LerpUnclamped(rect.y + rect.height, rect.y, y01);
+			return (up, up - ITEM_HEIGHT, y01);
+		}
+
+
+		private (float left, float right, float x01) GetItemLeftRight (Rect rect, float div) {
+			int division = BEAT_DIVs[DivisionIndex];
+			float x01 = div / division;
+			float left = Mathf.LerpUnclamped(rect.x, rect.x + rect.width, x01);
+			float right = left + rect.width / division;
+			return (left, right, x01);
 		}
 
 

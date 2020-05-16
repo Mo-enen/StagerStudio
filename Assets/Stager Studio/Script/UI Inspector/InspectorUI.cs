@@ -56,7 +56,7 @@
 		private bool UIReady = true;
 
 
-
+		// MSG
 		private void Start () {
 			Start_Beatmap();
 			Start_Stage();
@@ -119,6 +119,7 @@
 			m_MotionPainter.ItemType = 0;
 			m_MotionPainter.ItemIndex = GetSelectingIndex();
 			m_MotionPainter.MotionType = motion;
+			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(true, true);
 		}
@@ -128,6 +129,7 @@
 			m_MotionPainter.ItemType = 1;
 			m_MotionPainter.ItemIndex = GetSelectingIndex();
 			m_MotionPainter.MotionType = motion;
+			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(true, true);
 		}
@@ -137,12 +139,13 @@
 			m_MotionPainter.ItemType = -1;
 			m_MotionPainter.MotionType = -1;
 			m_MotionPainter.ItemIndex = -1;
+			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			PlayMotionAnimation(false, useAnimation);
 		}
 
 
-		// Init
+		// Start
 		private void Start_Beatmap () {
 			// Language
 			foreach (var label in BeatmapInspector.LanguageLabels) {

@@ -1,5 +1,5 @@
-﻿Shortcut.PlayPause,	Space,	False,	False,	False#
-Shortcut.PlayRepause,	Backspace,	False,	False,	False#
+﻿Shortcut.PlayPause,	Return,	False,	False,	False#
+Shortcut.PlayRepause,	Space,	False,	False,	False#
 Shortcut.SaveProject,	S,	True,	False,	False#
 Shortcut.CancelZone,	Escape,	False,	False,	False#
 Shortcut.OpenProjectInfo,	P,	True,	True,	False#

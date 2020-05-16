@@ -673,6 +673,12 @@ Difficulty of this beatmap
 Tip.Inspector.Link
 Index of note that linked with this note, set to -1 for no linked note
 
+Tip.Inspector.Motion.Div
+Division amount
+
+Tip.Inspector.Motion.Painter
+Left click to add motion, right click to remove
+
 Tip.Inspector.OpenCommand
 Open command window
 
@@ -786,6 +792,12 @@ Project info: manage title, music, BG, BPM, etc.
 
 Tip.Save
 Save project (Right click to open menu)
+
+Tip.Selector.Stage
+Select stage
+
+Tip.Selector.Track
+Select track
 
 Tip.Setting
 Setting: Your own setting for this application.

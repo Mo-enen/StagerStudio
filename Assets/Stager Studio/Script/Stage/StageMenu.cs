@@ -4,7 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using UnityEngine.Events;
-	using UI;
+	using UIGadget;
 
 
 	public class StageMenu : MonoBehaviour {

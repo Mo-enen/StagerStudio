@@ -4,6 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using UnityEngine.Events;
+	using UIGadget;
 
 
 	public class SettingUI : MonoBehaviour {
@@ -112,7 +113,7 @@
 		// Const
 		private const string RESET_CONFIRM_KEY = "Setting.ResetConfirm";
 
-		// Api
+		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler ResetAllSettings { get; set; } = null;
 		public static VoidHandler SkinRefreshAllSkinNames { get; set; } = null;
@@ -129,11 +130,10 @@
 		public static IntHandler ShortcutCount { get; set; } = null;
 		public static ShortcutItemIntHandler GetShortcutAt { get; set; } = null;
 		public static VoidHandler SaveShortcut { get; set; } = null;
-		public static ShortcutHandler CheckShortcut { get; set; } = null;
 		public static ShortcutHandler SetShortcut { get; set; } = null;
 		public static StringBoolHandler SpawnSkinEditor { get; set; } = null;
 
-
+		// Api
 		public bool UIReady { get; private set; } = true;
 		public ComponentData Component => m_Component;
 
@@ -311,12 +311,6 @@
 							}
 						};
 						keySetter.OnSetDone = (key) => {
-							// Check Key
-							int checkIndex = CheckShortcut(index, data.key, data.ctrl, data.shift, data.alt);
-							if (checkIndex >= 0) {
-								var checkData = GetShortcutAt(checkIndex);
-								SetShortcut(checkIndex, KeyCode.None, checkData.ctrl, checkData.shift, checkData.alt);
-							}
 							// Set Key
 							if (data.key != key) {
 								data.key = key;
@@ -324,9 +318,7 @@
 								SaveShortcut();
 								keySetter.Label = Util.GetKeyName(key);
 							}
-							if (checkIndex >= 0) {
-								RefreshLogic(true);
-							}
+							RefreshLogic(true);
 						};
 						clearBtn.onClick.AddListener(() => {
 							if (data.key != KeyCode.None) {

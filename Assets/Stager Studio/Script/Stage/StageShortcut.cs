@@ -144,22 +144,6 @@
 		}
 
 
-		public int CheckShortcut (int ignoreIndex, KeyCode key, bool ctrl, bool shift, bool alt) {
-			for (int i = 0; i < m_Datas.Length; i++) {
-				var d = m_Datas[i];
-				if (
-					i != ignoreIndex &&
-					d.Key == key &&
-					d.Ctrl == ctrl &&
-					d.Shift == shift &&
-					d.Alt == alt
-				) {
-					return i;
-				}
-			}
-			return -1;
-		}
-
 	}
 }
 

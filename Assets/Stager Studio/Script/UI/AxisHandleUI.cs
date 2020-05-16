@@ -4,6 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.Events;
 	using Rendering;
+	using UIGadget;
 
 
 	public class AxisHandleUI : MonoBehaviour {
@@ -19,6 +20,7 @@
 
 
 		#endregion
+		 
 
 
 
@@ -30,7 +32,7 @@
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
-		private ColliderTriggerUI[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<ColliderTriggerUI>(true));
+		private TriggerUI_Collider[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<TriggerUI_Collider>(true));
 
 		// Ser
 		[SerializeField] private AxisEventHandler m_OnDrag = null;
@@ -39,7 +41,7 @@
 		[SerializeField] private Color[] m_HintTints = null;
 
 		// Data
-		private ColliderTriggerUI[] _Triggers = null;
+		private TriggerUI_Collider[] _Triggers = null;
 		private Camera _Camera = null;
 		private Vector3? MouseDown = null;
 

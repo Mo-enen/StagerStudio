@@ -23,6 +23,7 @@
 		public delegate string StringStringHandler (string str);
 		public delegate void VoidStringBoolHandler (string s, bool b);
 		public delegate bool BoolHandler ();
+		public delegate bool BoolIntHandler (int i);
 		public delegate Beatmap BeatmapHandler ();
 
 
@@ -57,6 +58,7 @@
 		public static VoidFloatHandler SetPitch { get; set; } = null;
 		public static VoidHandler MusicPlay { get; set; } = null;
 		public static VoidHandler MusicPause { get; set; } = null;
+		public static BoolIntHandler GetItemLock { get; set; } = null;
 
 		// API
 		public float Ratio {
@@ -228,6 +230,7 @@
 			var headContainer = StageHeadContainer;
 			float musicTime = GetMusicTime();
 			bool musicPlaying = MusicIsPlaying();
+			bool stageLocked = GetItemLock(0);
 			for (int i = 0; i < stageCount; i++) {
 				// Stage
 				var stageData = map.Stages[i];
@@ -241,11 +244,9 @@
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				stageData.TimerActive = !musicPlaying && !UseAbreast && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
-				if (!timerTF.gameObject.activeSelf) {
-					if (stageData.TimerActive) {
-						timerTF.gameObject.SetActive(true);
-					}
+				stageData.TimerActive = !stageLocked && !musicPlaying && !UseAbreast && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
+				if (!timerTF.gameObject.activeSelf && stageData.TimerActive) {
+					timerTF.gameObject.SetActive(true);
 				}
 			}
 		}
@@ -260,6 +261,7 @@
 			var headContainer = TrackHeadContainer;
 			float musicTime = GetMusicTime();
 			bool musicPlaying = MusicIsPlaying();
+			bool trackLocked = GetItemLock(1);
 			for (int i = 0; i < trackCount; i++) {
 				var tf = container.GetChild(i);
 				var trackData = map.Tracks[i];
@@ -274,11 +276,9 @@
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				trackData.TimerActive = !musicPlaying && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
-				if (!timerTF.gameObject.activeSelf) {
-					if (trackData.TimerActive) {
-						timerTF.gameObject.SetActive(true);
-					}
+				trackData.TimerActive = !trackLocked && !musicPlaying && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				if (!timerTF.gameObject.activeSelf && trackData.TimerActive) {
+					timerTF.gameObject.SetActive(true);
 				}
 			}
 		}

@@ -4,6 +4,7 @@
 	using UnityEngine;
 	using UnityEngine.EventSystems;
 	using UnityEngine.UI;
+	using UIGadget;
 
 
 	public class TweenEditorUI : MonoBehaviour {

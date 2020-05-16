@@ -10,6 +10,7 @@
 	using Data;
 	using Saving;
 	using UndoRedo;
+	using UIGadget;
 
 
 	public partial class StagerStudio : MonoBehaviour {
@@ -327,6 +328,11 @@
 			Note.PlayClickSound = m_Music.PlayClickSound;
 			Note.PlaySfx = m_SoundFX.PlayFX;
 			TimingNote.PlaySfx = m_SoundFX.PlayFX;
+			MotionItem.GetZoneMinMax = () => m_Zone.GetZoneMinMax();
+			MotionItem.GetBeatmap = () => m_Project.Beatmap;
+			MotionItem.GetMusicTime = () => m_Music.Time;
+			MotionItem.OnMotionChanged = m_MotionPainter.RefreshFieldUI;
+			MotionItem.GetPaletteCount = () => m_Project.Palette.Count;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
@@ -515,6 +521,7 @@
 			StageGame.SetPitch = (p) => m_Music.Pitch = p;
 			StageGame.MusicPlay = m_Music.Play;
 			StageGame.MusicPause = m_Music.Pause;
+			StageGame.GetItemLock = m_Editor.GetItemLock;
 		}
 
 
@@ -532,6 +539,7 @@
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
 				m_TimingPreview.SetDirty();
+				m_MotionPainter.TrySetDirty();
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {
@@ -591,7 +599,7 @@
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
-				m_MotionPainter.SetVerticesDirty();
+				m_MotionPainter.TrySetDirty();
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
 			StageEditor.SetAbreastIndex = m_Game.SetAbreastIndex;
@@ -720,7 +728,6 @@
 				m_Shortcut.SaveToFile();
 				m_Shortcut.ReloadMap();
 			};
-			SettingUI.CheckShortcut = m_Shortcut.CheckShortcut;
 			SettingUI.SetShortcut = (index, key, ctrl, shift, alt) => {
 				var data = m_Shortcut.Datas[index];
 				data.Key = key;
@@ -861,6 +868,11 @@
 			MotionPainterUI.GetMusicTime = () => m_Music.Time;
 			MotionPainterUI.GetBPM = () => m_Game.BPM;
 			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
+			MotionPainterUI.OnItemEdit = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+			};
+			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

@@ -105,7 +105,7 @@
 
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
-		private readonly static bool[] ItemLock = { false, false, false, false, false, };
+		private readonly static bool[] ItemLock = { false, false, false, false, };
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
 		private Camera _Camera = null;
 		private bool UIReady = true;
@@ -193,6 +193,7 @@
 			if (GetEditorActive() && AntiTargetAllow()) {
 				// Editor Active
 				var map = GetBeatmap();
+				LateUpdate_Key(map);
 				LateUpdate_Selection();
 				LateUpdate_Hover(map);
 				LateUpdate_Down();
@@ -210,6 +211,17 @@
 					SetBrushLogic(-1);
 				}
 				return;
+			}
+		}
+
+
+		private void LateUpdate_Key (Beatmap map) {
+			if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace)) {
+				// Del
+				if (SelectingItemType >= 0 && SelectingItemIndex >= 0) {
+					map.DeleteItem(SelectingItemType, SelectingItemIndex);
+					OnObjectEdited();
+				}
 			}
 		}
 
@@ -418,7 +430,7 @@
 				bool editorActive = GetEditorActive();
 				bool xActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool yActive = editorActive && SelectingItemType != 1;
-				bool xyActive = xActive || yActive;
+				bool xyActive = xActive && yActive;
 				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool dActive = editorActive && SelectingItemType == 2;
 				if (AxisMoveX.gameObject.activeSelf != xActive) {
