@@ -18,14 +18,17 @@
 		public delegate float FloatHandler ();
 		public delegate int IntHandler ();
 		public delegate void VoidHandler ();
+		public delegate float Float4Handler (float a, float b, float c);
 
 
 		// Handler
 		public static ZoneHandler GetZoneMinMax { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
+		public static FloatHandler GetSpeedMuti { get; set; } = null;
 		public static VoidHandler OnMotionChanged { get; set; } = null;
 		public static IntHandler GetPaletteCount { get; set; } = null;
+		public static Float4Handler GetAreaBetween { get; set; } = null;
 
 		// Api
 		public static (int motionIndex, int handleIndex) SelectingMotion { get; set; } = (-1, -1);
@@ -49,42 +52,94 @@
 		private void Update () {
 			var map = GetBeatmap();
 			int motionIndex = transform.GetSiblingIndex();
+			bool active = false;
 			if (map != null) {
 				// Pos
 				var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-
-
-
-
-				transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, 0f, 0f, 0f);
+				var item = map.GetItem(ItemType, ItemIndex);
+				if (item != null && ItemType == 0) {
+					// Stage
+					float musicTime = GetMusicTime();
+					if (map.GetMotionTime(ItemType, ItemIndex, MotionType, motionIndex, out float motionTime, out float itemTime) && itemTime + motionTime > musicTime) {
+						var stage = item as Beatmap.Stage;
+						float speedMuti = GetSpeedMuti();
+						float y01 = GetAreaBetween(musicTime, itemTime + motionTime, speedMuti);
+						if (y01 >= 0f) {
+							float stageRot = Stage.GetStageWorldRotationZ(stage);
+							var zonePos = Stage.LocalToZone(
+								0.5f, y01, 0f,
+								Stage.GetStagePosition(stage, ItemIndex),
+								Stage.GetStageWidth(stage),
+								Stage.GetStageHeight(stage),
+								Stage.GetStagePivotY(stage),
+								stageRot
+							);
+							transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, zonePos.x, zonePos.y, zonePos.z);
+							transform.rotation = Quaternion.Euler(0f, 0f, stageRot);
+							active = true;
+						}
+					}
+				} else if (item != null && ItemType == 1) {
+					// Track
+					var track = item as Beatmap.Track;
+					var stage = map.GetItem(0, track.StageIndex) as Beatmap.Stage;
+					if (stage != null) {
+						float musicTime = GetMusicTime();
+						if (map.GetMotionTime(ItemType, ItemIndex, MotionType, motionIndex, out float motionTime, out float itemTime) && itemTime + motionTime > musicTime) {
+							float speedMuti = GetSpeedMuti();
+							float y01 = GetAreaBetween(musicTime, itemTime + motionTime, speedMuti);
+							if (y01 >= 0f) {
+								float trackAngle = Track.GetTrackAngle(track);
+								float stageRot = Stage.GetStageWorldRotationZ(stage);
+								var zonePos = Track.LocalToZone(
+									0.5f, y01, 0f,
+									Stage.GetStagePosition(stage, ItemIndex),
+									Stage.GetStageWidth(stage),
+									Stage.GetStageHeight(stage),
+									Stage.GetStagePivotY(stage),
+									stageRot,
+									Track.GetTrackX(track),
+									Track.GetTrackWidth(track),
+									trackAngle
+								);
+								transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, zonePos.x, zonePos.y, zonePos.z);
+								transform.rotation = Quaternion.Euler(0f, 0f, stageRot) * Quaternion.Euler(trackAngle, 0f, 0f);
+								active = true;
+							}
+						}
+					}
+				}
 				// Slider
-				var (hasA, hasB) = map.GetMotionValue(
-					ItemType, ItemIndex, MotionType, motionIndex, out float valueA, out float valueB
-				);
-				if (hasA) {
-					if (MotionType == 0) {
-						// Pos
-						SetSliderValue(0, valueA);
-					} else if (MotionType == 1) {
-						// Angle
-						SetSliderValue(0, valueA / 360f);
-					} else if ((ItemType == 0 && MotionType == 4) || (ItemType == 1 && MotionType == 3)) {
-						// Index 0-...
-						SetSliderValue(0, Util.Remap(0f, GetPaletteCount() - 1, -1f, 1f, valueA));
-					} else {
-						// Value 0-1
-						SetSliderValue(0, Util.Remap(0f, 1f, -1f, 1f, valueA));
+				if (active) {
+					var (hasA, hasB) = map.GetMotionValue(
+						ItemType, ItemIndex, MotionType, motionIndex, out float valueA, out float valueB
+					);
+					if (hasA) {
+						if (MotionType == 0) {
+							// Pos
+							SetSliderValue(0, valueA);
+						} else if (MotionType == 1) {
+							// Angle
+							SetSliderValue(0, valueA / 360f);
+						} else if ((ItemType == 0 && MotionType == 4) || (ItemType == 1 && MotionType == 3)) {
+							// Index 0-...
+							SetSliderValue(0, Util.Remap(0f, GetPaletteCount() - 1, -1f, 1f, valueA));
+						} else {
+							// Value 0-1
+							SetSliderValue(0, Util.Remap(0f, 1f, -1f, 1f, valueA));
+						}
 					}
-				}
-				if (hasB) {
-					if (MotionType == 0 && ItemType == 0) {
-						// Stage Position Only
-						SetSliderValue(1, valueB);
+					if (hasB) {
+						if (MotionType == 0 && ItemType == 0) {
+							// Stage Position Only
+							SetSliderValue(1, valueB);
+						}
 					}
+					TrySetActive(m_Sliders[0].transform, hasA);
+					TrySetActive(m_Sliders[1].transform, hasB);
 				}
-				TrySetActive(m_Sliders[0].transform, hasA);
-				TrySetActive(m_Sliders[1].transform, hasB);
-			} else {
+			}
+			if (!active) {
 				// No Map
 				TrySetActive(m_Sliders[0].transform, false);
 				TrySetActive(m_Sliders[1].transform, false);

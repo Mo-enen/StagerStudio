@@ -333,6 +333,8 @@
 			MotionItem.GetMusicTime = () => m_Music.Time;
 			MotionItem.OnMotionChanged = m_MotionPainter.RefreshFieldUI;
 			MotionItem.GetPaletteCount = () => m_Project.Palette.Count;
+			MotionItem.GetAreaBetween = m_Game.AreaBetween;
+			MotionItem.GetSpeedMuti = () => m_Game.GameDropSpeed;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");

@@ -130,7 +130,7 @@
 				}
 				// Scroll
 				if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.001f) {
-					var (cStart, cEnd) = GetContentStartYEndY();
+					var (cStart, cEnd, _) = GetContentStartYEndY();
 					if (cStart < cEnd) {
 						ScrollValue = Mathf.Clamp01(ScrollValue - Input.mouseScrollDelta.y / (cEnd - cStart) * 0.1f);
 						SetVerticesDirty();
@@ -235,7 +235,7 @@
 #endif
 			toFill.Clear();
 
-			var (contentStartY01, contentEndY01) = GetContentStartYEndY();
+			var (contentStartY01, contentEndY01, realScrollValue) = GetContentStartYEndY();
 			if (contentStartY01 >= contentEndY01) { return; }
 			var map = GetBeatmap();
 			float bps = GetBPM() / 60f;
@@ -250,9 +250,9 @@
 			int highlightBeat = -1;
 			float yMin = float.MaxValue;
 			float yMax = float.MinValue;
-			for (int beat = 0; beat < beatCount; beat++) {
+			for (int beat = Mathf.FloorToInt(realScrollValue * beatCount); beat < beatCount; beat++) {
 				var (up, down, y01) = GetItemUpDown(rect, contentStartY01, contentEndY01, beat, beatCount);
-				if (down > rect.y + rect.height || up < rect.y) { continue; }
+				if (up < rect.y) { break; }
 				if (Mouse.pos01.y >= y01 && Mouse.pos01.y <= y01 + itemHeight01) {
 					highlightBeat = beat;
 				}
@@ -322,13 +322,16 @@
 			if (motionCount > 0) {
 				SetCacheUV(sprite);
 				SetCacheColor(m_ItemTint);
+				int beatStart = Mathf.FloorToInt(realScrollValue * beatCount);
 				for (int motion = 0; motion < motionCount; motion++) {
 					if (map.GetMotionTime(ItemType, ItemIndex, MotionType, motion, out float time, out _)) {
 						float beatTime = time * bps;
 						int beat = Mathf.FloorToInt(
 							Mathf.Round(beatTime * division * 2f) / (division * 2f)
 						);
+						if (beat < beatStart) { continue; }
 						var (up, down, _) = GetItemUpDown(rect, contentStartY01, contentEndY01, beat, beatCount);
+						if (up < rect.y) { break; }
 						var (left, right, _) = GetItemLeftRight(rect, (beatTime - beat) * division);
 						SetCachePosition(left, right, down, up);
 						toFill.AddUIVertexQuad(VertexCache);
@@ -438,17 +441,17 @@
 		}
 
 
-		private (float start, float end) GetContentStartYEndY () {
+		private (float start, float end, float realScroll) GetContentStartYEndY () {
 			var map = GetBeatmap();
-			if (map == null || ItemType < 0 || MotionType < 0 || ItemIndex < 0) { return (0f, -1f); }
+			if (map == null || ItemType < 0 || MotionType < 0 || ItemIndex < 0) { return (0f, -1f, 0f); }
 			int beatCount = Mathf.CeilToInt(map.GetDuration(ItemType, ItemIndex) * (GetBPM() / 60f));
 			var rect = GetPixelAdjustedRect();
-			if (beatCount <= 0 || rect.height < 0.001f) { return (0f, -1f); }
+			if (beatCount <= 0 || rect.height < 0.001f) { return (0f, -1f, 0f); }
 			float contentHeight01 = rect.height / (beatCount * ITEM_HEIGHT);
 			float realScrollValue = contentHeight01 < 1f ? Mathf.Lerp(0f, 1f - contentHeight01, ScrollValue) : 0f;
 			float contentStartY01 = -realScrollValue / contentHeight01;
 			float contentEndY01 = 1f / contentHeight01 + contentStartY01;
-			return (contentStartY01, contentEndY01);
+			return (contentStartY01, contentEndY01, realScrollValue);
 		}
 
 
