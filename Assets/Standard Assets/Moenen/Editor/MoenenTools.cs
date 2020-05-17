@@ -21,18 +21,13 @@
 			}
 			var method = type.GetMethod("Clear");
 			method.Invoke(new object(), null);
+			Selection.activeObject = null;
 		}
 
 
-		[MenuItem("Tools/Copy Names")]
-		public static void CopySelectingNames () {
-			string result = "";
-			foreach (var obj in Selection.objects) {
-				if (!(obj is GameObject g)) { continue; }
-				result += $"{g.name}\n";
-			}
-			GUIUtility.systemCopyBuffer = result;
-		}
+
+
+
 
 
 

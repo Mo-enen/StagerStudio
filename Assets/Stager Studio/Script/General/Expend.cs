@@ -7,6 +7,14 @@
 	public static class Expand {
 
 
+
+		public static void TrySetActive (this GameObject g, bool active) {
+			if (g.activeSelf != active) {
+				g.SetActive(active);
+			}
+		}
+
+
 		public static void SetAllChildActive (this Transform transform, bool active) {
 			int len = transform.childCount;
 			for (int i = 0; i < len; i++) {

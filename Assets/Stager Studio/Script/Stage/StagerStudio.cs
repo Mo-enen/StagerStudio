@@ -332,8 +332,6 @@
 			MotionItem.GetBeatmap = () => m_Project.Beatmap;
 			MotionItem.GetMusicTime = () => m_Music.Time;
 			MotionItem.OnMotionChanged = m_MotionPainter.RefreshFieldUI;
-			MotionItem.GetPaletteCount = () => m_Project.Palette.Count;
-			MotionItem.GetAreaBetween = m_Game.AreaBetween;
 			MotionItem.GetSpeedMuti = () => m_Game.GameDropSpeed;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
@@ -576,12 +574,13 @@
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
 				m_Inspector.RefreshUI();
-				if (m_Editor.SelectingItemType < 0) {
-					m_Inspector.StopEditMotion(false);
-				} else if (m_MotionPainter.ItemType >= 0) {
-					m_MotionPainter.ItemType = m_Editor.SelectingItemType;
-					m_MotionPainter.ItemIndex = m_Editor.SelectingItemIndex;
-					m_MotionPainter.SetVerticesDirty();
+				if (m_MotionPainter.ItemType >= 0) {
+					if (m_Editor.SelectingItemType >= 0 && m_MotionPainter.ItemType == m_Editor.SelectingItemType) {
+						m_MotionPainter.ItemIndex = m_Editor.SelectingItemIndex;
+						m_MotionPainter.SetVerticesDirty();
+					} else {
+						m_Inspector.StopEditMotion(false);
+					}
 				}
 			};
 			StageEditor.OnLockEyeChanged = () => {
@@ -868,6 +867,7 @@
 
 			MotionPainterUI.GetBeatmap = () => m_Project.Beatmap;
 			MotionPainterUI.GetMusicTime = () => m_Music.Time;
+			MotionPainterUI.GetMusicDuration = () => m_Music.Duration;
 			MotionPainterUI.GetBPM = () => m_Game.BPM;
 			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
 			MotionPainterUI.OnItemEdit = () => {
@@ -875,6 +875,7 @@
 				UndoRedo.SetDirty();
 			};
 			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
+			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

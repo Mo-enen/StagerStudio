@@ -43,13 +43,15 @@
 		// Handler
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
+		public static FloatHandler GetMusicDuration { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static IntHandler GetBeatPerSection { get; set; } = null;
 		public static VoidHandler OnItemEdit { get; set; } = null;
 		public static CharToSpriteHandler GetSprite { get; set; } = null;
+		public static IntHandler GetPaletteCount { get; set; } = null;
 
 		// Api
-		public int ItemType { get; set; } = -1;
+		public int ItemType => MotionType >= 0 && MotionType <= 4 ? 0 : MotionType >= 5 && MotionType <= 8 ? 1 : -1;
 		public int ItemIndex { get; set; } = -1;
 		public int MotionType { get; set; } = -1;
 		public float ScrollValue { get; set; } = 0f;
@@ -60,11 +62,12 @@
 		// Ser
 		[SerializeField] private Sprite m_Line = null;
 		[SerializeField] private Sprite m_SectionLine = null;
-		[SerializeField] private MotionItem m_ItemPrefab = null;
+		[SerializeField] private MotionItem[] m_ItemPrefabs = null;
 		[SerializeField] private Sprite[] m_DivIcons = null;
 		[SerializeField] private Image m_DivIMG = null;
 		[SerializeField] private Transform m_MotionContainer = null;
-		[SerializeField] private InputField m_Field = null;
+		[SerializeField] private InputField m_ValueIF = null;
+		[SerializeField] private InputField m_TweenIF = null;
 		[SerializeField] private Color m_BgTintA = Color.white;
 		[SerializeField] private Color m_BgTintB = Color.white;
 		[SerializeField] private Color m_DivTint = Color.black;
@@ -110,6 +113,7 @@
 #endif
 			Update_Mouse();
 			Update_Item();
+			Update_UI();
 		}
 
 
@@ -130,7 +134,7 @@
 				}
 				// Scroll
 				if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.001f) {
-					var (cStart, cEnd, _) = GetContentStartYEndY();
+					var (cStart, cEnd, _, _) = GetContentStartYEndY();
 					if (cStart < cEnd) {
 						ScrollValue = Mathf.Clamp01(ScrollValue - Input.mouseScrollDelta.y / (cEnd - cStart) * 0.1f);
 						SetVerticesDirty();
@@ -144,10 +148,10 @@
 							float bps = GetBPM() / 60f;
 							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
 							float localTimeR = (HoveredBeat + (HoveredDiv + 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
-							int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+							int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 							bool overlap = false;
 							for (int i = 0; i < motionCount; i++) {
-								if (map.GetMotionTime(ItemType, ItemIndex, MotionType, i, out float time, out _)) {
+								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time, out _)) {
 									if (time > localTimeL && time < localTimeR) {
 										overlap = true;
 										break;
@@ -156,7 +160,7 @@
 							}
 							if (!overlap) {
 								float localTime = (HoveredBeat + (HoveredDiv + 0f) / BEAT_DIVs[DivisionIndex]) / bps;
-								map.AddMotion(ItemType, ItemIndex, MotionType, localTime, null);
+								map.AddMotion(ItemIndex, MotionType, localTime, null);
 								SetVerticesDirty();
 								OnItemEdit();
 							}
@@ -171,11 +175,11 @@
 							float bps = GetBPM() / 60f;
 							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
 							float localTimeR = (HoveredBeat + (HoveredDiv + 0.9f) / BEAT_DIVs[DivisionIndex]) / bps;
-							int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+							int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 							for (int i = 0; i < motionCount; i++) {
-								if (map.GetMotionTime(ItemType, ItemIndex, MotionType, i, out float time, out _)) {
+								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time, out _)) {
 									if (time >= localTimeL && time <= localTimeR) {
-										if (map.DeleteMotion(ItemType, ItemIndex, MotionType, i)) {
+										if (map.DeleteMotion(ItemIndex, MotionType, i)) {
 											i--;
 											motionCount--;
 										}
@@ -202,19 +206,31 @@
 		private void Update_Item () {
 			var map = GetBeatmap();
 			if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionType >= 0) {
-				int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+				int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 				int childCount = m_MotionContainer.childCount;
 				if (childCount < motionCount) {
-					var item = Instantiate(m_ItemPrefab, m_MotionContainer);
-					item.ItemType = ItemType;
-					item.ItemIndex = ItemIndex;
-					item.MotionType = MotionType;
+					for (int i = childCount; i < motionCount; i++) {
+						var item = Instantiate(m_ItemPrefabs[MotionType], m_MotionContainer);
+						item.IndexCount = GetPaletteCount();
+						item.ItemIndex = ItemIndex;
+						item.MotionType = MotionType;
+						if (!item.gameObject.activeSelf) {
+							item.gameObject.SetActive(true);
+						}
+					}
 				} else if (childCount > motionCount) {
 					m_MotionContainer.FixChildcountImmediately(motionCount);
 				}
 			} else {
 				m_MotionContainer.DestroyAllChildImmediately();
 			}
+		}
+
+
+		private void Update_UI () {
+			bool fieldActive = ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0;
+			m_ValueIF.gameObject.TrySetActive(fieldActive);
+			m_TweenIF.gameObject.TrySetActive(fieldActive);
 		}
 
 
@@ -235,11 +251,10 @@
 #endif
 			toFill.Clear();
 
-			var (contentStartY01, contentEndY01, realScrollValue) = GetContentStartYEndY();
+			var (contentStartY01, contentEndY01, realScrollValue, beatDuration) = GetContentStartYEndY();
 			if (contentStartY01 >= contentEndY01) { return; }
 			var map = GetBeatmap();
 			float bps = GetBPM() / 60f;
-			float beatDuration = map.GetDuration(ItemType, ItemIndex) * bps;
 			int beatCount = Mathf.CeilToInt(beatDuration) + 1;
 			int division = BEAT_DIVs[DivisionIndex];
 			var rect = GetPixelAdjustedRect();
@@ -318,13 +333,13 @@
 			}
 
 			// Items
-			int motionCount = map.GetMotionCount(ItemType, ItemIndex, MotionType);
+			int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 			if (motionCount > 0) {
 				SetCacheUV(sprite);
 				SetCacheColor(m_ItemTint);
 				int beatStart = Mathf.FloorToInt(realScrollValue * beatCount);
 				for (int motion = 0; motion < motionCount; motion++) {
-					if (map.GetMotionTime(ItemType, ItemIndex, MotionType, motion, out float time, out _)) {
+					if (map.GetMotionTime(ItemIndex, MotionType, motion, out float time, out _)) {
 						float beatTime = time * bps;
 						int beat = Mathf.FloorToInt(
 							Mathf.Round(beatTime * division * 2f) / (division * 2f)
@@ -388,12 +403,29 @@
 		}
 
 
-		public void UI_OnFieldEdit (string text) {
+		public void UI_OnValueEdit (string text) {
 			if (!UIReady) { return; }
 			if (text.TryParseFloatForInspector(out float value)) {
+				var map = GetBeatmap();
+				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+					if (MotionItem.SelectingMotionA) {
+						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, value);
+					} else {
+						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, value);
+					}
+				}
+			}
+			RefreshFieldUI();
+		}
 
 
-
+		public void UI_OnTweenEdit (string text) {
+			if (!UIReady) { return; }
+			if (text.TryParseIntForInspector(out int tween)) {
+				var map = GetBeatmap();
+				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+					map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, null, tween);
+				}
 			}
 			RefreshFieldUI();
 		}
@@ -402,9 +434,18 @@
 		public void RefreshFieldUI () {
 			UIReady = false;
 			try {
-
-				//m_Field.text = ;
-
+				var map = GetBeatmap();
+				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+					var (hasA, hasB) = map.GetMotionValue(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float valueA, out float valueB, out int tween);
+					if ((MotionItem.SelectingMotionA && hasA) || (!MotionItem.SelectingMotionA && hasB)) {
+						float value = Mathf.Round((MotionItem.SelectingMotionA ? valueA : valueB) * 1000f) / 1000f;
+						m_ValueIF.text = value.ToString();
+						m_TweenIF.text = tween.ToString();
+					} else {
+						m_ValueIF.text = "--";
+						m_TweenIF.text = "--";
+					}
+				}
 			} catch { }
 			UIReady = true;
 		}
@@ -441,17 +482,18 @@
 		}
 
 
-		private (float start, float end, float realScroll) GetContentStartYEndY () {
+		private (float start, float end, float realScroll, float beatDuration) GetContentStartYEndY () {
 			var map = GetBeatmap();
-			if (map == null || ItemType < 0 || MotionType < 0 || ItemIndex < 0) { return (0f, -1f, 0f); }
-			int beatCount = Mathf.CeilToInt(map.GetDuration(ItemType, ItemIndex) * (GetBPM() / 60f));
+			if (map == null || ItemType < 0 || MotionType < 0 || ItemIndex < 0) { return (0f, -1f, 0f, 0f); }
+			float beatDuration = Mathf.Min(map.GetDuration(ItemType, ItemIndex), GetMusicDuration()) * (GetBPM() / 60f);
+			int beatCount = Mathf.CeilToInt(beatDuration) + 1;
 			var rect = GetPixelAdjustedRect();
-			if (beatCount <= 0 || rect.height < 0.001f) { return (0f, -1f, 0f); }
+			if (beatCount <= 0 || rect.height < 0.001f) { return (0f, -1f, 0f, 0f); }
 			float contentHeight01 = rect.height / (beatCount * ITEM_HEIGHT);
 			float realScrollValue = contentHeight01 < 1f ? Mathf.Lerp(0f, 1f - contentHeight01, ScrollValue) : 0f;
 			float contentStartY01 = -realScrollValue / contentHeight01;
 			float contentEndY01 = 1f / contentHeight01 + contentStartY01;
-			return (contentStartY01, contentEndY01, realScrollValue);
+			return (contentStartY01, contentEndY01, realScrollValue, beatDuration);
 		}
 
 

@@ -256,9 +256,9 @@
 			public int Color = 0;
 			public List<TimeFloatFloatTween> Positions;
 			public List<TimeFloatTween> Rotations;
+			public List<TimeIntTween> Colors;
 			public List<TimeFloatTween> Widths;
 			public List<TimeFloatTween> Heights;
-			public List<TimeIntTween> Colors;
 
 			// Cache
 			[System.NonSerialized] public int TrackCount = 0;
@@ -321,8 +321,8 @@
 			public bool HasTray = false;
 			public List<TimeFloatTween> Xs;
 			public List<TimeFloatTween> Angles;
-			public List<TimeFloatTween> Widths;
 			public List<TimeIntTween> Colors;
+			public List<TimeFloatTween> Widths;
 
 			// Cache
 			[System.NonSerialized] public (float min, float max) TrayX = (0.5f, 0.5f);
@@ -938,68 +938,69 @@
 
 
 		// Motion
-		private (IList list, MapItem item) GetMotionList (int itemType, int itemIndex, int motionType) {
-			switch (itemType) {
-				case 0:
-					if (itemIndex < 0 || itemIndex >= Stages.Count) { return (null, null); }
-					var stage = Stages[itemIndex];
-					switch (motionType) {
-						case 0:
-							return (stage.Positions, stage); // -1f～1f
-						case 1:
-							return (stage.Rotations, stage); // -360f～360f
-						case 2:
-							return (stage.Widths, stage); // 0～1f
-						case 3:
-							return (stage.Heights, stage); // 0～1f
-						case 4:
-							return (stage.Colors, stage); // 0～...
-						default:
-							return (null, null);
-					}
-				case 1:
-					if (itemIndex < 0 || itemIndex >= Tracks.Count) { return (null, null); }
-					var track = Tracks[itemIndex];
-					switch (motionType) {
-						case 0:
-							return (track.Xs, track); // -1f～1f
-						case 1:
-							return (track.Angles, track); // -360f～360f
-						case 2:
-							return (track.Widths, track); // 0～1f
-						case 3:
-							return (track.Colors, track); // 0～...
-						default:
-							return (null, null);
-					}
-				default:
-					return (null, null);
+		private (IList list, MapItem item) GetMotionList (int itemIndex, int motionType) {
+			if (motionType >= 0 && motionType <= 4) {
+				// Stage
+				if (itemIndex < 0 || itemIndex >= Stages.Count) { return (null, null); }
+				var stage = Stages[itemIndex];
+				switch (motionType) {
+					case 0: // Pos
+						return (stage.Positions, stage); // -1f～1f
+					case 1: // Angle
+						return (stage.Rotations, stage); // -360f～360f
+					case 2: // Index
+						return (stage.Colors, stage); // 0～...
+					case 3: // Width
+						return (stage.Widths, stage); // 0～1f
+					case 4: // Height
+						return (stage.Heights, stage); // 0～1f
+					default:
+						return (null, null);
+				}
+			} else if (motionType >= 5 && motionType <= 8) {
+				// Track
+				if (itemIndex < 0 || itemIndex >= Tracks.Count) { return (null, null); }
+				var track = Tracks[itemIndex];
+				switch (motionType) {
+					case 5: // X
+						return (track.Xs, track); // -1f～1f
+					case 6: // Angle
+						return (track.Angles, track); // -360f～360f
+					case 7: // Index
+						return (track.Colors, track); // 0～...
+					case 8: // Width
+						return (track.Widths, track); // 0～1f
+					default:
+						return (null, null);
+				}
+			} else {
+				return (null, null);
 			}
 		}
 
 
-		public int GetMotionCount (int itemType, int itemIndex, int motionType) {
-			var list = GetMotionList(itemType, itemIndex, motionType).list;
+		public int GetMotionCount (int itemIndex, int motionType) {
+			var list = GetMotionList(itemIndex, motionType).list;
 			return list != null ? list.Count : 0;
 		}
 
 
-		private (object motionObj, MapItem item) GetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex) {
-			var (list, item) = GetMotionList(itemType, itemIndex, motionType);
+		private (object motionObj, MapItem item) GetMotionItem (int itemIndex, int motionType, int motionIndex) {
+			var (list, item) = GetMotionList(itemIndex, motionType);
 			return (list != null && motionIndex >= 0 && motionIndex < list.Count ? list[motionIndex] : null, item);
 		}
 
 
-		private void SetMotionItem (int itemType, int itemIndex, int motionType, int motionIndex, object item) {
-			var list = GetMotionList(itemType, itemIndex, motionType).list;
+		private void SetMotionItem (int itemIndex, int motionType, int motionIndex, object item) {
+			var list = GetMotionList(itemIndex, motionType).list;
 			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
 				list[motionIndex] = item;
 			}
 		}
 
 
-		public bool GetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex, out float time, out float itemTime) {
-			var (motionObj, item) = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+		public bool GetMotionTime (int itemIndex, int motionType, int motionIndex, out float time, out float itemTime) {
+			var (motionObj, item) = GetMotionItem(itemIndex, motionType, motionIndex);
 			time = itemTime = 0f;
 			if (motionObj == null || item == null) { return false; }
 			itemTime = item.Time;
@@ -1018,35 +1019,39 @@
 		}
 
 
-		public void SetMotionTime (int itemType, int itemIndex, int motionType, int motionIndex, float time) {
-			var motionObj = GetMotionItem(itemType, itemIndex, motionType, motionIndex).motionObj;
+		public void SetMotionTime (int itemIndex, int motionType, int motionIndex, float time) {
+			var motionObj = GetMotionItem(itemIndex, motionType, motionIndex).motionObj;
 			if (motionObj == null) { return; }
 			if (motionObj is TimeIntTween tiItem) {
 				tiItem.Time = time;
-				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tiItem);
+				SetMotionItem(itemIndex, motionType, motionIndex, tiItem);
 			} else if (motionObj is TimeFloatTween tfItem) {
 				tfItem.Time = time;
-				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tfItem);
+				SetMotionItem(itemIndex, motionType, motionIndex, tfItem);
 			} else if (motionObj is TimeFloatFloatTween tffItem) {
 				tffItem.Time = time;
-				SetMotionItem(itemType, itemIndex, motionType, motionIndex, tffItem);
+				SetMotionItem(itemIndex, motionType, motionIndex, tffItem);
 			}
 		}
 
 
-		public (bool hasA, bool hasB) GetMotionValue (int itemType, int itemIndex, int motionType, int motionIndex, out float valueA, out float valueB) {
+		public (bool hasA, bool hasB) GetMotionValue (int itemIndex, int motionType, int motionIndex, out float valueA, out float valueB, out int tween) {
 			valueA = valueB = 0f;
-			var (motionObj, item) = GetMotionItem(itemType, itemIndex, motionType, motionIndex);
+			tween = 0;
+			var (motionObj, item) = GetMotionItem(itemIndex, motionType, motionIndex);
 			if (motionObj == null || item == null) { return (false, false); }
-			if (motionObj is TimeIntTween) {
-				valueA = valueB = ((TimeIntTween)motionObj).Value;
+			if (motionObj is TimeIntTween iItem) {
+				valueA = valueB = iItem.Value;
+				tween = iItem.Tween;
 				return (true, false);
-			} else if (motionObj is TimeFloatTween) {
-				valueA = valueB = ((TimeFloatTween)motionObj).Value;
+			} else if (motionObj is TimeFloatTween fItem) {
+				valueA = valueB = fItem.Value;
+				tween = fItem.Tween;
 				return (true, false);
-			} else if (motionObj is TimeFloatFloatTween) {
-				valueA = ((TimeFloatFloatTween)motionObj).A;
-				valueB = ((TimeFloatFloatTween)motionObj).B;
+			} else if (motionObj is TimeFloatFloatTween ffItem) {
+				valueA = ffItem.A;
+				valueB = ffItem.B;
+				tween = ffItem.Tween;
 				return (true, true);
 			} else {
 				return (false, false);
@@ -1054,8 +1059,46 @@
 		}
 
 
-		public void AddMotion (int itemType, int itemIndex, int motionType, float time, float? value) {
-			if (itemType == 0) {
+		public void SetMotionValueTween (int itemIndex, int motionType, int motionIndex, float? valueA = null, float? valueB = null, int? tween = null) {
+			var list = GetMotionList(itemIndex, motionType).list;
+			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
+				var item = list[motionIndex];
+				if (valueA.HasValue) {
+					if (item is TimeIntTween tItem) {
+						tItem.Value = Mathf.RoundToInt(valueA.Value);
+						list[motionIndex] = tItem;
+					} else if (item is TimeFloatTween fItem) {
+						fItem.Value = valueA.Value;
+						list[motionIndex] = fItem;
+					} else if (item is TimeFloatFloatTween ffItem) {
+						ffItem.A = valueA.Value;
+						list[motionIndex] = ffItem;
+					}
+				}
+				if (valueB.HasValue) {
+					if (item is TimeFloatFloatTween ffItem) {
+						ffItem.B = valueB.Value;
+						list[motionIndex] = ffItem;
+					}
+				}
+				if (tween.HasValue) {
+					if (item is TimeIntTween tItem) {
+						tItem.Tween = tween.Value;
+						list[motionIndex] = tItem;
+					} else if (item is TimeFloatTween fItem) {
+						fItem.Tween = tween.Value;
+						list[motionIndex] = fItem;
+					} else if (item is TimeFloatFloatTween ffItem) {
+						ffItem.Tween = tween.Value;
+						list[motionIndex] = ffItem;
+					}
+				}
+			}
+		}
+
+
+		public void AddMotion (int itemIndex, int motionType, float time, float? value) {
+			if (motionType >= 0 && motionType <= 4) {
 				// Stage
 				if (itemIndex >= 0 && itemIndex < Stages.Count) {
 					var stage = Stages[itemIndex];
@@ -1076,62 +1119,64 @@
 							});
 							break;
 						case 2:
-							stage.Widths.Add(new TimeFloatTween() {
-								Time = time,
-								Tween = 0,
-								Value = value ?? 1f,
-							});
-							break;
-						case 3:
-							stage.Heights.Add(new TimeFloatTween() {
-								Time = time,
-								Tween = 0,
-								Value = value ?? 1f,
-							});
-							break;
-						case 4:
 							stage.Colors.Add(new TimeIntTween() {
 								Time = time,
 								Tween = 0,
 								Value = (int)(value ?? 0),
 							});
 							break;
+						case 3:
+							stage.Widths.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+						case 4:
+							stage.Heights.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+
 					}
 					stage.SortMotion(motionType);
 				}
-			} else if (itemType == 1) {
+			} else if (motionType >= 5 && motionType <= 8) {
 				// Track
 				if (itemIndex >= 0 && itemIndex < Tracks.Count) {
 					var track = Tracks[itemIndex];
 					switch (motionType) {
-						case 0:
+						case 5:
 							track.Xs.Add(new TimeFloatTween() {
 								Time = time,
 								Tween = 0,
 								Value = value ?? 0f,
 							});
 							break;
-						case 1:
+						case 6:
 							track.Angles.Add(new TimeFloatTween() {
 								Time = time,
 								Tween = 0,
 								Value = value ?? 0f,
 							});
 							break;
-						case 2:
-							track.Widths.Add(new TimeFloatTween() {
-								Time = time,
-								Tween = 0,
-								Value = value ?? 1f,
-							});
-							break;
-						case 3:
+						case 7:
 							track.Colors.Add(new TimeIntTween() {
 								Time = time,
 								Tween = 0,
 								Value = (int)(value ?? 0),
 							});
 							break;
+						case 8:
+							track.Widths.Add(new TimeFloatTween() {
+								Time = time,
+								Tween = 0,
+								Value = value ?? 1f,
+							});
+							break;
+
 					}
 					track.SortMotion(motionType);
 				}
@@ -1139,8 +1184,8 @@
 		}
 
 
-		public bool DeleteMotion (int itemType, int itemIndex, int motionType, int motionIndex) {
-			var list = GetMotionList(itemType, itemIndex, motionType).list;
+		public bool DeleteMotion (int itemIndex, int motionType, int motionIndex) {
+			var list = GetMotionList(itemIndex, motionType).list;
 			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
 				list.RemoveAt(motionIndex);
 				return true;

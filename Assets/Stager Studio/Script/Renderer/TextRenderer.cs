@@ -24,6 +24,16 @@
 			}
 		}
 
+		public Color Background {
+			get => m_Background;
+			set {
+				if (value != m_Background) {
+					m_Background = value;
+					SetDirty();
+				}
+			}
+		}
+
 
 		// Ser
 		[SerializeField] private string m_Text = "";

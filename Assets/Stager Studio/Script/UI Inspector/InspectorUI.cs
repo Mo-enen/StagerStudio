@@ -4,6 +4,8 @@
 	using UnityEngine;
 	using UnityEngine.UI;
 	using Data;
+	using Object;
+
 
 
 	public class InspectorUI : MonoBehaviour {
@@ -115,32 +117,22 @@
 		}
 
 
-		public void StartEditMotion_Stage (int motion) {
-			m_MotionPainter.ItemType = 0;
+		public void StartEditMotion (int motion) {
 			m_MotionPainter.ItemIndex = GetSelectingIndex();
 			m_MotionPainter.MotionType = motion;
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
-			PlayMotionAnimation(true, true);
-		}
-
-
-		public void StartEditMotion_Track (int motion) {
-			m_MotionPainter.ItemType = 1;
-			m_MotionPainter.ItemIndex = GetSelectingIndex();
-			m_MotionPainter.MotionType = motion;
-			m_MotionPainter.ScrollValue = 0f;
-			m_MotionPainter.SetVerticesDirty();
+			MotionItem.SelectingMotionIndex = -1;
 			PlayMotionAnimation(true, true);
 		}
 
 
 		public void StopEditMotion (bool useAnimation) {
-			m_MotionPainter.ItemType = -1;
 			m_MotionPainter.MotionType = -1;
 			m_MotionPainter.ItemIndex = -1;
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
+			MotionItem.SelectingMotionIndex = -1;
 			PlayMotionAnimation(false, useAnimation);
 		}
 

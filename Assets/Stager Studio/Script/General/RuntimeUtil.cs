@@ -729,6 +729,12 @@
 		public static string GetKeyName (KeyCode key) => SpecialKeyNames.ContainsKey(key) ? SpecialKeyNames[key] : key.ToString();
 
 
+		public static Vector3? GetRayPosition (Ray ray, Transform planeTarget) => new Plane(
+			planeTarget != null ? -planeTarget.forward : Vector3.back,
+			planeTarget != null ? planeTarget.position : Vector3.zero
+		).Raycast(ray, out float enter) ? (Vector3?)ray.GetPoint(enter) : null;
+
+
 		public static Vector3? GetRayPosition (Ray ray, Vector3 zoneMin, Vector3 zoneMax, Transform planeTarget = null, bool clampInZone = false) {
 			if (new Plane(
 				planeTarget != null ? -planeTarget.forward : Vector3.back,

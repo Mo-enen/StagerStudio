@@ -20,7 +20,7 @@
 
 
 		#endregion
-		 
+
 
 
 
@@ -39,6 +39,7 @@
 		[SerializeField] private TextRenderer m_Hint = null;
 		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private Color[] m_HintTints = null;
+		[SerializeField] private float m_TintBgAlpha = 0.12f;
 
 		// Data
 		private TriggerUI_Collider[] _Triggers = null;
@@ -105,9 +106,12 @@
 
 		public void LogAxisMessage (int axis, string hint) {
 			m_Hint.RendererEnable = true;
-			m_Hint.Text = hint;
+			m_Hint.Text = $" {hint} ";
 			if (axis >= 0 && axis < m_HintTints.Length) {
-				m_Hint.Tint = m_HintTints[axis];
+				var tint = m_HintTints[axis];
+				m_Hint.Tint = tint;
+				tint.a = m_TintBgAlpha;
+				m_Hint.Background = tint;
 			}
 		}
 
