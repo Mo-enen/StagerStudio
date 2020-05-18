@@ -1,4 +1,7 @@
-﻿Author
+﻿Tip.Inspector.Motion.Done
+完成并退出运动编辑模式
+
+Author
 Stager 官方
 
 Command.Hint.CommandDone
@@ -687,6 +690,12 @@ Tip.Inspector.Motion.Div
 
 Tip.Inspector.Motion.Painter
 左键点击添加运动，右键点击删除运动
+
+Tip.Inspector.Motion.Tween
+选中运动节点的补间
+
+Tip.Inspector.Motion.Value
+选中运动节点的值
 
 Tip.Inspector.OpenCommand
 打开命令行窗口

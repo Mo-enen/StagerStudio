@@ -539,6 +539,7 @@
 				m_Wave.Time01 = time / duration;
 				m_GridRenderer.MusicTime = time;
 				m_TimingPreview.SetDirty();
+				m_MotionPainter.TrySetDirty();
 				StageObject.MusicDuration = duration;
 			};
 			StageMusic.OnMusicClipLoaded = () => {

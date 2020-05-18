@@ -156,6 +156,33 @@
 		}
 
 
+		public static bool TryParseVector2ForInspector (this string text, out Vector2 result) {
+			result = Vector2.zero;
+			if (string.IsNullOrEmpty(text)) { return false; }
+			var texts = text.Split(',');
+			if (texts != null && texts.Length >= 2) {
+				for (int index = 0; index < 2; index++) {
+					string t = texts[index];
+					for (int i = 0; !string.IsNullOrEmpty(t) && i < t.Length; i++) {
+						if (t[i] == '.' && (i == 0 || t[i - 1] < '0' || t[i - 1] > '9')) {
+							t = t.Insert(i, "0");
+							i++;
+						}
+					}
+					t = System.Text.RegularExpressions.Regex.Replace(t, @"[^0-9.+\-*/]+", string.Empty);
+					t = new System.Data.DataTable().Compute(t, null).ToString();
+					if (float.TryParse(t, out float value)) {
+						result[index] = value;
+					} else {
+						return false;
+					}
+				}
+				return true;
+			}
+			return false;
+		}
+
+
 		public static void LerpUI (this RectTransform rt, Vector2 aimAnchoredPos, float lerp = 20f) {
 			if (
 				Mathf.Abs(rt.anchoredPosition.x - aimAnchoredPos.x) > 0.001f ||

@@ -6,8 +6,6 @@
 	public class MotionItem_Pos : MotionItem {
 
 
-		// Short
-		protected override bool IsMotionA => false;
 
 		protected override void InvokeAxis (Vector2 localPos) {
 			var map = GetBeatmap();

@@ -7,7 +7,7 @@
 
 
 		// Short
-		protected override bool IsMotionA => true;
+		
 
 
 		protected override void InvokeAxis (Vector2 localPos) {

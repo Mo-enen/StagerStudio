@@ -85,7 +85,6 @@
 		private int DivisionIndex = 1;
 		private int HoveredBeat = -1;
 		private int HoveredDiv = -1;
-		private float PrevMusicTime = -1f;
 		private bool UIReady = true;
 		private Camera _Camera = null;
 
@@ -149,6 +148,7 @@
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
 						var map = GetBeatmap();
 						if (map != null) {
+							// Add Motion
 							float bps = GetBPM() / 60f;
 							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
 							float localTimeR = (HoveredBeat + (HoveredDiv + 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
@@ -166,6 +166,7 @@
 								float localTime = (HoveredBeat + (HoveredDiv + 0f) / BEAT_DIVs[DivisionIndex]) / bps;
 								var (hasA, hasB) = map.SearchMotionValueTween(ItemIndex, MotionType, localTime, out float valueA, out float valueB, out _);
 								map.AddMotion(ItemIndex, MotionType, localTime, hasA ? (float?)valueA : null, hasB ? (float?)valueB : null);
+								MotionItem.SelectingMotionIndex = -1;
 								SetVerticesDirty();
 								OnItemEdit();
 							}
@@ -178,6 +179,7 @@
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
 						var map = GetBeatmap();
 						if (map != null) {
+							// Remove Motion
 							float bps = GetBPM() / 60f;
 							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
 							float localTimeR = (HoveredBeat + (HoveredDiv + 0.9f) / BEAT_DIVs[DivisionIndex]) / bps;
@@ -192,6 +194,7 @@
 									}
 								}
 							}
+							MotionItem.SelectingMotionIndex = -1;
 							SetVerticesDirty();
 							OnItemEdit();
 						}
@@ -238,15 +241,6 @@
 			bool fieldActive = ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0;
 			m_ValueIF.gameObject.TrySetActive(fieldActive);
 			m_TweenIF.gameObject.TrySetActive(fieldActive);
-			// Music Time
-			float musicTime = GetMusicTime();
-			if (musicTime != PrevMusicTime) {
-				PrevMusicTime = musicTime;
-
-
-
-				TrySetDirty();
-			}
 		}
 
 
@@ -421,13 +415,17 @@
 
 		public void UI_OnValueEdit (string text) {
 			if (!UIReady) { return; }
-			if (text.TryParseFloatForInspector(out float value)) {
-				var map = GetBeatmap();
-				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
-					if (MotionItem.SelectingMotionA) {
+			var map = GetBeatmap();
+			if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+				if (MotionType == 0) {
+					// Vector2
+					if (text.TryParseVector2ForInspector(out Vector2 value)) {
+						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, value.x, value.y);
+					}
+				} else {
+					// Float, Int
+					if (text.TryParseFloatForInspector(out float value)) {
 						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, value);
-					} else {
-						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, value);
 					}
 				}
 			}
@@ -452,15 +450,23 @@
 			try {
 				var map = GetBeatmap();
 				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+					string valueRes = "--";
+					string tweenRes = "--";
 					var (hasA, hasB) = map.GetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float valueA, out float valueB, out int tween);
-					if ((MotionItem.SelectingMotionA && hasA) || (!MotionItem.SelectingMotionA && hasB)) {
-						float value = Mathf.Round((MotionItem.SelectingMotionA ? valueA : valueB) * 1000f) / 1000f;
-						m_ValueIF.text = value.ToString();
-						m_TweenIF.text = tween.ToString();
-					} else {
-						m_ValueIF.text = "--";
-						m_TweenIF.text = "--";
+					if (MotionType == 0 && hasA && hasB) {
+						// Vector2
+						valueRes = $"{Mathf.Round(valueA * 100f) / 100f}, {Mathf.Round(valueB * 100f) / 100f}";
 					}
+					if (MotionType != 0 && hasA) {
+						// Float, Int
+						valueRes = (Mathf.Round(valueA * 1000f) / 1000f).ToString();
+					}
+					if (hasA || hasB) {
+						// Tween
+						m_TweenIF.text = tween.ToString();
+					}
+					m_ValueIF.text = valueRes;
+					m_TweenIF.text = tweenRes;
 				}
 			} catch { }
 			UIReady = true;

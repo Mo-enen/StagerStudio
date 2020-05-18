@@ -1,4 +1,7 @@
-﻿Author
+﻿Tip.Inspector.Motion.Done
+Quit the motion editing mode
+
+Author
 Stager Official
 
 Command.Hint.CommandDone
@@ -687,6 +690,12 @@ Division amount
 
 Tip.Inspector.Motion.Painter
 Left click to add motion, right click to remove
+
+Tip.Inspector.Motion.Tween
+Tween of the selecting motion node
+
+Tip.Inspector.Motion.Value
+Value of the selecting motion node
 
 Tip.Inspector.OpenCommand
 Open command window

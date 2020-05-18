@@ -28,7 +28,6 @@
 
 		// Api
 		public static int SelectingMotionIndex { get; set; } = -1;
-		public static bool SelectingMotionA { get; set; } = true;
 		public int ItemIndex { get; set; } = -1;
 		public int MotionType { get; set; } = -1;
 		public int IndexCount { get; set; } = 0;
@@ -37,7 +36,6 @@
 		protected bool Active { get; set; } = false;
 		protected Transform Root => transform.GetChild(0);
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
-		protected abstract bool IsMotionA { get; }
 
 		// Ser
 		[SerializeField] private Transform m_Selection = null;
@@ -132,7 +130,6 @@
 		public void OnAxisDownOrDrag () {
 			int motionIndex = transform.GetSiblingIndex();
 			SelectingMotionIndex = motionIndex;
-			SelectingMotionA = IsMotionA;
 			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 			var pos = Util.GetRayPosition(Camera.ScreenPointToRay(Input.mousePosition), transform);
 			if (pos.HasValue) {

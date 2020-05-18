@@ -9,9 +9,6 @@
 
 
 
-		// Short
-		protected override bool IsMotionA => true;
-
 		// Ser
 		[SerializeField] private float m_LineLength = 0.12f;
 		[SerializeField] private Transform m_Handle = null;
@@ -28,7 +25,6 @@
 			var map = GetBeatmap();
 			int motionIndex = transform.GetSiblingIndex();
 			if (map != null) {
-				// Slider
 				if (Active) {
 					if (map.GetMotionValueTween(ItemIndex, MotionType, motionIndex, out float valueA, out _, out _).hasA) {
 						SetSliderValue(Util.Remap(0f, IndexCount - 1, -1f, 1f, valueA));
