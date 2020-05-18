@@ -61,7 +61,8 @@
 				if (item != null && itemType == 0) {
 					// Stage
 					float musicTime = GetMusicTime();
-					if (map.GetMotionTime(ItemIndex, MotionType, motionIndex, out float motionTime, out float itemTime) && itemTime + motionTime > musicTime) {
+					var itemTime = map.GetTime(itemType, ItemIndex);
+					if (map.GetMotionTime(ItemIndex, MotionType, motionIndex, out float motionTime) && itemTime + motionTime > musicTime) {
 						var stage = item as Beatmap.Stage;
 						float speedMuti = GetSpeedMuti();
 						float y01 = (itemTime + motionTime - musicTime) * speedMuti;
@@ -86,7 +87,8 @@
 					var stage = map.GetItem(0, track.StageIndex) as Beatmap.Stage;
 					if (stage != null) {
 						float musicTime = GetMusicTime();
-						if (map.GetMotionTime(ItemIndex, MotionType, motionIndex, out float motionTime, out float itemTime) && itemTime + motionTime > musicTime) {
+						var itemTime = map.GetTime(itemType, ItemIndex);
+						if (map.GetMotionTime(ItemIndex, MotionType, motionIndex, out float motionTime) && itemTime + motionTime > musicTime) {
 							float speedMuti = GetSpeedMuti();
 							float y01 = (itemTime + motionTime - musicTime) * speedMuti;
 							if (y01 >= 0f) {

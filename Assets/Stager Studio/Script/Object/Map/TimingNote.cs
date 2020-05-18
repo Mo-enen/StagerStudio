@@ -79,8 +79,8 @@
 			Update_SoundFx(timingData);
 			Update_Gizmos(timingData);
 
-			timingData.Active = GetActive(timingData);
-			if (!timingData.Active) {
+			timingData._Active = GetActive(timingData);
+			if (!timingData._Active) {
 				SetRendererEnable(false);
 				gameObject.SetActive(false);
 				return;
@@ -99,45 +99,45 @@
 				m_Col.gameObject.SetActive(m_MainRenderer.enabled);
 			}
 			// Late Note
-			if (LateNote == null || !LateNote.Active) { return; }
-			float noteY01 = LateNote.NoteDropPos - MusicTime * LateNote.SpeedMuti;
+			if (LateNote == null || !LateNote._Active) { return; }
+			float noteY01 = LateNote._NoteDropPos - MusicTime * LateNote._SpeedMuti;
 			transform.position = Util.Vector3Lerp3(ZoneMinMax.min, ZoneMinMax.max, 0f, noteY01);
-			var tint = LateNote.m_X >= 0 ? m_PositiveTint : m_NegativeTint;
+			var tint = LateNote.x >= 0 ? m_PositiveTint : m_NegativeTint;
 			tint.a = Mathf.Clamp01(16f - noteY01 * 16f);
 			m_MainRenderer.color = tint;
 		}
 
 
 		public static void Update_Cache (Beatmap.Timing timingData) {
-			if (timingData.LocalCacheDirtyID != Beatmap.Timing.CacheDirtyID) {
-				timingData.LocalCacheDirtyID = Beatmap.Timing.CacheDirtyID;
-				timingData.CacheTime = -1f;
+			if (timingData._LocalCacheDirtyID != Beatmap.Timing._CacheDirtyID) {
+				timingData._LocalCacheDirtyID = Beatmap.Timing._CacheDirtyID;
+				timingData._CacheTime = -1f;
 			}
-			if (GameSpeedMuti != timingData.SpeedMuti) {
-				timingData.SpeedMuti = GameSpeedMuti;
-				timingData.CacheTime = -1f;
+			if (GameSpeedMuti != timingData._SpeedMuti) {
+				timingData._SpeedMuti = GameSpeedMuti;
+				timingData._CacheTime = -1f;
 			}
-			if (timingData.CacheTime != timingData.Time) {
-				timingData.CacheTime = timingData.Time;
-				timingData.AppearTime = timingData.Time - 1f / GameSpeedMuti;
-				timingData.NoteDropPos = -1f;
+			if (timingData._CacheTime != timingData.Time) {
+				timingData._CacheTime = timingData.Time;
+				timingData._AppearTime = timingData.Time - 1f / GameSpeedMuti;
+				timingData._NoteDropPos = -1f;
 			}
-			if (timingData.NoteDropPos < 0f) {
-				timingData.NoteDropPos = timingData.Time * GameSpeedMuti;
+			if (timingData._NoteDropPos < 0f) {
+				timingData._NoteDropPos = timingData.Time * GameSpeedMuti;
 			}
 		}
 
 
 		private void Update_Gizmos (Beatmap.Timing timingData) {
 
-			bool active = !(timingData is null) && timingData.Active;
+			bool active = !(timingData is null) && timingData._Active;
 
 			// Label
 			if (m_LabelRenderer.gameObject.activeSelf != active) {
 				m_LabelRenderer.gameObject.SetActive(active);
 			}
 			if (active) {
-				m_LabelRenderer.Text = $"{timingData.m_X}%";
+				m_LabelRenderer.Text = $"{timingData.x}%";
 			}
 
 		}
@@ -146,7 +146,7 @@
 		private void Update_SoundFx (Beatmap.Timing noteData) {
 			bool clicked = MusicTime > noteData.Time;
 			if (MusicPlaying && clicked && !PrevClicked) {
-				PlaySfx(noteData.SoundFxIndex, noteData.m_Duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
+				PlaySfx(noteData.SoundFxIndex, noteData.duration, noteData.SoundFxParamA, noteData.SoundFxParamB);
 			}
 			PrevClicked = clicked;
 		}
@@ -160,9 +160,9 @@
 		#region --- API ---
 
 
-		public static void SetCacheDirty () => Beatmap.Timing.CacheDirtyID++;
+		public static void SetCacheDirty () => Beatmap.Timing._CacheDirtyID++;
 
-		public static bool GetActive (Beatmap.Timing data) => MusicTime >= data.AppearTime && MusicTime <= data.Time;
+		public static bool GetActive (Beatmap.Timing data) => MusicTime >= data._AppearTime && MusicTime <= data.Time;
 
 
 		#endregion

@@ -155,7 +155,7 @@
 			BeatmapInspector.ShiftIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
-				map.m_Shift = BeatmapInspector.GetShift();
+				map.shift = BeatmapInspector.GetShift();
 				OnBeatmapEdited();
 				RefreshBeatmapInspector();
 			});
@@ -561,7 +561,7 @@
 			UIReady = false;
 			try {
 				BeatmapInspector.SetBpm(map.BPM);
-				BeatmapInspector.SetShift(map.m_Shift);
+				BeatmapInspector.SetShift(map.shift);
 				BeatmapInspector.SetRatio(map.Ratio);
 				BeatmapInspector.SetLevel(map.Level);
 				BeatmapInspector.SetTag(map.Tag);
@@ -655,7 +655,7 @@
 				TimingInspector.SetTime(timing.Time);
 				TimingInspector.SetBeat(Util.Time_to_Beat(timing.Time, GetBPM(), GetShift()));
 				TimingInspector.SetDuration(timing.Duration);
-				TimingInspector.SetSpeed(timing.m_X);
+				TimingInspector.SetSpeed(timing.x);
 				TimingInspector.SetSfx(timing.SoundFxIndex);
 				TimingInspector.SetSfxParamA(timing.SoundFxParamA);
 				TimingInspector.SetSfxParamB(timing.SoundFxParamB);

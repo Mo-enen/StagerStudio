@@ -30,7 +30,7 @@
 			if (map != null) {
 				// Slider
 				if (Active) {
-					if (map.GetMotionValue(ItemIndex, MotionType, motionIndex, out float valueA, out _, out _).hasA) {
+					if (map.GetMotionValueTween(ItemIndex, MotionType, motionIndex, out float valueA, out _, out _).hasA) {
 						SetSliderValue(Util.Remap(0f, IndexCount - 1, -1f, 1f, valueA));
 					}
 				}

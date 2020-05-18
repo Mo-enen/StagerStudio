@@ -26,7 +26,7 @@
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			var trackData = Beatmap.Tracks[index];
 			var linkedStage = trackData.StageIndex >= 0 && trackData.StageIndex < Beatmap.Stages.Count ? Beatmap.Stages[trackData.StageIndex] : null;
-			if (linkedStage == null || !linkedStage.Active) {
+			if (linkedStage == null || !linkedStage._Active) {
 				gameObject.SetActive(false);
 				return;
 			}

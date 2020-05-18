@@ -45,7 +45,7 @@
 
 			int index = transform.GetSiblingIndex();
 			var noteData = !(Beatmap is null) && index < Beatmap.Notes.Count ? Beatmap.Notes[index] : null;
-			if (noteData is null || noteData.SpeedOnDrop < 0f) {
+			if (noteData is null || noteData._SpeedOnDrop < 0f) {
 				gameObject.SetActive(false);
 				return;
 			}

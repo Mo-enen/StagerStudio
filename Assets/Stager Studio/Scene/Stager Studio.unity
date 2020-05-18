@@ -25710,16 +25710,16 @@ MonoBehaviour:
   - {fileID: 1527981378}
   m_ZoneRT: {fileID: 1866341393}
   m_TestBeatmap:
-    BPM: 120
-    Level: 1
-    Tag: Normal
-    CreatedTime: 0
+    bpm: 120
+    level: 1
+    tag: Normal
+    createdTime: 0
+    shift: 0
+    ratio: 1500
     Stages: []
     Tracks: []
     Notes: []
     Timings: []
-    m_Shift: 0
-    m_Ratio: 1500
 --- !u!1 &1349422440
 GameObject:
   m_ObjectHideFlags: 0
@@ -37906,8 +37906,14 @@ MonoBehaviour:
   - Start tutorial now?
   - Dialog.TweenEditor.CancelConfirm
   - Close tween editor? Changes will not be save.
+  - Editor.Hint.Copy
+  - Copy
+  - Editor.Hint.CopyFail
+  - Copy failed
   - Editor.Hint.GlobalBrushScale
   - Global brush size {0}
+  - Editor.Hint.Paste
+  - Paste
   - Game.Hint.AbreastWidth
   - Stage width {0}
   - Game.Hint.GameDropSpeed

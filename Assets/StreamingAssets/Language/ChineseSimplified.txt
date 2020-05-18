@@ -31,8 +31,17 @@ Dialog.Tutorial.FirstTutorialMSG
 Dialog.TweenEditor.CancelConfirm
 关闭补间编辑器吗？修改将不会被保存
 
+Editor.Hint.Copy
+已复制
+
+Editor.Hint.CopyFail
+复制失败
+
 Editor.Hint.GlobalBrushScale
 全局笔刷尺寸 {0}
+
+Editor.Hint.Paste
+已粘贴
 
 Game.Hint.AbreastWidth
 全景舞台宽度 {0}

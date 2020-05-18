@@ -74,7 +74,7 @@
 			}
 
 
-			trackData.Active = false;
+			trackData._Active = false;
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
@@ -86,10 +86,10 @@
 				return;
 			}
 			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
-			trackData.Active = active;
-			trackData.SpeedMuti = linkedStage.SpeedMuti;
+			trackData._Active = active;
+			trackData._SpeedMuti = linkedStage._SpeedMuti;
 
-			Update_Gizmos(trackData.Active, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
+			Update_Gizmos(trackData._Active, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
 
 			if (!active) {
 				gameObject.SetActive(false);
@@ -158,7 +158,7 @@
 			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
 			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
-			m_TrackTintRenderer.Tint = trackData.Tint = GetTrackColor(trackData);
+			m_TrackTintRenderer.Tint = trackData._Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			m_TrackTintRenderer.Alpha *= MainRenderer.Alpha;
 			MainRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder());
@@ -195,14 +195,14 @@
 
 		private void LateUpdate_Tray (Beatmap.Track trackData) {
 			if (trackData.HasTray) {
-				if (AimTrayX < trackData.TrayX.min) {
-					AimTrayX = Mathf.Lerp(trackData.TrayX.min, trackData.TrayX.max, trackData.TrayTime - MusicTime > 0.5f ? 0.5f : 0.3f);
-				} else if (AimTrayX > trackData.TrayX.max) {
-					AimTrayX = Mathf.Lerp(trackData.TrayX.min, trackData.TrayX.max, trackData.TrayTime - MusicTime > 0.5f ? 0.5f : 0.7f);
+				if (AimTrayX < trackData._TrayX.min) {
+					AimTrayX = Mathf.Lerp(trackData._TrayX.min, trackData._TrayX.max, trackData._TrayTime - MusicTime > 0.5f ? 0.5f : 0.3f);
+				} else if (AimTrayX > trackData._TrayX.max) {
+					AimTrayX = Mathf.Lerp(trackData._TrayX.min, trackData._TrayX.max, trackData._TrayTime - MusicTime > 0.5f ? 0.5f : 0.7f);
 				}
 				TrayX = Mathf.Lerp(TrayX, AimTrayX, UnityEngine.Time.deltaTime * 20f);
 			}
-			trackData.TrayTime = float.MaxValue;
+			trackData._TrayTime = float.MaxValue;
 		}
 
 

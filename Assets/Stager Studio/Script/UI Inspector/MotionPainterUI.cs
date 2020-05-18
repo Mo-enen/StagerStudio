@@ -85,6 +85,7 @@
 		private int DivisionIndex = 1;
 		private int HoveredBeat = -1;
 		private int HoveredDiv = -1;
+		private float PrevMusicTime = -1f;
 		private bool UIReady = true;
 		private Camera _Camera = null;
 
@@ -127,11 +128,13 @@
 				bool rightDown = Input.GetMouseButton(1);
 				bool prevLeftDown = Mouse.leftDown;
 				bool prevRightDown = Mouse.rightDown;
+
 				// Pos Changed, Down Changed
 				if (!Mouse.active || Input.mousePosition != Mouse.pos || leftDown != Mouse.leftDown || rightDown != Mouse.rightDown) {
 					Mouse = (true, leftDown, rightDown, Input.mousePosition, pos01);
 					SetVerticesDirty();
 				}
+
 				// Scroll
 				if (Mathf.Abs(Input.mouseScrollDelta.y) > 0.001f) {
 					var (cStart, cEnd, _, _) = GetContentStartYEndY();
@@ -140,6 +143,7 @@
 						SetVerticesDirty();
 					}
 				}
+
 				// L Down
 				if (leftDown && !prevLeftDown) {
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
@@ -151,7 +155,7 @@
 							int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 							bool overlap = false;
 							for (int i = 0; i < motionCount; i++) {
-								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time, out _)) {
+								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time)) {
 									if (time > localTimeL && time < localTimeR) {
 										overlap = true;
 										break;
@@ -160,13 +164,15 @@
 							}
 							if (!overlap) {
 								float localTime = (HoveredBeat + (HoveredDiv + 0f) / BEAT_DIVs[DivisionIndex]) / bps;
-								map.AddMotion(ItemIndex, MotionType, localTime, null);
+								var (hasA, hasB) = map.SearchMotionValueTween(ItemIndex, MotionType, localTime, out float valueA, out float valueB, out _);
+								map.AddMotion(ItemIndex, MotionType, localTime, hasA ? (float?)valueA : null, hasB ? (float?)valueB : null);
 								SetVerticesDirty();
 								OnItemEdit();
 							}
 						}
 					}
 				}
+
 				// R Down
 				if (rightDown && !prevRightDown) {
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
@@ -177,7 +183,7 @@
 							float localTimeR = (HoveredBeat + (HoveredDiv + 0.9f) / BEAT_DIVs[DivisionIndex]) / bps;
 							int motionCount = map.GetMotionCount(ItemIndex, MotionType);
 							for (int i = 0; i < motionCount; i++) {
-								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time, out _)) {
+								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time)) {
 									if (time >= localTimeL && time <= localTimeR) {
 										if (map.DeleteMotion(ItemIndex, MotionType, i)) {
 											i--;
@@ -228,9 +234,19 @@
 
 
 		private void Update_UI () {
+			// Field
 			bool fieldActive = ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0;
 			m_ValueIF.gameObject.TrySetActive(fieldActive);
 			m_TweenIF.gameObject.TrySetActive(fieldActive);
+			// Music Time
+			float musicTime = GetMusicTime();
+			if (musicTime != PrevMusicTime) {
+				PrevMusicTime = musicTime;
+
+
+
+				TrySetDirty();
+			}
 		}
 
 
@@ -339,7 +355,7 @@
 				SetCacheColor(m_ItemTint);
 				int beatStart = Mathf.FloorToInt(realScrollValue * beatCount);
 				for (int motion = 0; motion < motionCount; motion++) {
-					if (map.GetMotionTime(ItemIndex, MotionType, motion, out float time, out _)) {
+					if (map.GetMotionTime(ItemIndex, MotionType, motion, out float time)) {
 						float beatTime = time * bps;
 						int beat = Mathf.FloorToInt(
 							Mathf.Round(beatTime * division * 2f) / (division * 2f)
@@ -436,7 +452,7 @@
 			try {
 				var map = GetBeatmap();
 				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
-					var (hasA, hasB) = map.GetMotionValue(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float valueA, out float valueB, out int tween);
+					var (hasA, hasB) = map.GetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float valueA, out float valueB, out int tween);
 					if ((MotionItem.SelectingMotionA && hasA) || (!MotionItem.SelectingMotionA && hasB)) {
 						float value = Mathf.Round((MotionItem.SelectingMotionA ? valueA : valueB) * 1000f) / 1000f;
 						m_ValueIF.text = value.ToString();

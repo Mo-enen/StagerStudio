@@ -29,7 +29,7 @@
 		public delegate string StringStringHandler (string str);
 		public delegate float FillHandler (float time, float fill, float muti);
 		public delegate void LogAxisHintHandler (int axis, string hint);
-		public delegate float Float3Handler (float a, float b, float c);
+		public delegate float SnapTimeHandler (float time, float gap, float offset);
 
 
 		#endregion
@@ -41,10 +41,11 @@
 
 
 		// Const
-		private readonly static string[] ITEM_LAYER_NAMES = {
-			"Stage", "Track", "Note", "Timing", "Stage Timer", "Track Timer",
-		};
+		private readonly static string[] ITEM_LAYER_NAMES = { "Stage", "Track", "Note", "Timing", "Stage Timer", "Track Timer", };
 		private const string HINT_GlobalBrushScale = "Editor.Hint.GlobalBrushScale";
+		private const string HINT_Copy = "Editor.Hint.Copy";
+		private const string HINT_CopyFail = "Editor.Hint.CopyFail";
+		private const string HINT_Paste = "Editor.Hint.Paste";
 		private const string DIALOG_CannotSelectStageBrush = "Dialog.Editor.CannotSelectStageBrush";
 		private const string DIALOG_SelectingLayerLocked = "Dialog.Editor.SelectingLayerLocked";
 		private const string DIALOG_SelectingLayerInactive = "Dialog.Editor.SelectingLayerInactive";
@@ -68,7 +69,7 @@
 		public static FillHandler GetFilledTime { get; set; } = null;
 		public static VoidFloatHandler SetAbreastIndex { get; set; } = null;
 		public static LogAxisHintHandler LogAxisMessage { get; set; } = null;
-		public static Float3Handler GetSnapedTime { get; set; } = null;
+		public static SnapTimeHandler GetSnapedTime { get; set; } = null;
 
 		// Api
 		public int SelectingItemType { get; private set; } = -1;
@@ -106,8 +107,11 @@
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
 		private readonly static bool[] ItemLock = { false, false, false, false, };
+		private static readonly byte[] CopyBuffer = new byte[1024 * 512]; // 500KB
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
 		private Camera _Camera = null;
+		private int CopyType = -1;
+		private int CopyLength = 0;
 		private bool UIReady = true;
 		private int SortingLayerID_UI = -1;
 		private LayerMask UnlockedMask = default;
@@ -216,13 +220,95 @@
 
 
 		private void LateUpdate_Key (Beatmap map) {
-			if (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace)) {
+
+			bool hasSelection = SelectingItemType >= 0 && SelectingItemIndex >= 0;
+
+			if (hasSelection && (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))) {
 				// Del
-				if (SelectingItemType >= 0 && SelectingItemIndex >= 0) {
-					map.DeleteItem(SelectingItemType, SelectingItemIndex);
-					OnObjectEdited();
+				map.DeleteItem(SelectingItemType, SelectingItemIndex);
+				OnObjectEdited();
+			}
+
+			if (hasSelection && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.X)) && Input.GetKey(KeyCode.LeftControl)) {
+				// Copy
+				var item = map.GetItem(SelectingItemType, SelectingItemIndex);
+				CopyLength = Util.ObjectToBytes(item, CopyBuffer, 0);
+				CopyType = SelectingItemType;
+				if (CopyLength > 0) {
+					// Copy Success
+					if (Input.GetKeyDown(KeyCode.X)) {
+						// Delete If Cut
+						map.DeleteItem(SelectingItemType, SelectingItemIndex);
+						OnObjectEdited();
+					}
+					// Hint
+					LogHint(GetLanguage(HINT_Copy), true);
+				} else {
+					// Clear Buffer on Fail
+					for (int i = 0; i < CopyBuffer.Length; i++) {
+						CopyBuffer[i] = 0;
+					}
+					CopyType = -1;
+					// Hint
+					LogHint(GetLanguage(HINT_CopyFail), true);
 				}
 			}
+
+			if (Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl)) {
+				// Paste
+				if (CopyType >= 0 && CopyLength > 0) {
+					var obj = Util.BytesToObject(CopyBuffer, 0, CopyLength);
+					if (obj != null && obj is Beatmap.MapItem mObj) {
+						mObj.Time = GetSnapedTime(GetMusicTime(), m_Grid.TimeGap, m_Grid.TimeOffset);
+						switch (CopyType) {
+							case 0: // Stage
+								if (obj is Beatmap.Stage sObj) {
+									map.AddStage(sObj);
+									SetSelection(0, map.Stages.Count - 1);
+									OnObjectEdited();
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
+								}
+								break;
+							case 1: // Track
+								if (obj is Beatmap.Track tObj) {
+									if (SelectingItemType == 0) {
+										tObj.StageIndex = SelectingItemIndex;
+									}
+									map.AddTrack(tObj);
+									SetSelection(1, map.Tracks.Count - 1);
+									OnObjectEdited();
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
+								}
+								break;
+							case 2: // Note
+								if (obj is Beatmap.Note nObj) {
+									nObj.LinkedNoteIndex = -1;
+									if (SelectingItemType == 1) {
+										nObj.TrackIndex = SelectingItemIndex;
+									}
+									map.AddNote(nObj);
+									SetSelection(2, map.Notes.Count - 1);
+									OnObjectEdited();
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
+								}
+								break;
+							case 3: // Timing
+								if (obj is Beatmap.Timing tiObj) {
+									map.AddTiming(tiObj);
+									SetSelection(3, map.Timings.Count - 1);
+									OnObjectEdited();
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
+								}
+								break;
+						}
+					}
+				}
+			}
+
 		}
 
 
@@ -308,7 +394,7 @@
 							musicTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
 						}
 						var stage = map.Stages[index];
-						if (stage.m_Duration <= 0) { break; }
+						if (stage.duration <= 0) { break; }
 						var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
 						var ghostWorldPos = m_Ghost.transform.position;
 						var zonePos = Util.Vector3InverseLerp3(

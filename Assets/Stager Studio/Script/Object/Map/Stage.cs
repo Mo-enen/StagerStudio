@@ -65,14 +65,14 @@
 				return;
 			}
 
-			stageData.Active = false;
-			stageData.SpeedMuti = GetStageSpeed(stageData);
+			stageData._Active = false;
+			stageData._SpeedMuti = GetStageSpeed(stageData);
 			Time = stageData.Time;
 			Duration = stageData.Duration;
 
 			// Stage Active Check
 			bool active = GetStageActive(stageData, stageIndex);
-			stageData.Active = active;
+			stageData._Active = active;
 
 			Update_Gizmos(active, stageIndex);
 
