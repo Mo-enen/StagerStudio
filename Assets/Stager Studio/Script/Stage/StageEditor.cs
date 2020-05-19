@@ -160,7 +160,7 @@
 				tg.isOn = false;
 				tg.onValueChanged.AddListener((isOn) => {
 					if (!UIReady) { return; }
-					SetEye(index, !isOn);
+					SetContainerActive(index, !isOn);
 				});
 			}
 
@@ -1071,13 +1071,24 @@
 
 
 		// Container
-		public void UI_SwitchContainerActive (int index) => SetEye(index, !GetContainerActive(index));
+		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
 
 
 		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
 
 
-		public void SetContainerActive (int index, bool active) => SetEye(index, active);
+		public void SetContainerActive (int index, bool active) {
+			if (index < 0 || index >= m_Containers.Length) { return; }
+			m_Containers[index].gameObject.SetActive(active);
+			// UI
+			UIReady = false;
+			try {
+				m_EyeTGs[index].isOn = !active;
+			} catch { }
+			UIReady = true;
+			// MSG
+			OnLockEyeChanged();
+		}
 
 
 		// Item Lock
@@ -1129,19 +1140,6 @@
 			OnLockEyeChanged();
 		}
 
-
-		private void SetEye (int index, bool see) {
-			if (index < 0 || index >= m_Containers.Length) { return; }
-			m_Containers[index].gameObject.SetActive(see);
-			// UI
-			UIReady = false;
-			try {
-				m_EyeTGs[index].isOn = !see;
-			} catch { }
-			UIReady = true;
-			// MSG
-			OnLockEyeChanged();
-		}
 
 
 		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {

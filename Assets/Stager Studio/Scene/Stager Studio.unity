@@ -25454,12 +25454,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1328871170}
   m_CullTransparentMesh: 0
---- !u!4 &1329497987 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1220778991, guid: 780d3a15fa596854c8f0dcc8af1633ce,
-    type: 3}
-  m_PrefabInstance: {fileID: 6000939389271647634}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1330428936
 GameObject:
   m_ObjectHideFlags: 0
@@ -28070,9 +28064,8 @@ MonoBehaviour:
   m_Preview: {fileID: 1433018270}
   m_Wave: {fileID: 268875062}
   m_TimingPreview: {fileID: 1894342153}
-  m_MoveHandler: {fileID: 981357320}
+  m_Axis: {fileID: 981357320}
   m_Inspector: {fileID: 1059697392}
-  m_AxisHandle: {fileID: 981357320}
   m_MotionPainter: {fileID: 1206505706}
   m_TextSheet: {fileID: 11400000, guid: 3c69f1aab24836240a36801417379693, type: 2}
   m_LanguageTexts:
@@ -37873,8 +37866,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Tip.Inspector.Motion.Done
-  - Quit the motion editing mode
   - Author
   - Stager Official
   - Command.Hint.CommandDone
@@ -38333,6 +38324,8 @@ MonoBehaviour:
   - Index of note that linked with this note, set to -1 for no linked note
   - Tip.Inspector.Motion.Div
   - Division amount
+  - Tip.Inspector.Motion.Done
+  - Quit the motion editing mode
   - Tip.Inspector.Motion.Painter
   - Left click to add motion, right click to remove
   - Tip.Inspector.Motion.Tween
@@ -38456,6 +38449,8 @@ MonoBehaviour:
   - Show the index label or not
   - Tip.Setting.SmallUI
   - Small UI, for larger physical size display
+  - Tip.Setting.SoloOnEditMotion
+  - Eg. When editing motion of a track, hide all notes, other tracks and other stages.
   - Tip.Setting.SoundVolume
   - Snap music time based on BPM
   - Tip.Setting.StageBrushHeight
@@ -38680,6 +38675,8 @@ MonoBehaviour:
   - Show Tooltip
   - UI.Setting.SnapProgress
   - Snap When Setting Music Time with Progressbar
+  - UI.Setting.SoloOnEditMotion
+  - Solo On Edit Motion
   - UI.Setting.SoundVolume
   - Sound Volume
   - UI.Setting.StageBrushHeight
@@ -41681,10 +41678,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1765157965}
     m_Modifications:
-    - target: {fileID: 1781729497, guid: 4ddd26bfc11a58c40a65f22dd93102ab, type: 3}
-      propertyPath: m_Highlight
-      value: 
-      objectReference: {fileID: 1329497987}
     - target: {fileID: 6000939389776005860, guid: 4ddd26bfc11a58c40a65f22dd93102ab,
         type: 3}
       propertyPath: m_Name

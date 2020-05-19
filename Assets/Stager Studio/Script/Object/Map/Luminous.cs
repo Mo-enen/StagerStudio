@@ -75,7 +75,7 @@
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
 			var linkedTrack = Beatmap.Tracks[noteData.TrackIndex];
-			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack)) { return; }
+			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack, noteData.TrackIndex)) { return; }
 			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
 			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
@@ -96,7 +96,6 @@
 				stagePos, stageWidth, stageHeight, stagePivotY, stageRotZ,
 				trackX, trackWidth, trackRotX
 			);
-			zoneMax.z += zoneSize;
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
 
 			// Movement

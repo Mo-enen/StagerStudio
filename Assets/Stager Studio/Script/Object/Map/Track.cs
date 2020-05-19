@@ -85,7 +85,7 @@
 				gameObject.SetActive(false);
 				return;
 			}
-			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData);
+			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData, trackIndex);
 			trackData._Active = active;
 			trackData._SpeedMuti = linkedStage._SpeedMuti;
 
@@ -214,7 +214,9 @@
 		#region --- API ---
 
 
-		public static bool GetTrackActive (Beatmap.Track data) => MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
+		public static bool GetTrackActive (Beatmap.Track data, int trackIndex) =>
+			Solo.active ? trackIndex == Solo.track :
+			MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
 		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Max(

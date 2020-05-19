@@ -51,6 +51,7 @@
 		public static int SortingLayerID_Gizmos { get; set; } = -1;
 		public static bool TintNote { get; set; } = false;
 		public static bool FrontPole { get; set; } = true;
+		public static (bool active, int stage, int track) Solo { get; set; } = (false, -1, -1);
 
 		protected static float VanishDuration { get; private set; } = 0f;
 		protected static Color32[] HighlightTints { get; set; } = default;

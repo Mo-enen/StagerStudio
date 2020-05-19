@@ -236,15 +236,17 @@
 				var stageData = map.Stages[i];
 				var stageTF = container.GetChild(i);
 				stageData._TrackCount = 0;
+				stageData._Active = Stage.GetStageActive(stageData, i);
 				if (!stageTF.gameObject.activeSelf) {
-					stageData._Active = Stage.GetStageActive(stageData, i);
 					if (stageData._Active) {
 						stageTF.gameObject.SetActive(true);
 					}
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				stageData._TimerActive = !stageLocked && !musicPlaying && !UseAbreast && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
+				stageData._TimerActive =
+					!stageLocked && !musicPlaying && !UseAbreast && !StageObject.Solo.active &&
+					musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
 				if (!timerTF.gameObject.activeSelf && stageData._TimerActive) {
 					timerTF.gameObject.SetActive(true);
 				}
@@ -268,15 +270,17 @@
 				if (trackData.StageIndex >= 0 && trackData.StageIndex < stageCount) {
 					map.Stages[trackData.StageIndex]._TrackCount++;
 				}
+				trackData._Active = Track.GetTrackActive(trackData, i);
 				if (!tf.gameObject.activeSelf) {
-					trackData._Active = Track.GetTrackActive(trackData);
 					if (trackData._Active) {
 						tf.gameObject.SetActive(true);
 					}
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				trackData._TimerActive = !trackLocked && !musicPlaying && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				trackData._TimerActive =
+					!trackLocked && !musicPlaying && !StageObject.Solo.active &&
+					musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
 				if (!timerTF.gameObject.activeSelf && trackData._TimerActive) {
 					timerTF.gameObject.SetActive(true);
 				}
@@ -302,8 +306,8 @@
 				linkedTrack = map.Tracks[noteData.TrackIndex];
 				linkedStage = map.Stages[linkedTrack.StageIndex];
 				Note.Update_Cache(noteData, gameSpeedMuti * linkedStage._SpeedMuti);
+				noteData._Active = Note.GetNoteActive(noteData, linkedNote, noteData._AppearTime);
 				if (!tf.gameObject.activeSelf) {
-					noteData._Active = Note.GetNoteActive(noteData, linkedNote, noteData._AppearTime);
 					if (linkedStage._Active && linkedTrack._Active && noteData._Active) {
 						tf.gameObject.SetActive(true);
 					}
@@ -329,8 +333,8 @@
 				var tf = container.GetChild(i);
 				var tData = map.Timings[i];
 				TimingNote.Update_Cache(tData);
+				tData._Active = TimingNote.GetActive(tData);
 				if (!tf.gameObject.activeSelf) {
-					tData._Active = TimingNote.GetActive(tData);
 					if (tData._Active) {
 						tf.gameObject.SetActive(true);
 					}

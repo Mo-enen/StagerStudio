@@ -49,7 +49,7 @@
 		// LGC
 		private void RefreshUI () {
 			Label.text = _ShowBeatTime ?
-				$"{Util.Time_to_Beat(Time, BPM, Shift).ToString("0.##")} B" :
+				$"{Util.Time_to_Beat(Time, BPM, Shift).ToString("0.00")} B" :
 				$"{Mathf.FloorToInt(_Time / 60f).ToString()}\' {Mathf.FloorToInt(_Time % 60f).ToString("00")}\" {Mathf.FloorToInt((_Time % 1f) * 100f).ToString("00")}";
 		}
 

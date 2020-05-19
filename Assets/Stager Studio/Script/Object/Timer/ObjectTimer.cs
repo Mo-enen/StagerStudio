@@ -44,7 +44,7 @@
 		protected void LateUpdate () {
 
 			// Head
-			bool headActive = GetTimerActive(LateTime);
+			bool headActive = MusicTime >= LateTime - 1f && MusicTime <= LateTime;
 			if (Head.gameObject.activeSelf != headActive) {
 				Head.gameObject.SetActive(headActive);
 			}
@@ -56,7 +56,7 @@
 
 			// Tail
 			float endTime = LateTime + LateDuration;
-			bool tailActive = GetTimerActive(endTime);
+			bool tailActive = MusicTime >= endTime - 1f && MusicTime <= endTime;
 			if (Tail.gameObject.activeSelf != tailActive) {
 				Tail.gameObject.SetActive(tailActive);
 			}
@@ -83,11 +83,8 @@
 		}
 
 
-		// API
-		public static bool GetTimerActive (float time) => MusicTime >= time - 1f && MusicTime <= time;
 
 
-		
 
 
 	}

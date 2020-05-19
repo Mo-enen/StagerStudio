@@ -1,7 +1,4 @@
-﻿Tip.Inspector.Motion.Done
-Quit the motion editing mode
-
-Author
+﻿Author
 Stager Official
 
 Command.Hint.CommandDone
@@ -688,6 +685,9 @@ Index of note that linked with this note, set to -1 for no linked note
 Tip.Inspector.Motion.Div
 Division amount
 
+Tip.Inspector.Motion.Done
+Quit the motion editing mode
+
 Tip.Inspector.Motion.Painter
 Left click to add motion, right click to remove
 
@@ -870,6 +870,9 @@ Show the index label or not
 
 Tip.Setting.SmallUI
 Small UI, for larger physical size display
+
+Tip.Setting.SoloOnEditMotion
+Eg. When editing motion of a track, hide all notes, other tracks and other stages.
 
 Tip.Setting.SoundVolume
 Snap music time based on BPM
@@ -1206,6 +1209,9 @@ Show Tooltip
 
 UI.Setting.SnapProgress
 Snap When Setting Music Time with Progressbar
+
+UI.Setting.SoloOnEditMotion
+Solo On Edit Motion
 
 UI.Setting.SoundVolume
 Sound Volume

@@ -37,6 +37,7 @@
 			ShowKeypress,
 			BrushScale,
 			ShowGridOnSelect,
+			SoloOnEditMotion,
 
 		}
 
@@ -178,6 +179,11 @@
 			ToggleItemMap.Add(ToggleType.ShowGridOnSelect, ((isOn) => {
 				m_Editor.ShowGridOnSelect.Value = isOn;
 			}, () => m_Editor.ShowGridOnSelect.Value, m_Editor.ShowGridOnSelect, true));
+
+			ToggleItemMap.Add(ToggleType.SoloOnEditMotion, ((isOn) => {
+				SoloOnEditMotion.Value = isOn;
+			}, () => SoloOnEditMotion.Value, SoloOnEditMotion, true));
+
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {

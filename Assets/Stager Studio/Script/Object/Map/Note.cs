@@ -341,7 +341,7 @@
 			// Get Basic Linked Data
 			if (linkedNote == null || noteData.Time + noteData.Duration >= linkedNote.Time + 0.001f) { return; }
 			var linkedTrack = Beatmap.Tracks[linkedNote.TrackIndex];
-			if (linkedTrack == null || !Track.GetTrackActive(linkedTrack)) { return; }
+			if (linkedTrack == null || !Track.GetTrackActive(linkedTrack, linkedNote.TrackIndex)) { return; }
 			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
 			if (linkedStage == null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
 
@@ -449,7 +449,9 @@
 		#region --- LGC ---
 
 
-		public static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) => data._SpeedOnDrop >= 0f && MusicTime >= appearTime && (MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
+		public static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) =>
+			data._SpeedOnDrop >= 0f && MusicTime >= appearTime && !Solo.active &&
+			(MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
 
 
 		#endregion

@@ -208,7 +208,8 @@
 
 
 		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) =>
-			Abreast.value >= 0.5f || (((stageIndex >= 0 && stageIndex < StageCount) || Abreast.index == stageIndex) && MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
+			Solo.active ? stageIndex == Solo.stage :
+			Abreast.value >= 0.5f || (MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) {

@@ -115,9 +115,8 @@
 		[SerializeField] private PreviewUI m_Preview = null;
 		[SerializeField] private WaveUI m_Wave = null;
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
-		[SerializeField] private AxisHandleUI m_MoveHandler = null;
+		[SerializeField] private AxisHandleUI m_Axis = null;
 		[SerializeField] private InspectorUI m_Inspector = null;
-		[SerializeField] private AxisHandleUI m_AxisHandle = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
@@ -126,6 +125,7 @@
 
 		// Saving
 		private SavingBool TutorialOpened = new SavingBool("StagerStudio.TutorialOpened", false);
+		private SavingBool SoloOnEditMotion = new SavingBool("StagerStudio.SoloOnEditMotion", true);
 
 
 		#endregion
@@ -180,6 +180,7 @@
 		private void Update () {
 			var (aValue, aIndex, aWidth) = GetAbreastData();
 			var dropSpeed = GetDropSpeed();
+			var map = m_Project.Beatmap;
 			float musicTime = GetMusicTime();
 			CursorUI.GlobalUpdate();
 			if (!Input.anyKey) {
@@ -190,6 +191,12 @@
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.GameSpeedMuti = dropSpeed;
 			StageObject.MusicTime = musicTime;
+			StageObject.Solo = (
+				SoloOnEditMotion.Value && m_MotionPainter.ItemType >= 0,
+				m_MotionPainter.ItemType == 0 ? m_MotionPainter.ItemIndex :
+				map != null ? map.GetParentIndex(1, m_MotionPainter.ItemIndex) : -1,
+				m_MotionPainter.ItemType == 1 ? m_MotionPainter.ItemIndex : -1
+			);
 			Object.Stage.StageCount = GetGameItemCount(0);
 			Note.CameraWorldPos = m_CameraTF.position;
 			TimingNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
@@ -333,6 +340,7 @@
 			MotionItem.GetMusicTime = () => m_Music.Time;
 			MotionItem.OnMotionChanged = m_MotionPainter.RefreshFieldUI;
 			MotionItem.GetSpeedMuti = () => m_Game.GameDropSpeed;
+			MotionItem.GetGridEnabled = () => m_Game.ShowGrid;
 			// Sorting Layer ID
 			StageObject.SortingLayerID_Gizmos = SortingLayer.NameToID("Gizmos");
 			Object.Stage.SortingLayerID_Stage = SortingLayer.NameToID("Stage");
@@ -595,7 +603,7 @@
 				!m_MotionInspector.gameObject.activeSelf;
 			StageEditor.GetUseDynamicSpeed = () => m_Game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => m_Game.UseAbreast;
-			StageEditor.GetMoveAxisHovering = m_MoveHandler.GetEntering;
+			StageEditor.GetMoveAxisHovering = m_Axis.GetEntering;
 			StageEditor.OnObjectEdited = () => {
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
@@ -604,7 +612,7 @@
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
 			StageEditor.SetAbreastIndex = m_Game.SetAbreastIndex;
-			StageEditor.LogAxisMessage = m_AxisHandle.LogAxisMessage;
+			StageEditor.LogAxisMessage = m_Axis.LogAxisMessage;
 			StageEditor.GetMusicTime = () => m_Music.Time;
 			StageEditor.GetMusicDuration = () => m_Music.Duration;
 			StageEditor.GetSnapedTime = m_Game.SnapTime;

@@ -365,9 +365,12 @@
 				Duration = Mathf.Max(clip.length, DURATION_MIN);
 			}
 			IsReady = clip && clip.loadState == AudioDataLoadState.Loaded;
-			Source.Play();
-			Source.Pause();
-			SeekLogic(0);
+			if (IsReady) {
+				SeekLogic(0);
+				Source.Play();
+				Source.Pause();
+				SeekLogic(0);
+			}
 			OnMusicClipLoaded?.Invoke();
 			ResetInvoke();
 		}
