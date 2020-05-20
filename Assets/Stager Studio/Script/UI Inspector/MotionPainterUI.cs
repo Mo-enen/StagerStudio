@@ -20,6 +20,7 @@
 		public delegate float FloatHandler ();
 		public delegate int IntHandler ();
 		public delegate void VoidHandler ();
+		public delegate void VoidFloatHandler (float value);
 		public delegate Sprite CharToSpriteHandler (char c);
 
 
@@ -43,6 +44,7 @@
 		// Handler
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
+		public static VoidFloatHandler SeekMusic { get; set; } = null;
 		public static FloatHandler GetMusicDuration { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static IntHandler GetBeatPerSection { get; set; } = null;
@@ -76,6 +78,7 @@
 		[SerializeField] private Color m_HighlightTint = Color.green;
 		[SerializeField] private Color m_MusicHighlightTint = Color.green;
 		[SerializeField] private Color m_ItemTint = Color.green;
+		[SerializeField] private Color m_ItemTint_Highlight = Color.cyan;
 		[SerializeField] private Color m_LabelTint = Color.white;
 		[SerializeField] private Color m_ScrollbarTint = Color.white;
 
@@ -126,7 +129,6 @@
 				bool leftDown = Input.GetMouseButton(0);
 				bool rightDown = Input.GetMouseButton(1);
 				bool prevLeftDown = Mouse.leftDown;
-				bool prevRightDown = Mouse.rightDown;
 
 				// Pos Changed, Down Changed
 				if (!Mouse.active || Input.mousePosition != Mouse.pos || leftDown != Mouse.leftDown || rightDown != Mouse.rightDown) {
@@ -157,6 +159,8 @@
 							for (int i = 0; i < motionCount; i++) {
 								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time)) {
 									if (time > localTimeL && time < localTimeR) {
+										MotionItem.SelectingMotionIndex = i;
+										SetVerticesDirty();
 										overlap = true;
 										break;
 									}
@@ -164,7 +168,7 @@
 							}
 							if (!overlap) {
 								float localTime = (HoveredBeat + (HoveredDiv + 0f) / BEAT_DIVs[DivisionIndex]) / bps;
-								var (hasA, hasB) = map.SearchMotionValueTween(ItemIndex, MotionType, localTime, out float valueA, out float valueB, out _);
+								var (hasA, hasB) = map.SearchMotionValueTween(ItemIndex, MotionType, localTime, out float valueA, out float valueB, out _, out _);
 								map.AddMotion(ItemIndex, MotionType, localTime, hasA ? (float?)valueA : null, hasB ? (float?)valueB : null);
 								MotionItem.SelectingMotionIndex = -1;
 								SetVerticesDirty();
@@ -175,31 +179,19 @@
 				}
 
 				// R Down
-				if (rightDown && !prevRightDown) {
+				if (rightDown) {
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
 						var map = GetBeatmap();
 						if (map != null) {
-							// Remove Motion
 							float bps = GetBPM() / 60f;
-							float localTimeL = (HoveredBeat + (HoveredDiv - 0.1f) / BEAT_DIVs[DivisionIndex]) / bps;
-							float localTimeR = (HoveredBeat + (HoveredDiv + 0.9f) / BEAT_DIVs[DivisionIndex]) / bps;
-							int motionCount = map.GetMotionCount(ItemIndex, MotionType);
-							for (int i = 0; i < motionCount; i++) {
-								if (map.GetMotionTime(ItemIndex, MotionType, i, out float time)) {
-									if (time >= localTimeL && time <= localTimeR) {
-										if (map.DeleteMotion(ItemIndex, MotionType, i)) {
-											i--;
-											motionCount--;
-										}
-									}
-								}
-							}
-							MotionItem.SelectingMotionIndex = -1;
+							float localTime = (HoveredBeat + (float)HoveredDiv / BEAT_DIVs[DivisionIndex]) / bps;
+							float itemTime = map.GetTime(ItemType, ItemIndex);
+							SeekMusic(itemTime + localTime);
 							SetVerticesDirty();
-							OnItemEdit();
 						}
 					}
 				}
+
 			} else {
 				// Outside
 				if (Mouse.active || Mouse.leftDown || Mouse.rightDown) {
@@ -209,6 +201,18 @@
 					SetVerticesDirty();
 				}
 			}
+
+			// Del
+			if (Input.GetKeyDown(KeyCode.Delete) && MotionItem.SelectingMotionIndex >= 0) {
+				var map = GetBeatmap();
+				if (map != null) {
+					map.DeleteMotion(ItemIndex, MotionType, MotionItem.SelectingMotionIndex);
+					MotionItem.SelectingMotionIndex = -1;
+					SetVerticesDirty();
+					OnItemEdit();
+				}
+			}
+
 		}
 
 
@@ -359,7 +363,13 @@
 						if (up < rect.y) { break; }
 						var (left, right, _) = GetItemLeftRight(rect, (beatTime - beat) * division);
 						SetCachePosition(left, right, down, up);
-						toFill.AddUIVertexQuad(VertexCache);
+						if (motion == MotionItem.SelectingMotionIndex) {
+							SetCacheColor(m_ItemTint_Highlight);
+							toFill.AddUIVertexQuad(VertexCache);
+							SetCacheColor(m_ItemTint);
+						} else {
+							toFill.AddUIVertexQuad(VertexCache);
+						}
 					}
 				}
 			}
@@ -420,7 +430,16 @@
 				if (MotionType == 0) {
 					// Vector2
 					if (text.TryParseVector2ForInspector(out Vector2 value)) {
+						Debug.Log("UI_OnValueEdit " + text + " " + value.ToString("0.000"));
 						map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, value.x, value.y);
+
+
+						var (hasA, hasB) = map.GetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float vA, out float vB, out _);
+						if (hasA && hasB) {
+							Debug.Log("UI_OnValueEdit(Get) " + vA + " " + vB);
+						}
+
+
 					}
 				} else {
 					// Float, Int
@@ -463,7 +482,7 @@
 					}
 					if (hasA || hasB) {
 						// Tween
-						m_TweenIF.text = tween.ToString();
+						tweenRes = tween.ToString();
 					}
 					m_ValueIF.text = valueRes;
 					m_TweenIF.text = tweenRes;

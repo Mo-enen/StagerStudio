@@ -884,6 +884,7 @@
 			};
 			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
 			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
+			MotionPainterUI.SeekMusic = m_Music.Seek;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

@@ -689,7 +689,7 @@ Tip.Inspector.Motion.Done
 Quit the motion editing mode
 
 Tip.Inspector.Motion.Painter
-Left click to add motion, right click to remove
+Left click to add/select frame, right click to seek music, select and press del to delete frame
 
 Tip.Inspector.Motion.Tween
 Tween of the selecting motion node

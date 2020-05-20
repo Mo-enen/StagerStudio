@@ -52,7 +52,7 @@ TextureImporter:
     second: Setting
   - first:
       213: -4520631482261092190
-    second: Ring
+    second: Ring Handle
   - first:
       213: 2264349294543915619
     second: Project
@@ -206,24 +206,6 @@ TextureImporter:
   - first:
       213: 1959211095122329946
     second: Gridline H
-  - first:
-      213: -3777163983591246636
-    second: Music Note 0
-  - first:
-      213: 183125243865815663
-    second: Music Note 1
-  - first:
-      213: -7519833676518121747
-    second: Music Note 2
-  - first:
-      213: -7015434109677604711
-    second: Music Note 3
-  - first:
-      213: 9107845143076531527
-    second: Music Note 4
-  - first:
-      213: -4182881303555017736
-    second: Music Note 5
   - first:
       213: -7089468405191809942
     second: Shirt
@@ -463,7 +445,7 @@ TextureImporter:
     second: Axis Ring
   - first:
       213: -3307379733461050231
-    second: Timer Note
+    second: Ring Handle
   - first:
       213: -7089468405191809942
     second: Timer Line
@@ -487,9 +469,6 @@ TextureImporter:
     second: Axis Duration
   - first:
       213: 7897921642572680099
-    second: Music Note 0
-  - first:
-      213: -3170009298675182269
     second: Music Note 1
   - first:
       213: 7403753262310920633
@@ -500,6 +479,12 @@ TextureImporter:
   - first:
       213: 1100434533997383660
     second: Music Note 4
+  - first:
+      213: 5166298138276809120
+    second: Large Ring
+  - first:
+      213: 1298550137926991073
+    second: Dotted Line Handle X (Left)
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -903,7 +888,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Timer Note
+      name: Ring Handle
       rect:
         serializedVersion: 2
         x: 243
@@ -1138,7 +1123,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 459
-        y: 83
+        y: 84
         width: 53
         height: 80
       alignment: 0
@@ -1150,6 +1135,48 @@ TextureImporter:
       bones: []
       spriteID: cef8c79d067854f00800000000000000
       internalID: 1100434533997383660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Large Ring
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 84
+        width: 140
+        height: 140
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0a940c7d8c062b740800000000000000
+      internalID: 5166298138276809120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dotted Line Handle X (Left)
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 145
+        width: 122
+        height: 14
+      alignment: 4
+      pivot: {x: 0, y: 0.5}
+      border: {x: 0, y: 0, z: 17, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ec3c2e6870650210800000000000000
+      internalID: 1298550137926991073
       vertices: []
       indices: 
       edges: []

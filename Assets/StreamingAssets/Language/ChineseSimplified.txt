@@ -689,7 +689,7 @@ Tip.Inspector.Motion.Done
 完成并退出运动编辑模式
 
 Tip.Inspector.Motion.Painter
-左键点击添加运动，右键点击删除运动
+左键点击添加/选择帧，右键移动音乐时间，选择后按Del键删除帧
 
 Tip.Inspector.Motion.Tween
 选中运动节点的补间

@@ -417,7 +417,7 @@
 				if (MouseDownMusicTime < -0.5f) {
 					// Right Down
 					if (MouseDownMusicTime > -1.5f) {
-						MouseDownMusicTime = CheckAntiMouse(false) ? GetMusicTimeAt(Input.mousePosition) : -2f;
+						MouseDownMusicTime = CheckAntiMouse(true) ? GetMusicTimeAt(Input.mousePosition) : -2f;
 						MusicPlayingForMouseDrag = MusicIsPlaying();
 						MusicPause();
 					}

@@ -212,7 +212,10 @@
 			Abreast.value >= 0.5f || (MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
 
 
-		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) {
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => GetStagePosition(data, stageIndex, MusicTime);
+
+
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex, float musicTime) {
 			if (Abreast.value < 0.0001f) {
 				return GetNormalPos();
 			} else if (Abreast.value > 0.9999f) {
@@ -222,7 +225,7 @@
 			}
 			// === Func ===
 			Vector3 GetNormalPos () =>
-				new Vector2(data.X, data.Y) + Evaluate(data.Positions, MusicTime - data.Time);
+				new Vector2(data.X, data.Y) + Evaluate(data.Positions, musicTime - data.Time);
 			Vector3 GetAbreastPos () {
 				if (StageCount <= 1) {
 					return new Vector2(0.5f, 0f);

@@ -80,6 +80,21 @@
 				return (start + end) / 2;
 			}
 
+			public static void FixOverlap (List<TimeFloatTween> data) {
+				if (data == null) { return; }
+				for (int i = 0; i < data.Count - 1; i++) {
+					var a = data[i];
+					while (i < data.Count - 1) {
+						var b = data[i + 1];
+						if (a.time == b.time && a.value == b.value) {
+							data.RemoveAt(i + 1);
+						} else {
+							break;
+						}
+					}
+				}
+			}
+
 		}
 
 
@@ -123,6 +138,23 @@
 				}
 				return (start + end) / 2;
 			}
+
+
+			public static void FixOverlap (List<TimeIntTween> data) {
+				if (data == null) { return; }
+				for (int i = 0; i < data.Count - 1; i++) {
+					var a = data[i];
+					while (i < data.Count - 1) {
+						var b = data[i + 1];
+						if (a.time == b.time && a.value == b.value) {
+							data.RemoveAt(i + 1);
+						} else {
+							break;
+						}
+					}
+				}
+			}
+
 
 		}
 
@@ -176,6 +208,23 @@
 				}
 				return (start + end) / 2;
 			}
+
+
+			public static void FixOverlap (List<TimeFloatFloatTween> data) {
+				if (data == null) { return; }
+				for (int i = 0; i < data.Count - 1; i++) {
+					var a = data[i];
+					while (i < data.Count - 1) {
+						var b = data[i + 1];
+						if (a.time == b.time && a.a == b.a && a.b == b.b) {
+							data.RemoveAt(i + 1);
+						} else {
+							break;
+						}
+					}
+				}
+			}
+
 
 		}
 
@@ -321,6 +370,15 @@
 			}
 
 
+			public void FixOverlapMotion () {
+				TimeFloatFloatTween.FixOverlap(Positions);
+				TimeFloatTween.FixOverlap(Rotations);
+				TimeIntTween.FixOverlap(Colors);
+				TimeFloatTween.FixOverlap(Widths);
+				TimeFloatTween.FixOverlap(Heights);
+			}
+
+
 		}
 
 
@@ -408,6 +466,14 @@
 							break;
 					}
 				}
+			}
+
+
+			public void FixOverlapMotion () {
+				TimeFloatTween.FixOverlap(Xs);
+				TimeFloatTween.FixOverlap(Angles);
+				TimeIntTween.FixOverlap(Colors);
+				TimeFloatTween.FixOverlap(Widths);
 			}
 
 
@@ -587,6 +653,7 @@
 
 
 		public void FixEmpty () {
+
 			if (Stages is null) {
 				Stages = new List<Stage>();
 			}
@@ -599,6 +666,15 @@
 			if (Timings is null) {
 				Timings = new List<Timing>();
 			}
+
+			// Fix Overlap Motions
+			foreach (var stage in Stages) {
+				stage.FixOverlapMotion();
+			}
+			foreach (var track in Tracks) {
+				track.FixOverlapMotion();
+			}
+
 			// Sort Motion 
 			foreach (var stage in Stages) {
 				stage.SortMotion();
@@ -1341,12 +1417,13 @@
 		}
 
 
-		public (bool hasA, bool hasB) SearchMotionValueTween (int itemIndex, int motionType, float motionTime, out float valueA, out float valueB, out int tween) {
+		public (bool hasA, bool hasB) SearchMotionValueTween (int itemIndex, int motionType, float motionTime, out float valueA, out float valueB, out int tween, out int motionIndex) {
 			valueA = valueB = tween = 0;
+			motionIndex = -1;
 			var list = GetMotionList(itemIndex, motionType);
 			if (list != null) {
-				int i = MotionSearch(list, motionTime);
-				return i >= 0 && i < list.Count - 1 ? GetMotionValueTween(list[i], out valueA, out valueB, out tween) : (false, false);
+				motionIndex = MotionSearch(list, motionTime);
+				return motionIndex >= 0 && motionIndex < list.Count - 1 ? GetMotionValueTween(list[motionIndex], out valueA, out valueB, out tween) : (false, false);
 			}
 			return (false, false);
 		}
@@ -1355,8 +1432,8 @@
 		public void SetMotionValueTween (int itemIndex, int motionType, int motionIndex, float? valueA = null, float? valueB = null, int? tween = null) {
 			var list = GetMotionList(itemIndex, motionType);
 			if (list != null && motionIndex >= 0 && motionIndex < list.Count) {
-				var item = list[motionIndex];
 				if (valueA.HasValue) {
+					var item = list[motionIndex];
 					if (item is TimeIntTween tItem) {
 						tItem.Value = Mathf.RoundToInt(valueA.Value);
 						list[motionIndex] = tItem;
@@ -1369,12 +1446,14 @@
 					}
 				}
 				if (valueB.HasValue) {
+					var item = list[motionIndex];
 					if (item is TimeFloatFloatTween ffItem) {
 						ffItem.B = valueB.Value;
 						list[motionIndex] = ffItem;
 					}
 				}
 				if (tween.HasValue) {
+					var item = list[motionIndex];
 					if (item is TimeIntTween tItem) {
 						tItem.Tween = tween.Value;
 						list[motionIndex] = tItem;
