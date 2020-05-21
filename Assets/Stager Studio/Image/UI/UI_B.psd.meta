@@ -485,6 +485,27 @@ TextureImporter:
   - first:
       213: 1298550137926991073
     second: Dotted Line Handle X (Left)
+  - first:
+      213: -1875133240137977062
+    second: Motion Pos
+  - first:
+      213: -2740963732606098050
+    second: Motion Rot
+  - first:
+      213: -2740963732606098050
+    second: Motion Color
+  - first:
+      213: 4063998328147251143
+    second: Motion Width
+  - first:
+      213: -2145814638632181393
+    second: Motion Height
+  - first:
+      213: -8648075134992001457
+    second: Motion Angle
+  - first:
+      213: 1300629289057258299
+    second: CMD
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1177,6 +1198,132 @@ TextureImporter:
       bones: []
       spriteID: 1ec3c2e6870650210800000000000000
       internalID: 1298550137926991073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Motion Pos
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 175
+        width: 82
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a137c03c0403af5e0800000000000000
+      internalID: -1875133240137977062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Motion Color
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 236
+        width: 82
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e75e8c7e10426f9d0800000000000000
+      internalID: -2740963732606098050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Motion Width
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 322
+        width: 92
+        height: 43
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7cf8ffc82f8366830800000000000000
+      internalID: 4063998328147251143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Motion Height
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 242
+        width: 43
+        height: 92
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f61ee7684f88832e0800000000000000
+      internalID: -2145814638632181393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Motion Angle
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 261
+        width: 96
+        height: 85
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f46d9e3fb7ddbf780800000000000000
+      internalID: -8648075134992001457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CMD
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 167
+        width: 82
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b3b0ab68273cc0210800000000000000
+      internalID: 1300629289057258299
       vertices: []
       indices: 
       edges: []

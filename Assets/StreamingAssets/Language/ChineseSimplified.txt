@@ -469,6 +469,9 @@ Shortcut.Brush.Track
 Shortcut.CancelZone
 取消
 
+Shortcut.Erase
+橡皮笔刷
+
 Shortcut.Eye.Note
 隐藏音符
 
@@ -1022,25 +1025,25 @@ UI.Inspector.Link
 锁链
 
 UI.Inspector.Motion.Angle
-角度 运动
+角度
 
 UI.Inspector.Motion.Color
-颜色 运动
+颜色
 
 UI.Inspector.Motion.Height
-高度 运动
+高度
 
 UI.Inspector.Motion.Pos
-位置 运动
+位置
 
 UI.Inspector.Motion.Rot
-旋转 运动
+旋转
 
 UI.Inspector.Motion.Width
-宽度 运动
+宽度
 
 UI.Inspector.Motion.X
-位置 运动
+位置
 
 UI.Inspector.Pivot
 原点

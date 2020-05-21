@@ -57,7 +57,6 @@
 		[SerializeField] private InputField m_ProjectDescription = null;
 		[SerializeField] private InputField m_BeatmapAuthor = null;
 		[SerializeField] private InputField m_MusicAuthor = null;
-		[SerializeField] private Button m_MusicBrowse = null;
 		[SerializeField] private Text m_MusicSizeLabel = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
@@ -126,7 +125,6 @@
 			m_ProjectDescription.text = "";
 			m_MusicAuthor.text = "";
 			m_BeatmapAuthor.text = "";
-			m_MusicBrowse.onClick.AddListener(() => ImportMusic());
 			// Language
 			foreach (var tx in m_LanguageTexts) {
 				tx.text = GetLanguage?.Invoke(tx.name);
@@ -224,6 +222,9 @@
 			CurrentProjectType = (ProjectType)type;
 			m_GeneHintLabel.text = GetLanguage(PROJECT_TYPE_HINT_KEYS[type]);
 		}
+
+
+		public void UI_ImportMusic () => ImportMusic();
 
 
 		public static void SetMusicSizeDirty () => MusicSizeDirty = true;

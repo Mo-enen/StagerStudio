@@ -469,6 +469,9 @@ Track Brush
 Shortcut.CancelZone
 Cancel
 
+Shortcut.Erase
+Erase Brush
+
 Shortcut.Eye.Note
 Hide Note
 
@@ -995,7 +998,7 @@ UI.Inspector.Color
 Color
 
 UI.Inspector.Command
-Command
+CMD
 
 UI.Inspector.Done
 Done
@@ -1022,25 +1025,25 @@ UI.Inspector.Link
 Link
 
 UI.Inspector.Motion.Angle
-Motion Angle
+Angle
 
 UI.Inspector.Motion.Color
-Motion Color
+Color
 
 UI.Inspector.Motion.Height
-Motion Height
+Height
 
 UI.Inspector.Motion.Pos
-Motion Pos
+Pos
 
 UI.Inspector.Motion.Rot
-Motion Rot
+Rot
 
 UI.Inspector.Motion.Width
-Motion Width
+Width
 
 UI.Inspector.Motion.X
-Motion X
+X
 
 UI.Inspector.Pivot
 Pivot

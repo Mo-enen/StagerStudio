@@ -109,7 +109,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 2}
+  m_SizeDelta: {x: 0, y: 64}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1473623386403732162
 MonoBehaviour:
@@ -666,6 +666,7 @@ GameObject:
   - component: {fileID: 6048056577068432588}
   - component: {fileID: 7549799209380428744}
   - component: {fileID: 216916437320293647}
+  - component: {fileID: 4287343592733033586}
   m_Layer: 0
   m_Name: Tip
   m_TagString: Untagged
@@ -806,6 +807,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &4287343592733033586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991999653380240454}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 4110698263403521925}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &1111110895807576034
 GameObject:
   m_ObjectHideFlags: 0
@@ -975,6 +994,7 @@ GameObject:
   - component: {fileID: 5521685803216874384}
   - component: {fileID: 27805484686173121}
   - component: {fileID: 3373987379661906500}
+  - component: {fileID: 7162479459240196768}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -1090,6 +1110,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.StageBrushHeight
   m_HotKey: 
+--- !u!114 &7162479459240196768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1191936546876163228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 7957319179887022615}
 --- !u!1 &1254792842044298974
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,6 +1142,7 @@ GameObject:
   - component: {fileID: 6207625344508087388}
   - component: {fileID: 8567582034136304032}
   - component: {fileID: 7618092621620029607}
+  - component: {fileID: 6877915132448488879}
   m_Layer: 0
   m_Name: Show Grid
   m_TagString: Untagged
@@ -1244,6 +1283,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &6877915132448488879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1254792842044298974}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 7684078940363594512}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &1313674673660889430
 GameObject:
   m_ObjectHideFlags: 0
@@ -1258,6 +1315,7 @@ GameObject:
   - component: {fileID: 2302006540772854243}
   - component: {fileID: 2078787941107042708}
   - component: {fileID: 6090089539481122825}
+  - component: {fileID: 5025268915912982640}
   m_Layer: 0
   m_Name: Keypress
   m_TagString: Untagged
@@ -1398,6 +1456,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &5025268915912982640
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1313674673660889430}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5979506970237545820}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &1330183980331676356
 GameObject:
   m_ObjectHideFlags: 0
@@ -2575,6 +2651,7 @@ GameObject:
   - component: {fileID: 515728272525775607}
   - component: {fileID: 634283183226728055}
   - component: {fileID: 663236982900764862}
+  - component: {fileID: 4082588716149531562}
   m_Layer: 0
   m_Name: ShowGridOnSelect
   m_TagString: Untagged
@@ -2715,6 +2792,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &4082588716149531562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2416305008064883338}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 1191092262007243580}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &2682545064602497082
 GameObject:
   m_ObjectHideFlags: 0
@@ -2803,6 +2898,7 @@ GameObject:
   - component: {fileID: 8239638608633963877}
   - component: {fileID: 9207325352705726571}
   - component: {fileID: 650640403605227063}
+  - component: {fileID: 4555919017169173075}
   m_Layer: 0
   m_Name: Show Index Label
   m_TagString: Untagged
@@ -2943,6 +3039,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &4555919017169173075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2691322556995309122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 4918035337940195770}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &2705280321455710046
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,6 +3331,7 @@ GameObject:
   - component: {fileID: 5978330451179288354}
   - component: {fileID: 951939782647107624}
   - component: {fileID: 4071052074552569920}
+  - component: {fileID: 2491494562132467943}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -3332,6 +3447,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.StageBrushWidth
   m_HotKey: 
+--- !u!114 &2491494562132467943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2945199904654260947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 1467803405264676817}
 --- !u!1 &3085087759538188886
 GameObject:
   m_ObjectHideFlags: 0
@@ -3835,6 +3968,7 @@ GameObject:
   - component: {fileID: 2218438860746931707}
   - component: {fileID: 9007258467736070678}
   - component: {fileID: 5532321565112036512}
+  - component: {fileID: 1814515358650253760}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -3950,6 +4084,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.TrackBrushWidth
   m_HotKey: 
+--- !u!114 &1814515358650253760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3957125867636497777}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 6110939376290981121}
 --- !u!1 &4031428826374015762
 GameObject:
   m_ObjectHideFlags: 0
@@ -4925,6 +5077,7 @@ GameObject:
   - component: {fileID: 5053396275821039581}
   - component: {fileID: 5053396275821039580}
   - component: {fileID: 8239284033985043426}
+  - component: {fileID: 4206854575515748877}
   m_Layer: 0
   m_Name: Sound
   m_TagString: Untagged
@@ -5040,6 +5193,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.SoundVolume
   m_HotKey: 
+--- !u!114 &4206854575515748877
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396275821039570}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 5053396275821039582}
 --- !u!1 &5053396275890381671
 GameObject:
   m_ObjectHideFlags: 0
@@ -5801,6 +5972,7 @@ GameObject:
   - component: {fileID: 5053396275998843472}
   - component: {fileID: 5639560569947682513}
   - component: {fileID: 5222071293011893887}
+  - component: {fileID: 6453770392725991949}
   m_Layer: 0
   m_Name: Normal
   m_TagString: Untagged
@@ -5940,6 +6112,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &6453770392725991949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396275998843478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5053396275998843473}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396276061202190
 GameObject:
   m_ObjectHideFlags: 0
@@ -6187,6 +6377,7 @@ GameObject:
   - component: {fileID: 5053396276189936327}
   - component: {fileID: 5053396276189936326}
   - component: {fileID: 459330160739494029}
+  - component: {fileID: 4146327828393763440}
   m_Layer: 0
   m_Name: Brightness
   m_TagString: Untagged
@@ -6302,6 +6493,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.BgBright
   m_HotKey: 
+--- !u!114 &4146327828393763440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396276189936324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 5053396276189936320}
 --- !u!1 &5053396276195351332
 GameObject:
   m_ObjectHideFlags: 0
@@ -6708,6 +6917,7 @@ GameObject:
   - component: {fileID: 5053396276341889167}
   - component: {fileID: 4451477297920289068}
   - component: {fileID: 2039690973683733253}
+  - component: {fileID: 477433914211571763}
   m_Layer: 0
   m_Name: Preview
   m_TagString: Untagged
@@ -6848,6 +7058,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &477433914211571763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396276341889165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5053396276341889160}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396276350767097
 GameObject:
   m_ObjectHideFlags: 0
@@ -6862,6 +7090,7 @@ GameObject:
   - component: {fileID: 5053396276350767099}
   - component: {fileID: 8726043452698966368}
   - component: {fileID: 3914213453318936604}
+  - component: {fileID: 6462092965420731757}
   m_Layer: 0
   m_Name: Large
   m_TagString: Untagged
@@ -7001,6 +7230,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &6462092965420731757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396276350767097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5053396276350767044}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396276364604499
 GameObject:
   m_ObjectHideFlags: 0
@@ -7906,6 +8153,7 @@ GameObject:
   - component: {fileID: 5053396276692673048}
   - component: {fileID: 5053396276692673055}
   - component: {fileID: 5657981858601928280}
+  - component: {fileID: 2716208025364819566}
   m_Layer: 0
   m_Name: Music
   m_TagString: Untagged
@@ -8021,6 +8269,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.MusicVolume
   m_HotKey: 
+--- !u!114 &2716208025364819566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396276692673052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 5053396276692673054}
 --- !u!1 &5053396276739302125
 GameObject:
   m_ObjectHideFlags: 0
@@ -8401,6 +8667,7 @@ GameObject:
   - component: {fileID: 5053396276834688591}
   - component: {fileID: 2076453457703329396}
   - component: {fileID: 152546168199557888}
+  - component: {fileID: 3948792259471293588}
   m_Layer: 0
   m_Name: Small
   m_TagString: Untagged
@@ -8540,6 +8807,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &3948792259471293588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396276834688589}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5053396276834688584}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396276847815556
 GameObject:
   m_ObjectHideFlags: 0
@@ -9905,7 +10190,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 20}
+  m_SizeDelta: {x: 0, y: 60}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &5053396277252991705
 MonoBehaviour:
@@ -10433,7 +10718,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 28}
+  m_SizeDelta: {x: 0, y: 64}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &7151590915608752078
 MonoBehaviour:
@@ -10684,6 +10969,7 @@ GameObject:
   - component: {fileID: 5053396277434885607}
   - component: {fileID: 7065800052281858874}
   - component: {fileID: 317726567873565581}
+  - component: {fileID: 8365563617815955266}
   m_Layer: 0
   m_Name: Wave
   m_TagString: Untagged
@@ -10824,6 +11110,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &8365563617815955266
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396277434885605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5053396277434885600}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396277452898873
 GameObject:
   m_ObjectHideFlags: 0
@@ -11585,6 +11889,7 @@ GameObject:
   - component: {fileID: 5053396277744819971}
   - component: {fileID: 3265763709912472940}
   - component: {fileID: 3497935176120847332}
+  - component: {fileID: 1930450267586261629}
   m_Layer: 0
   m_Name: InputField
   m_TagString: Untagged
@@ -11740,6 +12045,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 1
+--- !u!114 &1930450267586261629
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5053396277744819969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 5053396277744819971}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &5053396277745304747
 GameObject:
   m_ObjectHideFlags: 0
@@ -12356,6 +12679,7 @@ GameObject:
   - component: {fileID: 1457781045833828542}
   - component: {fileID: 1789106464580067228}
   - component: {fileID: 8822797303626679407}
+  - component: {fileID: 939732700198759634}
   m_Layer: 0
   m_Name: Slider
   m_TagString: Untagged
@@ -12471,6 +12795,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_TipKey: Tip.Setting.NoteBrushWidth
   m_HotKey: 
+--- !u!114 &939732700198759634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5541674278804692404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 0}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 2504529299997665009}
 --- !u!1 &5749354423441113228
 GameObject:
   m_ObjectHideFlags: 0
@@ -12895,6 +13237,7 @@ GameObject:
   - component: {fileID: 2784095797750461619}
   - component: {fileID: 7682212993213147983}
   - component: {fileID: 6557891542482620195}
+  - component: {fileID: 2326532274361702783}
   m_Layer: 0
   m_Name: Positive Scroll
   m_TagString: Untagged
@@ -13035,6 +13378,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &2326532274361702783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6202537215180295522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 1922099851124919746}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &6212316270338097126
 GameObject:
   m_ObjectHideFlags: 0
@@ -13351,6 +13712,7 @@ GameObject:
   - component: {fileID: 8418264350322486178}
   - component: {fileID: 5549106369127670450}
   - component: {fileID: 5294796381816919223}
+  - component: {fileID: 2815040642738621369}
   m_Layer: 0
   m_Name: SFX
   m_TagString: Untagged
@@ -13491,6 +13853,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &2815040642738621369
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6429996458971554578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 8274165924972329109}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &6461957532959242395
 GameObject:
   m_ObjectHideFlags: 0
@@ -13653,6 +14033,7 @@ GameObject:
   - component: {fileID: 2054139453056328759}
   - component: {fileID: 8535784801349747290}
   - component: {fileID: 8148617567996612232}
+  - component: {fileID: 5418006881366241537}
   m_Layer: 0
   m_Name: SoloOnEditMotion
   m_TagString: Untagged
@@ -13793,6 +14174,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &5418006881366241537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6605713479249166030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 5618029378210666167}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &6723216203142414035
 GameObject:
   m_ObjectHideFlags: 0
@@ -14343,6 +14742,7 @@ GameObject:
   - component: {fileID: 334711360604907510}
   - component: {fileID: 7722659947688491426}
   - component: {fileID: 8827844714032778831}
+  - component: {fileID: 8683040917032826428}
   m_Layer: 0
   m_Name: Scale Brush
   m_TagString: Untagged
@@ -14483,6 +14883,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &8683040917032826428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7567493751087309499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 3714341497093949824}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &7594905981787702054
 GameObject:
   m_ObjectHideFlags: 0
@@ -15149,6 +15567,7 @@ GameObject:
   - component: {fileID: 2154920651322288339}
   - component: {fileID: 8528861172167032850}
   - component: {fileID: 8854265212470797747}
+  - component: {fileID: 9211390613807718569}
   m_Layer: 0
   m_Name: Snap Progress
   m_TagString: Untagged
@@ -15289,6 +15708,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!114 &9211390613807718569
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7984164108565351716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 325ec1fe7413d2d4696580fdfde08fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Input: {fileID: 0}
+  m_Button: {fileID: 0}
+  m_Toggle: {fileID: 7244878221940264145}
+  m_Trigger: {fileID: 0}
+  m_Scroll: {fileID: 0}
+  m_Slider: {fileID: 0}
 --- !u!1 &8029102807058646011
 GameObject:
   m_ObjectHideFlags: 0

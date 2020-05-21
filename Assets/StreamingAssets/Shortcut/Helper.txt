@@ -34,6 +34,7 @@ Available Actions:
 	Shortcut.PitchUp
 	Shortcut.PitchDown
 	Shortcut.GlobalBrushScale
+	Shortcut.Erase
 
 Available Keys:
 

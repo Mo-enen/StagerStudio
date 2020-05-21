@@ -100,20 +100,22 @@
 		[SerializeField] private SpriteRenderer m_Hover = null;
 		[SerializeField] private LoopUvRenderer m_Ghost = null;
 		[SerializeField] private LoopUvRenderer m_Highlight = null;
+		[SerializeField] private LoopUvRenderer m_Erase = null;
 		[SerializeField] private AxisHandleUI m_MoveAxis = null;
 		[SerializeField] private Sprite m_HoverSP_Item = null;
 		[SerializeField] private Sprite m_HoverSP_Timer = null;
+		[SerializeField] private RectTransform m_EraseUI = null;
 
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
 		private readonly static bool[] ItemLock = { false, false, false, false, };
-		private static readonly byte[] CopyBuffer = new byte[1024 * 512]; // 500KB
+		private readonly static byte[] CopyBuffer = new byte[1024 * 512]; // 500KB
 		private readonly static LayerMask[] ItemMasks = { -1, -1, -1, -1, -1, -1, };
-		private Camera _Camera = null;
 		private int CopyType = -1;
 		private int CopyLength = 0;
-		private bool UIReady = true;
 		private int SortingLayerID_UI = -1;
+		private bool UIReady = true;
+		private Camera _Camera = null;
 		private LayerMask UnlockedMask = default;
 
 		// Mouse
@@ -189,6 +191,7 @@
 
 			m_Ghost.SetSortingLayer(SortingLayerID_UI, 0);
 			m_Highlight.SetSortingLayer(SortingLayerID_UI, 0);
+			m_Erase.SetSortingLayer(SortingLayerID_UI, 0);
 
 		}
 
@@ -200,16 +203,17 @@
 				LateUpdate_Key(map);
 				LateUpdate_Selection();
 				LateUpdate_Hover(map);
-				LateUpdate_Down();
+				LateUpdate_Down(map);
 				LateUpdate_Axis(map);
 				LateUpdate_Highlight();
 			} else {
 				// Editor InActive
 				TrySetGridInactive();
-				TrySetTargetActive(m_Hover.gameObject, false);
-				TrySetTargetActive(m_Ghost.gameObject, false);
-				TrySetTargetActive(m_MoveAxis.gameObject, false);
-				TrySetTargetActive(m_Highlight.gameObject, false);
+				m_Hover.gameObject.TrySetActive(false);
+				m_Ghost.gameObject.TrySetActive(false);
+				m_MoveAxis.gameObject.TrySetActive(false);
+				m_Highlight.gameObject.TrySetActive(false);
+				m_Erase.gameObject.TrySetActive(false);
 				AxisDragging = false;
 				if (SelectingBrushIndex != -1) {
 					SetBrushLogic(-1);
@@ -313,7 +317,7 @@
 
 
 		private void LateUpdate_Selection () {
-			if (SelectingItemIndex >= 0 && SelectingBrushIndex >= 0) {
+			if (SelectingItemIndex >= 0 && SelectingBrushIndex != -1) {
 				SelectingItemIndex = -1;
 				SelectingItemSubIndex = -1;
 				SelectingItemType = -1;
@@ -326,25 +330,33 @@
 			if (SelectingBrushIndex >= 0) {
 				// --- Painting ---
 				if (GetItemLock(SelectingBrushIndex)) {
-					TrySetTargetActive(m_Ghost.gameObject, false);
+					m_Ghost.gameObject.TrySetActive(false);
 					TrySetGridInactive();
 				} else {
 					OnMouseHover_Grid(map, false);
 					OnMouseHover_Ghost();
 				}
-				TrySetTargetActive(m_Hover.gameObject, false);
+				m_Hover.gameObject.TrySetActive(false);
+				m_Erase.gameObject.TrySetActive(false);
+			} else if (SelectingBrushIndex == -2) {
+				// --- Erase ---
+				OnMouseHover_Erase();
+				TrySetGridInactive();
+				m_Hover.gameObject.TrySetActive(false);
+				m_Ghost.gameObject.TrySetActive(false);
 			} else {
 				// --- Normal Select ---
 				OnMouseHover_Normal();
 				OnMouseHover_Grid(map, true);
-				TrySetTargetActive(m_Ghost.gameObject, false);
+				m_Ghost.gameObject.TrySetActive(false);
+				m_Erase.gameObject.TrySetActive(false);
 			}
 		}
 
 
-		private void LateUpdate_Down () {
+		private void LateUpdate_Down (Beatmap map) {
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
-			if (SelectingBrushIndex < 0) {
+			if (SelectingBrushIndex == -1) {
 				// Select or Move
 				var ray = GetMouseRay();
 				var (overlapType, overlapIndex, overlapSubIndex, _) = GetCastTypeIndex(ray, UnlockedMask, true);
@@ -357,10 +369,18 @@
 						SetSelection(overlapType, overlapIndex, overlapSubIndex);
 					}
 				}
-			} else {
-				var map = GetBeatmap();
+			} else if (SelectingBrushIndex == -2) {
+				// Erase
 				var ray = GetMouseRay();
-				if (map == null || !RayInsideZone(ray) || !m_Ghost.RendererEnable || GetItemLock(SelectingBrushIndex)) { return; }
+				var (type, index, _, _) = GetCastTypeIndex(ray, UnlockedMask, true);
+				if (type < 4) {
+					// Stage Track Note Timing
+					map.DeleteItem(type, index);
+					OnObjectEdited();
+				}
+			} else {
+				var ray = GetMouseRay();
+				if (!RayInsideZone(ray) || !m_Ghost.RendererEnable || GetItemLock(SelectingBrushIndex)) { return; }
 				// Paint
 				switch (SelectingBrushIndex) {
 					case 0: { // Stage
@@ -548,10 +568,10 @@
 				m_MoveAxis.SetAxisRendererActive(targetActive);
 
 				// Active
-				TrySetTargetActive(m_MoveAxis.gameObject, true);
+				m_MoveAxis.gameObject.TrySetActive(true);
 				AxisDragging = AxisDragging && Input.GetMouseButton(0);
 			} else {
-				TrySetTargetActive(m_MoveAxis.gameObject, false);
+				m_MoveAxis.gameObject.TrySetActive(false);
 				AxisDragging = false;
 			}
 		}
@@ -560,7 +580,7 @@
 		private void LateUpdate_Highlight () {
 			var con = SelectingItemType >= 0 && SelectingItemType < 3 ? m_Containers[SelectingItemType] : null;
 			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount && con.GetChild(SelectingItemIndex).gameObject.activeSelf;
-			TrySetTargetActive(m_Highlight.gameObject, active);
+			m_Highlight.gameObject.TrySetActive(active);
 			if (active) {
 				var target0 = con.GetChild(SelectingItemIndex).GetChild(0);
 				var scale = target0.localScale;
@@ -732,16 +752,16 @@
 				m_Ghost.transform.rotation = ghostRot;
 				m_Ghost.Pivot = new Vector3(ghostPivotX, 0f, 0f);
 				m_Ghost.SetSortingLayer(SortingLayerID_UI, short.MaxValue - 1);
-				TrySetTargetActive(m_Ghost.gameObject, true);
+				m_Ghost.gameObject.TrySetActive(true);
 			} else {
-				TrySetTargetActive(m_Ghost.gameObject, false);
+				m_Ghost.gameObject.TrySetActive(false);
 			}
 		}
 
 
 		private void OnMouseHover_Normal () {
 			if (GetMoveAxisHovering() || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
-				TrySetTargetActive(m_Hover.gameObject, false);
+				m_Hover.gameObject.TrySetActive(false);
 				return;
 			}
 			// Hover
@@ -766,7 +786,27 @@
 					}
 				}
 			}
-			TrySetTargetActive(m_Hover.gameObject, target != null);
+			m_Hover.gameObject.TrySetActive(target != null);
+		}
+
+
+		private void OnMouseHover_Erase () {
+			if (Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
+				m_Erase.gameObject.TrySetActive(false);
+				return;
+			}
+			var ray = GetMouseRay();
+			var (type, _, _, target) = GetCastTypeIndex(ray, UnlockedMask, true);
+			if (target != null) {
+				if (type < 4) {
+					// Stage Track Note Timing
+					m_Erase.transform.position = target.GetChild(0).position;
+					m_Erase.transform.rotation = target.GetChild(0).rotation;
+					m_Erase.transform.localScale = target.GetChild(0).localScale;
+					m_Erase.Scale = target.GetChild(0).localScale * 32f;
+				}
+			}
+			m_Erase.gameObject.TrySetActive(target != null);
 		}
 
 
@@ -1106,6 +1146,9 @@
 		}
 
 
+		public void SetErase () => SetEraseLogic();
+
+
 		#endregion
 
 
@@ -1139,7 +1182,6 @@
 			UIReady = true;
 			OnLockEyeChanged();
 		}
-
 
 
 		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
@@ -1205,13 +1247,6 @@
 		}
 
 
-		private void TrySetTargetActive (GameObject target, bool active) {
-			if (target.activeSelf != active) {
-				target.SetActive(active);
-			}
-		}
-
-
 		private void TrySetGridInactive () {
 			if (m_Grid.GridEnabled) {
 				m_Grid.SetGridTransform(false, false);
@@ -1238,12 +1273,32 @@
 					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
 				}
+				m_EraseUI.gameObject.TrySetActive(false);
 				// Brushs TG
 				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
 					m_DefaultBrushTGs[i].isOn = i == brushIndex;
 				}
 				// Logic
 				SelectingBrushIndex = brushIndex;
+			} catch { }
+			UIReady = true;
+		}
+
+
+		private void SetEraseLogic () {
+			UIReady = false;
+			try {
+				if (!enabled || !GetEditorActive()) {
+					SelectingBrushIndex = -1;
+				} else {
+					SelectingBrushIndex = -2;
+					m_EraseUI.gameObject.TrySetActive(true);
+				}
+				ClearSelection();
+				// Brushs TG
+				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+					m_DefaultBrushTGs[i].isOn = false;
+				}
 			} catch { }
 			UIReady = true;
 		}

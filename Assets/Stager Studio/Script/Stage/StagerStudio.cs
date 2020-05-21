@@ -127,6 +127,10 @@
 		private SavingBool TutorialOpened = new SavingBool("StagerStudio.TutorialOpened", false);
 		private SavingBool SoloOnEditMotion = new SavingBool("StagerStudio.SoloOnEditMotion", true);
 
+		// Data
+		private bool WillUndo = false;
+		private bool WillRedo = false;
+
 
 		#endregion
 
@@ -204,6 +208,14 @@
 			TimingNote.MusicTime = musicTime;
 			ObjectTimer.MusicTime = musicTime;
 			ObjectTimer.SpeedMuti = dropSpeed;
+			if (WillUndo) {
+				UndoRedo.Undo();
+				WillUndo = false;
+			}
+			if (WillRedo) {
+				UndoRedo.Redo();
+				WillRedo = false;
+			}
 		}
 
 
@@ -953,10 +965,10 @@
 		}
 
 
-		public void Undo () => UndoRedo.Undo();
+		public void Undo () => WillUndo = true;
 
 
-		public void Redo () => UndoRedo.Redo();
+		public void Redo () => WillRedo = true;
 
 
 		#endregion

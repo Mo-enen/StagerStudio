@@ -1087,41 +1087,40 @@
 			switch (type) {
 				case 0:
 					if (index >= 0 && index < Stages.Count) {
-						Stages.RemoveAt(index);
-						foreach (var track in Tracks) {
-							if (track.StageIndex > index) {
-								track.StageIndex--;
-							}
-						}
 						for (int i = 0; i < Tracks.Count; i++) {
 							var track = Tracks[i];
 							if (track.StageIndex == index && DeleteItem(1, i)) {
 								i--;
 							}
 						}
+						foreach (var track in Tracks) {
+							if (track.StageIndex > index) {
+								track.StageIndex--;
+							}
+						}
+						Stages.RemoveAt(index);
 						return true;
 					}
 					break;
 				case 1:
 					if (index >= 0 && index < Tracks.Count) {
-						Tracks.RemoveAt(index);
-						foreach (var note in Notes) {
-							if (note.TrackIndex > index) {
-								note.TrackIndex--;
-							}
-						}
 						for (int i = 0; i < Notes.Count; i++) {
 							var note = Notes[i];
 							if (note.TrackIndex == index && DeleteItem(2, i)) {
 								i--;
 							}
 						}
+						foreach (var note in Notes) {
+							if (note.TrackIndex > index) {
+								note.TrackIndex--;
+							}
+						}
+						Tracks.RemoveAt(index);
 						return true;
 					}
 					break;
 				case 2:
 					if (index >= 0 && index < Notes.Count) {
-						Notes.RemoveAt(index);
 						foreach (var note in Notes) {
 							if (note.LinkedNoteIndex > index) {
 								note.LinkedNoteIndex--;
@@ -1129,6 +1128,7 @@
 								note.LinkedNoteIndex = -1;
 							}
 						}
+						Notes.RemoveAt(index);
 						return true;
 					}
 					break;

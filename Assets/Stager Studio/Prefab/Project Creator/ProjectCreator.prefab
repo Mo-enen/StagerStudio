@@ -2221,7 +2221,6 @@ MonoBehaviour:
   m_ProjectDescription: {fileID: 4367755275470950889}
   m_BeatmapAuthor: {fileID: 455173899340411211}
   m_MusicAuthor: {fileID: 860215989073826377}
-  m_MusicBrowse: {fileID: 9106070000799444260}
   m_MusicSizeLabel: {fileID: 6382634532035921601}
   m_LanguageTexts:
   - {fileID: 7615365287885088998}
@@ -4949,7 +4948,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1815236304876012242}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1865921094707821726}
+        m_MethodName: UI_ImportMusic
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &2068800863179470481
 MonoBehaviour:
   m_ObjectHideFlags: 0

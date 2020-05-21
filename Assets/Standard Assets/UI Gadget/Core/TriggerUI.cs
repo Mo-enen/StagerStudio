@@ -36,6 +36,12 @@
 		}
 
 
+		private void OnDestroy () {
+			m_CallbackLeft.RemoveAllListeners();
+			m_CallbackRight.RemoveAllListeners();
+			m_CallbackDoubleClick.RemoveAllListeners();
+		}
+
 
 	}
 }
