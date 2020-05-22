@@ -245,7 +245,6 @@
 			MainRenderer.Tint = tint;
 			MainRenderer.Alpha = alpha;
 			MainRenderer.Duration = Duration;
-			MainRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.SetSortingLayer(
 				Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold,
@@ -408,7 +407,6 @@
 			m_PoleRenderer.transform.localScale = new Vector3(zoneSize * poleSize.x, scaleY, 1f);
 			m_PoleRenderer.RendererEnable = true;
 			m_PoleRenderer.Duration = Duration;
-			m_PoleRenderer.LifeTime = MusicTime - Time;
 			m_PoleRenderer.Pivot = new Vector3(0.5f, 0f);
 			m_PoleRenderer.Scale = new Vector2(poleSize.x, scaleY / zoneSize);
 			m_PoleRenderer.Tint = MusicTime > Time + Duration ? HighlightTints[(int)SkinType.Pole] : WHITE_32;

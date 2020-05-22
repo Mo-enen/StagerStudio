@@ -38,6 +38,7 @@
 			BrushScale,
 			ShowGridOnSelect,
 			SoloOnEditMotion,
+			UseEditorEffect,
 
 		}
 
@@ -184,6 +185,10 @@
 				SoloOnEditMotion.Value = isOn;
 			}, () => SoloOnEditMotion.Value, SoloOnEditMotion, true));
 
+			ToggleItemMap.Add(ToggleType.UseEditorEffect, ((isOn) => {
+				m_Effect.UseEffect.Value = isOn;
+			}, () => m_Effect.UseEffect.Value, m_Effect.UseEffect, true));
+
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
@@ -222,6 +227,7 @@
 				m_Editor.NoteBrushWidth = Mathf.Clamp01(value / 12f);
 				SliderItemMap[SliderType.NoteBrushWidth].saving.Value = value;
 			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
+
 
 		}
 

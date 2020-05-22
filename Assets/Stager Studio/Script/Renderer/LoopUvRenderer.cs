@@ -5,7 +5,7 @@
 
 
 
-	public class LoopUvRenderer : StageRenderer {
+	public class LoopUvRenderer : ItemRenderer {
 
 
 		// Api

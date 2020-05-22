@@ -207,7 +207,7 @@
 		}
 
 
-		protected static void RefreshRendererZoneFor (StageRenderer renderer) =>
+		protected static void RefreshRendererZoneFor (ItemRenderer renderer) =>
 			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
 				ScreenZoneMinMax.min.x,
 				Screen.height - ScreenZoneMinMax.max.y,

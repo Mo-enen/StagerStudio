@@ -44,6 +44,8 @@
 			toFill.Clear();
 			if (m_Curve is null || m_Curve.length == 0) { return; }
 			CacheVertex[0].position.z = CacheVertex[1].position.z = CacheVertex[2].position.z = CacheVertex[3].position.z = -1f;
+			var size = rectTransform.rect.size;
+			Vector3 pivotOffset = -size * rectTransform.pivot;
 
 			// Curve
 			if (CacheMesh is null) {
@@ -51,11 +53,13 @@
 				CacheMesh.MarkDynamic();
 			}
 			RefreshRenderer();
-			Renderer?.BakeMesh(CacheMesh);
-			Renderer.enabled = false;
+			if (Renderer != null) {
+				Renderer.BakeMesh(CacheMesh);
+				Renderer.enabled = false;
+			}
 			var uv = Vector2.zero;
 			foreach (var vert in CacheMesh.vertices) {
-				toFill.AddVert(vert, color, uv);
+				toFill.AddVert(vert + pivotOffset, color, uv);
 			}
 			var tris = CacheMesh.triangles;
 			for (int i = 0; i < tris.Length; i += 3) {
@@ -63,21 +67,22 @@
 			}
 
 			// Dots
-			CacheVertex[0].color = CacheVertex[1].color = CacheVertex[2].color = CacheVertex[3].color = m_DotColor;
-			float dotSize = m_DotSize / 2f;
-			var size = rectTransform.rect.size;
-			foreach (var key in m_Curve.keys) {
-				float x = key.time * size.x;
-				float y = key.value * size.y;
-				CacheVertex[0].position.x = x - dotSize;
-				CacheVertex[1].position.x = x - dotSize;
-				CacheVertex[2].position.x = x + dotSize;
-				CacheVertex[3].position.x = x + dotSize;
-				CacheVertex[0].position.y = y - dotSize;
-				CacheVertex[1].position.y = y + dotSize;
-				CacheVertex[2].position.y = y + dotSize;
-				CacheVertex[3].position.y = y - dotSize;
-				toFill.AddUIVertexQuad(CacheVertex);
+			if (m_DotSize > 0.01f) {
+				CacheVertex[0].color = CacheVertex[1].color = CacheVertex[2].color = CacheVertex[3].color = m_DotColor;
+				float dotSize = m_DotSize / 2f;
+				foreach (var key in m_Curve.keys) {
+					float x = key.time * size.x;
+					float y = key.value * size.y;
+					CacheVertex[0].position.x = x - dotSize + pivotOffset.x;
+					CacheVertex[1].position.x = x - dotSize + pivotOffset.x;
+					CacheVertex[2].position.x = x + dotSize + pivotOffset.x;
+					CacheVertex[3].position.x = x + dotSize + pivotOffset.x;
+					CacheVertex[0].position.y = y - dotSize + pivotOffset.y;
+					CacheVertex[1].position.y = y + dotSize + pivotOffset.y;
+					CacheVertex[2].position.y = y + dotSize + pivotOffset.y;
+					CacheVertex[3].position.y = y - dotSize + pivotOffset.y;
+					toFill.AddUIVertexQuad(CacheVertex);
+				}
 			}
 		}
 

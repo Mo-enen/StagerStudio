@@ -487,6 +487,9 @@
 		#region --- API ---
 
 
+		public void ForceUpdateBeatmap () => Update_Beatmap();
+
+
 		public void ClearAllContainers () {
 			for (int i = 0; i < m_Containers.Length; i++) {
 				m_Containers[i].DestroyAllChildImmediately();

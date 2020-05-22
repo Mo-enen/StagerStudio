@@ -695,7 +695,7 @@ Tip.Inspector.Motion.Painter
 Left click to add/select frame, right click to seek music, select and press del to delete frame
 
 Tip.Inspector.Motion.Tween
-Tween of the selecting motion node
+Tween of the selecting motion node (Double click to open tween selector)
 
 Tip.Inspector.Motion.Value
 Value of the selecting motion node
@@ -891,6 +891,9 @@ Show tooltip or not
 
 Tip.Setting.TrackBrushWidth
 Width of the track painted by brush
+
+Tip.Setting.UseEditorEffect
+Whether to display effects when editing the beatmap, such as effects for adding or deleting objects, etc.
 
 Tip.Setting.Wave
 Show music wave or not
@@ -1239,6 +1242,9 @@ Normal
 
 UI.Setting.UIScale.2
 Large
+
+UI.Setting.UseEditorEffect
+Use Editor Effect
 
 UI.Setting.UseSFX
 Sound FX

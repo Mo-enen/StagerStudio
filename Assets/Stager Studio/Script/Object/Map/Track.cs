@@ -156,7 +156,6 @@
 			m_TrayRenderer.RendererEnable = trackData.HasTray;
 			m_TrayRenderer.ItemType = trackData.ItemType;
 			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
-			MainRenderer.LifeTime = m_TrayRenderer.LifeTime = m_TrackTintRenderer.LifeTime = MusicTime - Time;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
 			m_TrackTintRenderer.Tint = trackData._Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);

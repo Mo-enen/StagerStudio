@@ -91,6 +91,7 @@
 		[SerializeField] private StageShortcut m_Shortcut = null;
 		[SerializeField] private StageMenu m_Menu = null;
 		[SerializeField] private StageState m_State = null;
+		[SerializeField] private StageEffect m_Effect = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -166,6 +167,7 @@
 			Awake_Skin();
 			Awake_Undo();
 			Awake_ProjectInfo();
+			Awake_Inspector();
 			Awake_Misc();
 
 		}
@@ -178,6 +180,7 @@
 				Screen.fullScreen = false;
 			}
 			QualitySettings.vSyncCount = 0;
+			m_Background.SetBackground(null, false);
 		}
 
 
@@ -616,11 +619,20 @@
 			StageEditor.GetUseDynamicSpeed = () => m_Game.UseDynamicSpeed;
 			StageEditor.GetUseAbreast = () => m_Game.UseAbreast;
 			StageEditor.GetMoveAxisHovering = m_Axis.GetEntering;
-			StageEditor.OnObjectEdited = () => {
+			StageEditor.BeforeObjectEdited = (editType, itemType, itemIndex) => {
+				if (editType == StageEditor.EditType.Delete) {
+					m_Effect.SpawnDeleteEffect(itemType, itemIndex);
+				}
+			};
+			StageEditor.OnObjectEdited = (editType, itemType, itemIndex) => {
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
 				m_MotionPainter.TrySetDirty();
+				if (editType == StageEditor.EditType.Create) {
+					m_Game.ForceUpdateBeatmap();
+					m_Effect.SpawnCreateEffect(itemType, itemIndex);
+				}
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
 			StageEditor.SetAbreastIndex = m_Game.SetAbreastIndex;
@@ -763,12 +775,67 @@
 		}
 
 
-		private void Awake_Misc () {
+		private void Awake_Inspector () {
 
+			// Stage
 			StageCommand.OnCommandDone = () => {
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 			};
+
+			// Inspector
+			InspectorUI.GetSelectingType = () => {
+				if (m_Editor.SelectingItemType == 4) {
+					return 0;
+				}
+				if (m_Editor.SelectingItemType == 5) {
+					return 1;
+				}
+				return m_Editor.SelectingItemType;
+			};
+			InspectorUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
+			InspectorUI.GetBeatmap = () => m_Project.Beatmap;
+			InspectorUI.GetBPM = () => m_Game.BPM;
+			InspectorUI.GetShift = () => m_Game.Shift;
+			InspectorUI.OnItemEdited = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+			};
+			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
+			InspectorUI.GetProjectTweens = () => m_Project.Tweens;
+
+			// CMD
+			CommandUI.DoCommand = (type, command, index, value) => {
+				bool success = StageCommand.DoCommand(
+					m_Project.Beatmap,
+					(StageCommand.TargetType)type,
+					(StageCommand.CommandType)command,
+					index, value
+				);
+				if (success) {
+					m_Hint.SetHint(m_Language.Get(Hint_CommandDone), true);
+				}
+			};
+			CommandUI.OpenMenu = m_Menu.OpenMenu;
+
+			// Motion 
+			MotionPainterUI.GetBeatmap = () => m_Project.Beatmap;
+			MotionPainterUI.GetMusicTime = () => m_Music.Time;
+			MotionPainterUI.GetMusicDuration = () => m_Music.Duration;
+			MotionPainterUI.GetBPM = () => m_Game.BPM;
+			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
+			MotionPainterUI.OnItemEdit = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+			};
+			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
+			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
+			MotionPainterUI.SeekMusic = m_Music.Seek;
+
+		}
+
+
+		private void Awake_Misc () {
 
 			CursorUI.GetCursorTexture = (index) => (
 				index >= 0 ? m_Cursors[index].Cursor : null,
@@ -852,51 +919,6 @@
 			SelectorUI.GetSelectionIndex = () => m_Editor.SelectingItemIndex;
 
 			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
-
-			InspectorUI.GetSelectingType = () => {
-				if (m_Editor.SelectingItemType == 4) {
-					return 0;
-				}
-				if (m_Editor.SelectingItemType == 5) {
-					return 1;
-				}
-				return m_Editor.SelectingItemType;
-			};
-			InspectorUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
-			InspectorUI.GetBeatmap = () => m_Project.Beatmap;
-			InspectorUI.GetBPM = () => m_Game.BPM;
-			InspectorUI.GetShift = () => m_Game.Shift;
-			InspectorUI.OnItemEdited = () => {
-				RefreshOnItemChange();
-				UndoRedo.SetDirty();
-			};
-			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
-
-			CommandUI.DoCommand = (type, command, index, value) => {
-				bool success = StageCommand.DoCommand(
-					m_Project.Beatmap,
-					(StageCommand.TargetType)type,
-					(StageCommand.CommandType)command,
-					index, value
-				);
-				if (success) {
-					m_Hint.SetHint(m_Language.Get(Hint_CommandDone), true);
-				}
-			};
-			CommandUI.OpenMenu = m_Menu.OpenMenu;
-
-			MotionPainterUI.GetBeatmap = () => m_Project.Beatmap;
-			MotionPainterUI.GetMusicTime = () => m_Music.Time;
-			MotionPainterUI.GetMusicDuration = () => m_Music.Duration;
-			MotionPainterUI.GetBPM = () => m_Game.BPM;
-			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
-			MotionPainterUI.OnItemEdit = () => {
-				RefreshOnItemChange();
-				UndoRedo.SetDirty();
-			};
-			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
-			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
-			MotionPainterUI.SeekMusic = m_Music.Seek;
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";

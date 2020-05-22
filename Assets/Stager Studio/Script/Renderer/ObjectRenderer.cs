@@ -6,7 +6,7 @@
 
 
 
-	public class ObjectRenderer : StageRenderer {
+	public class ObjectRenderer : ItemRenderer {
 
 
 		// API
@@ -69,7 +69,7 @@
 
 		// Ser
 		[SerializeField] private bool m_Allow3D = true;
-		[SerializeField] private SkinLoopType m_LoopType = SkinLoopType.Type;
+		[SerializeField] private bool m_UseItemType = true;
 
 		// Data
 		private SkinData _Data = null;
@@ -193,7 +193,7 @@
 		// LGC
 		private void ReCalculateFrame () {
 			var ani = AniData;
-			int frame = ani is null ? 0 : ani.GetFrame(ItemType, m_LoopType, _LifeTime, Duration);
+			int frame = ani is null ? 0 : ani.GetFrame(ItemType, m_UseItemType, LifeTime);
 			if (frame != Frame) {
 				Frame = frame;
 				SetDirty();

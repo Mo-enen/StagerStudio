@@ -5,7 +5,7 @@
 
 
 
-	public class TextRenderer : StageRenderer {
+	public class TextRenderer : ItemRenderer {
 
 
 

@@ -12,12 +12,11 @@
 		public float Brightness { get; private set; } = 0.309f;
 
 		// Short
-		private Image IMG => _IMG ?? (_IMG = GetComponent<Image>());
-
-		private AspectRatioFitter Fitter => _Fitter ?? (_Fitter = GetComponent<AspectRatioFitter>());
+		private Image IMG => _IMG != null ? _IMG : (_IMG = GetComponent<Image>());
+		private AspectRatioFitter Fitter => _Fitter != null ? _Fitter : (_Fitter = GetComponent<AspectRatioFitter>());
 
 		// Ser
-		[SerializeField] private Sprite m_DefaultBG = null;
+		[SerializeField] private Sprite[] m_DefaultBGs = null;
 		[SerializeField] private Material m_BlurMat = null;
 
 		// Data
@@ -31,7 +30,7 @@
 			const float SCALE_MUTI = 1.06f;
 			// Blur Sprite
 			if (!sprite || !sprite.texture) {
-				sprite = m_DefaultBG;
+				sprite = m_DefaultBGs[(int)Random.Range(0f, m_DefaultBGs.Length - 0.001f)];
 			} else {
 				sprite = BlurTexture(sprite);
 			}

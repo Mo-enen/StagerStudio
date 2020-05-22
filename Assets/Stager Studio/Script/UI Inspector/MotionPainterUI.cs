@@ -89,6 +89,7 @@
 		private int HoveredBeat = -1;
 		private int HoveredDiv = -1;
 		private bool UIReady = true;
+		private int PrevSelectingMotionIndex = -1;
 		private Camera _Camera = null;
 
 
@@ -245,6 +246,10 @@
 			bool fieldActive = ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0;
 			m_ValueIF.gameObject.TrySetActive(fieldActive);
 			m_TweenIF.gameObject.TrySetActive(fieldActive);
+			if (MotionItem.SelectingMotionIndex != PrevSelectingMotionIndex) {
+				PrevSelectingMotionIndex = MotionItem.SelectingMotionIndex;
+				RefreshFieldUI();
+			}
 		}
 
 
@@ -455,10 +460,7 @@
 		public void UI_OnTweenEdit (string text) {
 			if (!UIReady) { return; }
 			if (text.TryParseIntForInspector(out int tween)) {
-				var map = GetBeatmap();
-				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
-					map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, null, tween);
-				}
+				TrySetCurrentTween(tween);
 			}
 			RefreshFieldUI();
 		}
@@ -489,6 +491,14 @@
 				}
 			} catch { }
 			UIReady = true;
+		}
+
+
+		public void TrySetCurrentTween (int tween) {
+			var map = GetBeatmap();
+			if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
+				map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, null, tween);
+			}
 		}
 
 

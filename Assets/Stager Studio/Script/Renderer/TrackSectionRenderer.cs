@@ -4,7 +4,7 @@
 	using UnityEngine;
 
 
-	public class TrackSectionRenderer : StageRenderer {
+	public class TrackSectionRenderer : ItemRenderer {
 
 
 

@@ -19,6 +19,15 @@
 		#region --- SUB ---
 
 
+		public enum EditType {
+			None = 0,
+			Create = 1,
+			Modify = 2,
+			Delete = 3,
+
+		}
+
+
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
 		public delegate float FloatHandler ();
@@ -30,6 +39,7 @@
 		public delegate float FillHandler (float time, float fill, float muti);
 		public delegate void LogAxisHintHandler (int axis, string hint);
 		public delegate float SnapTimeHandler (float time, float gap, float offset);
+		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
 
 
 		#endregion
@@ -59,7 +69,8 @@
 		public static FloatHandler GetMusicDuration { get; set; } = null;
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
-		public static VoidHandler OnObjectEdited { get; set; } = null;
+		public static EditHandler BeforeObjectEdited { get; set; } = null;
+		public static EditHandler OnObjectEdited { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
 		public static BoolHandler GetUseDynamicSpeed { get; set; } = null;
 		public static BoolHandler GetUseAbreast { get; set; } = null;
@@ -229,8 +240,9 @@
 
 			if (hasSelection && (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))) {
 				// Del
+				BeforeObjectEdited(EditType.Delete, SelectingItemType, SelectingItemIndex);
 				map.DeleteItem(SelectingItemType, SelectingItemIndex);
-				OnObjectEdited();
+				OnObjectEdited(EditType.None, SelectingItemType, SelectingItemIndex);
 			}
 
 			if (hasSelection && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.X)) && Input.GetKey(KeyCode.LeftControl)) {
@@ -242,8 +254,9 @@
 					// Copy Success
 					if (Input.GetKeyDown(KeyCode.X)) {
 						// Delete If Cut
+						BeforeObjectEdited(EditType.Delete, SelectingItemType, SelectingItemIndex);
 						map.DeleteItem(SelectingItemType, SelectingItemIndex);
-						OnObjectEdited();
+						OnObjectEdited(EditType.None, SelectingItemType, SelectingItemIndex);
 					}
 					// Hint
 					LogHint(GetLanguage(HINT_Copy), true);
@@ -263,13 +276,18 @@
 				if (CopyType >= 0 && CopyLength > 0) {
 					var obj = Util.BytesToObject(CopyBuffer, 0, CopyLength);
 					if (obj != null && obj is Beatmap.MapItem mObj) {
-						mObj.Time = GetSnapedTime(GetMusicTime(), m_Grid.TimeGap, m_Grid.TimeOffset);
+						float musicTime = GetMusicTime();
+						mObj.Time = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+						if (mObj.Time >= musicTime) {
+							mObj.Time -= m_Grid.TimeGap;
+						}
 						switch (CopyType) {
 							case 0: // Stage
 								if (obj is Beatmap.Stage sObj) {
 									map.AddStage(sObj);
+									BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
 									SetSelection(0, map.Stages.Count - 1);
-									OnObjectEdited();
+									OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
 									// Hint
 									LogHint(GetLanguage(HINT_Paste), true);
 								}
@@ -280,8 +298,9 @@
 										tObj.StageIndex = SelectingItemIndex;
 									}
 									map.AddTrack(tObj);
+									BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
 									SetSelection(1, map.Tracks.Count - 1);
-									OnObjectEdited();
+									OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
 									// Hint
 									LogHint(GetLanguage(HINT_Paste), true);
 								}
@@ -293,8 +312,9 @@
 										nObj.TrackIndex = SelectingItemIndex;
 									}
 									map.AddNote(nObj);
+									BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
 									SetSelection(2, map.Notes.Count - 1);
-									OnObjectEdited();
+									OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
 									// Hint
 									LogHint(GetLanguage(HINT_Paste), true);
 								}
@@ -302,8 +322,9 @@
 							case 3: // Timing
 								if (obj is Beatmap.Timing tiObj) {
 									map.AddTiming(tiObj);
+									BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
 									SetSelection(3, map.Timings.Count - 1);
-									OnObjectEdited();
+									OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
 									// Hint
 									LogHint(GetLanguage(HINT_Paste), true);
 								}
@@ -357,7 +378,7 @@
 		private void LateUpdate_Down (Beatmap map) {
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
 			if (SelectingBrushIndex == -1) {
-				// Select or Move
+				// Select
 				var ray = GetMouseRay();
 				var (overlapType, overlapIndex, overlapSubIndex, _) = GetCastTypeIndex(ray, UnlockedMask, true);
 				if (SelectingItemIndex < 0 || overlapType != SelectingItemType || overlapIndex != SelectingItemIndex) {
@@ -375,8 +396,9 @@
 				var (type, index, _, _) = GetCastTypeIndex(ray, UnlockedMask, true);
 				if (type < 4) {
 					// Stage Track Note Timing
+					BeforeObjectEdited(EditType.Delete, type, index);
 					map.DeleteItem(type, index);
-					OnObjectEdited();
+					OnObjectEdited(EditType.None, type, index);
 				}
 			} else {
 				var ray = GetMouseRay();
@@ -384,34 +406,43 @@
 				// Paint
 				switch (SelectingBrushIndex) {
 					case 0: { // Stage
-						var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+						var (zoneMin, zoneMax, _, zoneRatio) = GetZoneMinMax();
 						var ghostWorldPos = m_Ghost.transform.position;
 						var zonePos = Util.Vector3InverseLerp3(
 							zoneMin, zoneMax,
 							ghostWorldPos.x, ghostWorldPos.y
 						);
 						float musicTime = GetMusicTime();
+						float paintTime = musicTime;
 						if (m_Grid.RendererEnable) {
-							musicTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+						}
+						if (paintTime >= musicTime) {
+							paintTime -= m_Grid.TimeGap;
 						}
 						float musicDuration = GetMusicDuration();
+						BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
 						map.AddStage(
-							musicTime,
-							musicDuration - musicTime,
+							paintTime,
+							musicDuration - paintTime,
 							zonePos.x,
 							zonePos.y,
 							StageBrushWidth,
-							StageBrushHeight
+							StageBrushHeight / zoneRatio
 						);
-						OnObjectEdited();
+						OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
 					}
 					break;
 					case 1: { // Track
 						var (type, index, _, _) = GetCastTypeIndex(ray, ItemMasks[0], true);
 						if (type != 0 || index < 0 || index >= map.Stages.Count) { break; }
 						float musicTime = GetMusicTime();
+						float paintTime = musicTime;
 						if (m_Grid.RendererEnable) {
-							musicTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+						}
+						if (paintTime >= musicTime) {
+							paintTime -= m_Grid.TimeGap;
 						}
 						var stage = map.Stages[index];
 						if (stage.duration <= 0) { break; }
@@ -430,14 +461,15 @@
 							Stage.GetStagePivotY(stage),
 							Stage.GetStageWorldRotationZ(stage)
 						).x;
+						BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
 						map.AddTrack(
 							index,
-							musicTime,
-							Mathf.Max(stage.Duration - (musicTime - stage.Time), 0.001f),
+							paintTime,
+							Mathf.Max(stage.Duration - (paintTime - stage.Time), 0.001f),
 							trackX,
 							UseGlobalBrushScale.Value ? TrackBrushWidth / stageWidth : TrackBrushWidth
 						);
-						OnObjectEdited();
+						OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
 					}
 					break;
 					case 2: { // Note 
@@ -465,6 +497,7 @@
 							trackWidth,
 							Track.GetTrackAngle(track)
 						);
+						BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
 						map.AddNote(
 							index,
 							GetFilledTime(GetMusicTime(), localPos.y, m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti),
@@ -472,7 +505,7 @@
 							localPos.x,
 							UseGlobalBrushScale.Value ? NoteBrushWidth / trackWidth / stageWidth : NoteBrushWidth
 						);
-						OnObjectEdited();
+						OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
 					}
 					break;
 					case 3: { // Timing
@@ -486,8 +519,9 @@
 						if (m_Grid.RendererEnable) {
 							timingTime = GetSnapedTime(timingTime, m_Grid.TimeGap, m_Grid.TimeOffset);
 						}
+						BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
 						map.AddTiming(timingTime, 1f);
-						OnObjectEdited();
+						OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
 					}
 					break;
 				}
@@ -833,6 +867,7 @@
 			switch (SelectingItemType) {
 				case 0: { // Stage
 					if (index >= map.Stages.Count) { break; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
 					var stage = map.Stages[index];
 					Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
 					var worldPos = pos - DragOffsetWorld;
@@ -866,11 +901,13 @@
 						map.SetStageWidth(index, newWidth);
 						LogAxisMSG(axis, newWidth);
 					}
+					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 				}
 				break;
 				case 1: {// Track
 					var track = index < map.Tracks.Count ? map.Tracks[index] : null;
 					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
 					var stage = map.Stages[track.StageIndex];
 					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
 					var sWidth = Stage.GetStageWidth(stage);
@@ -911,6 +948,7 @@
 						map.SetTrackWidth(index, newWidth);
 						LogAxisMSG(axis, newWidth);
 					}
+					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 				}
 				break;
 				case 2: { // Note
@@ -918,6 +956,7 @@
 					if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
 					var track = map.Tracks[note.TrackIndex];
 					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
 					var stage = map.Stages[track.StageIndex];
 					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
 					var sWidth = Stage.GetStageWidth(stage);
@@ -972,9 +1011,11 @@
 						map.SetNoteWidth(index, newWidth);
 						LogAxisMSG(axis, newWidth);
 					}
+					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 				}
 				break;
 				case 3: { // Timing
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
 					if (axis == 1 || axis == 2) {
 						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
 						var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
@@ -982,10 +1023,12 @@
 						map.SetTime(3, index, newTime);
 						LogAxisMSG(axis, newTime);
 					}
+					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 				}
 				break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
 					if (axis == 1 || axis == 2) {
 						if (SelectingItemType == 5 && (index < 0 || index >= map.Tracks.Count)) { break; }
 						int stageIndex = SelectingItemType == 4 ? index : map.GetParentIndex(1, index);
@@ -1020,9 +1063,9 @@
 							LogAxisMSG(axis, newTime);
 						}
 					}
+					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					break;
 			}
-			OnObjectEdited();
 		}
 
 

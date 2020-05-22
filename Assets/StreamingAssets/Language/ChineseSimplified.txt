@@ -695,7 +695,7 @@ Tip.Inspector.Motion.Painter
 左键点击添加/选择帧，右键移动音乐时间，选择后按Del键删除帧
 
 Tip.Inspector.Motion.Tween
-选中运动节点的补间
+选中运动节点的补间（双击打开补间选择器）
 
 Tip.Inspector.Motion.Value
 选中运动节点的值
@@ -891,6 +891,9 @@ Tip.Setting.Tip
 
 Tip.Setting.TrackBrushWidth
 轨道笔刷绘制内容的宽度
+
+Tip.Setting.UseEditorEffect
+是否在编辑谱面时显示特效，比如添加或删除物体时的光效等
 
 Tip.Setting.Wave
 是否显示声波
@@ -1239,6 +1242,9 @@ UI.Setting.UIScale.1
 
 UI.Setting.UIScale.2
 大
+
+UI.Setting.UseEditorEffect
+使用编辑器特效
 
 UI.Setting.UseSFX
 音乐特效

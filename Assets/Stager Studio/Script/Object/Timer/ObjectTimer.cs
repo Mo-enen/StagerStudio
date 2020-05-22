@@ -77,7 +77,12 @@
 			if (lineActive) {
 				Line.localScale = new Vector3(Line.localScale.x, LateScaleY, 1f);
 				var size = m_LineRenderer.size;
-				size.y = LateScaleY / m_LineRenderer.transform.localScale.y;
+				float lineScaleY = m_LineRenderer.transform.localScale.y;
+				if (headActive) {
+					size.y = Head.localPosition.y / lineScaleY;
+				} else if (tailActive) {
+					size.y = Tail.localPosition.y / lineScaleY;
+				}
 				m_LineRenderer.size = size;
 			}
 		}

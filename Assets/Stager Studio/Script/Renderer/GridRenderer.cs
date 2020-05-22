@@ -5,7 +5,7 @@
 
 
 
-	public class GridRenderer : StageRenderer {
+	public class GridRenderer : ItemRenderer {
 
 
 		// SUB

@@ -26,16 +26,6 @@
 
 
 	[System.Serializable]
-	public enum SkinLoopType {
-		Type = 0,
-		Forward = 1,
-		Loop = 2,
-		PingPong = 3,
-		PingPong_Stay = 4,
-	}
-
-
-	[System.Serializable]
 	public class SkinData {
 
 
@@ -266,31 +256,15 @@
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);
 
 
-		public int GetFrame (int itemType, SkinLoopType loop, float lifeTime, float lifeLength) {
+		public int GetFrame (int itemType, bool useType, float lifeTime) {
 			int count = Rects.Count;
 			float spf = FrameDuration / 1000f;
 			if (count <= 1 || FrameDuration == 0) { return 0; }
-			switch (loop) {
-				default:
-				case SkinLoopType.Type:
-					return Mathf.Clamp(itemType, 0, count - 1);
-				case SkinLoopType.Forward:
-					return Mathf.Clamp(Mathf.FloorToInt(
-						Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf
-					), 0, count - 1);
-				case SkinLoopType.Loop:
-					return Mathf.Clamp(Mathf.FloorToInt(
-						Mathf.Repeat(lifeTime, TotalDuration) / spf
-					), 0, count - 1);
-				case SkinLoopType.PingPong:
-					return Mathf.Clamp(Mathf.FloorToInt(
-						Mathf.PingPong(lifeTime, TotalDuration) / spf
-					), 0, count - 1);
-				case SkinLoopType.PingPong_Stay:
-					return Mathf.Clamp(Mathf.FloorToInt(
-						Mathf.Clamp(lifeTime < lifeLength / 2f ? lifeTime : lifeLength - lifeTime, 0f, TotalDuration) / spf
-					), 0, count - 1);
-			}
+			return useType ?
+				Mathf.Clamp(itemType, 0, count - 1) :
+				Mathf.Clamp(Mathf.FloorToInt(
+					Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf
+				), 0, count - 1);
 		}
 
 

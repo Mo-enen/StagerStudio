@@ -5,8 +5,7 @@
 	using UnityEngine.UI;
 	using Data;
 	using Object;
-
-
+	using UIGadget;
 
 	public class InspectorUI : MonoBehaviour {
 
@@ -17,6 +16,7 @@
 		public delegate float FloatHandler ();
 		public delegate void VoidHandler ();
 		public delegate string StringStringHandler (string str);
+		public delegate List<(AnimationCurve, Color32)> TweensHandler ();
 
 		// Const
 		private const string HEADER_BEATMAP = "Inspector.Header.Beatmap";
@@ -34,6 +34,7 @@
 		public static VoidHandler OnBeatmapEdited { get; set; } = null;
 		public static VoidHandler OnItemEdited { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static TweensHandler GetProjectTweens { get; set; } = null;
 
 		// Short
 		private BeatmapInspectorUI BeatmapInspector => _BeatmapInspector != null ? _BeatmapInspector : (_BeatmapInspector = m_Container.GetChild(0).GetComponent<BeatmapInspectorUI>());
@@ -47,6 +48,9 @@
 		[SerializeField] private RectTransform m_Container = null;
 		[SerializeField] private RectTransform m_MotionInspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
+		[SerializeField] private RectTransform m_TweenSelectorRoot = null;
+		[SerializeField] private RectTransform m_TweenSelectorContent = null;
+		[SerializeField] private Grabber m_TweenSelectorPrefab = null;
 
 		// Data
 		private BeatmapInspectorUI _BeatmapInspector = null;
@@ -123,6 +127,7 @@
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			MotionItem.SelectingMotionIndex = -1;
+			CloseTweenSelector();
 			PlayMotionAnimation(true, true);
 		}
 
@@ -133,7 +138,38 @@
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			MotionItem.SelectingMotionIndex = -1;
+			CloseTweenSelector();
 			PlayMotionAnimation(false, useAnimation);
+		}
+
+
+		public void OpenTweenSelector () {
+			m_TweenSelectorRoot.gameObject.TrySetActive(true);
+			m_TweenSelectorContent.DestroyAllChildImmediately();
+			var tweens = GetProjectTweens();
+			if (tweens == null || tweens.Count == 0) { return; }
+			for (int i = 0; i < tweens.Count; i++) {
+				int index = i;
+				var grab = Instantiate(m_TweenSelectorPrefab, m_TweenSelectorContent);
+				var rt = grab.transform as RectTransform;
+				rt.anchoredPosition3D = rt.anchoredPosition;
+				rt.localScale = Vector3.one;
+				rt.localRotation = Quaternion.identity;
+				rt.SetAsLastSibling();
+				grab.Grab<Button>().onClick.AddListener(() => {
+					m_MotionPainter.TrySetCurrentTween(index);
+					m_MotionPainter.RefreshFieldUI();
+					CloseTweenSelector();
+				});
+				grab.Grab<Text>("Label").text = index.ToString("00");
+				grab.Grab<CurveUI>("Curve").Curve = tweens[index].Item1;
+			}
+		}
+
+
+		public void CloseTweenSelector () {
+			m_TweenSelectorRoot.gameObject.TrySetActive(false);
+			m_TweenSelectorContent.DestroyAllChildImmediately();
 		}
 
 
