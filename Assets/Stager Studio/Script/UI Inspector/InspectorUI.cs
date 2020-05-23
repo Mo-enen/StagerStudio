@@ -162,7 +162,7 @@
 					CloseTweenSelector();
 				});
 				grab.Grab<Text>("Label").text = index.ToString("00");
-				grab.Grab<CurveUI>("Curve").Curve = tweens[index].Item1;
+				grab.Grab<Curve>("Curve").CurveData = tweens[index].Item1;
 			}
 		}
 

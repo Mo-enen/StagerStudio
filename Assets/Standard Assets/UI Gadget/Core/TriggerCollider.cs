@@ -5,7 +5,7 @@
 	using UnityEngine.Events;
 
 
-	public class TriggerUI_Collider : MonoBehaviour {
+	public class TriggerCollider : MonoBehaviour {
 
 
 

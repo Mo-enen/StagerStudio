@@ -32,7 +32,7 @@
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
-		private TriggerUI_Collider[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<TriggerUI_Collider>(true));
+		private TriggerCollider[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<TriggerCollider>(true));
 
 		// Ser
 		[SerializeField] private AxisEventHandler m_OnDrag = null;
@@ -42,7 +42,7 @@
 		[SerializeField] private float m_TintBgAlpha = 0.12f;
 
 		// Data
-		private TriggerUI_Collider[] _Triggers = null;
+		private TriggerCollider[] _Triggers = null;
 		private Camera _Camera = null;
 		private Vector3? MouseDown = null;
 

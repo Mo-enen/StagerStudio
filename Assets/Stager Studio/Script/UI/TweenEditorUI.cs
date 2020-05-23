@@ -17,7 +17,7 @@
 		// Short
 		private AnimationCurve UICurve {
 			get {
-				var curve = m_Curve.Curve;
+				var curve = m_Curve.CurveData;
 				if (curve is null) {
 					curve = AnimationCurve.Linear(0, 0, 1, 1);
 				}
@@ -26,7 +26,7 @@
 		}
 
 		// Ser
-		[SerializeField] private CurveUI m_Curve = null;
+		[SerializeField] private Curve m_Curve = null;
 		[SerializeField] private RectTransform m_HoverPoint = null;
 		[SerializeField] private RectTransform m_SelectionPoint = null;
 		[SerializeField] private RectTransform m_InTangent = null;
@@ -110,7 +110,7 @@
 					curve.MoveKey(i, key);
 				}
 			}
-			m_Curve.Curve = curve;
+			m_Curve.CurveData = curve;
 			// Trigger
 			m_EditorTrigger.triggers[0].callback.AddListener(OnEditorDown);
 			m_HoverTrigger.triggers[0].callback.AddListener(OnEditorDown);

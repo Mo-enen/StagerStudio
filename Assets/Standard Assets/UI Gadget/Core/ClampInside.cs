@@ -4,7 +4,7 @@
 	using UnityEngine;
 
 
-	public class ClampUI : MonoBehaviour {
+	public class ClampInside : MonoBehaviour {
 
 
 		public enum Mode {

@@ -1,7 +1,4 @@
 ﻿namespace UIGadget {
-#if UNITY_EDITOR
-	using UnityEditor;
-#endif
 	using UnityEngine;
 	using UnityEngine.UI;
 
@@ -11,11 +8,11 @@
 	public class RaycastBlocker : Graphic {
 
 
-#if UNITY_EDITOR
+
 		protected override void Reset () {
 			raycastTarget = true;
 		}
-#endif
+
 
 
 		protected override void Awake () {
@@ -37,11 +34,5 @@
 	}
 
 
-#if UNITY_EDITOR
-	[CustomEditor(typeof(RaycastBlocker))]
-	public class RaycastBlockerEditor : Editor {
-		public override void OnInspectorGUI () { }
-	}
-#endif
 
 }

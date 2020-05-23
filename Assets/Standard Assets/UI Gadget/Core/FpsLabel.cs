@@ -7,7 +7,7 @@
 
 	public class FpsLabel : Text {
 
-
+		
 
 		// Ser
 		[SerializeField] private float m_Gap = 0.618f;

@@ -185,6 +185,7 @@
 
 
 		private void Update () {
+
 			var (aValue, aIndex, aWidth) = GetAbreastData();
 			var dropSpeed = GetDropSpeed();
 			var map = m_Project.Beatmap;

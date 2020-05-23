@@ -494,7 +494,7 @@
 					var rt = item.transform as RectTransform;
 					int rtIndex = rt.GetSiblingIndex();
 					item.Grab<Text>("Index").text = rtIndex.ToString();
-					item.Grab<CurveUI>("Renderer").Curve = curve;
+					item.Grab<Curve>("Renderer").CurveData = curve;
 					var trigger = item.Grab<TriggerUI>();
 					trigger.CallbackLeft.AddListener(() => SpawnTweenEditor(curve, (resultCurve) => {
 						SetProjectTweenCurve(resultCurve, null, rtIndex);
