@@ -250,12 +250,17 @@
 				get => itemType;
 				set => itemType = value;
 			}
+			public float Speed {
+				get => speed / 1000f;
+				set => speed = Mathf.RoundToInt(value * 1000f);
+			}
 
 			// Ser
 			public int itemType = 0;
 			public int time = 0;
 			public int duration = 0;
 			public int x = 0;
+			public int speed = 1000;
 
 			// Cache
 			[System.NonSerialized] public bool _Active = false;
@@ -273,10 +278,6 @@
 
 
 			// API
-			public float Speed {
-				get => speed / 1000f;
-				set => speed = Mathf.RoundToInt(value * 1000f);
-			}
 			public float Y {
 				get => y / 1000f;
 				set => y = Mathf.RoundToInt(value * 1000f);
@@ -323,7 +324,6 @@
 			}
 
 			// SER-API
-			public int speed = 1000;
 			public int y = 0;
 			public int width = 1000;
 			public int height = 1000;
@@ -337,7 +337,7 @@
 			public List<TimeFloatTween> heights;
 
 			// Cache
-			[System.NonSerialized] public int _TrackCount = 0;
+			[System.NonSerialized] public int c_TrackCount = 0;
 
 
 			// API
@@ -438,9 +438,9 @@
 			public List<TimeFloatTween> widths;
 
 			// Cache
-			[System.NonSerialized] public (float min, float max) _TrayX = (0.5f, 0.5f);
-			[System.NonSerialized] public float _TrayTime = float.MaxValue;
-			[System.NonSerialized] public Color _Tint = UnityEngine.Color.white;
+			[System.NonSerialized] public (float min, float max) c_TrayX = (0.5f, 0.5f);
+			[System.NonSerialized] public float c_TrayTime = float.MaxValue;
+			[System.NonSerialized] public Color c_Tint = UnityEngine.Color.white;
 
 
 			// API
@@ -546,7 +546,7 @@
 		public class Timing : MapItem {
 
 			// API
-			public float Speed {
+			public float Value {
 				get => x / 100f;
 				set => x = Mathf.RoundToInt(value * 100f);
 			}
@@ -576,9 +576,9 @@
 			[System.NonSerialized] public float _CacheTime = -1f;
 
 			// API
-			public Timing (float time, float speed) {
+			public Timing (float time, float value) {
 				Time = time;
-				Speed = speed;
+				Value = value;
 			}
 
 		}
@@ -864,6 +864,12 @@
 				item.Duration = duration;
 			}
 		}
+		public void SetSpeed (int type, int index, float speed) {
+			var item = GetItem(type, index);
+			if (item != null) {
+				item.Speed = speed;
+			}
+		}
 		public float GetSpeedMuti (int type, int index) {
 			var item = GetItem(type, index);
 			return item != null ? item._SpeedMuti : 1f;
@@ -872,11 +878,6 @@
 		public void SetStageY (int index, float y) {
 			if (index >= 0 && index < Stages.Count) {
 				Stages[index].Y = y;
-			}
-		}
-		public void SetStageSpeed (int index, float speed) {
-			if (index >= 0 && index < Stages.Count) {
-				Stages[index].Speed = speed;
 			}
 		}
 		public void SetStagePivot (int index, float pivot) {
@@ -972,9 +973,9 @@
 			}
 		}
 
-		public void SetTimingSpeed (int index, int speed) {
+		public void SetTimingX (int index, int x) {
 			if (index >= 0 && index < Timings.Count) {
-				Timings[index].x = speed;
+				Timings[index].x = x;
 			}
 		}
 		public void SetTimingSfxIndex (int index, byte sfx) {

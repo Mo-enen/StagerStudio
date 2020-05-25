@@ -9,6 +9,13 @@
 	public class ObjectRenderer : ItemRenderer {
 
 
+		public enum LoopType {
+			ItemType = 0,
+			Forward = 1,
+			Loop = 2,
+		}
+
+
 		// API
 		public SkinData SkinData {
 			get => _Data;
@@ -63,13 +70,18 @@
 				}
 			}
 		}
+		public int Loop {
+			get => (int)m_LoopType;
+			set => m_LoopType = (LoopType)value;
+		}
 
 		// Short
 		private AnimatedItemData AniData => SkinData?.Items[(int)Type];
 
+
 		// Ser
 		[SerializeField] private bool m_Allow3D = true;
-		[SerializeField] private bool m_UseItemType = true;
+		[SerializeField] private LoopType m_LoopType = LoopType.ItemType;
 
 		// Data
 		private SkinData _Data = null;
@@ -193,7 +205,7 @@
 		// LGC
 		private void ReCalculateFrame () {
 			var ani = AniData;
-			int frame = ani is null ? 0 : ani.GetFrame(ItemType, m_UseItemType, LifeTime);
+			int frame = ani is null ? 0 : ani.GetFrame(ItemType, (int)m_LoopType, LifeTime);
 			if (frame != Frame) {
 				Frame = frame;
 				SetDirty();

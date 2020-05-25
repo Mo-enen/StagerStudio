@@ -108,6 +108,9 @@
 		[SerializeField] private Text m_TipLabelA = null;
 		[SerializeField] private Text m_TipLabelB = null;
 		[SerializeField] private RectTransform m_MotionInspector = null;
+		[SerializeField] private RectTransform m_SelectBrushMark = null;
+		[SerializeField] private RectTransform m_EraseBrushMark = null;
+		[SerializeField] private RectTransform m_GlobalBrushMark = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -181,6 +184,9 @@
 			}
 			QualitySettings.vSyncCount = 0;
 			m_Background.SetBackground(null, false);
+			m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
+			m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
+			m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
 		}
 
 
@@ -197,7 +203,6 @@
 			StageObject.ZoneMinMax = ObjectTimer.ZoneMinMax = m_Zone.GetZoneMinMax();
 			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
-			StageObject.GameSpeedMuti = dropSpeed;
 			StageObject.MusicTime = musicTime;
 			StageObject.Solo = (
 				SoloOnEditMotion.Value && m_MotionPainter.ItemType >= 0,
@@ -437,6 +442,7 @@
 				m_Preview.SetDirty();
 				Resources.UnloadUnusedAssets();
 				RefreshGridRenderer();
+				RefreshOnItemChange();
 				m_Inspector.RefreshUI();
 			};
 			StageProject.OnBeatmapRemoved = () => {
@@ -607,6 +613,11 @@
 					}
 				}
 			};
+			StageEditor.OnBrushChanged = () => {
+				m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
+				m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
+				m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
+			};
 			StageEditor.OnLockEyeChanged = () => {
 				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
 				m_Editor.SetBrush(m_Editor.SelectingBrushIndex);
@@ -631,7 +642,6 @@
 				m_Inspector.RefreshAllInspectors();
 				m_MotionPainter.TrySetDirty();
 				if (editType == StageEditor.EditType.Create) {
-					m_Game.ForceUpdateBeatmap();
 					m_Effect.SpawnCreateEffect(itemType, itemIndex);
 				}
 			};
@@ -829,6 +839,9 @@
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 			};
+			MotionPainterUI.OnSelectionChanged = () => {
+				m_Inspector.CloseTweenSelector();
+			};
 			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
 			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
 			MotionPainterUI.SeekMusic = m_Music.Seek;
@@ -952,8 +965,8 @@
 		public void About () => DialogUtil.Open(
 			$"<size=38><b>Stager Studio</b> v{Application.version}</size>\n" +
 			"<size=20>" +
-			$"Created by 楠瓜Moenen\n\n" +
-			"Home     www.stager.studio\n" +
+			"Created by 楠瓜Moenen\n\n" +
+			//"Home     www.stager.studio\n" +
 			"Email     moenen6@gmail.com\n" +
 			"Twitter   _Moenen\n" +
 			"QQ        754100943" +
@@ -1010,6 +1023,7 @@
 			m_Project.SetDirty();
 			m_Preview.SetDirty();
 			m_TimingPreview.SetDirty();
+			m_Game.ForceUpdateZone();
 		}
 
 
@@ -1062,7 +1076,7 @@
 			m_GridRenderer.SetCountX(2, m_Game.GridCountX2);
 			m_GridRenderer.TimeGap = 60f / m_Game.BPM / m_Game.GridCountY;
 			m_GridRenderer.TimeOffset = m_Game.Shift;
-			m_GridRenderer.SpeedMuti = m_Game.GameDropSpeed;
+			m_GridRenderer.GameSpeedMuti = m_Game.GameDropSpeed;
 		}
 
 

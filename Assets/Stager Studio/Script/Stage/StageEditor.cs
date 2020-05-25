@@ -69,6 +69,7 @@
 		public static FloatHandler GetMusicDuration { get; set; } = null;
 		public static BoolHandler GetEditorActive { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
+		public static VoidHandler OnBrushChanged { get; set; } = null;
 		public static EditHandler BeforeObjectEdited { get; set; } = null;
 		public static EditHandler OnObjectEdited { get; set; } = null;
 		public static VoidHandler OnLockEyeChanged { get; set; } = null;
@@ -115,7 +116,6 @@
 		[SerializeField] private AxisHandleUI m_MoveAxis = null;
 		[SerializeField] private Sprite m_HoverSP_Item = null;
 		[SerializeField] private Sprite m_HoverSP_Timer = null;
-		[SerializeField] private RectTransform m_EraseUI = null;
 
 		// Data
 		private readonly static Dictionary<int, float> LayerToTypeMap = new Dictionary<int, float>();
@@ -136,7 +136,7 @@
 		private Vector3 DragOffsetWorld = default;
 
 		// Saving
-		public SavingBool UseGlobalBrushScale { get; set; } = new SavingBool("StageEditor.UseGlobalBrushScale", true);
+		public SavingBool UseGlobalBrushScale { get; set; } = new SavingBool("StageEditor.UseGlobalBrushScale", false);
 		public SavingBool ShowGridOnSelect { get; set; } = new SavingBool("StageEditor.ShowGridOnSelect", false);
 
 
@@ -500,7 +500,7 @@
 						BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
 						map.AddNote(
 							index,
-							GetFilledTime(GetMusicTime(), localPos.y, m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti),
+							GetFilledTime(GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
 							0f,
 							localPos.x,
 							UseGlobalBrushScale.Value ? NoteBrushWidth / trackWidth / stageWidth : NoteBrushWidth
@@ -515,7 +515,7 @@
 							zoneMin, zoneMax_real,
 							ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
 						);
-						float timingTime = GetFilledTime(GetMusicTime(), zonePos.y, m_Grid.SpeedMuti);
+						float timingTime = GetFilledTime(GetMusicTime(), zonePos.y, m_Grid.GameSpeedMuti);
 						if (m_Grid.RendererEnable) {
 							timingTime = GetSnapedTime(timingTime, m_Grid.TimeGap, m_Grid.TimeOffset);
 						}
@@ -570,7 +570,7 @@
 				bool editorActive = GetEditorActive();
 				bool xActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool yActive = editorActive && SelectingItemType != 1;
-				bool xyActive = xActive && yActive;
+				bool xyActive = xActive || yActive;
 				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
 				bool dActive = editorActive && SelectingItemType == 2;
 				if (AxisMoveX.gameObject.activeSelf != xActive) {
@@ -669,7 +669,8 @@
 						pos = hoverTarget.GetChild(0).position;
 						rot = hoverTarget.rotation;
 						scl = hoverTarget.GetChild(0).localScale;
-						m_Grid.ObjectSpeedMuti = GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) : 1f;
+						m_Grid.ObjectSpeedMuti =
+							GetUseDynamicSpeed() ? map.GetSpeedMuti(hoverItemType, hoverItemIndex) / m_Grid.GameSpeedMuti : 1f;
 					} else {
 						m_Grid.ObjectSpeedMuti = 1f;
 					}
@@ -695,7 +696,7 @@
 					scl = target.GetChild(0).localScale;
 					m_Grid.Mode = 3;
 					m_Grid.IgnoreDynamicSpeed = true;
-					m_Grid.ObjectSpeedMuti = 1f / m_Grid.SpeedMuti;
+					m_Grid.ObjectSpeedMuti = 1f / m_Grid.GameSpeedMuti;
 					break;
 			}
 			m_Grid.SetGridTransform(gridEnable, ShowGridOnSelect.Value || !selectingMode, pos, rot, scl);
@@ -982,7 +983,7 @@
 						float newTime = GetFilledTime(
 							m_Grid.MusicTime,
 							localPos.y,
-							m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
+							m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
 						);
 						map.SetTime(2, index, newTime);
 						LogAxisMSG(axis, localPos.x, newTime);
@@ -991,7 +992,7 @@
 						float newDuration = GetFilledTime(
 							m_Grid.MusicTime,
 							localPos.y,
-							m_Grid.SpeedMuti * m_Grid.ObjectSpeedMuti
+							m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
 						) - note.Time;
 						map.SetDuration(2, index, Mathf.Max(newDuration, 0f));
 						LogAxisMSG(axis, newDuration);
@@ -1019,7 +1020,7 @@
 					if (axis == 1 || axis == 2) {
 						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
 						var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
-						float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.SpeedMuti, 0f);
+						float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.GameSpeedMuti, 0f);
 						map.SetTime(3, index, newTime);
 						LogAxisMSG(axis, newTime);
 					}
@@ -1044,7 +1045,7 @@
 							Stage.GetStageWorldRotationZ(stage)
 						) : TrackTimer.ZoneToLocalY(
 							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-							Stage.GetStagePosition(stage, index),
+							Stage.GetStagePosition(stage, stageIndex),
 							Stage.GetStageHeight(stage),
 							Stage.GetStagePivotY(stage),
 							Stage.GetStageWorldRotationZ(stage),
@@ -1079,6 +1080,7 @@
 
 		public void SwitchUseGlobalBrushScale () {
 			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
+			OnBrushChanged();
 			try {
 				LogHint(
 					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
@@ -1247,9 +1249,9 @@
 						}
 						if (itemIndex >= overlapIndex) {
 							tf = CastHits[i].transform.parent;
+							overlapSubIndex = (int)typeF == 4 || (int)typeF == 5 ? itemSubIndex : 0;
+							overlapIndex = itemIndex;
 						}
-						overlapIndex = Mathf.Max(itemIndex, overlapIndex);
-						overlapSubIndex = (int)typeF == 4 || (int)typeF == 5 ? Mathf.Max(itemSubIndex, overlapSubIndex) : 0;
 						overlapType = typeF;
 					}
 				}
@@ -1316,13 +1318,13 @@
 					brushIndex = -1;
 					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
 				}
-				m_EraseUI.gameObject.TrySetActive(false);
 				// Brushs TG
 				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
 					m_DefaultBrushTGs[i].isOn = i == brushIndex;
 				}
 				// Logic
 				SelectingBrushIndex = brushIndex;
+				OnBrushChanged();
 			} catch { }
 			UIReady = true;
 		}
@@ -1335,9 +1337,9 @@
 					SelectingBrushIndex = -1;
 				} else {
 					SelectingBrushIndex = -2;
-					m_EraseUI.gameObject.TrySetActive(true);
 				}
 				ClearSelection();
+				OnBrushChanged();
 				// Brushs TG
 				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
 					m_DefaultBrushTGs[i].isOn = false;

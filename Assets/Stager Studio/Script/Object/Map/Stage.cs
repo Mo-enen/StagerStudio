@@ -156,6 +156,13 @@
 		#region --- API ---
 
 
+		public static void UpdateCache (Beatmap.Stage stageData, int index, bool timerActive, float parentSpeed) {
+			stageData._Active = GetStageActive(stageData, index);
+			stageData._SpeedMuti = parentSpeed * stageData.Speed;
+			stageData._TimerActive = timerActive;
+		}
+
+
 		protected override void RefreshRendererZone () {
 			base.RefreshRendererZone();
 			RefreshRendererZoneFor(m_JudgelineRenderer);
@@ -195,7 +202,7 @@
 
 		public static float GetStageAlpha (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Clamp01(
-				VanishDuration < DURATION_GAP ? 1f :
+				VanishDuration < FLOAT_GAP ? 1f :
 				Mathf.Min(data.Time + data.Duration - MusicTime, MusicTime - data.Time) / VanishDuration
 			), 1f,
 			MusicPlaying ? Abreast.value : 1f
@@ -205,11 +212,6 @@
 		public static float GetStageSpeed (Beatmap.Stage data) => Mathf.Lerp(
 			data.Speed, 1f, Abreast.value
 		);
-
-
-		public static bool GetStageActive (Beatmap.Stage data, int stageIndex) =>
-			Solo.active ? stageIndex == Solo.stage :
-			Abreast.value >= 0.5f || (MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
 
 
 		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => GetStagePosition(data, stageIndex, MusicTime);
@@ -269,6 +271,19 @@
 			pos01.y += stagePivotY;
 			return pos01;
 		}
+
+
+		#endregion
+
+
+
+
+		#region --- LGC ---
+
+
+		private static bool GetStageActive (Beatmap.Stage data, int stageIndex) =>
+			Solo.active ? stageIndex == Solo.stage :
+			Abreast.value >= 0.5f || (MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
 
 
 		#endregion

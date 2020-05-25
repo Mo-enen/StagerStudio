@@ -6,7 +6,7 @@
 	using UIGadget;
 
 
-	[CustomEditor(typeof(Grabber)), CanEditMultipleObjects]
+	[CustomEditor(typeof(Grabber), true), CanEditMultipleObjects]
 	public class GrabberInspector : Editor {
 
 

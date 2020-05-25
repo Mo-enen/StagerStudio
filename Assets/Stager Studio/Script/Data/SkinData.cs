@@ -161,11 +161,11 @@
 		}
 
 
-		public Vector4 TryGetItemBorder (int index) {
+		public Vector4 TryGetItemBorder (int index, int rectIndex) {
 			if (Items is null || index < 0 || index >= Items.Count) { return default; }
 			var item = Items[index];
 			if (item.Rects is null || item.Rects.Count == 0) { return default; }
-			var rect = item.Rects[0];
+			var rect = item.Rects[Mathf.Clamp(rectIndex, 0, item.Rects.Count - 1)];
 			return new Vector4(rect.BorderL, rect.BorderR, rect.BorderD, rect.BorderU);
 		}
 
@@ -256,15 +256,23 @@
 		public void SetDuration (int durationMS) => FrameDuration = Mathf.Max(durationMS, 1);
 
 
-		public int GetFrame (int itemType, bool useType, float lifeTime) {
+		public int GetFrame (int itemType, int loopType, float lifeTime) {
 			int count = Rects.Count;
 			float spf = FrameDuration / 1000f;
 			if (count <= 1 || FrameDuration == 0) { return 0; }
-			return useType ?
-				Mathf.Clamp(itemType, 0, count - 1) :
-				Mathf.Clamp(Mathf.FloorToInt(
-					Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf
-				), 0, count - 1);
+			switch (loopType) {
+				default:
+				case 0: // Item Type
+					return Mathf.Clamp(itemType, 0, count - 1);
+				case 1: // Forward
+					return Mathf.Clamp(Mathf.FloorToInt(
+						Mathf.Clamp(lifeTime, 0f, TotalDuration) / spf
+					), 0, count - 1);
+				case 2: // Loop
+					return Mathf.Clamp(Mathf.FloorToInt(
+						Mathf.Repeat(lifeTime, TotalDuration) / spf
+					), 0, count - 1);
+			}
 		}
 
 

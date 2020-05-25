@@ -49,13 +49,13 @@
 				gameObject.SetActive(false);
 				return;
 			}
-			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+			SkinType type = noteData.Duration > FLOAT_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			Duration = type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold;
 			MainRenderer.Type = type;
 
 			if (MusicPlaying && GetLumActive(noteData)) {
 				// Active
-				Update_Movement(noteData, noteData.Duration <= DURATION_GAP, type);
+				Update_Movement(noteData, noteData.Duration <= FLOAT_GAP, type);
 			} else {
 				// Inactive
 				gameObject.SetActive(false);
@@ -75,12 +75,11 @@
 			// Get/Check Linked Track/Stage
 			MainRenderer.RendererEnable = false;
 			var linkedTrack = Beatmap.Tracks[noteData.TrackIndex];
-			if (linkedTrack is null || !Track.GetTrackActive(linkedTrack, noteData.TrackIndex)) { return; }
+			if (linkedTrack is null || !linkedTrack._Active) { return; }
 			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
-			if (linkedStage is null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
+			if (linkedStage is null || !linkedStage._Active) { return; }
 
 			Time = noteData.Time;
-			var noteType = SkinType.Note;
 			var judgeLineSize = GetRectSize(SkinType.JudgeLine, 0);
 			var stagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
 			float stageWidth = Stage.GetStageWidth(linkedStage);
@@ -99,7 +98,7 @@
 			var noteWorldPos = Util.Vector3Lerp3(zoneMin, zoneMax, pos.x, pos.y, pos.z);
 
 			// Movement
-			var noteSize = GetRectSize(noteType, noteData.ItemType);
+			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
 			var lumSize = GetRectSize(lumType, 0, true, true);
 			float scaleX, scaleY;
 			if (lumSize.x < 0f) {
@@ -127,6 +126,7 @@
 
 			// Renderer
 			MainRenderer.RendererEnable = true;
+			MainRenderer.Loop = lumType == SkinType.NoteLuminous ? 1 : 2;
 			MainRenderer.Scale = new Vector2(scaleX, scaleY);
 			MainRenderer.SetSortingLayer(SortingLayerID_Lum, GetSortingOrder());
 
@@ -162,12 +162,12 @@
 
 
 		public static bool GetLumActive (Beatmap.Note noteData) {
-			SkinType type = noteData.Duration > DURATION_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
+			SkinType type = noteData.Duration > FLOAT_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			float duration = (type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold);
 			return
 				MusicPlaying &&
 				MusicTime >= noteData.Time &&
-				duration > DURATION_GAP &&
+				duration > FLOAT_GAP &&
 				MusicTime <= noteData.Time + noteData.Duration + duration;
 		}
 

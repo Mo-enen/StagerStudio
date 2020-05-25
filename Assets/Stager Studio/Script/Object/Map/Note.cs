@@ -97,7 +97,6 @@
 				gameObject.SetActive(false);
 				return;
 			}
-			noteData._Active = false;
 
 			// Get/Check Linked Track/Stage
 			var linkedTrack = Beatmap.Tracks[noteData.TrackIndex];
@@ -119,11 +118,9 @@
 			Update_Sound(noteData, linkedNote);
 
 			// Active
-			bool active = GetNoteActive(noteData, linkedNote, noteData._AppearTime);
-			noteData._Active = active;
 			Update_Gizmos(linkedStage, noteData, noteIndex);
 
-			if (!active) {
+			if (!noteData._Active) {
 				gameObject.SetActive(false);
 				return;
 			}
@@ -157,18 +154,19 @@
 		}
 
 
-		public static void Update_Cache (Beatmap.Note noteData, float speedMuti) {
+		public static void Update_Cache (Beatmap.Note noteData, Beatmap.Note linkedNote, bool trackActive, float parentSpeed) {
 			if (noteData._LocalCacheDirtyID != Beatmap.Note._CacheDirtyID) {
 				noteData._LocalCacheDirtyID = Beatmap.Note._CacheDirtyID;
 				noteData._CacheTime = -1f;
 			}
-			if (speedMuti != noteData._SpeedMuti) {
-				noteData._SpeedMuti = speedMuti;
+			float noteSpeedMuti = parentSpeed * noteData.Speed;
+			if (noteSpeedMuti != noteData._SpeedMuti) {
+				noteData._SpeedMuti = noteSpeedMuti;
 				noteData._CacheTime = -1f;
 			}
 			if (noteData._CacheTime != noteData.Time) {
 				noteData._CacheTime = noteData.Time;
-				noteData._AppearTime = GetFilledTime(noteData.Time, -1f, speedMuti);
+				noteData._AppearTime = GetFilledTime(noteData.Time, -1f, noteSpeedMuti);
 				noteData._NoteDropStart = -1f;
 				noteData._SpeedOnDrop = GetDropSpeedAt(noteData.Time);
 			}
@@ -179,16 +177,18 @@
 			}
 			// Note Drop
 			if (noteData._NoteDropStart < 0f) {
-				noteData._NoteDropStart = GetDropOffset(noteData.Time, speedMuti);
-				noteData._NoteDropEnd = GetDropOffset(noteData.Time + noteData.Duration, speedMuti);
+				noteData._NoteDropStart = GetDropOffset(noteData.Time, noteSpeedMuti);
+				noteData._NoteDropEnd = GetDropOffset(noteData.Time + noteData.Duration, noteSpeedMuti);
 			}
+			// Active
+			noteData._Active = trackActive && GetNoteActive(noteData, linkedNote, noteData._AppearTime);
 		}
 
 
 		private void Update_Tray (Beatmap.Track linkedTrack, Beatmap.Note noteData) {
-			if (linkedTrack.HasTray && noteData.Time < linkedTrack._TrayTime && (noteData.Time + noteData.Duration) > MusicTime) {
-				linkedTrack._TrayTime = noteData.Time;
-				linkedTrack._TrayX = (noteData.X - noteData.Width * 0.5f, noteData.X + noteData.Width * 0.5f);
+			if (linkedTrack.HasTray && noteData.Time < linkedTrack.c_TrayTime && (noteData.Time + noteData.Duration) > MusicTime) {
+				linkedTrack.c_TrayTime = noteData.Time;
+				linkedTrack.c_TrayX = (noteData.X - noteData.Width * 0.5f, noteData.X + noteData.Width * 0.5f);
 			}
 		}
 
@@ -213,7 +213,7 @@
 			bool highlighing = MusicTime > Time && MusicTime < Time + Duration;
 			float noteZ = GetNoteZ(noteData);
 			var tint = highlighing ? HighlightTints[(int)SkinType.Note] : WHITE_32;
-			if (TintNote) { tint *= linkedTrack._Tint; }
+			if (TintNote) { tint *= linkedTrack.c_Tint; }
 
 			// Movement
 			var noteZonePos = Track.LocalToZone(
@@ -226,9 +226,11 @@
 
 			// Size
 			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
+			var noteBorder = GetRectBorder(SkinType.Note, noteData.ItemType);
+			float fixedNoteSizeY = noteBorder.z < FLOAT_GAP ? noteSize.y : noteBorder.z;
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, Duration > DURATION_GAP ? 0.0001f : noteSize.y);
-			var zoneNoteScale = new Vector3(
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, fixedNoteSizeY);
+			Vector3 zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,
 				1f
@@ -247,7 +249,7 @@
 			MainRenderer.Duration = Duration;
 			MainRenderer.Scale = new Vector2(noteScaleX, noteScaleY);
 			MainRenderer.SetSortingLayer(
-				Duration <= DURATION_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold,
+				Duration <= FLOAT_GAP ? SortingLayerID_Note : SortingLayerID_Note_Hold,
 				GetSortingOrder()
 			);
 
@@ -270,7 +272,7 @@
 			}
 
 			// Col
-			TrySetColliderLayer(Duration <= DURATION_GAP ? LayerID_Note : LayerID_Note_Hold);
+			TrySetColliderLayer(Duration <= FLOAT_GAP ? LayerID_Note : LayerID_Note_Hold);
 
 			// ZLine
 			bool zlineActive = ShowGrid && active && Abreast.value < 0.5f && noteData.Z > 0.0005f;
@@ -323,7 +325,7 @@
 			PrevClicked = clicked;
 
 			// End Trigger
-			if (noteData.Duration > DURATION_GAP) {
+			if (noteData.Duration > FLOAT_GAP) {
 				// End Click Sound
 				bool altClicked = MusicTime > noteData.Time + noteData.Duration;
 				if (MusicPlaying && altClicked && !PrevClickedAlt) {
@@ -340,9 +342,9 @@
 			// Get Basic Linked Data
 			if (linkedNote == null || noteData.Time + noteData.Duration >= linkedNote.Time + 0.001f) { return; }
 			var linkedTrack = Beatmap.Tracks[linkedNote.TrackIndex];
-			if (linkedTrack == null || !Track.GetTrackActive(linkedTrack, linkedNote.TrackIndex)) { return; }
+			if (linkedTrack == null || !linkedTrack._Active) { return; }
 			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
-			if (linkedStage == null || !Stage.GetStageActive(linkedStage, linkedTrack.StageIndex)) { return; }
+			if (linkedStage == null || !linkedStage._Active) { return; }
 
 			// Get Linked Stage Data
 			Vector2 linkedStagePos = Stage.GetStagePosition(linkedStage, linkedTrack.StageIndex);
@@ -447,7 +449,7 @@
 		#region --- LGC ---
 
 
-		public static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) =>
+		private static bool GetNoteActive (Beatmap.Note data, Beatmap.Note linkedNote, float appearTime) =>
 			data._SpeedOnDrop >= 0f && MusicTime >= appearTime && !Solo.active &&
 			(MusicTime <= data.Time + data.Duration || (linkedNote != null && MusicTime <= linkedNote.Time));
 

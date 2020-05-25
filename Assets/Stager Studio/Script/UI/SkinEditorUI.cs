@@ -165,14 +165,14 @@
 			m_LuminWidthAppendIF.onEndEdit.AddListener((str) => {
 				if (!UIReady) { return; }
 				if (float.TryParse(str, out float lwa)) {
-					Data.LuminousAppendX_UI = Mathf.Clamp(lwa, -100f, 100f);
+					Data.LuminousAppendX_UI = Mathf.Clamp(lwa, 0f, 100f);
 					m_LuminWidthAppendIF.text = Data.LuminousAppendX_UI.ToString();
 				}
 			});
 			m_LuminHeightAppendIF.onEndEdit.AddListener((str) => {
 				if (!UIReady) { return; }
 				if (float.TryParse(str, out float lwa)) {
-					Data.LuminousAppendY_UI = Mathf.Clamp(lwa, -100f, 100f);
+					Data.LuminousAppendY_UI = Mathf.Clamp(lwa, 0f, 100f);
 					m_LuminHeightAppendIF.text = Data.LuminousAppendY_UI.ToString();
 				}
 			});

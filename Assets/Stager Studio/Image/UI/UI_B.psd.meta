@@ -506,6 +506,30 @@ TextureImporter:
   - first:
       213: 1300629289057258299
     second: CMD
+  - first:
+      213: 3339141928659201461
+    second: Erase Icon
+  - first:
+      213: -8851053322734798200
+    second: Global Icon
+  - first:
+      213: 5429414873056101111
+    second: Brush Stage
+  - first:
+      213: 3537973195418701941
+    second: Brush Track
+  - first:
+      213: 4774791963057825940
+    second: Brush Note
+  - first:
+      213: 2528306176119109709
+    second: Brush Timing
+  - first:
+      213: 2007689524380487155
+    second: Tail Handle Stage
+  - first:
+      213: -8921490094206724828
+    second: Tail Handle Track
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1316,7 +1340,7 @@ TextureImporter:
         width: 82
         height: 72
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1324,6 +1348,174 @@ TextureImporter:
       bones: []
       spriteID: b3b0ab68273cc0210800000000000000
       internalID: 1300629289057258299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Erase Icon
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 226
+        width: 87
+        height: 87
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5bd285084e3075e20800000000000000
+      internalID: 3339141928659201461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Global Icon
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 225
+        width: 83
+        height: 83
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88af95ad5edba2580800000000000000
+      internalID: -8851053322734798200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brush Stage
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 391
+        width: 54
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f24bbe8f08295b40800000000000000
+      internalID: 5429414873056101111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brush Track
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 391
+        width: 54
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 57019c150e7691130800000000000000
+      internalID: 3537973195418701941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brush Note
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 391
+        width: 54
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 498a3721ef7734240800000000000000
+      internalID: 4774791963057825940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Brush Timing
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 391
+        width: 54
+        height: 54
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4871075219561320800000000000000
+      internalID: 2528306176119109709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tail Handle Stage
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 243
+        width: 83
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fdc8f73cfebcdb10800000000000000
+      internalID: 2007689524380487155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Tail Handle Track
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 319
+        width: 83
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 42554a30700803480800000000000000
+      internalID: -8921490094206724828
       vertices: []
       indices: 
       edges: []

@@ -529,6 +529,9 @@ Shortcut.Seek.Negative
 Shortcut.Seek.Positive
 快进
 
+Shortcut.Select
+选择模式
+
 Shortcut.ShowGrid
 显示辅助线网格
 
@@ -668,7 +671,7 @@ Tip.Inspector.Color
 物体的颜色编号
 
 Tip.Inspector.DropSpeed
-音符在舞台内的下落速度
+音符下落速度倍数
 
 Tip.Inspector.Duration
 物体持续的时间长度（秒）
@@ -754,8 +757,14 @@ Tip.Inspector.Y
 Tip.Inspector.Z
 Z轴位置
 
+Tip.Lib.Erase
+切换到删除模式
+
 Tip.Lib.Note
 音符笔刷
+
+Tip.Lib.Select
+切换到选择模式
 
 Tip.Lib.Speed
 速度笔刷
@@ -903,6 +912,9 @@ Tip.TimeLabel
 
 Tip.Toolbar.EditSkin
 编辑当前皮肤
+
+Tip.Toolbar.GlobalBrushSacle
+是否使用全局笔刷尺寸
 
 Tip.Toolbar.Home
 返回主页

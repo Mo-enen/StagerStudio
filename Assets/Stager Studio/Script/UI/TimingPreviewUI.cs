@@ -76,9 +76,9 @@
 					firstMidTime = Mathf.Min(firstMidTime, timing.Time);
 					int nextIndex = GetNextTiming(timing.Time);
 					if (nextIndex >= 0) {
-						AddQuad(timing.Time, timings[nextIndex].Time, timing.Speed);
+						AddQuad(timing.Time, timings[nextIndex].Time, timing.Value);
 					} else {
-						AddQuad(timing.Time, float.MaxValue, timing.Speed);
+						AddQuad(timing.Time, float.MaxValue, timing.Value);
 					}
 				}
 			}
@@ -87,12 +87,12 @@
 			int prevIndex = GetPrevTiming(musicTime);
 			if (prevIndex >= 0) {
 				var timing = timings[prevIndex];
-				AddQuad(timing.Time, firstMidTime, timing.Speed);
+				AddQuad(timing.Time, firstMidTime, timing.Value);
 			} else {
 				int nextIndex = GetNextTiming(musicTime);
 				float nextSpeed = 1f;
 				if (nextIndex >= 0) {
-					nextSpeed = timings[nextIndex].Speed;
+					nextSpeed = timings[nextIndex].Value;
 				}
 				AddQuad(0f, firstMidTime, nextSpeed);
 			}

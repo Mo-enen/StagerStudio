@@ -49,6 +49,7 @@
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static IntHandler GetBeatPerSection { get; set; } = null;
 		public static VoidHandler OnItemEdit { get; set; } = null;
+		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static CharToSpriteHandler GetSprite { get; set; } = null;
 		public static IntHandler GetPaletteCount { get; set; } = null;
 
@@ -249,6 +250,7 @@
 			if (MotionItem.SelectingMotionIndex != PrevSelectingMotionIndex) {
 				PrevSelectingMotionIndex = MotionItem.SelectingMotionIndex;
 				RefreshFieldUI();
+				OnSelectionChanged();
 			}
 		}
 

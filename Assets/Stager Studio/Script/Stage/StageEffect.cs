@@ -43,17 +43,13 @@
 
 		public void SpawnCreateEffect (int itemType, int itemIndex) {
 			if (!UseEffect) { return; }
-			var item = GetMapItem(itemType, itemIndex);
-			if (item == null) { return; }
-			SpawnEffect(m_CreateParticle, item.GetChild(0), false);
+			SpawnEffect(m_CreateParticle, itemType, itemIndex, false);
 		}
 
 
 		public void SpawnDeleteEffect (int itemType, int itemIndex) {
 			if (!UseEffect) { return; }
-			var item = GetMapItem(itemType, itemIndex);
-			if (item == null) { return; }
-			SpawnEffect(m_DeleteParticle, item.GetChild(0), true);
+			SpawnEffect(m_DeleteParticle, itemType, itemIndex, true);
 		}
 
 
@@ -74,7 +70,7 @@
 		}
 
 
-		private void SpawnEffect (ParticleSystem prefab, Transform target, bool immediate) {
+		private void SpawnEffect (ParticleSystem prefab, int itemType, int itemIndex, bool immediate) {
 			if (immediate) {
 				Spawn();
 			} else {
@@ -87,6 +83,9 @@
 				Spawn();
 			}
 			void Spawn () {
+				var item = GetMapItem(itemType, itemIndex);
+				if (item == null) { return; }
+				var target = item.GetChild(0);
 				var par = Instantiate(prefab, m_Root);
 				par.transform.position = target.position;
 				par.transform.rotation = target.rotation;

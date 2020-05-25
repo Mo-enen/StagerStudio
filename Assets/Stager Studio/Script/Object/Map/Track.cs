@@ -73,8 +73,6 @@
 				return;
 			}
 
-
-			trackData._Active = false;
 			Time = trackData.Time;
 			Duration = trackData.Duration;
 
@@ -85,13 +83,10 @@
 				gameObject.SetActive(false);
 				return;
 			}
-			bool active = Stage.GetStageActive(linkedStage, trackData.StageIndex) && GetTrackActive(trackData, trackIndex);
-			trackData._Active = active;
-			trackData._SpeedMuti = linkedStage._SpeedMuti;
 
-			Update_Gizmos(trackData._Active, trackIndex, GameSpeedMuti * Stage.GetStageSpeed(linkedStage));
+			Update_Gizmos(trackData._Active, trackIndex, trackData._SpeedMuti);
 
-			if (!active) {
+			if (!trackData._Active) {
 				gameObject.SetActive(false);
 				return;
 			}
@@ -157,7 +152,7 @@
 			m_TrayRenderer.ItemType = trackData.ItemType;
 			MainRenderer.Duration = m_TrayRenderer.Duration = m_TrackTintRenderer.Duration = Duration;
 			MainRenderer.Scale = m_TrackTintRenderer.Scale = new Vector2(stageWidth * trackWidth, stageHeight);
-			m_TrackTintRenderer.Tint = trackData._Tint = GetTrackColor(trackData);
+			m_TrackTintRenderer.Tint = trackData.c_Tint = GetTrackColor(trackData);
 			MainRenderer.Alpha = m_TrayRenderer.Alpha = Stage.GetStageAlpha(linkedStage) * GetTrackAlpha(trackData);
 			m_TrackTintRenderer.Alpha *= MainRenderer.Alpha;
 			MainRenderer.SetSortingLayer(SortingLayerID_Track, GetSortingOrder());
@@ -194,14 +189,14 @@
 
 		private void LateUpdate_Tray (Beatmap.Track trackData) {
 			if (trackData.HasTray) {
-				if (AimTrayX < trackData._TrayX.min) {
-					AimTrayX = Mathf.Lerp(trackData._TrayX.min, trackData._TrayX.max, trackData._TrayTime - MusicTime > 0.5f ? 0.5f : 0.3f);
-				} else if (AimTrayX > trackData._TrayX.max) {
-					AimTrayX = Mathf.Lerp(trackData._TrayX.min, trackData._TrayX.max, trackData._TrayTime - MusicTime > 0.5f ? 0.5f : 0.7f);
+				if (AimTrayX < trackData.c_TrayX.min) {
+					AimTrayX = Mathf.Lerp(trackData.c_TrayX.min, trackData.c_TrayX.max, trackData.c_TrayTime - MusicTime > 0.5f ? 0.5f : 0.3f);
+				} else if (AimTrayX > trackData.c_TrayX.max) {
+					AimTrayX = Mathf.Lerp(trackData.c_TrayX.min, trackData.c_TrayX.max, trackData.c_TrayTime - MusicTime > 0.5f ? 0.5f : 0.7f);
 				}
 				TrayX = Mathf.Lerp(TrayX, AimTrayX, UnityEngine.Time.deltaTime * 20f);
 			}
-			trackData._TrayTime = float.MaxValue;
+			trackData.c_TrayTime = float.MaxValue;
 		}
 
 
@@ -213,9 +208,11 @@
 		#region --- API ---
 
 
-		public static bool GetTrackActive (Beatmap.Track data, int trackIndex) =>
-			Solo.active ? trackIndex == Solo.track :
-			MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
+		public static void UpdateCache (Beatmap.Track data, bool stageActive, int trackIndex, bool timerActive, float parentSpeed) {
+			data._Active = stageActive && GetTrackActive(data, trackIndex);
+			data._SpeedMuti = parentSpeed * data.Speed;
+			data._TimerActive = timerActive;
+		}
 
 
 		public static float GetTrackWidth (Beatmap.Track data) => Mathf.Max(
@@ -233,7 +230,7 @@
 
 
 		public static float GetTrackAlpha (Beatmap.Track data) => MusicPlaying ? Mathf.Clamp01(
-			VanishDuration < DURATION_GAP ? 1f : (data.Time + data.Duration - MusicTime) / VanishDuration
+			VanishDuration < FLOAT_GAP ? 1f : Mathf.Min(MusicTime - data.Time, data.Time + data.Duration - MusicTime) / VanishDuration
 		) : 1f;
 
 
@@ -285,6 +282,19 @@
 			RefreshRendererZoneFor(m_SectionRenderer);
 		}
 
+
+
+		#endregion
+
+
+
+
+		#region --- LGC ---
+
+
+		private static bool GetTrackActive (Beatmap.Track data, int trackIndex) =>
+			Solo.active ? trackIndex == Solo.track :
+			MusicTime >= data.Time && MusicTime <= data.Time + data.Duration;
 
 
 		#endregion

@@ -33,11 +33,11 @@
 				}
 			}
 		}
-		public float SpeedMuti {
-			get => _SpeedMuti;
+		public float GameSpeedMuti {
+			get => _GameSpeedMuti;
 			set {
-				if (value != _SpeedMuti) {
-					_SpeedMuti = value;
+				if (value != _GameSpeedMuti) {
+					_GameSpeedMuti = value;
 					SetDirty();
 				}
 			}
@@ -95,7 +95,7 @@
 		private float _TimeGap = 1f;
 		private float _TimeOffset = 0f;
 		private float _MusicTime = -1f;
-		private float _SpeedMuti = 1f;
+		private float _GameSpeedMuti = 1f;
 		private float _ObjectSpeedMuti = 1f;
 
 
@@ -228,7 +228,7 @@
 
 		// LGC
 		private void ForAllY (System.Action<float> action) {
-			float speedMuti = SpeedMuti * ObjectSpeedMuti;
+			float speedMuti = GameSpeedMuti * ObjectSpeedMuti;
 			float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
 			float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
 				Mathf.Min(MusicTime, time),

@@ -163,6 +163,7 @@
 				});
 				grab.Grab<Text>("Label").text = index.ToString("00");
 				grab.Grab<Curve>("Curve").CurveData = tweens[index].Item1;
+				grab.Grab<Image>("Mark").color = tweens[index].Item2;
 			}
 		}
 
@@ -263,7 +264,7 @@
 			StageInspector.SpeedIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
-				map.SetStageSpeed(GetSelectingIndex(), StageInspector.GetSpeed());
+				map.SetSpeed(0, GetSelectingIndex(), StageInspector.GetSpeed());
 				OnItemEdited();
 				RefreshStageInspector();
 			});
@@ -363,6 +364,14 @@
 				OnItemEdited();
 				RefreshTrackInspector();
 			});
+			// Speed
+			TrackInspector.SpeedIF.onEndEdit.AddListener((_) => {
+				var map = GetBeatmap();
+				if (!UIReady || map == null) { return; }
+				map.SetSpeed(1, GetSelectingIndex(), TrackInspector.GetSpeed());
+				OnItemEdited();
+				RefreshTrackInspector();
+			});
 			// X
 			TrackInspector.PosXIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
@@ -448,6 +457,14 @@
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetDuration(2, GetSelectingIndex(), NoteInspector.GetDuration());
+				OnItemEdited();
+				RefreshNoteInspector();
+			});
+			// Duration
+			NoteInspector.SpeedIF.onEndEdit.AddListener((_) => {
+				var map = GetBeatmap();
+				if (!UIReady || map == null) { return; }
+				map.SetSpeed(2, GetSelectingIndex(), NoteInspector.GetSpeed());
 				OnItemEdited();
 				RefreshNoteInspector();
 			});
@@ -559,7 +576,7 @@
 			TimingInspector.SpeedIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
-				map.SetTimingSpeed(GetSelectingIndex(), TimingInspector.GetSpeed());
+				map.SetTimingX(GetSelectingIndex(), TimingInspector.GetSpeed());
 				OnItemEdited();
 				RefreshTimingInspector();
 			});
@@ -642,6 +659,7 @@
 				TrackInspector.SetTime(track.Time);
 				TrackInspector.SetBeat(Util.Time_to_Beat(track.Time, GetBPM(), GetShift()));
 				TrackInspector.SetItemType(track.ItemType);
+				TrackInspector.SetSpeed(track.Speed);
 				TrackInspector.SetDuration(track.Duration);
 				TrackInspector.SetPosX(track.X);
 				TrackInspector.SetWidth(track.Width);
@@ -666,6 +684,7 @@
 				NoteInspector.SetBeat(Util.Time_to_Beat(note.Time, GetBPM(), GetShift()));
 				NoteInspector.SetItemType(note.ItemType);
 				NoteInspector.SetDuration(note.Duration);
+				NoteInspector.SetSpeed(note.Speed);
 				NoteInspector.SetPosX(note.X);
 				NoteInspector.SetWidth(note.Width);
 				NoteInspector.SetIndex(note.TrackIndex);

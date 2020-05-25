@@ -231,12 +231,14 @@
 			float musicTime = GetMusicTime();
 			bool musicPlaying = MusicIsPlaying();
 			bool stageLocked = GetItemLock(0);
+			float gameSpeedMuti = GameDropSpeed;
 			for (int i = 0; i < stageCount; i++) {
 				// Stage
 				var stageData = map.Stages[i];
 				var stageTF = container.GetChild(i);
-				stageData._TrackCount = 0;
-				stageData._Active = Stage.GetStageActive(stageData, i);
+				bool timerActive = !stageLocked && !musicPlaying && !UseAbreast && !StageObject.Solo.active && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
+				Stage.UpdateCache(stageData, i, timerActive, gameSpeedMuti);
+				stageData.c_TrackCount = 0;
 				if (!stageTF.gameObject.activeSelf) {
 					if (stageData._Active) {
 						stageTF.gameObject.SetActive(true);
@@ -244,9 +246,6 @@
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				stageData._TimerActive =
-					!stageLocked && !musicPlaying && !UseAbreast && !StageObject.Solo.active &&
-					musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
 				if (!timerTF.gameObject.activeSelf && stageData._TimerActive) {
 					timerTF.gameObject.SetActive(true);
 				}
@@ -267,10 +266,11 @@
 			for (int i = 0; i < trackCount; i++) {
 				var tf = container.GetChild(i);
 				var trackData = map.Tracks[i];
-				if (trackData.StageIndex >= 0 && trackData.StageIndex < stageCount) {
-					map.Stages[trackData.StageIndex]._TrackCount++;
-				}
-				trackData._Active = Track.GetTrackActive(trackData, i);
+				if (trackData.StageIndex < 0 || trackData.StageIndex >= stageCount) { continue; }
+				var stageData = map.Stages[trackData.StageIndex];
+				stageData.c_TrackCount++;
+				bool timerActive = !trackLocked && !musicPlaying && !StageObject.Solo.active && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				Track.UpdateCache(trackData, stageData._Active, i, timerActive, stageData._SpeedMuti);
 				if (!tf.gameObject.activeSelf) {
 					if (trackData._Active) {
 						tf.gameObject.SetActive(true);
@@ -278,9 +278,6 @@
 				}
 				// Timer
 				var timerTF = headContainer.GetChild(i);
-				trackData._TimerActive =
-					!trackLocked && !musicPlaying && !StageObject.Solo.active &&
-					musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
 				if (!timerTF.gameObject.activeSelf && trackData._TimerActive) {
 					timerTF.gameObject.SetActive(true);
 				}
@@ -297,7 +294,6 @@
 			Beatmap.Note linkedNote;
 			Beatmap.Track linkedTrack;
 			Beatmap.Stage linkedStage;
-			float gameSpeedMuti = GameDropSpeed;
 			for (int i = 0; i < noteCount; i++) {
 				var noteData = map.Notes[i];
 				// Note
@@ -305,8 +301,7 @@
 				linkedNote = noteData.LinkedNoteIndex >= 0 && noteData.LinkedNoteIndex < noteCount ? map.Notes[noteData.LinkedNoteIndex] : null;
 				linkedTrack = map.Tracks[noteData.TrackIndex];
 				linkedStage = map.Stages[linkedTrack.StageIndex];
-				Note.Update_Cache(noteData, gameSpeedMuti * linkedStage._SpeedMuti);
-				noteData._Active = Note.GetNoteActive(noteData, linkedNote, noteData._AppearTime);
+				Note.Update_Cache(noteData, linkedNote, linkedTrack._Active, linkedTrack._SpeedMuti);
 				if (!tf.gameObject.activeSelf) {
 					if (linkedStage._Active && linkedTrack._Active && noteData._Active) {
 						tf.gameObject.SetActive(true);
@@ -333,8 +328,8 @@
 				var tf = container.GetChild(i);
 				var tData = map.Timings[i];
 				TimingNote.Update_Cache(tData);
-				tData._Active = TimingNote.GetActive(tData);
 				if (!tf.gameObject.activeSelf) {
+					tData._Active = TimingNote.GetActive(tData);
 					if (tData._Active) {
 						tf.gameObject.SetActive(true);
 					}
@@ -373,7 +368,7 @@
 					foreach (var note in speedNotes) {
 						float time = note.Time;
 						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
-						SpeedCurve.Add(time, note.Speed);
+						SpeedCurve.Add(time, note.Value);
 					}
 					SpeedCurveDirty = true;
 				}
@@ -487,7 +482,14 @@
 		#region --- API ---
 
 
-		public void ForceUpdateBeatmap () => Update_Beatmap();
+		public void ForceUpdateZone () {
+			Update_Beatmap();
+			Update_Stage();
+			Update_Track();
+			Update_Note();
+			Update_Timing();
+			Update_SpeedCurve();
+		}
 
 
 		public void ClearAllContainers () {

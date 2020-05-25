@@ -239,6 +239,9 @@ TextureImporter:
   - first:
       213: -686967408958484587
     second: Shirt
+  - first:
+      213: -3692427623992186823
+    second: Cursor Icon
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -873,90 +876,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Lib Track
-      rect:
-        serializedVersion: 2
-        x: 28
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 363feb7a0193dec429fb84d00d9b86f3
-      internalID: 8829402245534914706
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lib Stage
-      rect:
-        serializedVersion: 2
-        x: 1
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: aa72101f7221ae744b6f2f37cda30244
-      internalID: 6200277251137027947
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lib Note
-      rect:
-        serializedVersion: 2
-        x: 55
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 65abd51e95fcea340ac2587a4ab4b69e
-      internalID: 5394303537026088386
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Lib SpeedNote
-      rect:
-        serializedVersion: 2
-        x: 82
-        y: 186
-        width: 26
-        height: 26
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 356c66a3d1271364a9450a8f92a94019
-      internalID: -4833928457064920326
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Delete
       rect:
         serializedVersion: 2
@@ -1288,6 +1207,27 @@ TextureImporter:
       bones: []
       spriteID: 59f42c008c66776f0800000000000000
       internalID: -686967408958484587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor Icon
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 217
+        width: 26
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9382b19a3acd1ccc0800000000000000
+      internalID: -3692427623992186823
       vertices: []
       indices: 
       edges: []

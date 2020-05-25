@@ -529,6 +529,9 @@ Rewind
 Shortcut.Seek.Positive
 Fast Forward
 
+Shortcut.Select
+Select mode
+
 Shortcut.ShowGrid
 Show Grid
 
@@ -668,7 +671,7 @@ Tip.Inspector.Color
 Color index of the object
 
 Tip.Inspector.DropSpeed
-Drop speed of notes which inside this stage
+Drop speed multiplier
 
 Tip.Inspector.Duration
 Length of time the object lasts (sec)
@@ -754,8 +757,14 @@ Position y of the object
 Tip.Inspector.Z
 Z position
 
+Tip.Lib.Erase
+Erase mode
+
 Tip.Lib.Note
 Note brush
+
+Tip.Lib.Select
+Select mode
 
 Tip.Lib.Speed
 Speed brush
@@ -903,6 +912,9 @@ Switch time unit
 
 Tip.Toolbar.EditSkin
 Edit current skin
+
+Tip.Toolbar.GlobalBrushSacle
+Use global brush scale or not
 
 Tip.Toolbar.Home
 Back to home page

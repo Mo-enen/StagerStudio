@@ -354,7 +354,7 @@ MonoBehaviour:
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
   m_Allow3D: 1
-  m_LoopType: 4
+  m_LoopType: 0
 --- !u!23 &6600087200330509814
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -552,7 +552,7 @@ MonoBehaviour:
   m_Pivot: {x: 0.5, y: 0, z: 0}
   m_Scale: {x: 1, y: 1}
   m_Allow3D: 1
-  m_LoopType: 4
+  m_LoopType: 0
 --- !u!23 &9027357786313997297
 MeshRenderer:
   m_ObjectHideFlags: 0

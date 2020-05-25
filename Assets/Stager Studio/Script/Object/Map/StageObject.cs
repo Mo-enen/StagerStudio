@@ -29,7 +29,7 @@
 
 
 		// Const
-		protected const float DURATION_GAP = 0.0001f;
+		protected const float FLOAT_GAP = 0.0001f;
 		protected readonly static Color32 WHITE_32 = new Color32(byte.MaxValue, byte.MaxValue, byte.MaxValue, byte.MaxValue);
 
 		// Handler
@@ -43,7 +43,6 @@
 		public static (float index, float value, float width) Abreast { get; set; } = (0f, 0f, 1f);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
-		public static float GameSpeedMuti { get; set; } = 1f;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;
@@ -53,10 +52,10 @@
 		public static bool FrontPole { get; set; } = true;
 		public static (bool active, int stage, int track) Solo { get; set; } = (false, -1, -1);
 
-		protected static float VanishDuration { get; private set; } = 0f;
-		protected static Color32[] HighlightTints { get; set; } = default;
 		protected static SkinData Skin { get; set; } = null;
 		protected ObjectRenderer MainRenderer => m_MainRenderer;
+		protected static Color32[] HighlightTints { get; set; } = default;
+		protected static float VanishDuration { get; private set; } = 0f;
 		protected TextRenderer Label => m_Label;
 		protected virtual float Time { get; set; } = 0f;
 		protected virtual float Duration { get; set; } = 0f;
@@ -70,7 +69,7 @@
 		[SerializeField] private TextRenderer m_Label = null;
 
 		// Data
-		private static (Vector3 size, bool fixedRatio)[][] RectSizess = default;
+		private static (Vector3 size, Vector4 border, bool fixedRatio)[][] RectSizess = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
 		private float PrevColPivotY = 0f;
@@ -219,7 +218,7 @@
 		public static void LoadSkin (SkinData skin) {
 			Skin = skin;
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
-			RectSizess = new (Vector3, bool)[typeCount][];
+			RectSizess = new (Vector3, Vector4, bool)[typeCount][];
 			HighlightTints = new Color32[typeCount];
 			TintNote = skin.TintNote;
 			FrontPole = skin.FrontPole;
@@ -227,14 +226,15 @@
 			for (int i = 0; i < RectSizess.Length && i < skin.Items.Count; i++) {
 				int rectCount = skin.Items[i].Rects.Count;
 				bool fixedRatio = skin.Items[i].FixedRatio;
-				var rectSizes = new (Vector3, bool)[rectCount];
+				var rectSizes = new (Vector3, Vector4, bool)[rectCount];
 				// Sizes
 				for (int j = 0; j < rectCount; j++) {
 					var size = skin.TryGetItemSize(i, j) / skin.ScaleMuti;
+					var border = skin.TryGetItemBorder(i, j) / skin.ScaleMuti;
 					size.x = Mathf.Max(size.x, 0f);
 					size.y = Mathf.Max(size.y, 0.001f);
 					size.z = Mathf.Max(size.z, 0f);
-					rectSizes[j] = (size, fixedRatio);
+					rectSizes[j] = (size, border, fixedRatio);
 				}
 				// Highlights
 				HighlightTints[i] = skin.Items[i].HighlightTint;
@@ -245,19 +245,26 @@
 		}
 
 
-		protected static Vector3 GetRectSize (SkinType type, int rectIndex, bool scalableX = true, bool scalableY = false) {
+		protected static Vector3 GetRectSize (SkinType type, int rectIndex, bool allowScalableX = true, bool allowScalableY = false) {
 			var rSizes = RectSizess[(int)type];
 			if (rSizes.Length == 0) { return default; }
-			var (size, fix) = rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)];
-			if (!fix) {
-				if (scalableX) {
+			var (size, _, fixedSize) = rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)];
+			if (!fixedSize) {
+				if (allowScalableX) {
 					size.x = -1f;
 				}
-				if (scalableY) {
+				if (allowScalableY) {
 					size.y = -1f;
 				}
 			}
 			return size;
+		}
+
+
+		protected static Vector4 GetRectBorder (SkinType type, int rectIndex) {
+			var rSizes = RectSizess[(int)type];
+			if (rSizes.Length == 0) { return default; }
+			return rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)].border;
 		}
 
 

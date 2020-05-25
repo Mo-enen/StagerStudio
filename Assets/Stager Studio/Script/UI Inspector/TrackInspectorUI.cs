@@ -13,6 +13,7 @@
 		public BeatInputUI BeatIF => m_BeatIF;
 		public InputField TypeIF => m_TypeIF;
 		public InputField DurationIF => m_DurationIF;
+		public InputField SpeedIF => m_SpeedIF;
 		public InputField PosXIF => m_PosXIF;
 		public InputField WidthIF => m_WidthIF;
 		public InputField AngleIF => m_AngleIF;
@@ -26,6 +27,7 @@
 		[SerializeField] private BeatInputUI m_BeatIF = null;
 		[SerializeField] private InputField m_TypeIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private InputField m_SpeedIF = null;
 		[SerializeField] private InputField m_PosXIF = null;
 		[SerializeField] private InputField m_WidthIF = null;
 		[SerializeField] private InputField m_AngleIF = null;
@@ -41,6 +43,7 @@
 		public float GetBeat () => m_BeatIF.GetBeat();
 		public int GetItemType () => m_TypeIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public float GetSpeed () => m_SpeedIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 1f;
 		public float GetPosX () => m_PosXIF.text.TryParseFloatForInspector(out float result) ? result : 0f;
 		public float GetWidth () => m_WidthIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
 		public float GetAngle () => m_AngleIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0f) : 0f;
@@ -52,6 +55,7 @@
 		public void SetBeat (float value) => m_BeatIF.SetBeatToUI(value);
 		public void SetItemType (int value) => m_TypeIF.text = value.ToString();
 		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
+		public void SetSpeed (float value) => m_SpeedIF.text = value.ToString();
 		public void SetPosX (float value) => m_PosXIF.text = value.ToString();
 		public void SetWidth (float value) => m_WidthIF.text = value.ToString();
 		public void SetAngle (float value) => m_AngleIF.text = ((int)value).ToString();

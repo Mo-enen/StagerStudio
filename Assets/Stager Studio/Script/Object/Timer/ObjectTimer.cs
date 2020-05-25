@@ -56,7 +56,7 @@
 
 			// Tail
 			float endTime = LateTime + LateDuration;
-			bool tailActive = MusicTime >= endTime - 1f && MusicTime <= endTime;
+			bool tailActive = !headActive && MusicTime >= endTime - 1f && MusicTime <= endTime;
 			if (Tail.gameObject.activeSelf != tailActive) {
 				Tail.gameObject.SetActive(tailActive);
 			}

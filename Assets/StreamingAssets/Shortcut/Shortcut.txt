@@ -26,3 +26,4 @@ Shortcut.PitchUp,	UpArrow,	True,	False,	False#
 Shortcut.PitchDown,	DownArrow,	True,	False,	False#
 Shortcut.GlobalBrushScale,	H,	False,	False,	False#
 Shortcut.Erase,	E,	False,	False,	False#
+Shortcut.Select,	Q,	False,	False,	False#
