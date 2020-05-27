@@ -236,7 +236,7 @@ Menu.Inspector.Fx.Gate
 盖特门
 
 Menu.Inspector.Fx.Glitch
-故障音
+鬼畜音
 
 Menu.Inspector.Fx.HighPass
 高通

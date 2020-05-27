@@ -8,9 +8,8 @@
 *.csproj
 *.ini
 *.sln
-/_Paper
 *.config
-/_Built/Stager Studio
+/_Built
 /_BackUp
 Projects
 QuickAccess Config.json
