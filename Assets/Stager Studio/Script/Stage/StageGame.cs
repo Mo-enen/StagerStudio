@@ -129,6 +129,7 @@
 		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 4);
 		public SavingInt BeatPerSection { get; private set; } = new SavingInt("StageGame.BeatPerSection", 4);
 		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 1);
+		public SavingBool ShowTimerOnPlay { get; private set; } = new SavingBool("StageGame.ShowTimerOnPlay", false);
 
 
 		#endregion
@@ -236,7 +237,7 @@
 				// Stage
 				var stageData = map.Stages[i];
 				var stageTF = container.GetChild(i);
-				bool timerActive = !stageLocked && !musicPlaying && !UseAbreast && !StageObject.Solo.active && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
+				bool timerActive = !stageLocked && (ShowTimerOnPlay.Value || !musicPlaying) && !UseAbreast && !StageObject.Solo.active && musicTime >= stageData.Time - 1f && musicTime <= stageData.Time + stageData.Duration;
 				Stage.UpdateCache(stageData, i, timerActive, gameSpeedMuti);
 				stageData.c_TrackCount = 0;
 				if (!stageTF.gameObject.activeSelf) {
@@ -269,7 +270,7 @@
 				if (trackData.StageIndex < 0 || trackData.StageIndex >= stageCount) { continue; }
 				var stageData = map.Stages[trackData.StageIndex];
 				stageData.c_TrackCount++;
-				bool timerActive = !trackLocked && !musicPlaying && !StageObject.Solo.active && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
+				bool timerActive = !trackLocked && (ShowTimerOnPlay.Value || !musicPlaying) && !StageObject.Solo.active && musicTime >= trackData.Time - 1f && musicTime <= trackData.Time + trackData.Duration;
 				Track.UpdateCache(trackData, stageData._Active, i, timerActive, stageData._SpeedMuti);
 				if (!tf.gameObject.activeSelf) {
 					if (trackData._Active) {

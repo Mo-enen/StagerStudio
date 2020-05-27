@@ -7,6 +7,10 @@
 
 	public class NoteInspectorUI : MonoBehaviour {
 
+
+		public delegate string LanguageHandler (string key);
+		public static LanguageHandler GetLanguage { get; set; } = null;
+
 		// Api
 		public InputField TimeIF => m_TimeIF;
 		public BeatInputUI BeatIF => m_BeatIF;
@@ -19,7 +23,6 @@
 		public InputField LinkIF => m_LinkIF;
 		public InputField ClickIF => m_ClickIF;
 		public InputField PosZIF => m_PosZIF;
-		public InputField SfxIF => m_SfxIF;
 		public InputField SfxParamAIF => m_SfxParamAIF;
 		public InputField SfxParamBIF => m_SfxParamBIF;
 		public Text[] LanguageLabels => m_LanguageLabels;
@@ -36,11 +39,14 @@
 		[SerializeField] private InputField m_LinkIF = null;
 		[SerializeField] private InputField m_PosZIF = null;
 		[SerializeField] private InputField m_ClickIF = null;
-		[SerializeField] private InputField m_SfxIF = null;
 		[SerializeField] private InputField m_SfxParamAIF = null;
 		[SerializeField] private InputField m_SfxParamBIF = null;
+		[SerializeField] private Text m_SfxLabel = null;
+		[SerializeField] private string[] m_SfxLabels = null;
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
+		// Data
+		private int SfxIndex = 0;
 
 		// API
 		public float GetTime () => m_TimeIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
@@ -54,7 +60,7 @@
 		public int GetLink () => m_LinkIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, -1) : -1;
 		public float GetPosZ () => m_PosZIF.text.TryParseFloatForInspector(out float result) ? result : 0;
 		public short GetClick () => short.TryParse(m_ClickIF.text, out short result) ? (short)Mathf.Max(result, -1) : (short)0;
-		public byte GetSfx () => byte.TryParse(m_SfxIF.text, out byte result) ? (byte)Mathf.Max(result, 0) : (byte)0;
+		public byte GetSfx () => (byte)SfxIndex;
 		public int GetSfxParamA () => m_SfxParamAIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 		public int GetSfxParamB () => m_SfxParamBIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 
@@ -70,7 +76,11 @@
 		public void SetLink (int value) => m_LinkIF.text = value.ToString();
 		public void SetPosZ (float value) => m_PosZIF.text = value.ToString();
 		public void SetClick (short value) => m_ClickIF.text = value.ToString();
-		public void SetSfx (byte value) => m_SfxIF.text = value.ToString();
+		public void SetSfx (int value) {
+			if (!gameObject.activeSelf) { return; }
+			SfxIndex = value;
+			m_SfxLabel.text = GetLanguage(m_SfxLabels[Mathf.Clamp(SfxIndex, 0, m_SfxLabels.Length - 1)]);
+		}
 		public void SetSfxParamA (int value) => m_SfxParamAIF.text = value.ToString();
 		public void SetSfxParamB (int value) => m_SfxParamBIF.text = value.ToString();
 

@@ -248,7 +248,6 @@
 		public string BackgroundAuthor { get; set; } = "";
 		public string OpeningBeatmap { get; set; } = "";
 		public long LastEditTime { get; set; } = 0;
-		public ImageData FrontCover { get; set; } = null;
 
 		// Asset
 		public Dictionary<string, Beatmap> BeatmapMap { get; } = new Dictionary<string, Beatmap>();
@@ -257,6 +256,7 @@
 		public List<FileData> ClickSounds { get; } = new List<FileData>();
 		public FileData MusicData { get; set; } = null;
 		public FileData BackgroundData { get; set; } = null;
+		public ImageData FrontCover { get; set; } = null;
 
 		// Config
 		private bool[] TargetData { get; } = new bool[10] { true, true, true, true, true, true, true, true, true, true, };

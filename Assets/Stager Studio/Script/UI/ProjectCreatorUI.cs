@@ -185,11 +185,9 @@
 				try {
 					var key = System.Guid.NewGuid().ToString();
 					result.OpeningBeatmap = key;
-					if (asset.Beatmap != null) {
-						result.BeatmapMap.Add(key, JsonUtility.FromJson<Beatmap>(asset.Beatmap.text));
-					} else {
-						result.BeatmapMap.Add(key, Beatmap.NewBeatmap());
-					}
+					Beatmap map = asset.Beatmap != null ? JsonUtility.FromJson<Beatmap>(asset.Beatmap.text) : Beatmap.NewBeatmap();
+					map.CreatedTime = Util.GetLongTime();
+					result.BeatmapMap.Add(key, map);
 				} catch {
 					Debug.LogError("Failed to create beatmap");
 				}

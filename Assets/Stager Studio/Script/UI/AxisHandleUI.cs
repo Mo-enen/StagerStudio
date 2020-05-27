@@ -35,11 +35,11 @@
 		private TriggerCollider[] Triggers => _Triggers != null && _Triggers.Length > 0 ? _Triggers : (_Triggers = GetComponentsInChildren<TriggerCollider>(true));
 
 		// Ser
-		[SerializeField] private AxisEventHandler m_OnDrag = null;
 		[SerializeField] private TextRenderer m_Hint = null;
 		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private Color[] m_HintTints = null;
 		[SerializeField] private float m_TintBgAlpha = 0.12f;
+		[Space, SerializeField] private AxisEventHandler m_OnDrag = null;
 
 		// Data
 		private TriggerCollider[] _Triggers = null;

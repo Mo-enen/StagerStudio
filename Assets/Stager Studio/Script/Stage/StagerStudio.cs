@@ -102,7 +102,8 @@
 		[SerializeField] private Text m_VersionLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
-		[SerializeField] private RectTransform m_Keypress = null;
+		[SerializeField] private RectTransform m_PitchTrebleClef = null;
+		[SerializeField] private RectTransform m_PitchBassClef = null;
 		[SerializeField] private Transform m_CameraTF = null;
 		[SerializeField] private Transform m_TutorialBoard = null;
 		[SerializeField] private Text m_TipLabelA = null;
@@ -122,6 +123,7 @@
 		[SerializeField] private AxisHandleUI m_Axis = null;
 		[SerializeField] private InspectorUI m_Inspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
+		[SerializeField] private KeypressUI m_Keypress = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
@@ -248,6 +250,8 @@
 			StageEditor.GetLanguage = m_Language.Get;
 			InspectorUI.GetLanguage = m_Language.Get;
 			CommandUI.GetLanguage = m_Language.Get;
+			TimingInspectorUI.GetLanguage = m_Language.Get;
+			NoteInspectorUI.GetLanguage = m_Language.Get;
 			// Misc
 			TooltipUI.SetTip = (tip) => {
 				m_TipLabelA.text = tip;
@@ -579,6 +583,8 @@
 			};
 			StageMusic.OnPitchChanged = () => {
 				m_PitchWarningBlock.gameObject.SetActive(m_Music.Pitch < 0.05f);
+				m_PitchTrebleClef.gameObject.SetActive(Mathf.Abs(m_Music.Pitch) >= 0.999f);
+				m_PitchBassClef.gameObject.SetActive(!m_PitchTrebleClef.gameObject.activeSelf);
 				m_SoundFX.StopAllFx();
 			};
 		}

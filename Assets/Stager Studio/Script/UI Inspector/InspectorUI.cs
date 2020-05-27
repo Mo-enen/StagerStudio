@@ -174,6 +174,22 @@
 		}
 
 
+		public void UI_SfxSetted () {
+			var map = GetBeatmap();
+			if (!UIReady || map == null) { return; }
+			if (NoteInspector.gameObject.activeSelf) {
+				map.SetNoteSfxIndex(GetSelectingIndex(), NoteInspector.GetSfx());
+				OnItemEdited();
+				RefreshNoteInspector();
+			}
+			if (TimingInspector.gameObject.activeSelf) {
+				map.SetTimingSfxIndex(GetSelectingIndex(), TimingInspector.GetSfx());
+				OnItemEdited();
+				RefreshTimingInspector();
+			}
+		}
+
+
 		// Start
 		private void Start_Beatmap () {
 			// Language
@@ -516,14 +532,6 @@
 				OnItemEdited();
 				RefreshNoteInspector();
 			});
-			// Sfx
-			NoteInspector.SfxIF.onEndEdit.AddListener((_) => {
-				var map = GetBeatmap();
-				if (!UIReady || map == null) { return; }
-				map.SetNoteSfxIndex(GetSelectingIndex(), NoteInspector.GetSfx());
-				OnItemEdited();
-				RefreshNoteInspector();
-			});
 			// Param A
 			NoteInspector.SfxParamAIF.onEndEdit.AddListener((_) => {
 				var map = GetBeatmap();
@@ -577,14 +585,6 @@
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetTimingX(GetSelectingIndex(), TimingInspector.GetSpeed());
-				OnItemEdited();
-				RefreshTimingInspector();
-			});
-			// Sfx
-			TimingInspector.SfxIF.onEndEdit.AddListener((_) => {
-				var map = GetBeatmap();
-				if (!UIReady || map == null) { return; }
-				map.SetTimingSfxIndex(GetSelectingIndex(), TimingInspector.GetSfx());
 				OnItemEdited();
 				RefreshTimingInspector();
 			});

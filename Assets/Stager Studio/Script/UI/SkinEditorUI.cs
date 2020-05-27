@@ -56,6 +56,7 @@
 		[SerializeField] private InputField m_LuminHeightAppendIF = null;
 		[SerializeField] private InputField m_VanishDurationIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
+		[SerializeField] private InputField m_MinSizeIF = null;
 		[SerializeField] private Toggle m_TintNoteTG = null;
 		[SerializeField] private Toggle m_FrontPoleTG = null;
 		[SerializeField] private Button m_HighlightTint = null;
@@ -63,6 +64,7 @@
 		[SerializeField] private Image m_Background = null;
 		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_TypeTgContainer = null;
+		[SerializeField] private RectTransform m_SecondLine = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
@@ -71,6 +73,7 @@
 		private bool UIReady = true;
 		private bool OpenSettingAfterClose = false;
 		private string SavedName = "";
+		private int PrevPainterSelectIndex = -1;
 
 
 		#endregion
@@ -95,6 +98,10 @@
 				}
 			}
 			m_Window.LerpUI(Vector2.zero, 8f);
+			if (PrevPainterSelectIndex != m_Painter.SelectingRectIndex) {
+				PrevPainterSelectIndex = m_Painter.SelectingRectIndex;
+				RefreshInfoUI();
+			}
 		}
 
 
@@ -137,6 +144,22 @@
 				if (int.TryParse(str, out int durationMS)) {
 					ani.SetDuration(durationMS);
 					m_DurationIF.text = ani.FrameDuration.ToString();
+				}
+			});
+
+			// MinSize
+			m_MinSizeIF.onEndEdit.AddListener((str) => {
+				if (!UIReady) { return; }
+				var ani = GetEditingAniData();
+				if (ani is null) { return; }
+				if (int.TryParse(str, out int value)) {
+					var i = m_Painter.SelectingRectIndex;
+					if (ani.Rects != null && i >= 0 && i < ani.Rects.Count) {
+						var rect = ani.Rects[i];
+						rect.MinHeight = Mathf.Max(value, 0);
+						ani.Rects[i] = rect;
+						m_MinSizeIF.text = rect.MinHeight.ToString();
+					}
 				}
 			});
 
@@ -268,17 +291,26 @@
 			UIReady = false;
 			try {
 				// Active
-				m_FixedRatioTG.transform.parent.gameObject.SetActive(
-					EditingType == SkinType.Note ||
+				bool fixedRatioActive = EditingType == SkinType.Note ||
 					EditingType == SkinType.NoteLuminous ||
-					EditingType == SkinType.HoldLuminous
-				);
-				m_HighlightTint.transform.parent.gameObject.SetActive(
-					EditingType == SkinType.Pole ||
-					EditingType == SkinType.Note
-				);
+					EditingType == SkinType.HoldLuminous;
+				bool highlightActive = EditingType == SkinType.Pole ||
+					EditingType == SkinType.Note;
+				bool durationActive = EditingType == SkinType.NoteLuminous ||
+					EditingType == SkinType.HoldLuminous;
+				bool minSizeActie = EditingType == SkinType.Note && m_Painter.SelectingRectIndex >= 0;
+				m_FixedRatioTG.transform.parent.gameObject.SetActive(fixedRatioActive);
+				m_HighlightTint.transform.parent.gameObject.SetActive(highlightActive);
+				m_DurationIF.transform.parent.gameObject.SetActive(durationActive);
+				m_MinSizeIF.transform.parent.gameObject.SetActive(minSizeActie);
+				m_SecondLine.gameObject.SetActive(fixedRatioActive || highlightActive || durationActive);
 				// Data
 				m_DurationIF.text = ani.FrameDuration.ToString();
+				var i = m_Painter.SelectingRectIndex;
+				if (ani.Rects != null && i >= 0 && i < ani.Rects.Count) {
+					var rect = ani.Rects[i];
+					m_MinSizeIF.text = rect.MinHeight.ToString();
+				}
 				m_HighlightTint.GetComponent<Image>().color = ani.HighlightTint;
 				m_ScaleMutiIF.text = data.ScaleMuti_UI.ToString();
 				m_LuminWidthAppendIF.text = data.LuminousAppendX_UI.ToString();
@@ -319,7 +351,7 @@
 				texture = Util.ResizeTexture(texture, TEXTURE_MAX_SIZE);
 			}
 			// Final
-			Data.Texture = texture;
+			Data.SetPng(texture);
 			Save();
 			Painter.SetTexture(Data.Texture);
 			TrimAllRects();

@@ -177,20 +177,6 @@
 				}
 			} catch { }
 
-			// Create Default Project
-			try {
-				if (Util.GetFileCount(Workspace, "*.stager", SearchOption.AllDirectories) == 0) {
-					var dirs = Util.GetDirectsIn(Workspace, true);
-					if (dirs.Length > 0) {
-						var firstChapter = dirs[0].FullName;
-						var defaultPath = Util.CombinePaths(Application.streamingAssetsPath, "Assets", "Default Project.stager");
-						if (Util.FileExists(defaultPath) && Util.DirectoryExists(firstChapter)) {
-							Util.CopyFile(defaultPath, Util.CombinePaths(firstChapter, "Default Project.stager"));
-						}
-					}
-				}
-			} catch { }
-
 			// Create/Clear Temp Path
 			try {
 				if (!Util.DirectoryExists(TempPath)) {

@@ -39,6 +39,7 @@
 			ShowGridOnSelect,
 			SoloOnEditMotion,
 			UseEditorEffect,
+			ShowTimerOnPlay,
 
 		}
 
@@ -175,6 +176,7 @@
 
 			ToggleItemMap.Add(ToggleType.BrushScale, ((isOn) => {
 				m_Editor.UseGlobalBrushScale.Value = isOn;
+				m_GlobalBrushMark.gameObject.TrySetActive(isOn);
 			}, () => m_Editor.UseGlobalBrushScale.Value, m_Editor.UseGlobalBrushScale, true));
 
 			ToggleItemMap.Add(ToggleType.ShowGridOnSelect, ((isOn) => {
@@ -189,6 +191,9 @@
 				m_Effect.UseEffect.Value = isOn;
 			}, () => m_Effect.UseEffect.Value, m_Effect.UseEffect, true));
 
+			ToggleItemMap.Add(ToggleType.ShowTimerOnPlay, ((isOn) => {
+				m_Game.ShowTimerOnPlay.Value = isOn;
+			}, () => m_Game.ShowTimerOnPlay.Value, m_Game.ShowTimerOnPlay, true));
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {

@@ -226,10 +226,9 @@
 
 			// Size
 			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
-			var noteBorder = GetRectBorder(SkinType.Note, noteData.ItemType);
-			float fixedNoteSizeY = noteBorder.z < FLOAT_GAP ? noteSize.y : noteBorder.z;
+			float minHeight = GetMinHeight(SkinType.Note, noteData.ItemType);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
-			float noteScaleY = Mathf.Max(noteSizeY * stageHeight, fixedNoteSizeY);
+			float noteScaleY = Mathf.Max(noteSizeY * stageHeight + minHeight, 0f);
 			Vector3 zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,

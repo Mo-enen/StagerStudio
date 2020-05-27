@@ -2,7 +2,7 @@
 	using UnityEngine;
 	using UnityEditor;
 	using UIGadget;
-	[CustomEditor(typeof(Circle), true)]
+	[CustomEditor(typeof(Circle), true), CanEditMultipleObjects]
 	public class CircleInspector : Editor {
 
 		private readonly static string[] Exclude = new string[] {
@@ -16,7 +16,7 @@
 			DrawPropertiesExcluding(serializedObject, Exclude);
 			serializedObject.ApplyModifiedProperties();
 		}
-		
+
 		public override bool HasPreviewGUI () => false;
 
 

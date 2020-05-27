@@ -24,17 +24,17 @@
 
 
 		public static class LanguageData {
-			public const string Error_ChapterAlreadyExists = "P-Manager.Error.ChapterAlreadyExists";
-			public const string Error_ProjectAlreadyExists = "P-Manager.Error.ProjectAlreadyExists";
-			public const string Error_NewProjectSourceNotExists = "P-Manager.Error.NewProjectSourceNotExists";
-			public const string NewChapterName = "P-Manager.NewChapterName";
-			public const string UI_ImportProjectTitle = "P-Manager.UI.ImportProjectTitle";
-			public const string UI_OverlapProjectConfirm = "P-Manager.UI.OverlapProjectConfirm";
-			public const string UI_NewProjectConfirm = "P-Manager.UI.NewProjectConfirm";
-			public const string UI_FolderAlreadyExists = "P-Manager.UI.FolderAlreadyExists";
-			public const string UI_TrashProjectItemConfirm = "P-Manager.UI.TrashProjectItemConfirm";
-			public const string UI_DeleteProjectItemConfirm = "P-Manager.UI.DeleteProjectItemConfirm";
-			public const string UI_TrashbinEmpty = "P-Manager.UI.TrashbinEmpty";
+			public const string Error_ChapterAlreadyExists = "PManager.Error.ChapterAlreadyExists";
+			public const string Error_ProjectAlreadyExists = "PManager.Error.ProjectAlreadyExists";
+			public const string Error_NewProjectSourceNotExists = "PManager.Error.NewProjectSourceNotExists";
+			public const string NewChapterName = "PManager.NewChapterName";
+			public const string UI_ImportProjectTitle = "PManager.UI.ImportProjectTitle";
+			public const string UI_OverlapProjectConfirm = "PManager.UI.OverlapProjectConfirm";
+			public const string UI_NewProjectConfirm = "PManager.UI.NewProjectConfirm";
+			public const string UI_FolderAlreadyExists = "PManager.UI.FolderAlreadyExists";
+			public const string UI_TrashProjectItemConfirm = "PManager.UI.TrashProjectItemConfirm";
+			public const string UI_DeleteProjectItemConfirm = "PManager.UI.DeleteProjectItemConfirm";
+			public const string UI_TrashbinEmpty = "PManager.UI.TrashbinEmpty";
 		}
 
 

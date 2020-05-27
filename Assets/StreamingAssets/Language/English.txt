@@ -167,31 +167,31 @@ Menu.Grid.bps2
 4 Beats per Section
 
 Menu.Grid.x00
-Stage Grid X ×1
+Grid X (Stage) ×1
 
 Menu.Grid.x01
-Stage Grid X ×7
+Grid X (Stage) ×7
 
 Menu.Grid.x02
-Stage Grid X ×15
+Grid X (Stage) ×15
 
 Menu.Grid.x10
-Track Grid X ×1
+Grid X (Track) ×1
 
 Menu.Grid.x11
-Track Grid X ×7
+Grid X (Track) ×7
 
 Menu.Grid.x12
-Track Grid X ×15
+Grid X (Track) ×15
 
 Menu.Grid.x20
-Note Grid X ×1
+Grid X (Note) ×1
 
 Menu.Grid.x21
-Note Grid X ×7
+Grid X (Note) ×7
 
 Menu.Grid.x22
-Note Grid X ×15
+Grid X (Note) ×15
 
 Menu.Grid.y0
 Grid Y ×1
@@ -214,6 +214,9 @@ New Chapter
 Menu.Home.NewProject
 New Project
 
+Menu.Home.Refresh
+Refresh
+
 Menu.Home.ShowWorkspace
 Show Workspace
 
@@ -222,6 +225,48 @@ Sort by Name
 
 Menu.Home.SortByTime
 Sort by Time
+
+Menu.Inspector.Fx.BitCrush
+BitCrush
+
+Menu.Inspector.Fx.Flange
+Flange
+
+Menu.Inspector.Fx.Gate
+Gate
+
+Menu.Inspector.Fx.Glitch
+Glitch
+
+Menu.Inspector.Fx.HighPass
+HighPass
+
+Menu.Inspector.Fx.Knob
+Knob
+
+Menu.Inspector.Fx.KnobShoot
+KnobShoot
+
+Menu.Inspector.Fx.LowPass
+LowPass
+
+Menu.Inspector.Fx.None
+(No SFX)
+
+Menu.Inspector.Fx.PitchShift
+PitchShift
+
+Menu.Inspector.Fx.ShortDelay
+ShortDelay
+
+Menu.Inspector.Fx.SideChain
+SideChain
+
+Menu.Inspector.Fx.TapeScratch
+TapeScratch
+
+Menu.Inspector.Fx.Wobble
+Wobble
 
 Menu.ProjectInfo.DeleteClickSound
 Delete
@@ -880,6 +925,9 @@ Show grid shen selecting stage, track, note.
 Tip.Setting.ShowIndexLabel
 Show the index label or not
 
+Tip.Setting.ShowTimerOnPlay
+Show the handles which for adjusting time when playing music
+
 Tip.Setting.SmallUI
 Small UI, for larger physical size display
 
@@ -1020,9 +1068,6 @@ Done
 
 UI.Inspector.Duration
 Length
-
-UI.Inspector.FX
-FX
 
 UI.Inspector.FxParamA
 Fx A
@@ -1222,6 +1267,9 @@ Show Index Label for Stage,Track and Note
 UI.Setting.ShowKeypress
 Show Keypress History
 
+UI.Setting.ShowTimerOnPlay
+Show timer handle on play music
+
 UI.Setting.ShowTip
 Show Tooltip
 
@@ -1290,6 +1338,9 @@ Lum Height
 
 UI.SkinEditor.LuminousWidth
 Lum Width
+
+UI.SkinEditor.MinSize
+Min Size
 
 UI.SkinEditor.Scale
 Scale

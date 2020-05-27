@@ -2,7 +2,7 @@
 	using UnityEngine;
 	using UnityEditor;
 	using UIGadget;
-	[CustomEditor(typeof(Curve), true)]
+	[CustomEditor(typeof(Curve), true), CanEditMultipleObjects]
 	public class CurveInspector : Editor {
 		private readonly static string[] Exclude = new string[] {
 			"m_Script","m_OnCullStateChanged","m_Sprite","m_Type","m_PreserveAspect",

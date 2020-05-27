@@ -59,6 +59,9 @@
 
 		private void OnGUI () {
 			if (Util.IsTypeing || Event.current.type != EventType.KeyDown) { return; }
+			if (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Space) {
+				UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
+			}
 			var key = (Event.current.keyCode, Event.current.control, Event.current.shift, Event.current.alt);
 			if (key.keyCode != KeyCode.None && Map.ContainsKey(key)) {
 				var (action, antiTFs) = Map[key];

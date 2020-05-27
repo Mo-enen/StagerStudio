@@ -47,7 +47,7 @@
 				if (_Skin.data == null) {
 					var stageSkin = FindObjectOfType<StageSkin>();
 					_Skin = (stageSkin.m_DefaultSkin, "");
-					_Skin.data.Texture = stageSkin.m_DefaultTexture;
+					_Skin.data.SetPng(stageSkin.m_DefaultTexture);
 				}
 				return _Skin;
 			}
@@ -82,7 +82,7 @@
 		private string[] SkinNames = null;
 
 		// Saving
-		private SavingString SkinName = new SavingString("StageSkin.SkinName", "Default");
+		private SavingString SkinName = new SavingString("StageSkin.SkinName", "Stager");
 
 
 		#endregion
@@ -146,8 +146,8 @@
 				try {
 					if (Data.Data == null) {
 						LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
-						Data = (m_DefaultSkin, "Default");
-						name = "";
+						Data = (m_DefaultSkin, "Stager");
+						name = "Stager";
 					}
 				} catch { }
 			} else {
@@ -227,7 +227,7 @@
 		public void EDITOR_SetDefaultSkin (SkinData skin, Texture2D texture) {
 			m_DefaultSkin = skin;
 			if (texture) {
-				var path = @"Assets\Stager Studio\Image\UI\Default Skin.png";
+				var path = @"Assets\Stager Studio\Image\UI\Stager Skin.png";
 				Util.ByteToFile(texture.EncodeToPNG(), Util.GetFullPath(path));
 				UnityEditor.EditorUtility.SetDirty(texture);
 			}
@@ -251,7 +251,7 @@ namespace StagerStudio.Editor {
 	public class StagerSkinInspector : Editor {
 		private void OnDisable () {
 			try {
-				var skin = (target as StageSkin).GetSkinFromDisk("Default");
+				var skin = (target as StageSkin).GetSkinFromDisk("Stager");
 				(target as StageSkin).EDITOR_SetDefaultSkin(skin, skin.Texture);
 			} catch { }
 		}

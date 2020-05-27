@@ -69,7 +69,7 @@
 		[SerializeField] private TextRenderer m_Label = null;
 
 		// Data
-		private static (Vector3 size, Vector4 border, bool fixedRatio)[][] RectSizess = default;
+		private static (Vector3 size, float minHeight, bool fixedRatio)[][] RectSizess = default;
 		private Quaternion PrevColRot = Quaternion.identity;
 		private Vector2 PrevColSize = Vector3.zero;
 		private float PrevColPivotY = 0f;
@@ -218,7 +218,7 @@
 		public static void LoadSkin (SkinData skin) {
 			Skin = skin;
 			int typeCount = System.Enum.GetNames(typeof(SkinType)).Length;
-			RectSizess = new (Vector3, Vector4, bool)[typeCount][];
+			RectSizess = new (Vector3, float, bool)[typeCount][];
 			HighlightTints = new Color32[typeCount];
 			TintNote = skin.TintNote;
 			FrontPole = skin.FrontPole;
@@ -226,15 +226,15 @@
 			for (int i = 0; i < RectSizess.Length && i < skin.Items.Count; i++) {
 				int rectCount = skin.Items[i].Rects.Count;
 				bool fixedRatio = skin.Items[i].FixedRatio;
-				var rectSizes = new (Vector3, Vector4, bool)[rectCount];
+				var rectSizes = new (Vector3, float, bool)[rectCount];
 				// Sizes
 				for (int j = 0; j < rectCount; j++) {
 					var size = skin.TryGetItemSize(i, j) / skin.ScaleMuti;
-					var border = skin.TryGetItemBorder(i, j) / skin.ScaleMuti;
+					float minHeight = skin.TryGetItemMinHeight(i, j) / skin.ScaleMuti;
 					size.x = Mathf.Max(size.x, 0f);
 					size.y = Mathf.Max(size.y, 0.001f);
 					size.z = Mathf.Max(size.z, 0f);
-					rectSizes[j] = (size, border, fixedRatio);
+					rectSizes[j] = (size, minHeight, fixedRatio);
 				}
 				// Highlights
 				HighlightTints[i] = skin.Items[i].HighlightTint;
@@ -261,10 +261,10 @@
 		}
 
 
-		protected static Vector4 GetRectBorder (SkinType type, int rectIndex) {
+		protected static float GetMinHeight (SkinType type, int rectIndex) {
 			var rSizes = RectSizess[(int)type];
-			if (rSizes.Length == 0) { return default; }
-			return rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)].border;
+			if (rSizes.Length == 0) { return 0f; }
+			return rSizes[Mathf.Clamp(rectIndex, 0, rSizes.Length - 1)].minHeight;
 		}
 
 

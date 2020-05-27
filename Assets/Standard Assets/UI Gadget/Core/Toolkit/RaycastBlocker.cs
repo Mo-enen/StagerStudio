@@ -9,10 +9,11 @@
 
 
 
+#if UNITY_EDITOR
 		protected override void Reset () {
 			raycastTarget = true;
 		}
-
+#endif
 
 
 		protected override void Awake () {

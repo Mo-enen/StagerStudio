@@ -167,31 +167,31 @@ Menu.Grid.bps2
 每小节4拍
 
 Menu.Grid.x00
-舞台 X轴网格×1
+X轴网格(舞台) ×1
 
 Menu.Grid.x01
-舞台 X轴网格×7
+X轴网格(舞台) ×7
 
 Menu.Grid.x02
-舞台 X轴网格×15
+X轴网格(舞台) ×15
 
 Menu.Grid.x10
-轨道 X轴网格×1
+X轴网格(轨道) ×1
 
 Menu.Grid.x11
-轨道 X轴网格×7
+X轴网格(轨道) ×7
 
 Menu.Grid.x12
-轨道 X轴网格×15
+X轴网格(轨道) ×15
 
 Menu.Grid.x20
-音符 X轴网格×1
+X轴网格(音符) ×1
 
 Menu.Grid.x21
-音符 X轴网格×7
+X轴网格(音符) ×7
 
 Menu.Grid.x22
-音符 X轴网格×15
+X轴网格(音符) ×15
 
 Menu.Grid.y0
 Y轴网格×1
@@ -214,6 +214,9 @@ Menu.Home.NewChapter
 Menu.Home.NewProject
 新建工程
 
+Menu.Home.Refresh
+刷新
+
 Menu.Home.ShowWorkspace
 查看工作空间
 
@@ -222,6 +225,48 @@ Menu.Home.SortByName
 
 Menu.Home.SortByTime
 按时间排序
+
+Menu.Inspector.Fx.BitCrush
+比特毁
+
+Menu.Inspector.Fx.Flange
+法兰盘
+
+Menu.Inspector.Fx.Gate
+盖特门
+
+Menu.Inspector.Fx.Glitch
+故障音
+
+Menu.Inspector.Fx.HighPass
+高通
+
+Menu.Inspector.Fx.Knob
+旋钮
+
+Menu.Inspector.Fx.KnobShoot
+旋钮射
+
+Menu.Inspector.Fx.LowPass
+低通
+
+Menu.Inspector.Fx.None
+（无特效）
+
+Menu.Inspector.Fx.PitchShift
+跑调
+
+Menu.Inspector.Fx.ShortDelay
+短延迟
+
+Menu.Inspector.Fx.SideChain
+边锁链
+
+Menu.Inspector.Fx.TapeScratch
+刮磁带
+
+Menu.Inspector.Fx.Wobble
+摇摆
 
 Menu.ProjectInfo.DeleteClickSound
 删除
@@ -880,6 +925,9 @@ Tip.Setting.ShowGridOnSelect
 Tip.Setting.ShowIndexLabel
 是否显示编号标签
 
+Tip.Setting.ShowTimerOnPlay
+在播放音乐时依然显示调整舞台、轨道时间用的拉杆按钮
+
 Tip.Setting.SmallUI
 较小的界面，适合物理尺寸较大的显示器
 
@@ -1020,9 +1068,6 @@ UI.Inspector.Done
 
 UI.Inspector.Duration
 时长
-
-UI.Inspector.FX
-特效
 
 UI.Inspector.FxParamA
 变量A
@@ -1222,6 +1267,9 @@ UI.Setting.ShowIndexLabelIndexLabel
 UI.Setting.ShowKeypress
 显示按键历史
 
+UI.Setting.ShowTimerOnPlay
+播放音乐时显示时间拉杆
+
 UI.Setting.ShowTip
 显示工具提示
 
@@ -1290,6 +1338,9 @@ UI.SkinEditor.LuminousHeight
 
 UI.SkinEditor.LuminousWidth
 光效宽度
+
+UI.SkinEditor.MinSize
+最小尺寸
 
 UI.SkinEditor.Scale
 尺寸

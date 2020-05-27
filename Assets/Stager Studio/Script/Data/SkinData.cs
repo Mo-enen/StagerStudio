@@ -30,7 +30,7 @@
 
 
 		// API
-		public Texture2D Texture { get; set; } = null;
+		public Texture2D Texture { get; private set; } = null;
 		public float LuminousAppendX_UI {
 			get => LuminousAppendX * 100f;
 			set => LuminousAppendX = Mathf.Clamp01(value / 100f);
@@ -58,6 +58,9 @@
 		public bool FrontPole = true;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
+		// Data
+		private byte[] PngBytes = null;
+
 		// API
 		public static SkinData ByteToSkin (byte[] bytes) {
 			if (bytes is null || bytes.Length <= 4) { return null; }
@@ -81,7 +84,8 @@
 				// PNG
 				skin.Texture = null;
 				if (pngLength > 0) {
-					var (pixels32, width, height) = Util.ImageToPixels(bytes.Skip(index).Take(pngLength).ToArray());
+					skin.PngBytes = bytes.Skip(index).Take(pngLength).ToArray();
+					var (pixels32, width, height) = Util.ImageToPixels(skin.PngBytes);
 					if (!(pixels32 is null) && pixels32.Length > 0 && width * height == pixels32.Length) {
 						skin.Texture = new Texture2D(width, height, TextureFormat.RGBA32, false) {
 							filterMode = FilterMode.Point,
@@ -110,14 +114,9 @@
 				list.AddRange(System.BitConverter.GetBytes(jsonBytes.Length));
 				list.AddRange(jsonBytes);
 				// PNG
-				if (!(skin.Texture is null) && skin.Texture.width > 0 && skin.Texture.height > 0) {
-					var pngBytes = skin.Texture.EncodeToPNG();
-					if (pngBytes is null || pngBytes.Length == 0) {
-						list.AddRange(System.BitConverter.GetBytes(0));
-					} else {
-						list.AddRange(System.BitConverter.GetBytes(pngBytes.Length));
-						list.AddRange(pngBytes);
-					}
+				if (skin.PngBytes != null && skin.PngBytes.Length > 0) {
+					list.AddRange(System.BitConverter.GetBytes(skin.PngBytes.Length));
+					list.AddRange(skin.PngBytes);
 				} else {
 					list.AddRange(System.BitConverter.GetBytes(0));
 				}
@@ -170,6 +169,20 @@
 		}
 
 
+		public float TryGetItemMinHeight (int itemIndex, int rectIndex) {
+			if (Items is null || itemIndex < 0 || itemIndex >= Items.Count) { return default; }
+			var item = Items[itemIndex];
+			if (item.Rects is null || item.Rects.Count == 0) { return default; }
+			return item.Rects[Mathf.Clamp(rectIndex, 0, item.Rects.Count - 1)].MinHeight;
+		}
+
+
+		public void SetPng (Texture2D texture) {
+			Texture = texture;
+			PngBytes = texture != null ? texture.EncodeToPNG() : null;
+		}
+
+
 	}
 
 
@@ -195,6 +208,7 @@
 			public int Y;
 			public int Width;
 			public int Height;
+			public float MinHeight;
 
 			public int BorderU;
 			public int BorderD;
@@ -203,6 +217,7 @@
 
 			public bool Is3D;
 			public int Thickness3D;
+
 
 			public static RectData MinMax (int xMin, int xMax, int yMin, int yMax) => new RectData(xMin, yMin, xMax - xMin, yMax - yMin);
 
@@ -217,6 +232,7 @@
 				BorderR = borderR;
 				Is3D = false;
 				Thickness3D = 0;
+				MinHeight = height;
 			}
 
 		}
