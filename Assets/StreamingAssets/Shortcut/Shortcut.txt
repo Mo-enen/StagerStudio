@@ -27,3 +27,9 @@ Shortcut.PitchDown,	DownArrow,	True,	False,	False#
 Shortcut.GlobalBrushScale,	H,	False,	False,	False#
 Shortcut.Erase,	E,	False,	False,	False#
 Shortcut.Select,	Q,	False,	False,	False#
+Shortcut.Translate.Left,	A,	False,	False,	False#
+Shortcut.Translate.Right,	D,	False,	False,	False#
+Shortcut.Translate.Down,	S,	False,	False,	False#
+Shortcut.Translate.Up,	W,	False,	False,	False#
+Shortcut.Music.Volume.Down,	DownArrow,	False,	False,	False#
+Shortcut.Music.Volume.Up,	UpArrow,	False,	False,	False#

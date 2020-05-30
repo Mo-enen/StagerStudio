@@ -207,9 +207,6 @@ TextureImporter:
       213: 1959211095122329946
     second: Gridline H
   - first:
-      213: -7089468405191809942
-    second: Shirt
-  - first:
       213: 7175862385276731420
     second: Arrow Up
   - first:
@@ -530,6 +527,12 @@ TextureImporter:
   - first:
       213: -8921490094206724828
     second: Tail Handle Track
+  - first:
+      213: -6698475132383446763
+    second: Suit
+  - first:
+      213: -7528560149791335482
+    second: Shirt
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1516,6 +1519,48 @@ TextureImporter:
       bones: []
       spriteID: 42554a30700803480800000000000000
       internalID: -8921490094206724828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Suit
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 345
+        width: 88
+        height: 72
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5193f7d6b5c3a03a0800000000000000
+      internalID: -6698475132383446763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shirt
+      rect:
+        serializedVersion: 2
+        x: 466
+        y: 400
+        width: 39
+        height: 48
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cb96898e6e258790800000000000000
+      internalID: -7528560149791335482
       vertices: []
       indices: 
       edges: []

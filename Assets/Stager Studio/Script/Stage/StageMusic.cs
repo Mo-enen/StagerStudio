@@ -99,7 +99,7 @@
 
 		private AudioSource[] ClickSoundSources {
 			get {
-				if (_ClickSource is null && transform) {
+				if (_ClickSource == null && gameObject != null) {
 					if (transform.childCount > 0) {
 						var tf = transform.GetChild(0);
 						_ClickSource = tf.GetComponents<AudioSource>();
@@ -251,7 +251,7 @@
 
 
 		public void StopClickSounds () {
-			if (ClickSoundSources is null) { return; }
+			if (ClickSoundSources == null) { return; }
 			foreach (var source in ClickSoundSources) {
 				if (source is null) { continue; }
 				source.Stop();

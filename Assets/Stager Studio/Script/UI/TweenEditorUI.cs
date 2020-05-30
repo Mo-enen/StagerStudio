@@ -135,7 +135,7 @@
 				var e = be as PointerEventData;
 				if (e.button == PointerEventData.InputButton.Left) {
 					var _c = UICurve;
-					if (_c is null || SelectingIndex < 0 || SelectingIndex >= _c.length) { return; }
+					if (_c is null || SelectingIndex <= 0 || SelectingIndex >= _c.length - 1) { return; }
 					var pos01 = GetPos01(e.position, e.pressEventCamera);
 					if (Snap) {
 						pos01 = SnapPos01(pos01);

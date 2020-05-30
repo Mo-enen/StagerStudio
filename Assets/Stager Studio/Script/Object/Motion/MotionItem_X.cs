@@ -15,10 +15,14 @@
 		[SerializeField] private SpriteRenderer m_Line = null;
 		[SerializeField] private SpriteRenderer m_Highlight = null;
 
+		// Data
+		private float LineScaleX = 1f;
 
 		// MSG
-		private void OnEnable () => Update();
-
+		private void OnEnable () {
+			LineScaleX = m_Line.transform.localScale.x;
+			Update();
+		}
 
 		private void Update () {
 			var map = GetBeatmap();
@@ -44,7 +48,7 @@
 		protected override void InvokeAxis (Vector2 localPos, Vector3 worldPos) {
 			var map = GetBeatmap();
 			if (map != null) {
-				float value = Util.RemapUnclamped(-m_Line.size.x / 2f, m_Line.size.x / 2f, -1f, 1f, localPos.x);
+				float value = Util.RemapUnclamped(-m_Line.size.x * LineScaleX / 2f, m_Line.size.x * LineScaleX / 2f, -1f, 1f, localPos.x);
 				if (GetGridEnabled()) {
 					value = Util.Snap(value, 16f);
 				}
@@ -57,14 +61,14 @@
 
 		private void SetSliderValue (float value11) {
 			Handle.localPosition = new Vector3(
-				Util.RemapUnclamped(-1f, 1f, -m_Line.size.x / 2f, m_Line.size.x / 2f, Mathf.Clamp(value11, -2f, 2f)),
+				Util.RemapUnclamped(-1f, 1f, -m_Line.size.x * LineScaleX / 2f, m_Line.size.x * LineScaleX / 2f, Mathf.Clamp(value11, -2f, 2f)),
 				0f, 0f
 			);
 		}
 
 
 		private void SetSliderWidth (float width) {
-			m_Line.size = new Vector2(width, m_Line.size.y);
+			m_Line.size = new Vector2(width / LineScaleX, m_Line.size.y);
 			m_Highlight.size = new Vector2(width / m_Highlight.transform.localScale.x, m_Highlight.size.y);
 		}
 

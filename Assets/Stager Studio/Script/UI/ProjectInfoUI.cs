@@ -101,6 +101,7 @@
 
 
 
+
 		#region --- VAR ---
 
 
@@ -403,41 +404,41 @@
 						if (mapMap.ContainsKey(key)) {
 							var _map = mapMap[key];
 							_map.Tag = txt;
-							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
+						OnBeatmapInfoChanged();
 					}
 					void OnLevelEdit (string txt) {
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.Level = value;
-							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
+						OnBeatmapInfoChanged();
 					}
 					void OnBpmEdit (string txt) {
 						if (mapMap.ContainsKey(key) && int.TryParse(txt, out int value)) {
 							var _map = mapMap[key];
 							_map.BPM = value;
-							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
+						OnBeatmapInfoChanged();
 					}
 					void OnShiftEdit (string txt) {
 						if (mapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
 							var _map = mapMap[key];
 							_map.Shift = value;
-							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
+						OnBeatmapInfoChanged();
 					}
 					void OnRatioEdit (string txt) {
 						if (mapMap.ContainsKey(key) && float.TryParse(txt, out float value)) {
 							var _map = mapMap[key];
 							_map.Ratio = value;
-							OnBeatmapInfoChanged();
 							ProjectSetDirty();
 						}
+						OnBeatmapInfoChanged();
 					}
 					void OnMenuTrigger () => OpenMenu(MENU_KEY, rt);
 				}

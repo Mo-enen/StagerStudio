@@ -237,15 +237,16 @@
 		private void LateUpdate_Key (Beatmap map) {
 
 			bool hasSelection = SelectingItemType >= 0 && SelectingItemIndex >= 0;
+			bool isTyping = Util.IsTypeing;
 
-			if (hasSelection && (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))) {
+			if (hasSelection && !isTyping && (Input.GetKeyDown(KeyCode.Delete) || Input.GetKeyDown(KeyCode.Backspace))) {
 				// Del
 				BeforeObjectEdited(EditType.Delete, SelectingItemType, SelectingItemIndex);
 				map.DeleteItem(SelectingItemType, SelectingItemIndex);
 				OnObjectEdited(EditType.None, SelectingItemType, SelectingItemIndex);
 			}
 
-			if (hasSelection && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.X)) && Input.GetKey(KeyCode.LeftControl)) {
+			if (hasSelection && !isTyping && (Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.X)) && Input.GetKey(KeyCode.LeftControl)) {
 				// Copy
 				var item = map.GetItem(SelectingItemType, SelectingItemIndex);
 				CopyLength = Util.ObjectToBytes(item, CopyBuffer, 0);
@@ -271,19 +272,19 @@
 				}
 			}
 
-			if (Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl)) {
+			if (!isTyping && Input.GetKeyDown(KeyCode.V) && Input.GetKey(KeyCode.LeftControl)) {
 				// Paste
 				if (CopyType >= 0 && CopyLength > 0) {
 					var obj = Util.BytesToObject(CopyBuffer, 0, CopyLength);
 					if (obj != null && obj is Beatmap.MapItem mObj) {
 						float musicTime = GetMusicTime();
 						mObj.Time = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
-						if (mObj.Time >= musicTime) {
-							mObj.Time -= m_Grid.TimeGap;
-						}
 						switch (CopyType) {
 							case 0: // Stage
 								if (obj is Beatmap.Stage sObj) {
+									if (mObj.Time >= musicTime) {
+										mObj.Time -= m_Grid.TimeGap;
+									}
 									map.AddStage(sObj);
 									BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
 									SetSelection(0, map.Stages.Count - 1);
@@ -294,6 +295,9 @@
 								break;
 							case 1: // Track
 								if (obj is Beatmap.Track tObj) {
+									if (mObj.Time >= musicTime) {
+										mObj.Time -= m_Grid.TimeGap;
+									}
 									if (SelectingItemType == 0) {
 										tObj.StageIndex = SelectingItemIndex;
 									}
@@ -307,6 +311,9 @@
 								break;
 							case 2: // Note
 								if (obj is Beatmap.Note nObj) {
+									if (mObj.Time <= musicTime) {
+										mObj.Time += m_Grid.TimeGap;
+									}
 									nObj.LinkedNoteIndex = -1;
 									if (SelectingItemType == 1) {
 										nObj.TrackIndex = SelectingItemIndex;
@@ -321,6 +328,9 @@
 								break;
 							case 3: // Timing
 								if (obj is Beatmap.Timing tiObj) {
+									if (mObj.Time <= musicTime) {
+										mObj.Time += m_Grid.TimeGap;
+									}
 									map.AddTiming(tiObj);
 									BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
 									SetSelection(3, map.Timings.Count - 1);
@@ -699,7 +709,8 @@
 					m_Grid.ObjectSpeedMuti = 1f / m_Grid.GameSpeedMuti;
 					break;
 			}
-			m_Grid.SetGridTransform(gridEnable, ShowGridOnSelect.Value || !selectingMode, pos, rot, scl);
+			m_Grid.Visible = ShowGridOnSelect.Value || !selectingMode;
+			m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
 		}
 
 
@@ -1078,18 +1089,7 @@
 		#region --- API ---
 
 
-		public void SwitchUseGlobalBrushScale () {
-			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
-			OnBrushChanged();
-			try {
-				LogHint(
-					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
-					true
-				);
-			} catch { }
-		}
-
-
+		// Selector
 		public void MoveStageItemUp (object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
@@ -1194,6 +1194,54 @@
 		public void SetErase () => SetEraseLogic();
 
 
+		public void SwitchUseGlobalBrushScale () {
+			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
+			OnBrushChanged();
+			try {
+				LogHint(
+					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
+					true
+				);
+			} catch { }
+		}
+
+
+		// Translate
+		public void TranslateSelectingItem (int direction) { // 0:L  1:R  2:D  3:U
+			var map = GetBeatmap();
+			if (SelectingItemType < 0 || SelectingItemIndex < 0 || map == null) { return; }
+			switch (direction) {
+				case 0:
+				case 1:
+					float x = map.GetX(SelectingItemType, SelectingItemIndex);
+					float deltaX = direction == 0 ? -0.05f : 0.05f;
+					if (SelectingItemType == 3) { deltaX /= 10f; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					map.SetX(SelectingItemType, SelectingItemIndex, Mathf.Clamp01(x + deltaX));
+					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					break;
+				case 2:
+				case 3:
+					if (SelectingItemType == 1) { break; }
+					if (SelectingItemType == 0) {
+						// Stage
+						float y = map.GetStageY(SelectingItemIndex);
+						float deltaY = direction == 2 ? -0.05f : 0.05f;
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetStageY(SelectingItemIndex, Mathf.Clamp01(y + deltaY));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					} else {
+						// Note, Timing
+						float time = map.GetTime(SelectingItemType, SelectingItemIndex);
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetTime(SelectingItemType, SelectingItemIndex, Mathf.Max(direction == 2 ? time - m_Grid.TimeGap / 4f : time + m_Grid.TimeGap / 4f, 0f));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					}
+					break;
+			}
+		}
+
+
 		#endregion
 
 
@@ -1294,7 +1342,7 @@
 
 		private void TrySetGridInactive () {
 			if (m_Grid.GridEnabled) {
-				m_Grid.SetGridTransform(false, false);
+				m_Grid.SetGridTransform(false);
 			}
 		}
 

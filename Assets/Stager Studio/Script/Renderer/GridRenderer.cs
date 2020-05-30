@@ -82,7 +82,15 @@
 		public bool GridEnabled { get; private set; } = false;
 		public bool IgnoreDynamicSpeed { get; set; } = true;
 		public int CountX => _CountXs[Mode];
-		public bool Visible { get; set; } = true;
+		public bool Visible {
+			get => _Visible;
+			set {
+				if (_Visible != value) {
+					_Visible = value;
+					RefreshMesh();
+				}
+			}
+		}
 
 		// Ser
 		[SerializeField] private Sprite m_SpriteV = null;
@@ -97,6 +105,7 @@
 		private float _MusicTime = -1f;
 		private float _GameSpeedMuti = 1f;
 		private float _ObjectSpeedMuti = 1f;
+		private bool _Visible = true;
 
 
 		protected override void OnMeshFill () {
@@ -154,9 +163,8 @@
 
 
 		// API
-		public void SetGridTransform (bool enable, bool visible, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
+		public void SetGridTransform (bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
 			GridEnabled = enable;
-			Visible = visible;
 			RendererEnable = GridShowed && GridEnabled;
 			if (gameObject.activeSelf != RendererEnable) {
 				gameObject.SetActive(RendererEnable);

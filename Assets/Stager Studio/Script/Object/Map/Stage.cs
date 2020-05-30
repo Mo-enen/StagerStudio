@@ -187,7 +187,7 @@
 
 
 		public static float GetStageHeight (Beatmap.Stage data) => Mathf.Lerp(
-			Mathf.Max(data.Height + Evaluate(data.Heights, MusicTime - data.Time), 0.00001f),
+			Mathf.Max(data.Height * Evaluate(data.Heights, MusicTime - data.Time, 1f), 0.00001f),
 			Mathf.Clamp(1f / ZoneMinMax.ratio, 0f, 256f),
 			Abreast.value
 		);

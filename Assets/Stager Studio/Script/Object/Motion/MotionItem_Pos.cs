@@ -5,6 +5,7 @@
 	using Data;
 	using Rendering;
 
+
 	public class MotionItem_Pos : MotionItem {
 
 
@@ -62,17 +63,18 @@
 
 		protected override void InvokeAxis (Vector2 localPos, Vector3 worldPos) {
 			var map = GetBeatmap();
-			if (map != null) {
-				var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
-				if (GetGridEnabled()) {
-					zonePos.x = Util.Snap(zonePos.x, 20f);
-					zonePos.y = Util.Snap(zonePos.y, 20f);
-				}
-				map.SetMotionValueTween(ItemIndex, MotionType, transform.GetSiblingIndex(), zonePos.x, zonePos.y);
-				SetLabelText($"{zonePos.x.ToString("0.00")}, {zonePos.y.ToString("0.00")}");
-				OnMotionChanged();
+			if (map == null) { return; }
+			var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+			var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+			if (GetGridEnabled()) {
+				zonePos.x = Util.Snap(zonePos.x, 20f);
+				zonePos.y = Util.Snap(zonePos.y, 20f);
 			}
+			float stageX = zonePos.x - map.GetX(0, ItemIndex);
+			float stageY = zonePos.y - map.GetStageY(ItemIndex);
+			map.SetMotionValueTween(ItemIndex, MotionType, transform.GetSiblingIndex(), stageX, stageY);
+			SetLabelText($"{stageX.ToString("0.00")}, {stageY.ToString("0.00")}");
+			OnMotionChanged();
 		}
 
 

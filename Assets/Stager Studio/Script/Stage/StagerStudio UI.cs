@@ -120,7 +120,7 @@
 					ToggleItemMap[ToggleType.UIScale_1].saving.Value = true;
 					ToggleItemMap[ToggleType.UIScale_2].saving.Value = false;
 				}
-			}, null, new SavingBool("SS.UIScale1", true), false));
+			}, null, new SavingBool("SS.UIScale1", false), false));
 
 			ToggleItemMap.Add(ToggleType.UIScale_2, ((isOn) => {
 				if (isOn) {
@@ -129,7 +129,7 @@
 					ToggleItemMap[ToggleType.UIScale_1].saving.Value = false;
 					ToggleItemMap[ToggleType.UIScale_2].saving.Value = true;
 				}
-			}, null, new SavingBool("SS.UIScale2", false), false));
+			}, null, new SavingBool("SS.UIScale2", true), false));
 
 			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
 				m_SoundFX.SetUseFX(isOn);
@@ -197,9 +197,8 @@
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
-				value = Mathf.Clamp01(value / 12f);
-				m_Music.Volume = value;
-				SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
+				SetMusicVolume(value / 12f);
+				//value = Mathf.Clamp01(value / 12f);
 			}, () => m_Music.Volume * 12f, new SavingFloat("SS.MusicVolume", 6f), true));
 
 			SliderItemMap.Add(SliderType.SoundVolume, ((value) => {
@@ -476,10 +475,16 @@
 		private void SetUIScale (int uiScale) {
 			uiScale = Mathf.Clamp(uiScale, 0, 2);
 			var scalers = m_CanvasRoot.GetComponentsInChildren<CanvasScaler>(true);
-			float height = uiScale == 0 ? 1000 : uiScale == 1 ? 800 : 600;
+			float height = uiScale == 0 ? 1200 : uiScale == 1 ? 1000 : 800;
 			foreach (var scaler in scalers) {
 				scaler.referenceResolution = new Vector2(scaler.referenceResolution.x, height);
 			}
+		}
+
+
+		private void SetMusicVolume (float value) {
+			m_Music.Volume = value;
+			SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
 		}
 
 

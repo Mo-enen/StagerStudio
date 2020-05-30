@@ -328,7 +328,7 @@
 				// End Click Sound
 				bool altClicked = MusicTime > noteData.Time + noteData.Duration;
 				if (MusicPlaying && altClicked && !PrevClickedAlt) {
-					PlayClickSound(noteData.ClickSoundIndex, 0.618f);
+					PlayClickSound(noteData.ClickSoundIndex, 1f);
 				}
 				PrevClickedAlt = altClicked;
 			}

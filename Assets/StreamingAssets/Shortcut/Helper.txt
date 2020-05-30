@@ -36,6 +36,12 @@ Available Actions:
 	Shortcut.GlobalBrushScale
 	Shortcut.Erase
 	Shortcut.Select
+	Shortcut.Translate.Left
+	Shortcut.Translate.Right
+	Shortcut.Translate.Down
+	Shortcut.Translate.Up
+	Shortcut.Music.Volume.Down
+	Shortcut.Music.Volume.Up
 
 Available Keys:
 

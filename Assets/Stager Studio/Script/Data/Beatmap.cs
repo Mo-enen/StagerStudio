@@ -777,6 +777,13 @@
 			}
 			return -1;
 		}
+		public float GetX (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.X : 0f;
+		}
+		public float GetStageY (int index) {
+			return index >= 0 && index < Stages.Count ? Stages[index].Y : 0f;
+		}
 
 
 		// Set

@@ -301,6 +301,9 @@ Move to Previous
 Menu.UI.QuitConfirm
 Are you sure to quit now?
 
+Music.Hint.Volume
+Music Volume {0}%
+
 PManager.Error.ChapterAlreadyExists
 Chapter already exists
 
@@ -544,6 +547,12 @@ Lock Stage
 Shortcut.LockTrack
 Lock Track
 
+Shortcut.Music.Volume.Down
+Volume Down
+
+Shortcut.Music.Volume.Up
+Volume Up
+
 Shortcut.OpenProjectInfo
 Open Project Info
 
@@ -579,6 +588,18 @@ Select mode
 
 Shortcut.ShowGrid
 Show Grid
+
+Shortcut.Translate.Down
+Move Item Down
+
+Shortcut.Translate.Left
+Move Item Left
+
+Shortcut.Translate.Right
+Move Item Right
+
+Shortcut.Translate.Up
+Move Item Up
 
 Shortcut.Undo
 Undo

@@ -66,6 +66,7 @@
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
 		private const string Hint_CommandDone = "Command.Hint.CommandDone";
+		private const string Hint_Volume = "Music.Hint.Volume";
 
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
@@ -92,6 +93,7 @@
 		[SerializeField] private StageMenu m_Menu = null;
 		[SerializeField] private StageState m_State = null;
 		[SerializeField] private StageEffect m_Effect = null;
+		[SerializeField] private StageEasterEgg m_EasterEgg = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -399,6 +401,7 @@
 				m_Game.SetUseAbreastView(false);
 				m_Game.SetGameDropSpeed(1f);
 				m_Inspector.RefreshUI();
+				m_EasterEgg.CheckEasterEggs();
 			};
 			StageProject.OnProjectLoaded = () => {
 				m_Game.SetSpeedCurveDirty();
@@ -746,9 +749,12 @@
 			ProjectInfoUI.SetProjectInfo_MapAuthor = (author) => m_Project.BeatmapAuthor = author;
 			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
-			ProjectInfoUI.OnBeatmapInfoChanged = () => RefreshOnBeatmapInfoChange();
+			ProjectInfoUI.OnBeatmapInfoChanged = () => {
+				RefreshOnBeatmapInfoChange();
+				Invoke("TryRefreshProjectInfo", 0.01f);
+			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
-
+				TryRefreshProjectInfo();
 			};
 
 		}
@@ -856,6 +862,8 @@
 
 
 		private void Awake_Misc () {
+
+			m_EasterEgg.Workspace = m_Project.Workspace;
 
 			CursorUI.GetCursorTexture = (index) => (
 				index >= 0 ? m_Cursors[index].Cursor : null,
@@ -1007,6 +1015,14 @@
 		}
 
 
+		public void AddVolume (float delta) {
+			SetMusicVolume(Mathf.Clamp01(Util.Snap(m_Music.Volume + delta, 10f)));
+			try {
+				m_Hint.SetHint(string.Format(m_Language.Get(Hint_Volume), Mathf.RoundToInt(m_Music.Volume * 100f)));
+			} catch { }
+		}
+
+
 		public void Undo () => WillUndo = true;
 
 
@@ -1033,7 +1049,7 @@
 		}
 
 
-		private void RefreshOnBeatmapInfoChange () {
+		private void RefreshOnBeatmapInfoChange () { ///////////////// Invoking /////////////////
 			if (m_Project.Beatmap != null) {
 				m_Game.BPM = m_Project.Beatmap.BPM;
 				m_Game.Shift = m_Project.Beatmap.Shift;

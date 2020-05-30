@@ -301,6 +301,9 @@ Menu.Selector.Track.MoveUp
 Menu.UI.QuitConfirm
 确认退出吗？
 
+Music.Hint.Volume
+音乐音量{0}%
+
 PManager.Error.ChapterAlreadyExists
 章节已经存在
 
@@ -544,6 +547,12 @@ Shortcut.Lock.Stage
 Shortcut.LockTrack
 锁定轨道
 
+Shortcut.Music.Volume.Down
+降低音量
+
+Shortcut.Music.Volume.Up
+增加音量
+
 Shortcut.OpenProjectInfo
 打开工程信息
 
@@ -579,6 +588,18 @@ Shortcut.Select
 
 Shortcut.ShowGrid
 显示辅助线网格
+
+Shortcut.Translate.Down
+下移物体
+
+Shortcut.Translate.Left
+左移物体
+
+Shortcut.Translate.Right
+右移物体
+
+Shortcut.Translate.Up
+上移物体
 
 Shortcut.Undo
 撤销
