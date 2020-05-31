@@ -213,23 +213,19 @@
 			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushWidth, ((value) => {
-				m_Editor.StageBrushWidth = Mathf.Clamp01(value / 12f);
-				SliderItemMap[SliderType.StageBrushWidth].saving.Value = value;
+				SetBrushSize(0, value / 12f);
 			}, null, new SavingFloat("SS.StageBrushWidth", 12f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushHeight, ((value) => {
-				m_Editor.StageBrushHeight = Mathf.Clamp01(value / 12f);
-				SliderItemMap[SliderType.StageBrushHeight].saving.Value = value;
+				SetBrushSize(1, value / 12f);
 			}, null, new SavingFloat("SS.StageBrushHeight", 12f), true));
 
 			SliderItemMap.Add(SliderType.TrackBrushWidth, ((value) => {
-				m_Editor.TrackBrushWidth = Mathf.Clamp01(value / 12f);
-				SliderItemMap[SliderType.TrackBrushWidth].saving.Value = value;
+				SetBrushSize(2, value / 12f);
 			}, null, new SavingFloat("SS.TrackBrushWidth", 2.5f), true));
 
 			SliderItemMap.Add(SliderType.NoteBrushWidth, ((value) => {
-				m_Editor.NoteBrushWidth = Mathf.Clamp01(value / 12f);
-				SliderItemMap[SliderType.NoteBrushWidth].saving.Value = value;
+				SetBrushSize(3, value / 12f);
 			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
 
 
@@ -440,6 +436,51 @@
 			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
 			if (command != null) {
 				command.SetCommandIndex(index);
+			}
+		}
+
+
+		// Brush
+		public void BrushSizeUp () => SetBrushSize(
+			m_Editor.SelectingBrushIndex,
+			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) + 0.1f, 0.1f, 1f)
+		);
+
+
+		public void BrushSizeDown () => SetBrushSize(
+			m_Editor.SelectingBrushIndex,
+			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) - 0.1f, 0.1f, 1f)
+		);
+
+
+		private float GetBrushSize (int index) {
+			switch (index) {
+				default:
+					return 0f;
+				case 0: // Stage Width
+					return m_Editor.StageBrushWidth;
+				case 1: // Track Width
+					return m_Editor.TrackBrushWidth;
+				case 2: // Note Width
+					return m_Editor.NoteBrushWidth;
+			}
+		}
+
+
+		private void SetBrushSize (int index, float size01) {
+			switch (index) {
+				case 0: // Stage Width
+					m_Editor.StageBrushWidth = Mathf.Clamp01(size01);
+					SliderItemMap[SliderType.StageBrushWidth].saving.Value = size01 * 12f;
+					break;
+				case 1: // Track Width
+					m_Editor.TrackBrushWidth = Mathf.Clamp01(size01);
+					SliderItemMap[SliderType.TrackBrushWidth].saving.Value = size01 * 12f;
+					break;
+				case 2: // Note Width
+					m_Editor.NoteBrushWidth = Mathf.Clamp01(size01);
+					SliderItemMap[SliderType.NoteBrushWidth].saving.Value = size01 * 12f;
+					break;
 			}
 		}
 

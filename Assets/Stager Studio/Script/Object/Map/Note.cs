@@ -339,7 +339,7 @@
 		private void LateUpdate_Movement_Linked (Beatmap.Note noteData, Beatmap.Note linkedNote, Vector3 noteWorldPos, Quaternion noteRot, float alpha) {
 
 			// Get Basic Linked Data
-			if (linkedNote == null || noteData.Time + noteData.Duration >= linkedNote.Time + 0.001f) { return; }
+			if (linkedNote == null || noteData.Time + noteData.Duration > linkedNote.Time) { return; }
 			var linkedTrack = Beatmap.Tracks[linkedNote.TrackIndex];
 			if (linkedTrack == null || !linkedTrack._Active) { return; }
 			var linkedStage = Beatmap.Stages[linkedTrack.StageIndex];
@@ -356,7 +356,8 @@
 			// Movement
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
 			float gameOffset = GetGameDropOffset(noteData._SpeedMuti);
-			float linkedNoteY01 = MusicTime < linkedNote.Time ? (linkedNote._NoteDropStart - gameOffset) : 0f;
+			float linkedNoteY01 = linkedNote._NoteDropStart - gameOffset;
+			linkedNoteY01 += GetMinHeight(SkinType.Note, noteData.ItemType);
 			var linkedZonePos = Track.LocalToZone(
 				linkedNote.X,
 				linkedNoteY01,
@@ -376,7 +377,7 @@
 
 			// Sub Pole World Pos
 			float noteEndTime = noteData.Time + noteData.Duration;
-			var subWorldPos = m_PoleRenderer.transform.position = Mathf.Abs(linkedNote.Time - noteEndTime) > 0.01f ? Util.Remap(
+			var subWorldPos = m_PoleRenderer.transform.position = Mathf.Abs(linkedNote.Time - noteEndTime) > 0.00001f ? Util.Remap(
 				noteEndTime,
 				linkedNote.Time,
 				noteWorldPos + noteRot * new Vector3(

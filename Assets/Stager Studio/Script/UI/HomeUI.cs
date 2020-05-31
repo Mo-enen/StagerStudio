@@ -28,8 +28,10 @@
 			public const string Error_ProjectAlreadyExists = "PManager.Error.ProjectAlreadyExists";
 			public const string Error_NewProjectSourceNotExists = "PManager.Error.NewProjectSourceNotExists";
 			public const string NewChapterName = "PManager.NewChapterName";
+			public const string DefaultChapterName = "PManager.DefaultChapterName";
 			public const string UI_ImportProjectTitle = "PManager.UI.ImportProjectTitle";
 			public const string UI_OverlapProjectConfirm = "PManager.UI.OverlapProjectConfirm";
+			public const string UI_DeleteChapterConfirm = "PManager.UI.DeleteChapterConfirm";
 			public const string UI_NewProjectConfirm = "PManager.UI.NewProjectConfirm";
 			public const string UI_FolderAlreadyExists = "PManager.UI.FolderAlreadyExists";
 			public const string UI_TrashProjectItemConfirm = "PManager.UI.TrashProjectItemConfirm";
@@ -91,7 +93,7 @@
 		public static VoidStringHandler SpawnProjectCreator { get; set; } = null;
 
 		// Short
-		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Trashbin");
+		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Stager_Trashbin");
 		private ProjectSortMode ProjectSort {
 			get => (ProjectSortMode)ProjectSortIndex.Value;
 			set => ProjectSortIndex.Value = (int)value;
@@ -194,6 +196,13 @@
 		}
 
 
+		public void DeleteChapterItem (object itemRT) {
+			if (itemRT == null || !(itemRT is RectTransform)) { return; }
+			var rt = itemRT as RectTransform;
+			DeleteChapterItemLogic(rt.name);
+		}
+
+
 		public void DeleteProjectItem (object itemRT) {
 			if (itemRT == null || !(itemRT is RectTransform)) { return; }
 			var rt = itemRT as RectTransform;
@@ -229,6 +238,12 @@
 		public void ShowWorkspaceInExplorer () {
 			if (!Util.DirectoryExists(GetWorkspace())) { return; }
 			Util.ShowInExplorer(GetWorkspace());
+		}
+
+
+		public void ShowTrashbinInExplorer () {
+			if (!Util.DirectoryExists(Trashbin)) { return; }
+			Util.ShowInExplorer(Trashbin);
 		}
 
 
@@ -273,6 +288,22 @@
 			ClearProjectContent();
 			CloseMoveProjectWindowLogic();
 			m_NoProjectHint.gameObject.SetActive(false);
+			// Default Chapter
+			var files = Util.GetFilesIn(GetWorkspace(), true, "*.stager");
+			if (files != null && files.Length > 0) {
+				string defaultChapterPath = Util.CombinePaths(GetWorkspace(), GetLanguage(LanguageData.DefaultChapterName));
+				if (!Util.DirectoryExists(defaultChapterPath)) {
+					Util.CreateFolder(defaultChapterPath);
+				}
+				foreach (var file in files) {
+					try {
+						var newPath = Util.CombinePaths(defaultChapterPath, Util.GetNameWithExtension(file.FullName));
+						if (!Util.FileExists(newPath)) {
+							Util.MoveFile(file.FullName, newPath);
+						}
+					} catch { }
+				}
+			}
 			// Load Chapters
 			bool openFlag = false;
 			var dirs = Util.GetDirectsIn(GetWorkspace(), true);
@@ -325,7 +356,9 @@
 				}
 				void OnTrigger () => OpenMenu(CHAPTER_ITEM_MENU_KEY, rt);
 			}
-			if (!openFlag) {
+			if (Util.HasFileIn(Trashbin, "*.stager") && OpeningChapter.Value == Util.GetNameWithoutExtension(Trashbin)) {
+				OpenTrashbinLogic(true);
+			} else if (!openFlag) {
 				OpenChapterAt(0);
 			}
 		}
@@ -425,7 +458,7 @@
 				button.onClick.AddListener(OnClick);
 				// Func
 				void OnClick () {
-					bool success = MoveProjectItemLogic(projectPath, name);
+					MoveProjectItemLogic(projectPath, name);
 					InvokeOpen();
 				}
 			}
@@ -487,6 +520,36 @@
 		}
 
 
+		private void DeleteChapterItemLogic (string chapterName) {
+			string path = Util.CombinePaths(GetWorkspace(), chapterName);
+			int fileCount = Util.GetFileCount(path, "*.stager", System.IO.SearchOption.TopDirectoryOnly);
+			if (fileCount == 0) {
+				// Delete
+				Util.DeleteDirectory(path);
+				OpenLogic();
+			} else {
+				// Dialog
+				DialogUtil.Dialog_Delete_Cancel(LanguageData.UI_DeleteChapterConfirm, () => {
+					// Move All Projects
+					var files = Util.GetFilesIn(path, true, "*.stager");
+					foreach (var file in files) {
+						try {
+							string trashPath = Util.CombinePaths(Trashbin, Util.GetNameWithExtension(file.FullName));
+							if (Util.FileExists(trashPath)) {
+								Util.DeleteFile(trashPath);
+							} else {
+								Util.MoveFile(file.FullName, trashPath);
+							}
+						} catch { }
+					}
+					// Delete Folder
+					Util.DeleteDirectory(path);
+					OpenLogic();
+				});
+			}
+		}
+
+
 		private void NewChapterLogic () {
 			// Get Path
 			string basicName = GetLanguage?.Invoke(LanguageData.NewChapterName);
@@ -517,7 +580,6 @@
 
 
 		private void NewProjectLogic () => SpawnProjectCreator(Util.CombinePaths(GetWorkspace(), OpeningChapter));
-
 
 
 		private void ImportProjectLogic (string path) {

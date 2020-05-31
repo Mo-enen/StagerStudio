@@ -425,6 +425,9 @@
 		public static string GetFullPath (string path) => new FileInfo(path).FullName;
 
 
+		public static string GetDirectoryFullPath (string path) => new DirectoryInfo(path).FullName;
+
+
 		public static string CombinePaths (params string[] paths) {
 			string path = "";
 			for (int i = 0; i < paths.Length; i++) {

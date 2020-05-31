@@ -42,6 +42,8 @@ Available Actions:
 	Shortcut.Translate.Up
 	Shortcut.Music.Volume.Down
 	Shortcut.Music.Volume.Up
+	Shortcut.Brush.SizeDown
+	Shortcut.Brush.SizeUp
 
 Available Keys:
 

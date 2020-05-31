@@ -33,3 +33,5 @@ Shortcut.Translate.Down,	S,	False,	False,	False#
 Shortcut.Translate.Up,	W,	False,	False,	False#
 Shortcut.Music.Volume.Down,	DownArrow,	False,	False,	False#
 Shortcut.Music.Volume.Up,	UpArrow,	False,	False,	False#
+Shortcut.Brush.SizeDown,	LeftBracket,	False,	False,	False#
+Shortcut.Brush.SizeUp,	RightBracket,	False,	False,	False#

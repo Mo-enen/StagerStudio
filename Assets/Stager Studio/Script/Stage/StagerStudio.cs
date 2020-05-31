@@ -979,7 +979,7 @@
 		public void About () => DialogUtil.Open(
 			$"<size=38><b>Stager Studio</b> v{Application.version}</size>\n" +
 			"<size=20>" +
-			"Created by 楠瓜Moenen\n\n" +
+			"\nCreated by 楠瓜Moenen\n\n" +
 			//"Home     www.stager.studio\n" +
 			"Email     moenen6@gmail.com\n" +
 			"Twitter   _Moenen\n" +

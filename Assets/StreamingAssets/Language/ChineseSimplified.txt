@@ -1,4 +1,7 @@
-﻿Author
+﻿Menu.Home.ShowTrashbin
+查看回收站
+
+Author
 Stager 官方
 
 Command.Hint.CommandDone
@@ -108,6 +111,9 @@ Menu.BeatmapItem.ExportBeatmap
 
 Menu.BeatmapItem.OpenBeatmap
 打开谱面
+
+Menu.ChapterItem.Delete
+删除
 
 Menu.ChapterItem.Rename
 重命名
@@ -304,6 +310,9 @@ Menu.UI.QuitConfirm
 Music.Hint.Volume
 音乐音量{0}%
 
+PManager.DefaultChapterName
+（默认章节）
+
 PManager.Error.ChapterAlreadyExists
 章节已经存在
 
@@ -315,6 +324,9 @@ PManager.Error.ProjectAlreadyExists
 
 PManager.NewChapterName
 新章节
+
+PManager.UI.DeleteChapterConfirm
+删除章节吗？该章节内的工程会被移入Stager回收站。
 
 PManager.UI.DeleteProjectItemConfirm
 是否删除"{0}"？这将删除硬盘中的文件。

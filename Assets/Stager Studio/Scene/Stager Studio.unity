@@ -7548,7 +7548,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 1974856801}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.000000089373806
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -16591,6 +16591,50 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - Name: Shortcut.Brush.SizeDown
+    Key: 91
+    Ctrl: 0
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: BrushSizeDown
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Name: Shortcut.Brush.SizeUp
+    Key: 93
+    Ctrl: 0
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: BrushSizeUp
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
 --- !u!1 &798280411
 GameObject:
   m_ObjectHideFlags: 0
@@ -17252,8 +17296,8 @@ MonoBehaviour:
   m_Datas:
   - Key: Menu.Home
     CallbackKeys:
-    - Menu.Home.ImportProject
     - Menu.Home.ShowWorkspace
+    - Menu.Home.ShowTrashbin
     - Menu.Home.Refresh
     - 
     - Menu.Home.SortByName
@@ -17265,6 +17309,7 @@ MonoBehaviour:
     CallbackKeys:
     - Menu.ChapterItem.Rename
     - Menu.ChapterItem.ShowInExplorer
+    - Menu.ChapterItem.Delete
   - Key: Menu.ProjectItem
     CallbackKeys:
     - Menu.ProjectItem.Open
@@ -17320,6 +17365,7 @@ MonoBehaviour:
     CallbackKeys:
     - Menu.Home.NewChapter
     - Menu.Home.NewProject
+    - Menu.Home.ImportProject
   - Key: Menu.UI.SelectorStage
     CallbackKeys:
     - Menu.Selector.Stage.MoveUp
@@ -17480,6 +17526,22 @@ MonoBehaviour:
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
+  - Key: Menu.ChapterItem.Delete
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 213184615}
+          m_MethodName: DeleteChapterItem
+          m_Mode: 0
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
   - Key: Menu.ProjectItem.Move
     Icon: {fileID: 0}
     Callback:
@@ -17599,6 +17661,22 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 213184615}
           m_MethodName: ShowWorkspaceInExplorer
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Key: Menu.Home.ShowTrashbin
+    Icon: {fileID: 0}
+    Callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 213184615}
+          m_MethodName: ShowTrashbinInExplorer
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -33155,7 +33233,7 @@ MonoBehaviour:
         A: 255
       FrameDuration: 120
       FixedRatio: 0
-  m_DefaultTexture: {fileID: 2800000, guid: 9d90311eb76e9cd4d8b2620aa302c098, type: 3}
+  m_DefaultTexture: {fileID: 2800000, guid: 56f5ff57e5f32d0499ec06f19b538cd7, type: 3}
 --- !u!1 &1568024531
 GameObject:
   m_ObjectHideFlags: 0
@@ -39835,7 +39913,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 483078907}
   m_Direction: 2
   m_Value: 1
-  m_Size: 1
+  m_Size: 0.000000089373806
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -41980,6 +42058,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - Menu.Home.ShowTrashbin
+  - Show Trashbin
   - Author
   - Stager Official
   - Command.Hint.CommandDone
@@ -42054,6 +42134,8 @@ MonoBehaviour:
   - Export Beatmap
   - Menu.BeatmapItem.OpenBeatmap
   - Open Beatmap
+  - Menu.ChapterItem.Delete
+  - Delete
   - Menu.ChapterItem.Rename
   - Rename
   - Menu.ChapterItem.ShowInExplorer
@@ -42184,6 +42266,8 @@ MonoBehaviour:
   - Are you sure to quit now?
   - Music.Hint.Volume
   - Music Volume {0}%
+  - PManager.DefaultChapterName
+  - (Default Chapter)
   - PManager.Error.ChapterAlreadyExists
   - Chapter already exists
   - PManager.Error.NewProjectSourceNotExists
@@ -42192,6 +42276,8 @@ MonoBehaviour:
   - Project already exists
   - PManager.NewChapterName
   - New Chapter
+  - PManager.UI.DeleteChapterConfirm
+  - Delete chapter ? Projects inside will be move to trashbin.
   - PManager.UI.DeleteProjectItemConfirm
   - Delete project {0}? This will delete the file in disk.
   - PManager.UI.FolderAlreadyExists
