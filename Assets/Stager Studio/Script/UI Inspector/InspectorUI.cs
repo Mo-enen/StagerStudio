@@ -45,6 +45,7 @@
 
 		// Ser
 		[SerializeField] private Text m_Header = null;
+		[SerializeField] private Text m_Index = null;
 		[SerializeField] private RectTransform m_Container = null;
 		[SerializeField] private RectTransform m_MotionInspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
@@ -86,31 +87,41 @@
 		public void RefreshUI () {
 			int type = GetSelectingType();
 			if (GetBeatmap() != null) {
-				if (type >= 0 && type < m_Container.childCount && GetSelectingIndex() >= 0) {
+				int selectingIndex = GetSelectingIndex();
+				if (type >= 0 && type < m_Container.childCount && selectingIndex >= 0) {
 					switch (type) {
 						case 0: // Stage
 							m_Header.text = GetLanguage(HEADER_STAGE);
+							m_Index.text = selectingIndex.ToString("00");
+							m_Index.transform.parent.gameObject.TrySetActive(true);
 							SetInspectorActive(1);
 							RefreshStageInspector();
 							break;
 						case 1: // Track
 							m_Header.text = GetLanguage(HEADER_TRACK);
+							m_Index.text = selectingIndex.ToString("00");
+							m_Index.transform.parent.gameObject.TrySetActive(true);
 							SetInspectorActive(2);
 							RefreshTrackInspector();
 							break;
 						case 2: // Note
 							m_Header.text = GetLanguage(HEADER_NOTE);
+							m_Index.text = selectingIndex.ToString("00");
+							m_Index.transform.parent.gameObject.TrySetActive(true);
 							SetInspectorActive(3);
 							RefreshNoteInspector();
 							break;
 						case 3: // Timing
 							m_Header.text = GetLanguage(HEADER_TIMING);
+							m_Index.text = selectingIndex.ToString("00");
+							m_Index.transform.parent.gameObject.TrySetActive(true);
 							SetInspectorActive(4);
 							RefreshTimingInspector();
 							break;
 					}
 				} else {
 					m_Header.text = GetLanguage(HEADER_BEATMAP);
+					m_Index.transform.parent.gameObject.TrySetActive(false);
 					SetInspectorActive(0);
 					RefreshBeatmapInspector();
 				}

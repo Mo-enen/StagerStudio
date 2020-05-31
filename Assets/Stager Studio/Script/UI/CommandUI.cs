@@ -56,6 +56,7 @@
 		[SerializeField] private InputField m_ValueIF = null;
 		[SerializeField] private Text m_TargetLabel = null;
 		[SerializeField] private Text m_CommandLabel = null;
+		[SerializeField] private Text[] m_LanguageLabels = null;
 		[SerializeField] private MenuData[] Menus = null;
 
 		// Data
@@ -63,7 +64,12 @@
 
 
 		// MSG
-		private void Awake () => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -m_Window.rect.height - 12f);
+		private void Awake () {
+			m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -m_Window.rect.height - 12f);
+			foreach (var label in m_LanguageLabels) {
+				label.text = GetLanguage(label.name);
+			}
+		}
 
 
 		private void Start () => RefreshUI();

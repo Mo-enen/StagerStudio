@@ -1123,6 +1123,8 @@ MonoBehaviour:
   m_ValueIF: {fileID: 2036726384}
   m_TargetLabel: {fileID: 8482638807161272345}
   m_CommandLabel: {fileID: 9111232663772106933}
+  m_LanguageLabels:
+  - {fileID: 465207461}
   Menus:
   - TargetMenuKey: Menu.Command.None
     CommandIndexs: 00000000

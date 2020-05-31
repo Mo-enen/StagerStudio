@@ -12,6 +12,9 @@
 
 
 
+		private static long PrevDoTheThingTime = 0;
+
+
 		// Clear Console
 		// & alt   % ctrl   # Shift
 		[MenuItem("Tools/Do the Thing _F5")]
@@ -24,12 +27,17 @@
 			}
 			var method = type.GetMethod("Clear");
 			method.Invoke(new object(), null);
-			// Deselect
-			Selection.activeObject = null;
-			// Save
-			if (!EditorApplication.isPlaying) {
-				EditorSceneManager.SaveOpenScenes();
+
+			long time = System.DateTime.Now.Ticks;
+			if (time - PrevDoTheThingTime < 5000000) {
+				// Deselect
+				Selection.activeObject = null;
+				// Save
+				if (!EditorApplication.isPlaying) {
+					EditorSceneManager.SaveOpenScenes();
+				}
 			}
+			PrevDoTheThingTime = time;
 		}
 
 

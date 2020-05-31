@@ -65,7 +65,7 @@ Inspector.Header.Stage
 舞台
 
 Inspector.Header.Timing
-时间
+时间点
 
 Inspector.Header.Track
 轨道
