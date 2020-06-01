@@ -75,6 +75,9 @@
 
 
 
+		public void ForceUpdate () => LateUpdate();
+
+
 		protected override void OnMeshFill () {
 
 			if (BeatPerSection <= 0 || Scale.x < 0.0001f || SpeedMuti <= 0f) { return; }

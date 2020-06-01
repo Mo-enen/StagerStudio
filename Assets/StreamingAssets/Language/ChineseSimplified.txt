@@ -1,5 +1,5 @@
-﻿Menu.Home.ShowTrashbin
-查看回收站
+﻿Tip.Setting.UseLog
+是否将调试信息输出到日志文件
 
 Author
 Stager 官方
@@ -222,6 +222,9 @@ Menu.Home.NewProject
 
 Menu.Home.Refresh
 刷新
+
+Menu.Home.ShowTrashbin
+查看回收站
 
 Menu.Home.ShowWorkspace
 查看工作空间
@@ -516,6 +519,12 @@ Shortcut.AbreastView
 
 Shortcut.Brush.Note
 音符笔刷
+
+Shortcut.Brush.SizeDown
+减小笔刷尺寸
+
+Shortcut.Brush.SizeUp
+增加笔刷尺寸
 
 Shortcut.Brush.Speed
 速度笔刷
@@ -1301,7 +1310,7 @@ UI.Setting.ShowKeypress
 显示按键历史
 
 UI.Setting.ShowTimerOnPlay
-播放音乐时显示时间拉杆
+播放音乐时显示网格与时间拉杆
 
 UI.Setting.ShowTip
 显示工具提示
@@ -1338,6 +1347,9 @@ UI.Setting.UIScale.2
 
 UI.Setting.UseEditorEffect
 使用编辑器特效
+
+UI.Setting.UseLog
+使用日志文件
 
 UI.Setting.UseSFX
 音乐特效

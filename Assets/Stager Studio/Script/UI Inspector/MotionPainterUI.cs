@@ -5,6 +5,7 @@
 	using UnityEngine.UI;
 	using Data;
 	using Object;
+	using DebugLog;
 
 
 	public class MotionPainterUI : Image {
@@ -44,10 +45,10 @@
 		// Handler
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
 		public static FloatHandler GetMusicTime { get; set; } = null;
-		public static VoidFloatHandler SeekMusic { get; set; } = null;
 		public static FloatHandler GetMusicDuration { get; set; } = null;
 		public static FloatHandler GetBPM { get; set; } = null;
 		public static IntHandler GetBeatPerSection { get; set; } = null;
+		public static VoidFloatHandler SeekMusic { get; set; } = null;
 		public static VoidHandler OnItemEdit { get; set; } = null;
 		public static VoidHandler OnSelectionChanged { get; set; } = null;
 		public static CharToSpriteHandler GetSprite { get; set; } = null;
@@ -127,10 +128,12 @@
 			var pos01 = rt.Get01Position(Input.mousePosition, Camera);
 			pos01.y = 1f - pos01.y;
 			if (pos01.x >= 0f && pos01.x <= 1f && pos01.y >= 0f && pos01.y <= 1f) {
+
 				// Inside
 				bool leftDown = Input.GetMouseButton(0);
 				bool rightDown = Input.GetMouseButton(1);
 				bool prevLeftDown = Mouse.leftDown;
+				bool prevRightDown = Mouse.rightDown;
 
 				// Pos Changed, Down Changed
 				if (!Mouse.active || Input.mousePosition != Mouse.pos || leftDown != Mouse.leftDown || rightDown != Mouse.rightDown) {
@@ -149,8 +152,9 @@
 
 				// L Down
 				if (leftDown && !prevLeftDown) {
+					Beatmap map = null;
 					if (HoveredBeat >= 0 && HoveredDiv >= 0) {
-						var map = GetBeatmap();
+						map = GetBeatmap();
 						if (map != null) {
 							// Add Motion
 							float bps = GetBPM() / 60f;
@@ -178,6 +182,7 @@
 							}
 						}
 					}
+					Log("L Down");
 				}
 
 				// R Down
@@ -191,6 +196,9 @@
 							SeekMusic(itemTime + localTime);
 							SetVerticesDirty();
 						}
+					}
+					if (!prevRightDown) {
+						Log("R Down");
 					}
 				}
 
@@ -213,6 +221,7 @@
 					SetVerticesDirty();
 					OnItemEdit();
 				}
+				Log("Delete");
 			}
 
 		}
@@ -567,6 +576,19 @@
 			float left = Mathf.LerpUnclamped(rect.x, rect.x + rect.width, x01);
 			float right = left + rect.width / division;
 			return (left, right, x01);
+		}
+
+
+		private void Log (string subTitle) {
+			if (!DebugLog.UseLog) { return; }
+			DebugLog.LogFormat("MotionPainterUI", subTitle, false,
+				("HoveredBeat", HoveredBeat),
+				("HoveredDiv", HoveredDiv),
+				("Beatmap", GetBeatmap()),
+				("MotionType", MotionType),
+				("ItemIndex", ItemIndex),
+				("SelectingMotionIndex", MotionItem.SelectingMotionIndex)
+			);
 		}
 
 

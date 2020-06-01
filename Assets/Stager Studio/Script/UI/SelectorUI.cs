@@ -71,6 +71,7 @@
 			LastUpdateTime = Time.time;
 			var map = GetBeatmap();
 			if (map == null) {
+				// No Beatmap
 				if (m_Container_Track.childCount > 0 || m_Container_Track.childCount > 0) {
 					m_Container_Stage.DestroyAllChildImmediately();
 					m_Container_Track.DestroyAllChildImmediately();
@@ -82,6 +83,7 @@
 			int stageCount = map.Stages.Count;
 			if (m_Container_Stage.childCount > stageCount) {
 				m_Container_Stage.FixChildcountImmediately(stageCount);
+				RefreshAllIndex(m_Container_Stage);
 			} else if (m_Container_Stage.childCount < stageCount) {
 				for (int i = m_Container_Stage.childCount; i < stageCount; i++) {
 					var grab = Instantiate(m_StagePrefab, m_Container_Stage);
@@ -90,12 +92,14 @@
 					grab.Grab<Text>("Label").text = i.ToString("00");
 					grab.Grab<TriggerUI>().CallbackRight.AddListener(() => OpenItemMenu(grab.transform as RectTransform, 0));
 				}
+				RefreshAllIndex(m_Container_Stage);
 			}
 
 			// Fix Track
 			int trackCount = map.Tracks.Count;
 			if (m_Container_Track.childCount > trackCount) {
 				m_Container_Track.FixChildcountImmediately(trackCount);
+				RefreshAllIndex(m_Container_Track);
 			} else if (m_Container_Track.childCount < trackCount) {
 				for (int i = m_Container_Track.childCount; i < trackCount; i++) {
 					var grab = Instantiate(m_TrackPrefab, m_Container_Track);
@@ -104,6 +108,7 @@
 					grab.Grab<Text>("Label").text = i.ToString("00");
 					grab.Grab<TriggerUI>().CallbackRight.AddListener(() => OpenItemMenu(grab.transform as RectTransform, 1));
 				}
+				RefreshAllIndex(m_Container_Track);
 			}
 
 			// Highlight
@@ -123,6 +128,15 @@
 				m_Highlight.position = target.position;
 				m_Highlight.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, target.rect.width);
 				m_Highlight.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, target.rect.height);
+			}
+		}
+
+
+		private void RefreshAllIndex (RectTransform container) {
+			int count = container.childCount;
+			for (int i = 0; i < count; i++) {
+				var grab = container.GetChild(i).GetComponent<Grabber>();
+				grab.Grab<Text>("Label").text = i.ToString("00");
 			}
 		}
 

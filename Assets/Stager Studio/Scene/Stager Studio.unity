@@ -7547,8 +7547,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1974856802}
   m_HandleRect: {fileID: 1974856801}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.000000089373806
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -15510,7 +15510,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 9
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &793886119
 MonoBehaviour:
@@ -15765,7 +15765,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &798248423
 MonoBehaviour:
@@ -19211,7 +19211,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -10, y: -346.53906}
-  m_SizeDelta: {x: 10, y: -346.54}
+  m_SizeDelta: {x: 10, y: -346.53906}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &833786740
 MonoBehaviour:
@@ -29753,7 +29753,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1422492950}
   m_Layer: 0
-  m_Name: Stage - Timer
+  m_Name: Timer Stage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -31043,9 +31043,9 @@ Transform:
   - {fileID: 1564010260}
   - {fileID: 826612609}
   - {fileID: 572003328}
+  - {fileID: 793886118}
   - {fileID: 798248422}
   - {fileID: 2029856296}
-  - {fileID: 793886118}
   - {fileID: 995548658}
   - {fileID: 1346285582}
   - {fileID: 1967135108}
@@ -32351,7 +32351,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1527981378}
   m_Layer: 0
-  m_Name: Track - Timer
+  m_Name: Timer Track
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39912,8 +39912,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 483078908}
   m_HandleRect: {fileID: 483078907}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 0.000000089373806
+  m_Value: 0
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -42058,8 +42058,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
-  - Menu.Home.ShowTrashbin
-  - Show Trashbin
+  - Tip.Setting.UseLog
+  - Log debuging info into text file
   - Author
   - Stager Official
   - Command.Hint.CommandDone
@@ -42208,6 +42208,8 @@ MonoBehaviour:
   - New Project
   - Menu.Home.Refresh
   - Refresh
+  - Menu.Home.ShowTrashbin
+  - Show Trashbin
   - Menu.Home.ShowWorkspace
   - Show Workspace
   - Menu.Home.SortByName
@@ -42404,6 +42406,10 @@ MonoBehaviour:
   - Panorama View
   - Shortcut.Brush.Note
   - Note Brush
+  - Shortcut.Brush.SizeDown
+  - Brush Size Down
+  - Shortcut.Brush.SizeUp
+  - Brush Size Up
   - Shortcut.Brush.Speed
   - Speed Brush
   - Shortcut.Brush.Stage
@@ -42930,7 +42936,7 @@ MonoBehaviour:
   - UI.Setting.ShowKeypress
   - Show Keypress History
   - UI.Setting.ShowTimerOnPlay
-  - Show timer handle on play music
+  - Show grid and timer handle on play music
   - UI.Setting.ShowTip
   - Show Tooltip
   - UI.Setting.SnapProgress
@@ -42955,6 +42961,8 @@ MonoBehaviour:
   - Large
   - UI.Setting.UseEditorEffect
   - Use Editor Effect
+  - UI.Setting.UseLog
+  - Log to File
   - UI.Setting.UseSFX
   - Sound FX
   - UI.Setting.Wave
@@ -44431,7 +44439,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2029856297
 MonoBehaviour:

@@ -1,5 +1,5 @@
-﻿Menu.Home.ShowTrashbin
-Show Trashbin
+﻿Tip.Setting.UseLog
+Log debuging info into text file
 
 Author
 Stager Official
@@ -222,6 +222,9 @@ New Project
 
 Menu.Home.Refresh
 Refresh
+
+Menu.Home.ShowTrashbin
+Show Trashbin
 
 Menu.Home.ShowWorkspace
 Show Workspace
@@ -516,6 +519,12 @@ Panorama View
 
 Shortcut.Brush.Note
 Note Brush
+
+Shortcut.Brush.SizeDown
+Brush Size Down
+
+Shortcut.Brush.SizeUp
+Brush Size Up
 
 Shortcut.Brush.Speed
 Speed Brush
@@ -1301,7 +1310,7 @@ UI.Setting.ShowKeypress
 Show Keypress History
 
 UI.Setting.ShowTimerOnPlay
-Show timer handle on play music
+Show grid and timer handle on play music
 
 UI.Setting.ShowTip
 Show Tooltip
@@ -1338,6 +1347,9 @@ Large
 
 UI.Setting.UseEditorEffect
 Use Editor Effect
+
+UI.Setting.UseLog
+Log to File
 
 UI.Setting.UseSFX
 Sound FX

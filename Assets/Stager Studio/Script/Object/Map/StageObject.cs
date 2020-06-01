@@ -43,6 +43,7 @@
 		public static (float index, float value, float width) Abreast { get; set; } = (0f, 0f, 1f);
 		public static float MusicTime { get; set; } = 0f;
 		public static float MusicDuration { get; set; } = 0f;
+		public static bool ShowGridOnPlay { get; set; } = false;
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;

@@ -10,7 +10,7 @@
 	using Data;
 	using Saving;
 	using UndoRedo;
-	using UIGadget;
+	using DebugLog;
 
 
 	public partial class StagerStudio : MonoBehaviour {
@@ -162,6 +162,7 @@
 			GetLanguage = m_Language.Get;
 
 			Awake_Message();
+			Awake_Quit();
 			Awake_Setting();
 			Awake_Setting_UI();
 			Awake_Menu();
@@ -191,6 +192,7 @@
 			m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
 			m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
 			m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
+			DebugLog_Start();
 		}
 
 
@@ -208,6 +210,7 @@
 			StageObject.Abreast = (aIndex, aValue, aWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.MusicTime = musicTime;
+			StageObject.ShowGridOnPlay = m_Game.ShowGridTimerOnPlay.Value;
 			StageObject.Solo = (
 				SoloOnEditMotion.Value && m_MotionPainter.ItemType >= 0,
 				m_MotionPainter.ItemType == 0 ? m_MotionPainter.ItemIndex :
@@ -229,6 +232,11 @@
 				UndoRedo.Redo();
 				WillRedo = false;
 			}
+		}
+
+
+		private void OnApplicationQuit () {
+			DebugLog.CloseLogStream();
 		}
 
 
@@ -273,7 +281,11 @@
 			DialogUtil.GetRoot = () => m_DialogRoot;
 			DialogUtil.GetPrefab = () => m_DialogPrefab;
 			TooltipUI.GetHotKey = m_Shortcut.GetHotkeyLabel;
-			// Quit
+			DebugLog.Init(Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Log"));
+		}
+
+
+		private void Awake_Quit () {
 			bool willQuit = false;
 			Application.wantsToQuit += () => {
 #if UNITY_EDITOR
@@ -409,6 +421,7 @@
 				m_Music.Seek(0f);
 				UI_RemoveUI();
 				RefreshLoading(-1f);
+				DebugLog_Project("Loaded");
 			};
 			StageProject.OnProjectSavingStart = () => {
 				StartCoroutine(SaveProgressing());
@@ -451,6 +464,7 @@
 				RefreshGridRenderer();
 				RefreshOnItemChange();
 				m_Inspector.RefreshUI();
+				DebugLog_Beatmap("Open");
 			};
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();
@@ -1099,6 +1113,42 @@
 			m_GridRenderer.TimeGap = 60f / m_Game.BPM / m_Game.GridCountY;
 			m_GridRenderer.TimeOffset = m_Game.Shift;
 			m_GridRenderer.GameSpeedMuti = m_Game.GameDropSpeed;
+		}
+
+
+		// Debug Log
+		private void DebugLog_Start () {
+			if (!DebugLog.UseLog) { return; }
+			DebugLog.LogFormat("System", "Start", true);
+		}
+
+
+		private void DebugLog_Project (string type) {
+			if (!DebugLog.UseLog) { return; }
+			DebugLog.LogFormat(
+				"Project", type, true,
+				("ProjectName", m_Project.ProjectName),
+				("ProjectPath", m_Project.ProjectPath),
+				("Workspace", m_Project.Workspace)
+			);
+		}
+
+
+		private void DebugLog_Beatmap (string type) {
+			if (!DebugLog.UseLog) { return; }
+			var map = m_Project.Beatmap;
+			if (map != null) {
+				DebugLog.LogFormat(
+					"Beatmap", type, true,
+					("map", map),
+					("BeatmapKey", m_Project.BeatmapKey),
+					("CreatedTime", map.CreatedTime),
+					("Tag", map.tag),
+					("Bpm", map.bpm)
+				);
+			} else {
+				DebugLog.LogFormat("Beatmap", type, false, ("Map is Null", null));
+			}
 		}
 
 

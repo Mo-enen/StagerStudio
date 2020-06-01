@@ -7,6 +7,7 @@
 	using UnityEngine.UI;
 	using Saving;
 	using UndoRedo;
+	using DebugLog;
 
 
 	public partial class StagerStudio { /// --- Spawn UI ---
@@ -40,6 +41,7 @@
 			SoloOnEditMotion,
 			UseEditorEffect,
 			ShowTimerOnPlay,
+			Log,
 
 		}
 
@@ -53,6 +55,7 @@
 			StageBrushHeight,
 			TrackBrushWidth,
 			NoteBrushWidth,
+
 		}
 
 
@@ -192,8 +195,13 @@
 			}, () => m_Effect.UseEffect.Value, m_Effect.UseEffect, true));
 
 			ToggleItemMap.Add(ToggleType.ShowTimerOnPlay, ((isOn) => {
-				m_Game.ShowTimerOnPlay.Value = isOn;
-			}, () => m_Game.ShowTimerOnPlay.Value, m_Game.ShowTimerOnPlay, true));
+				m_Game.ShowGridTimerOnPlay.Value = isOn;
+			}, () => m_Game.ShowGridTimerOnPlay.Value, m_Game.ShowGridTimerOnPlay, true));
+
+			ToggleItemMap.Add(ToggleType.Log, ((isOn) => {
+				DebugLog.UseLog = isOn;
+				ToggleItemMap[ToggleType.Log].saving.Value = isOn;
+			}, () => DebugLog.UseLog, new SavingBool("SS.UseLog", true), true));
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
@@ -213,19 +221,19 @@
 			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushWidth, ((value) => {
-				SetBrushSize(0, value / 12f);
+				SetBrushSize(0, 0, value / 12f);
 			}, null, new SavingFloat("SS.StageBrushWidth", 12f), true));
 
 			SliderItemMap.Add(SliderType.StageBrushHeight, ((value) => {
-				SetBrushSize(1, value / 12f);
+				SetBrushSize(0, 1, value / 12f);
 			}, null, new SavingFloat("SS.StageBrushHeight", 12f), true));
 
 			SliderItemMap.Add(SliderType.TrackBrushWidth, ((value) => {
-				SetBrushSize(2, value / 12f);
+				SetBrushSize(1, 0, value / 12f);
 			}, null, new SavingFloat("SS.TrackBrushWidth", 2.5f), true));
 
 			SliderItemMap.Add(SliderType.NoteBrushWidth, ((value) => {
-				SetBrushSize(3, value / 12f);
+				SetBrushSize(2, 0, value / 12f);
 			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
 
 
@@ -442,13 +450,13 @@
 
 		// Brush
 		public void BrushSizeUp () => SetBrushSize(
-			m_Editor.SelectingBrushIndex,
+			m_Editor.SelectingBrushIndex, 0,
 			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) + 0.1f, 0.1f, 1f)
 		);
 
 
 		public void BrushSizeDown () => SetBrushSize(
-			m_Editor.SelectingBrushIndex,
+			m_Editor.SelectingBrushIndex, 0,
 			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) - 0.1f, 0.1f, 1f)
 		);
 
@@ -467,11 +475,18 @@
 		}
 
 
-		private void SetBrushSize (int index, float size01) {
-			switch (index) {
-				case 0: // Stage Width
-					m_Editor.StageBrushWidth = Mathf.Clamp01(size01);
-					SliderItemMap[SliderType.StageBrushWidth].saving.Value = size01 * 12f;
+		private void SetBrushSize (int itemType, int brushType, float size01) {
+			switch (itemType) {
+				case 0: // Stage
+					if (brushType == 0) {
+						// Width
+						m_Editor.StageBrushWidth = Mathf.Clamp01(size01);
+						SliderItemMap[SliderType.StageBrushWidth].saving.Value = size01 * 12f;
+					} else {
+						// Height
+						m_Editor.StageBrushHeight = Mathf.Clamp01(size01);
+						SliderItemMap[SliderType.StageBrushHeight].saving.Value = size01 * 12f;
+					}
 					break;
 				case 1: // Track Width
 					m_Editor.TrackBrushWidth = Mathf.Clamp01(size01);

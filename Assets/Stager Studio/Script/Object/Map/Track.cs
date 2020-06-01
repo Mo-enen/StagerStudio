@@ -171,7 +171,7 @@
 			}
 
 			// Section
-			active = ShowGrid && trackActive && !MusicPlaying;
+			active = ShowGrid && trackActive && (ShowGridOnPlay || !MusicPlaying);
 			m_SectionRenderer.RendererEnable = active;
 			if (active) {
 				m_SectionRenderer.MusicTime = MusicTime;
@@ -182,6 +182,7 @@
 				m_SectionRenderer.Scale = MainRenderer.Scale;
 				m_SectionRenderer.Alpha = MainRenderer.Alpha;
 				m_SectionRenderer.SetSortingLayer(SortingLayerID_Gizmos, GetSortingOrder());
+				m_SectionRenderer.ForceUpdate();
 			}
 
 		}
