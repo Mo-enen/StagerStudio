@@ -32814,6 +32814,17 @@ MonoBehaviour:
         BorderR: 49
         Is3D: 0
         Thickness3D: 0
+      - X: 431
+        Y: 21
+        Width: 52
+        Height: 23
+        MinHeight: 23
+        BorderU: 0
+        BorderD: 0
+        BorderL: 0
+        BorderR: 0
+        Is3D: 0
+        Thickness3D: 0
       Highlight:
         R: 255
         G: 255
@@ -32833,6 +32844,17 @@ MonoBehaviour:
         BorderR: 49
         Is3D: 0
         Thickness3D: 0
+      - X: 453
+        Y: 2
+        Width: 8
+        Height: 8
+        MinHeight: 5
+        BorderU: 0
+        BorderD: 0
+        BorderL: 0
+        BorderR: 0
+        Is3D: 0
+        Thickness3D: 0
       Highlight:
         R: 255
         G: 255
@@ -32844,10 +32866,21 @@ MonoBehaviour:
       - X: 404
         Y: 62
         Width: 106
-        Height: 209
+        Height: 223
         MinHeight: 0
         BorderU: 151
         BorderD: 39
+        BorderL: 46
+        BorderR: 46
+        Is3D: 0
+        Thickness3D: 0
+      - X: 404
+        Y: 99
+        Width: 106
+        Height: 186
+        MinHeight: 42
+        BorderU: 151
+        BorderD: 0
         BorderL: 46
         BorderR: 46
         Is3D: 0
@@ -32871,6 +32904,17 @@ MonoBehaviour:
         BorderR: 46
         Is3D: 0
         Thickness3D: 0
+      - X: 444
+        Y: 286
+        Width: 26
+        Height: 221
+        MinHeight: 225
+        BorderU: 151
+        BorderD: 0
+        BorderL: 4
+        BorderR: 4
+        Is3D: 0
+        Thickness3D: 0
       Highlight:
         R: 255
         G: 255
@@ -32880,7 +32924,7 @@ MonoBehaviour:
       FixedRatio: 0
     - Rects:
       - X: 102
-        Y: 80
+        Y: 116
         Width: 300
         Height: 26
         MinHeight: 0
@@ -32899,7 +32943,7 @@ MonoBehaviour:
       FixedRatio: 0
     - Rects:
       - X: 274
-        Y: 22
+        Y: 58
         Width: 128
         Height: 56
         MinHeight: 56
@@ -32908,20 +32952,9 @@ MonoBehaviour:
         BorderL: 60
         BorderR: 60
         Is3D: 1
-        Thickness3D: 12
-      - X: 123
-        Y: 22
-        Width: 128
-        Height: 56
-        MinHeight: 56
-        BorderU: 26
-        BorderD: 26
-        BorderL: 60
-        BorderR: 60
-        Is3D: 1
-        Thickness3D: 12
-      - X: 17
-        Y: 12
+        Thickness3D: 24
+      - X: 188
+        Y: 16
         Width: 84
         Height: 40
         MinHeight: 40
@@ -32939,17 +32972,17 @@ MonoBehaviour:
       FrameDuration: 120
       FixedRatio: 0
     - Rects:
-      - X: 366
-        Y: 143
-        Width: 36
-        Height: 345
+      - X: 208
+        Y: 58
+        Width: 8
+        Height: 56
         MinHeight: 0
-        BorderU: 169
-        BorderD: 170
+        BorderU: 25
+        BorderD: 25
         BorderL: 0
         BorderR: 0
-        Is3D: 0
-        Thickness3D: 0
+        Is3D: 1
+        Thickness3D: 1
       Highlight:
         R: 255
         G: 255
@@ -32958,7 +32991,7 @@ MonoBehaviour:
       FrameDuration: 120
       FixedRatio: 0
     - Rects:
-      - X: 2
+      - X: 40
         Y: 420
         Width: 180
         Height: 90
@@ -32969,7 +33002,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 184
+      - X: 222
         Y: 420
         Width: 180
         Height: 90
@@ -32980,7 +33013,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 2
+      - X: 40
         Y: 328
         Width: 180
         Height: 90
@@ -32991,7 +33024,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 184
+      - X: 222
         Y: 328
         Width: 180
         Height: 90
@@ -33002,7 +33035,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 2
+      - X: 40
         Y: 236
         Width: 180
         Height: 90
@@ -33013,7 +33046,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 184
+      - X: 222
         Y: 236
         Width: 180
         Height: 90
@@ -33024,7 +33057,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 2
+      - X: 40
         Y: 144
         Width: 180
         Height: 90
@@ -33035,7 +33068,7 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 184
+      - X: 222
         Y: 144
         Width: 180
         Height: 90
@@ -33054,7 +33087,7 @@ MonoBehaviour:
       FrameDuration: 16
       FixedRatio: 0
     - Rects:
-      - X: 2
+      - X: 40
         Y: 420
         Width: 180
         Height: 90
@@ -33065,8 +33098,8 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 184
-        Y: 328
+      - X: 222
+        Y: 420
         Width: 180
         Height: 90
         MinHeight: 0
@@ -33076,8 +33109,8 @@ MonoBehaviour:
         BorderR: 0
         Is3D: 0
         Thickness3D: 0
-      - X: 2
-        Y: 236
+      - X: 40
+        Y: 328
         Width: 180
         Height: 90
         MinHeight: 0

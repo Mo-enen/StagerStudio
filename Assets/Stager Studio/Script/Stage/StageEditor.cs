@@ -40,6 +40,7 @@
 		public delegate void LogAxisHintHandler (int axis, string hint);
 		public delegate float SnapTimeHandler (float time, float gap, float offset);
 		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
+		public delegate void ExceptionHandler (System.Exception ex);
 
 
 		#endregion
@@ -82,6 +83,7 @@
 		public static VoidFloatHandler SetAbreastIndex { get; set; } = null;
 		public static LogAxisHintHandler LogAxisMessage { get; set; } = null;
 		public static SnapTimeHandler GetSnapedTime { get; set; } = null;
+		public static ExceptionHandler OnException { get; set; } = null;
 
 		// Api
 		public int SelectingItemType { get; private set; } = -1;
@@ -211,12 +213,14 @@
 			if (GetEditorActive() && AntiTargetAllow()) {
 				// Editor Active
 				var map = GetBeatmap();
-				LateUpdate_Key(map);
-				LateUpdate_Selection();
-				LateUpdate_Hover(map);
-				LateUpdate_Down(map);
-				LateUpdate_Axis(map);
-				LateUpdate_Highlight();
+				try {
+					LateUpdate_Key(map);
+					LateUpdate_Selection();
+					LateUpdate_Hover(map);
+					LateUpdate_Down(map);
+					LateUpdate_Axis(map);
+					LateUpdate_Highlight();
+				} catch (System.Exception ex) { OnException(ex); }
 			} else {
 				// Editor InActive
 				TrySetGridInactive();
@@ -858,6 +862,338 @@
 
 		// Axis
 		public void OnMoveAxisDrag (Vector3 pos, Vector3 downPos, int axis) {
+			try {
+				OnMoveAxisDragLogic(pos, downPos, axis);
+			} catch (System.Exception ex) { OnException(ex); };
+		}
+
+
+		#endregion
+
+
+
+
+		#region --- API ---
+
+
+		// Selector
+		public void MoveStageItemUp (object target) {
+			if (target is RectTransform) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(0, index, index - 1);
+			}
+		}
+		public void MoveStageItemDown (object target) {
+			if (target is RectTransform) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(0, index, index + 1);
+			}
+		}
+		public void MoveTrackItemUp (object target) {
+			if (target is RectTransform) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(1, index, index - 1);
+			}
+		}
+		public void MoveTrackItemDown (object target) {
+			if (target is RectTransform) {
+				int index = (target as RectTransform).GetSiblingIndex();
+				MoveItem(1, index, index + 1);
+			}
+		}
+
+
+		// Selection
+		public void SetSelection (int type, int index, int subIndex = 0) {
+			// No Stage Selection in Abreast View
+			if (GetUseAbreast() && (type == 0 || type == 4)) {
+				// Switch Abreast Index
+				// SetAbreastIndex(index);
+				type = -1;
+				index = -1;
+				subIndex = -1;
+			}
+			// No Selecting When Locked or unEyed
+			if (GetItemLock(type) || !GetContainerActive(type)) {
+				type = -1;
+				index = -1;
+				subIndex = -1;
+			}
+			// Select
+			bool changed = SelectingItemType != type || SelectingItemIndex != index || SelectingItemSubIndex != subIndex;
+			SelectingItemType = type;
+			SelectingItemIndex = index;
+			SelectingItemSubIndex = subIndex;
+			if (changed) {
+				OnSelectionChanged();
+			}
+		}
+
+
+		public void ClearSelection () {
+			if (SelectingItemIndex >= 0 || SelectingItemType >= 0) {
+				// Clear
+				SelectingItemIndex = -1;
+				SelectingItemSubIndex = -1;
+				SelectingItemType = -1;
+				// Final
+				OnSelectionChanged();
+			}
+		}
+
+
+		// Container
+		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
+
+
+		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
+
+
+		public void SetContainerActive (int index, bool active) {
+			if (index < 0 || index >= m_Containers.Length) { return; }
+			m_Containers[index].gameObject.SetActive(active);
+			// UI
+			UIReady = false;
+			try {
+				m_EyeTGs[index].isOn = !active;
+			} catch (System.Exception ex) { OnException(ex); }
+			UIReady = true;
+			// MSG
+			OnLockEyeChanged();
+		}
+
+
+		// Item Lock
+		public bool GetItemLock (int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
+
+
+		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
+
+
+		// Brush
+		public void SetBrush (int index) {
+			if (UIReady) {
+				SetBrushLogic(index);
+			}
+		}
+
+
+		public void SetErase () => SetEraseLogic();
+
+
+		public void SwitchUseGlobalBrushScale () {
+			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
+			OnBrushChanged();
+			try {
+				LogHint(
+					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
+					true
+				);
+			} catch { }
+		}
+
+
+		// Translate
+		public void TranslateSelectingItem (int direction) { // 0:L  1:R  2:D  3:U
+			var map = GetBeatmap();
+			if (SelectingItemType < 0 || SelectingItemIndex < 0 || map == null) { return; }
+			switch (direction) {
+				case 0:
+				case 1:
+					float x = map.GetX(SelectingItemType, SelectingItemIndex);
+					float deltaX = direction == 0 ? -0.05f : 0.05f;
+					if (SelectingItemType == 3) { deltaX /= 10f; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					map.SetX(SelectingItemType, SelectingItemIndex, Mathf.Clamp01(x + deltaX));
+					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					break;
+				case 2:
+				case 3:
+					if (SelectingItemType == 1) { break; }
+					if (SelectingItemType == 0) {
+						// Stage
+						float y = map.GetStageY(SelectingItemIndex);
+						float deltaY = direction == 2 ? -0.05f : 0.05f;
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetStageY(SelectingItemIndex, Mathf.Clamp01(y + deltaY));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					} else {
+						// Note, Timing
+						float time = map.GetTime(SelectingItemType, SelectingItemIndex);
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetTime(SelectingItemType, SelectingItemIndex, Mathf.Max(direction == 2 ? time - m_Grid.TimeGap / 4f : time + m_Grid.TimeGap / 4f, 0f));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					}
+					break;
+			}
+		}
+
+
+		#endregion
+
+
+
+		#region --- LGC ---
+
+
+		private bool AntiTargetAllow () {
+			foreach (var t in m_AntiTargets) {
+				if (t.gameObject.activeSelf) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+
+		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
+
+
+		private void SetLock (int index, bool locked) {
+			// Set Logic
+			ItemLock[index] = locked;
+			// Refresh Unlock Mask
+			RefreshUnlockedMask();
+			// Refresh UI
+			UIReady = false;
+			try {
+				m_LockTGs[index].isOn = locked;
+			} catch (System.Exception ex) { OnException(ex); }
+			UIReady = true;
+			OnLockEyeChanged();
+		}
+
+
+		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
+			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
+			float overlapType = -1f;
+			int overlapIndex = -1;
+			int overlapSubIndex = -1;
+			Transform tf = null;
+			if (!insideZone || RayInsideZone(ray)) {
+				for (int i = 0; i < count; i++) {
+					var hit = CastHits[i];
+					int layer = hit.transform.gameObject.layer;
+					float typeF = LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1;
+					int itemIndex = hit.transform.parent.GetSiblingIndex();
+					int itemSubIndex = hit.transform.GetSiblingIndex();
+					if (typeF >= overlapType) {
+						if (typeF != overlapType) {
+							overlapIndex = -1;
+							overlapSubIndex = -1;
+						}
+						if (itemIndex >= overlapIndex) {
+							tf = CastHits[i].transform.parent;
+							overlapSubIndex = (int)typeF == 4 || (int)typeF == 5 ? itemSubIndex : 0;
+							overlapIndex = itemIndex;
+						}
+						overlapType = typeF;
+					}
+				}
+			}
+			return ((int)overlapType, overlapIndex, overlapSubIndex, tf);
+		}
+
+
+		private bool RayInsideZone (Ray ray, bool checkX = true, bool checkY = true) {
+			var (zoneMin, zoneMax, _, _) = GetRealZoneMinMax();
+			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
+				var point = ray.GetPoint(enter);
+				return
+					(!checkX || (point.x > zoneMin.x && point.x < zoneMax.x)) &&
+					(!checkY || (point.y > zoneMin.y && point.y < zoneMax.y));
+			}
+			return false;
+		}
+
+
+		private void RefreshUnlockedMask () {
+			var list = new List<string>();
+			for (int i = 0; i < ItemLock.Length; i++) {
+				if (!ItemLock[i]) {
+					list.Add(ITEM_LAYER_NAMES[i]);
+					if (i == 0) {
+						list.Add(ITEM_LAYER_NAMES[4]);
+					} else if (i == 1) {
+						list.Add(ITEM_LAYER_NAMES[5]);
+					}
+				}
+			}
+			// Hold Note Layer
+			if (!ItemLock[2]) {
+				list.Add(HOLD_NOTE_LAYER_NAME);
+			}
+			UnlockedMask = LayerMask.GetMask(list.ToArray());
+		}
+
+
+		private void TrySetGridInactive () {
+			if (m_Grid.GridEnabled) {
+				m_Grid.SetGridTransform(false);
+			}
+		}
+
+
+		private void SetBrushLogic (int brushIndex) {
+			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
+			UIReady = false;
+			try {
+				// No Stage in Abreast
+				if (brushIndex == 0 && GetUseAbreast()) {
+					brushIndex = -1;
+					LogHint(GetLanguage(DIALOG_CannotSelectStageBrush), true);
+				}
+				// Layer Lock
+				if (brushIndex >= 0 && GetItemLock(brushIndex)) {
+					brushIndex = -1;
+					LogHint(GetLanguage(DIALOG_SelectingLayerLocked), true);
+				}
+				// Layer Invisible
+				if (brushIndex >= 0 && !GetContainerActive(brushIndex)) {
+					brushIndex = -1;
+					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
+				}
+				// Brushs TG
+				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+					m_DefaultBrushTGs[i].isOn = i == brushIndex;
+				}
+				// Logic
+				SelectingBrushIndex = brushIndex;
+				OnBrushChanged();
+			} catch (System.Exception ex) { OnException(ex); }
+			UIReady = true;
+		}
+
+
+		private void SetEraseLogic () {
+			UIReady = false;
+			try {
+				if (!enabled || !GetEditorActive()) {
+					SelectingBrushIndex = -1;
+				} else {
+					SelectingBrushIndex = -2;
+				}
+				ClearSelection();
+				OnBrushChanged();
+				// Brushs TG
+				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
+					m_DefaultBrushTGs[i].isOn = false;
+				}
+			} catch (System.Exception ex) { OnException(ex); }
+			UIReady = true;
+		}
+
+
+		private void MoveItem (int type, int index, int newIndex) {
+			var map = GetBeatmap();
+			if (map != null) {
+				ClearSelection();
+				map.SetItemIndex(type, index, newIndex);
+			}
+		}
+
+
+		private void OnMoveAxisDragLogic (Vector3 pos, Vector3 downPos, int axis) {
 			AxisDragging = true;
 			var map = GetBeatmap();
 			if (map == null || SelectingItemIndex < 0) { return; }
@@ -1077,331 +1413,6 @@
 					}
 					OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					break;
-			}
-		}
-
-
-		#endregion
-
-
-
-
-		#region --- API ---
-
-
-		// Selector
-		public void MoveStageItemUp (object target) {
-			if (target is RectTransform) {
-				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(0, index, index - 1);
-			}
-		}
-		public void MoveStageItemDown (object target) {
-			if (target is RectTransform) {
-				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(0, index, index + 1);
-			}
-		}
-		public void MoveTrackItemUp (object target) {
-			if (target is RectTransform) {
-				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(1, index, index - 1);
-			}
-		}
-		public void MoveTrackItemDown (object target) {
-			if (target is RectTransform) {
-				int index = (target as RectTransform).GetSiblingIndex();
-				MoveItem(1, index, index + 1);
-			}
-		}
-
-
-		// Selection
-		public void SetSelection (int type, int index, int subIndex = 0) {
-			// No Stage Selection in Abreast View
-			if (GetUseAbreast() && (type == 0 || type == 4)) {
-				// Switch Abreast Index
-				// SetAbreastIndex(index);
-				type = -1;
-				index = -1;
-				subIndex = -1;
-			}
-			// No Selecting When Locked or unEyed
-			if (GetItemLock(type) || !GetContainerActive(type)) {
-				type = -1;
-				index = -1;
-				subIndex = -1;
-			}
-			// Select
-			bool changed = SelectingItemType != type || SelectingItemIndex != index || SelectingItemSubIndex != subIndex;
-			SelectingItemType = type;
-			SelectingItemIndex = index;
-			SelectingItemSubIndex = subIndex;
-			if (changed) {
-				OnSelectionChanged();
-			}
-		}
-
-
-		public void ClearSelection () {
-			if (SelectingItemIndex >= 0 || SelectingItemType >= 0) {
-				// Clear
-				SelectingItemIndex = -1;
-				SelectingItemSubIndex = -1;
-				SelectingItemType = -1;
-				// Final
-				OnSelectionChanged();
-			}
-		}
-
-
-		// Container
-		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
-
-
-		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
-
-
-		public void SetContainerActive (int index, bool active) {
-			if (index < 0 || index >= m_Containers.Length) { return; }
-			m_Containers[index].gameObject.SetActive(active);
-			// UI
-			UIReady = false;
-			try {
-				m_EyeTGs[index].isOn = !active;
-			} catch { }
-			UIReady = true;
-			// MSG
-			OnLockEyeChanged();
-		}
-
-
-		// Item Lock
-		public bool GetItemLock (int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
-
-
-		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
-
-
-		// Brush
-		public void SetBrush (int index) {
-			if (UIReady) {
-				SetBrushLogic(index);
-			}
-		}
-
-
-		public void SetErase () => SetEraseLogic();
-
-
-		public void SwitchUseGlobalBrushScale () {
-			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
-			OnBrushChanged();
-			try {
-				LogHint(
-					string.Format(GetLanguage(HINT_GlobalBrushScale), UseGlobalBrushScale.Value ? "ON" : "OFF"),
-					true
-				);
-			} catch { }
-		}
-
-
-		// Translate
-		public void TranslateSelectingItem (int direction) { // 0:L  1:R  2:D  3:U
-			var map = GetBeatmap();
-			if (SelectingItemType < 0 || SelectingItemIndex < 0 || map == null) { return; }
-			switch (direction) {
-				case 0:
-				case 1:
-					float x = map.GetX(SelectingItemType, SelectingItemIndex);
-					float deltaX = direction == 0 ? -0.05f : 0.05f;
-					if (SelectingItemType == 3) { deltaX /= 10f; }
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					map.SetX(SelectingItemType, SelectingItemIndex, Mathf.Clamp01(x + deltaX));
-					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					break;
-				case 2:
-				case 3:
-					if (SelectingItemType == 1) { break; }
-					if (SelectingItemType == 0) {
-						// Stage
-						float y = map.GetStageY(SelectingItemIndex);
-						float deltaY = direction == 2 ? -0.05f : 0.05f;
-						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-						map.SetStageY(SelectingItemIndex, Mathf.Clamp01(y + deltaY));
-						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					} else {
-						// Note, Timing
-						float time = map.GetTime(SelectingItemType, SelectingItemIndex);
-						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-						map.SetTime(SelectingItemType, SelectingItemIndex, Mathf.Max(direction == 2 ? time - m_Grid.TimeGap / 4f : time + m_Grid.TimeGap / 4f, 0f));
-						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					}
-					break;
-			}
-		}
-
-
-		#endregion
-
-
-
-		#region --- LGC ---
-
-
-		private bool AntiTargetAllow () {
-			foreach (var t in m_AntiTargets) {
-				if (t.gameObject.activeSelf) {
-					return false;
-				}
-			}
-			return true;
-		}
-
-
-		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
-
-
-		private void SetLock (int index, bool locked) {
-			// Set Logic
-			ItemLock[index] = locked;
-			// Refresh Unlock Mask
-			RefreshUnlockedMask();
-			// Refresh UI
-			UIReady = false;
-			try {
-				m_LockTGs[index].isOn = locked;
-			} catch { }
-			UIReady = true;
-			OnLockEyeChanged();
-		}
-
-
-		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
-			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
-			float overlapType = -1f;
-			int overlapIndex = -1;
-			int overlapSubIndex = -1;
-			Transform tf = null;
-			if (!insideZone || RayInsideZone(ray)) {
-				for (int i = 0; i < count; i++) {
-					var hit = CastHits[i];
-					int layer = hit.transform.gameObject.layer;
-					float typeF = LayerToTypeMap.ContainsKey(layer) ? LayerToTypeMap[layer] : -1;
-					int itemIndex = hit.transform.parent.GetSiblingIndex();
-					int itemSubIndex = hit.transform.GetSiblingIndex();
-					if (typeF >= overlapType) {
-						if (typeF != overlapType) {
-							overlapIndex = -1;
-							overlapSubIndex = -1;
-						}
-						if (itemIndex >= overlapIndex) {
-							tf = CastHits[i].transform.parent;
-							overlapSubIndex = (int)typeF == 4 || (int)typeF == 5 ? itemSubIndex : 0;
-							overlapIndex = itemIndex;
-						}
-						overlapType = typeF;
-					}
-				}
-			}
-			return ((int)overlapType, overlapIndex, overlapSubIndex, tf);
-		}
-
-
-		private bool RayInsideZone (Ray ray, bool checkX = true, bool checkY = true) {
-			var (zoneMin, zoneMax, _, _) = GetRealZoneMinMax();
-			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
-				var point = ray.GetPoint(enter);
-				return
-					(!checkX || (point.x > zoneMin.x && point.x < zoneMax.x)) &&
-					(!checkY || (point.y > zoneMin.y && point.y < zoneMax.y));
-			}
-			return false;
-		}
-
-
-		private void RefreshUnlockedMask () {
-			var list = new List<string>();
-			for (int i = 0; i < ItemLock.Length; i++) {
-				if (!ItemLock[i]) {
-					list.Add(ITEM_LAYER_NAMES[i]);
-					if (i == 0) {
-						list.Add(ITEM_LAYER_NAMES[4]);
-					} else if (i == 1) {
-						list.Add(ITEM_LAYER_NAMES[5]);
-					}
-				}
-			}
-			// Hold Note Layer
-			if (!ItemLock[2]) {
-				list.Add(HOLD_NOTE_LAYER_NAME);
-			}
-			UnlockedMask = LayerMask.GetMask(list.ToArray());
-		}
-
-
-		private void TrySetGridInactive () {
-			if (m_Grid.GridEnabled) {
-				m_Grid.SetGridTransform(false);
-			}
-		}
-
-
-		private void SetBrushLogic (int brushIndex) {
-			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
-			UIReady = false;
-			try {
-				// No Stage in Abreast
-				if (brushIndex == 0 && GetUseAbreast()) {
-					brushIndex = -1;
-					LogHint(GetLanguage(DIALOG_CannotSelectStageBrush), true);
-				}
-				// Layer Lock
-				if (brushIndex >= 0 && GetItemLock(brushIndex)) {
-					brushIndex = -1;
-					LogHint(GetLanguage(DIALOG_SelectingLayerLocked), true);
-				}
-				// Layer Invisible
-				if (brushIndex >= 0 && !GetContainerActive(brushIndex)) {
-					brushIndex = -1;
-					LogHint(GetLanguage(DIALOG_SelectingLayerInactive), true);
-				}
-				// Brushs TG
-				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
-					m_DefaultBrushTGs[i].isOn = i == brushIndex;
-				}
-				// Logic
-				SelectingBrushIndex = brushIndex;
-				OnBrushChanged();
-			} catch { }
-			UIReady = true;
-		}
-
-
-		private void SetEraseLogic () {
-			UIReady = false;
-			try {
-				if (!enabled || !GetEditorActive()) {
-					SelectingBrushIndex = -1;
-				} else {
-					SelectingBrushIndex = -2;
-				}
-				ClearSelection();
-				OnBrushChanged();
-				// Brushs TG
-				for (int i = 0; i < m_DefaultBrushTGs.Length; i++) {
-					m_DefaultBrushTGs[i].isOn = false;
-				}
-			} catch { }
-			UIReady = true;
-		}
-
-
-		private void MoveItem (int type, int index, int newIndex) {
-			var map = GetBeatmap();
-			if (map != null) {
-				ClearSelection();
-				map.SetItemIndex(type, index, newIndex);
 			}
 		}
 

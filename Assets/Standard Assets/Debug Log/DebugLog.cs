@@ -3,7 +3,7 @@
 	using System.Collections.Generic;
 	using System.IO;
 	using System.Text;
-	using System.Threading.Tasks;
+
 
 	public static class DebugLog {
 
@@ -14,7 +14,15 @@
 
 
 		// API
-		public static bool Init (string folderPath, int maxFileCount = 64, string extension = ".txt") {
+		public static string Init (string folderPath, int maxFileCount = 64, string extension = ".txt") {
+
+			string errorMessage = "";
+
+			try {
+				Util.CreateFolder(folderPath);
+			} catch (System.Exception ex) {
+				errorMessage += ex.Message + "\r\n";
+			}
 
 			// Delete to Max
 			try {
@@ -24,15 +32,18 @@
 					for (int i = 0; i < deleteCount; i++) {
 						try {
 							Util.DeleteFile(files[i].FullName);
-						} catch { }
+						} catch (System.Exception ex) {
+							errorMessage += ex.Message + "\r\n";
+						}
 					}
 				}
-			} catch { }
+			} catch (System.Exception ex) {
+				errorMessage += ex.Message + "\r\n";
+			}
 
 			// Try Create File
 			try {
 				string logPath = Util.CombinePaths(folderPath, $"{System.DateTime.Now.ToString("yyyy_MM_dd")}{extension}");
-				Util.CreateFolder(Directory.GetParent(folderPath).FullName);
 				if (!File.Exists(logPath)) {
 					var tempStream = File.Create(logPath);
 					tempStream.Close();
@@ -41,9 +52,11 @@
 				FileStream fs = new FileStream(logPath, FileMode.Append);
 				LogWriter = new StreamWriter(fs, Encoding.UTF8);
 				LogWriter.AutoFlush = true;
-			} catch { return false; }
+			} catch (System.Exception ex) {
+				errorMessage += ex.Message + "\r\n";
+			}
 
-			return true;
+			return errorMessage;
 		}
 
 
@@ -57,12 +70,17 @@
 		}
 
 
-		public static void Log (string message, bool timeLabel = true) {
-			LogAsync(message, timeLabel);
+		public static void Log (string message, bool timeLabel = true) => LogAsync(message, timeLabel);
+
+
+		public static void LogException (string title, string sub, System.Exception ex) {
+			if (LogWriter == null || !UseLog) { return; }
+			LogFormat(title, sub, true, ("Exception", ex.Message));
 		}
 
 
 		public static void LogFormat (string title, string sub, bool forceSingleLine, params (string name, object obj)[] messages) {
+			if (LogWriter == null || !UseLog) { return; }
 			var builder = new StringBuilder();
 			builder.Append($"{title},");
 			builder.Append($"{sub},");
@@ -74,7 +92,7 @@
 				builder.Append(obj != null ? obj.ToString() : "null");
 				builder.Append(i < len - 1 ? ',' : ';');
 			}
-			LogAsync(forceSingleLine ? builder.ToString().Replace("\r", "").Replace("\n", "") : builder.ToString(), true);
+			LogAsync(forceSingleLine ? builder.ToString().Replace("\r", "\\r").Replace("\n", "\\n") : builder.ToString(), true);
 		}
 
 

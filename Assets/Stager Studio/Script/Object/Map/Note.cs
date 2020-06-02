@@ -50,6 +50,7 @@
 		// Ser
 		[SerializeField] private ObjectRenderer m_PoleRenderer = null;
 		[SerializeField] private SpriteRenderer m_ZLineRenderer = null;
+		[SerializeField] private Transform m_Scaler = null;
 
 		// Data
 		private bool PrevClicked = false;
@@ -207,7 +208,7 @@
 			float noteY01 = MusicTime < Time ? (noteData._NoteDropStart - gameOffset) : 0f;
 			float noteSizeY = noteData._NoteDropEnd - gameOffset - noteY01;
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
-			bool isLink = !(linkedNote is null);
+			bool isLink = linkedNote != null;
 			bool activeSelf = GetNoteActive(noteData, null, noteData._AppearTime);
 			float alpha = Stage.GetStageAlpha(linkedStage) * Track.GetTrackAlpha(linkedTrack) * Mathf.Clamp01(16f - noteY01 * 16f);
 			bool highlighing = MusicTime > Time && MusicTime < Time + Duration;
@@ -228,10 +229,16 @@
 			var noteSize = GetRectSize(SkinType.Note, noteData.ItemType);
 			float minHeight = GetMinHeight(SkinType.Note, noteData.ItemType);
 			float noteScaleX = noteSize.x < 0f ? stageWidth * trackWidth * noteData.Width : noteSize.x;
+			float noteScaleY_scaler = Mathf.Max(noteSizeY * stageHeight, minHeight);
 			float noteScaleY = Mathf.Max(noteSizeY * stageHeight + minHeight, 0f);
 			Vector3 zoneNoteScale = new Vector3(
 				zoneSize * noteScaleX,
 				zoneSize * noteScaleY,
+				1f
+			);
+			Vector3 zoneNoteScale_scaler = new Vector3(
+				zoneSize * noteScaleX,
+				zoneSize * noteScaleY_scaler,
 				1f
 			);
 
@@ -239,6 +246,8 @@
 			transform.position = Late_NoteWorldPos = noteWorldPos;
 			ColRot = MainRenderer.transform.rotation = noteRot;
 			ColSize = MainRenderer.transform.localScale = zoneNoteScale;
+			m_Scaler.localScale = zoneNoteScale_scaler;
+			m_Scaler.rotation = noteRot;
 
 			// Renderer
 			MainRenderer.RendererEnable = !isLink || activeSelf;

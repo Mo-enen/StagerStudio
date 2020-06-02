@@ -28,6 +28,7 @@
 		public delegate void VoidHandler ();
 		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate void VoidBoolHandler (bool value);
+		public delegate void ExceptionHandler (System.Exception ex);
 
 
 		public static class LanguageData {
@@ -107,6 +108,7 @@
 		public static VoidHandler OnBeatmapRemoved { get; set; } = null;
 		public static VoidHandler OnBeatmapCreated { get; set; } = null;
 		public static VoidBoolHandler OnDirtyChanged { get; set; } = null;
+		public static ExceptionHandler OnException { get; set; } = null;
 
 		// API
 		public Beatmap Beatmap => !string.IsNullOrEmpty(BeatmapKey) && BeatmapMap.ContainsKey(BeatmapKey) ? BeatmapMap[BeatmapKey] : null;
@@ -168,14 +170,14 @@
 				if (!Util.DirectoryExists(Workspace)) {
 					Util.CreateFolder(Workspace);
 				}
-			} catch { }
+			} catch (System.Exception ex) { OnException(ex); }
 
 			// Create Default Chapter
 			try {
 				if (Util.GetDirectsIn(Workspace, true).Length == 0) {
 					Util.CreateFolder(Util.CombinePaths(Workspace, "Chapter I"));
 				}
-			} catch { }
+			} catch (System.Exception ex) { OnException(ex); }
 
 			// Create/Clear Temp Path
 			try {
@@ -183,7 +185,7 @@
 					Util.CreateFolder(TempPath);
 				}
 				Util.DeleteAllFilesIn(TempPath);
-			} catch { }
+			} catch (System.Exception ex) { OnException(ex); }
 		}
 
 
@@ -249,6 +251,7 @@
 					LogLoadingProgress("", -1f);
 					OnProjectLoaded?.Invoke();
 					LoadingCor = null;
+					OnException(ex);
 					yield break;
 				}
 
@@ -272,6 +275,7 @@
 					LastEditTime = Util.GetLongTime();
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectInfo, true, ex.Message);
+					OnException(ex);
 				}
 
 				// Cover
@@ -280,6 +284,7 @@
 					OnCoverLoaded.Invoke(FrontCover.sprite);
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectCover, true, ex.Message);
+					OnException(ex);
 				}
 
 				// Palette
@@ -344,6 +349,7 @@
 					}
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadBeatmap, true, ex.Message);
+					OnException(ex);
 				}
 
 				// Done
@@ -453,6 +459,7 @@
 				}
 			} catch (System.Exception ex) {
 				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+				OnException(ex);
 			}
 		}
 
@@ -468,7 +475,7 @@
 				DialogUtil.Dialog_OK(LanguageData.UI_ExportBeatmapDone, DialogUtil.MarkType.Success, () => { });
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadBeatmap, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 			}
 		}
 
@@ -560,6 +567,7 @@
 					done();
 				} catch (System.Exception ex) {
 					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+					OnException(ex);
 				}
 			});
 		}
@@ -614,8 +622,8 @@
 					}
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadAudio, true, ex.Message);
-					Debug.LogWarning(ex);
 					LoadingCor = null;
+					OnException(ex);
 					yield break;
 				}
 
@@ -644,7 +652,7 @@
 					}
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadAudio, true, ex.Message);
-					Debug.LogWarning(ex);
+					OnException(ex);
 				}
 
 				SetDirty();
@@ -798,6 +806,7 @@
 				DialogUtil.Dialog_OK(LanguageData.UI_PaletteExported, DialogUtil.MarkType.Success, () => { });
 			} catch (System.Exception ex) {
 				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+				OnException(ex);
 			}
 		}
 
@@ -883,6 +892,7 @@
 					done();
 				} catch (System.Exception ex) {
 					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+					OnException(ex);
 				}
 			});
 		}
@@ -897,6 +907,7 @@
 				DialogUtil.Dialog_OK(LanguageData.UI_TweenExported, DialogUtil.MarkType.Success, () => { });
 			} catch (System.Exception ex) {
 				DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+				OnException(ex);
 			}
 		}
 
@@ -943,7 +954,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailGetProjectDataForWrite, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 			}
 
 			// Beatmap
@@ -961,7 +972,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailGetProjectDataForWrite, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 			}
 
 			// Project Data >> File
@@ -1059,7 +1070,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadAudio, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 				yield break;
 			}
 
@@ -1082,7 +1093,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadAudio, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 			}
 		}
 
@@ -1109,7 +1120,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 				yield break;
 			}
 
@@ -1131,7 +1142,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 			}
 		}
 
@@ -1150,7 +1161,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
-				Debug.LogWarning(ex);
+				OnException(ex);
 				LoadingCor = null;
 				yield break;
 			}
@@ -1179,6 +1190,7 @@
 				}
 			} catch (System.Exception ex) {
 				LogMessageLogic(LanguageData.Error_FailLoadImage, true, ex.Message);
+				OnException(ex);
 			}
 		}
 

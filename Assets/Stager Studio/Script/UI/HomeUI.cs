@@ -21,6 +21,7 @@
 		public delegate void VoidStringHandler (string str);
 		public delegate string StringHandler ();
 		public delegate void StringRtHandler (string str, RectTransform obj);
+		public delegate void ExceptionHandler (System.Exception ex);
 
 
 		public static class LanguageData {
@@ -91,6 +92,7 @@
 		public static StringHandler GetWorkspace { get; set; } = null;
 		public static StringRtHandler OpenMenu { get; set; } = null;
 		public static VoidStringHandler SpawnProjectCreator { get; set; } = null;
+		public static ExceptionHandler OnException { get; set; } = null;
 
 		// Short
 		private string Trashbin => Util.CombinePaths(Application.persistentDataPath, "Stager_Trashbin");
@@ -301,7 +303,7 @@
 						if (!Util.FileExists(newPath)) {
 							Util.MoveFile(file.FullName, newPath);
 						}
-					} catch { }
+					} catch (System.Exception ex) { OnException(ex); }
 				}
 			}
 			// Load Chapters
@@ -482,7 +484,8 @@
 					return false;
 				}
 				Util.MoveDirectory(from, to);
-			} catch {
+			} catch (System.Exception ex) {
+				OnException(ex);
 				return false;
 			}
 			return true;
@@ -499,7 +502,8 @@
 			}
 			try {
 				Util.MoveFile(projectPath, aimFile);
-			} catch {
+			} catch (System.Exception ex) {
+				OnException(ex);
 				return false;
 			}
 			return true;
@@ -540,7 +544,7 @@
 							} else {
 								Util.MoveFile(file.FullName, trashPath);
 							}
-						} catch { }
+						} catch (System.Exception ex) { OnException(ex); }
 					}
 					// Delete Folder
 					Util.DeleteDirectory(path);

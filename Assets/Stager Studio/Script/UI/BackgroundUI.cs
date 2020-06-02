@@ -8,6 +8,11 @@
 	public class BackgroundUI : MonoBehaviour {
 
 
+
+		// Handler
+		public delegate void ExceptionHandler (System.Exception ex);
+		public static ExceptionHandler OnException { get; set; } = null;
+
 		// API
 		public float Brightness { get; private set; } = 0.309f;
 
@@ -27,6 +32,21 @@
 
 		// API
 		public void SetBackground (Sprite sprite, bool animation = true) {
+			try {
+				SetBackgroundLogic(sprite, animation);
+			} catch (System.Exception ex) { OnException(ex); }
+		}
+
+
+		public void SetBrightness (float bright01) {
+			bright01 = Mathf.Clamp01(bright01);
+			Brightness = bright01;
+			IMG.color = new Color(bright01, bright01, bright01, 1f);
+		}
+
+
+		// LGC
+		private void SetBackgroundLogic (Sprite sprite, bool animation) {
 			const float SCALE_MUTI = 1.06f;
 			// Blur Sprite
 			if (!sprite || !sprite.texture) {
@@ -76,14 +96,6 @@
 		}
 
 
-		public void SetBrightness (float bright01) {
-			bright01 = Mathf.Clamp01(bright01);
-			Brightness = bright01;
-			IMG.color = new Color(bright01, bright01, bright01, 1f);
-		}
-
-
-		// LGC
 		private Sprite BlurTexture (Sprite sprite) {
 			try {
 				if (sprite.texture.format != TextureFormat.ARGB32 || (int)sprite.texture.graphicsFormat != 88) {

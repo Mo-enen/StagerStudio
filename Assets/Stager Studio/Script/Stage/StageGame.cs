@@ -25,8 +25,9 @@
 		public delegate bool BoolHandler ();
 		public delegate bool BoolIntHandler (int i);
 		public delegate Beatmap BeatmapHandler ();
+		public delegate void ExceptionHandler (System.Exception ex);
 
-
+		
 		#endregion
 
 
@@ -59,6 +60,7 @@
 		public static VoidHandler MusicPlay { get; set; } = null;
 		public static VoidHandler MusicPause { get; set; } = null;
 		public static BoolIntHandler GetItemLock { get; set; } = null;
+		public static ExceptionHandler OnException { get; set; } = null;
 
 		// API
 		public float Ratio {
@@ -161,13 +163,15 @@
 
 
 		private void Update () {
-			Update_Beatmap();
-			Update_Stage();
-			Update_Track();
-			Update_Note();
-			Update_Timing();
-			Update_SpeedCurve();
-			Update_Mouse();
+			try {
+				Update_Beatmap();
+				Update_Stage();
+				Update_Track();
+				Update_Note();
+				Update_Timing();
+				Update_SpeedCurve();
+				Update_Mouse();
+			} catch (System.Exception ex) { OnException(ex); }
 		}
 
 

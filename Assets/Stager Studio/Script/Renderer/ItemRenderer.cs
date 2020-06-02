@@ -86,13 +86,16 @@
 		private readonly static List<Vector2> UVs = new List<Vector2>();
 		private readonly static List<Color> Colors = new List<Color>();
 		private readonly static List<int> Triangles = new List<int>();
+		private static int GlobalDirtyID = 0;
+		private int LocalDirtyID = 0;
 		private bool MeshDirty = true;
 
 
 		// MSG
 		protected virtual void LateUpdate () {
-			if (!MeshDirty) { return; }
+			if (!MeshDirty && GlobalDirtyID == LocalDirtyID) { return; }
 			MeshDirty = false;
+			LocalDirtyID = GlobalDirtyID;
 			RefreshMesh();
 		}
 
@@ -229,6 +232,9 @@
 			Mesh.SetTriangles(Triangles, 0);
 			Mesh.UploadMeshData(false);
 		}
+
+
+		public static void SetGlobalDirty () => GlobalDirtyID++;
 
 
 	}

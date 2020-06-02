@@ -282,6 +282,7 @@
 			DialogUtil.GetPrefab = () => m_DialogPrefab;
 			TooltipUI.GetHotKey = m_Shortcut.GetHotkeyLabel;
 			DebugLog.Init(Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Log"));
+
 		}
 
 
@@ -504,6 +505,7 @@
 			// Misc
 			StageProject.OnDirtyChanged = m_DirtyMark.gameObject.SetActive;
 			StageProject.OnLoadProgress = RefreshLoading;
+			StageProject.OnException = (ex) => DebugLog_Exception("Project", ex);
 
 			// Func
 			IEnumerator SaveProgressing () {
@@ -573,6 +575,7 @@
 			StageGame.MusicPlay = m_Music.Play;
 			StageGame.MusicPause = m_Music.Pause;
 			StageGame.GetItemLock = m_Editor.GetItemLock;
+			StageGame.OnException = (ex) => DebugLog_Exception("Game", ex);
 		}
 
 
@@ -674,6 +677,7 @@
 			StageEditor.GetMusicTime = () => m_Music.Time;
 			StageEditor.GetMusicDuration = () => m_Music.Duration;
 			StageEditor.GetSnapedTime = m_Game.SnapTime;
+			StageEditor.OnException = (ex) => DebugLog_Exception("Editor", ex);
 		}
 
 
@@ -902,6 +906,7 @@
 			HomeUI.GetWorkspace = () => m_Project.Workspace;
 			HomeUI.OpenMenu = m_Menu.OpenMenu;
 			HomeUI.SpawnProjectCreator = SpawnProjectCreator;
+			HomeUI.OnException = (ex) => DebugLog_Exception("Home", ex);
 
 			ProgressUI.GetDuration = () => m_Music.Duration;
 			ProgressUI.GetReadyPlay = () => (m_Music.IsReady, m_Music.IsPlaying);
@@ -961,6 +966,8 @@
 			SelectorUI.GetSelectionIndex = () => m_Editor.SelectingItemIndex;
 
 			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
+
+			BackgroundUI.OnException = (ex) => DebugLog_Exception("Background", ex);
 
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
@@ -1060,6 +1067,7 @@
 			m_Preview.SetDirty();
 			m_TimingPreview.SetDirty();
 			m_Game.ForceUpdateZone();
+			ItemRenderer.SetGlobalDirty();
 		}
 
 
@@ -1119,7 +1127,12 @@
 		// Debug Log
 		private void DebugLog_Start () {
 			if (!DebugLog.UseLog) { return; }
-			DebugLog.LogFormat("System", "Start", true);
+			DebugLog.LogFormat(
+				"System", "Start", true,
+				("Stager Version", Application.version),
+				("DotNET Framework Versions", System.Environment.Version),
+				("OS Version", System.Environment.OSVersion)
+			);
 		}
 
 
@@ -1152,6 +1165,9 @@
 		}
 
 
+		private void DebugLog_Exception (string sub, System.Exception ex) => DebugLog.LogException("Error", sub, ex);
+
+
 		#endregion
 
 
@@ -1176,6 +1192,7 @@ namespace StagerStudio.Editor {
 
 
 		public override void OnInspectorGUI () {
+
 			if (EditorApplication.isPlaying) {
 				LayoutH(() => {
 					GUIRect(0, 18);
