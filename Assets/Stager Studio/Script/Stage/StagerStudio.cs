@@ -31,7 +31,6 @@
 		[System.Serializable]
 		private class UndoData {
 			public Beatmap Map;
-			public float MusicTime;
 			public bool[] ContainerActive;
 		}
 
@@ -67,6 +66,7 @@
 		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
 		private const string Hint_CommandDone = "Command.Hint.CommandDone";
 		private const string Hint_Volume = "Music.Hint.Volume";
+		private const string Hint_Undo = "Undo.Hint.Undo";
 
 		// Handler
 		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
@@ -107,7 +107,6 @@
 		[SerializeField] private RectTransform m_PitchTrebleClef = null;
 		[SerializeField] private RectTransform m_PitchBassClef = null;
 		[SerializeField] private Transform m_CameraTF = null;
-		[SerializeField] private Transform m_TutorialBoard = null;
 		[SerializeField] private Text m_TipLabelA = null;
 		[SerializeField] private Text m_TipLabelB = null;
 		[SerializeField] private RectTransform m_MotionInspector = null;
@@ -126,13 +125,13 @@
 		[SerializeField] private InspectorUI m_Inspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
 		[SerializeField] private KeypressUI m_Keypress = null;
+		[SerializeField] private LinkerUI m_Linker = null;
 		[Header("Data")]
 		[SerializeField] private TextSpriteSheet m_TextSheet = null;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 		[SerializeField] private CursorData[] m_Cursors = null;
 
 		// Saving
-		private SavingBool TutorialOpened = new SavingBool("StagerStudio.TutorialOpened", false);
 		private SavingBool SoloOnEditMotion = new SavingBool("StagerStudio.SoloOnEditMotion", true);
 
 		// Data
@@ -267,9 +266,9 @@
 				m_TipLabelA.text = tip;
 				m_TipLabelB.text = tip;
 			};
-			StageProject.LogHint = m_Hint.SetHint;
-			StageGame.LogHint = m_Hint.SetHint;
-			StageEditor.LogHint = m_Hint.SetHint;
+			StageProject.LogHint = LogHint;
+			StageGame.LogHint = LogHint;
+			StageEditor.LogHint = LogHint;
 			StageLanguage.OnLanguageLoaded = () => {
 				TryRefreshSetting();
 				foreach (var text in m_LanguageTexts) {
@@ -623,7 +622,7 @@
 
 		}
 
-
+		
 		private void Awake_Editor () {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax();
 			StageEditor.GetRealZoneMinMax = () => m_Zone.GetZoneMinMax(true);
@@ -643,11 +642,13 @@
 				m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
 				m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
 				m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
+				m_Linker.StopLinker();
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
 				m_Editor.SetBrush(m_Editor.SelectingBrushIndex);
 				m_TimingPreview.SetDirty();
+				m_Linker.StopLinker();
 			};
 			StageEditor.GetBeatmap = () => m_Project.Beatmap;
 			StageEditor.GetEditorActive = () =>
@@ -661,6 +662,7 @@
 				if (editType == StageEditor.EditType.Delete) {
 					m_Effect.SpawnDeleteEffect(itemType, itemIndex);
 				}
+				m_Linker.StopLinker();
 			};
 			StageEditor.OnObjectEdited = (editType, itemType, itemIndex) => {
 				RefreshOnItemChange();
@@ -687,8 +689,10 @@
 				StageObject.LoadSkin(data);
 				Luminous.SetLuminousSkin(data);
 				Resources.UnloadUnusedAssets();
+				TypeSelectorUI.CalculateSprites(data);
 				m_Game.ClearAllContainers();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
+				InspectorUI.TypeCount = (data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.Note));
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();
@@ -700,7 +704,6 @@
 		private void Awake_Undo () {
 			UndoRedo.GetStepData = () => new UndoData() {
 				Map = m_Project.Beatmap,
-				MusicTime = m_Music.Time,
 				ContainerActive = new bool[4] {
 					m_Editor.GetContainerActive(0),
 					m_Editor.GetContainerActive(1),
@@ -713,8 +716,6 @@
 				if (step == null || step.Map == null) { return; }
 				// Map
 				m_Project.Beatmap.LoadFromOtherMap(step.Map);
-				// Music Time
-				m_Music.Seek(step.MusicTime);
 				// Container Active
 				for (int i = 0; i < step.ContainerActive.Length; i++) {
 					m_Editor.SetContainerActive(i, step.ContainerActive[i]);
@@ -722,10 +723,11 @@
 				// Final
 				m_Editor.ClearSelection();
 				RefreshOnItemChange();
+				LogHint(Hint_Undo);
 			};
 		}
 
-
+		 
 		private void Awake_ProjectInfo () {
 
 			ProjectInfoUI.MusicStopClickSounds = m_Music.StopClickSounds;
@@ -769,7 +771,7 @@
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
 			ProjectInfoUI.OnBeatmapInfoChanged = () => {
 				RefreshOnBeatmapInfoChange();
-				Invoke("TryRefreshProjectInfo", 0.01f);
+				Invoke(nameof(TryRefreshProjectInfo), 0.01f);
 			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
 				TryRefreshProjectInfo();
@@ -854,7 +856,7 @@
 					index, value
 				);
 				if (success) {
-					m_Hint.SetHint(m_Language.Get(Hint_CommandDone), true);
+					LogHint(Hint_CommandDone);
 				}
 			};
 			CommandUI.OpenMenu = m_Menu.OpenMenu;
@@ -969,19 +971,22 @@
 
 			BackgroundUI.OnException = (ex) => DebugLog_Exception("Background", ex);
 
+			LinkerUI.GetBeatmap = () => m_Project.Beatmap;
+			LinkerUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
+			LinkerUI.OnLink = () => {
+				RefreshOnItemChange();
+				UndoRedo.SetDirty();
+				m_Inspector.RefreshAllInspectors();
+			};
+			LinkerUI.AllowLinker = () =>
+				m_Project.Beatmap != null &&
+				!m_Music.IsPlaying &&
+				!m_MotionInspector.gameObject.activeSelf &&
+				!m_Root.gameObject.activeSelf;
+
 			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
 			m_VersionLabel.text = $"v{Application.version}";
 			m_TextSheet.Init();
-
-			// Tutorial
-			if (TutorialOpened.Value) {
-				Destroy(m_TutorialBoard.gameObject);
-			} else {
-				m_TutorialBoard.gameObject.SetActive(true);
-				///////////////// No Tutorial Yet ///////////////
-				Destroy(m_TutorialBoard.gameObject);
-				/////////////////////////////////////////////////
-			}
 
 		}
 
@@ -1020,22 +1025,6 @@
 		}
 
 
-		public void GotoTutorial (bool open) {
-			TutorialOpened.Value = true;
-			if (m_TutorialBoard) {
-				Destroy(m_TutorialBoard.gameObject);
-			}
-			if (open) {
-				Application.OpenURL("");
-				DialogUtil.Open(
-					string.Format(GetLanguage(UI_OpenWebMSG), ""),
-					DialogUtil.MarkType.Info,
-					() => { }, null, null, null, null
-				);
-			}
-		}
-
-
 		public void AddVolume (float delta) {
 			SetMusicVolume(Mathf.Clamp01(Util.Snap(m_Music.Volume + delta, 10f)));
 			try {
@@ -1062,12 +1051,13 @@
 		private void RefreshOnItemChange () {
 			Note.SetCacheDirty();
 			TimingNote.SetCacheDirty();
+			ItemRenderer.SetGlobalDirty();
 			m_Game.SetSpeedCurveDirty();
 			m_Project.SetDirty();
 			m_Preview.SetDirty();
 			m_TimingPreview.SetDirty();
 			m_Game.ForceUpdateZone();
-			ItemRenderer.SetGlobalDirty();
+			m_Linker.StopLinker();
 		}
 
 
@@ -1121,6 +1111,14 @@
 			m_GridRenderer.TimeGap = 60f / m_Game.BPM / m_Game.GridCountY;
 			m_GridRenderer.TimeOffset = m_Game.Shift;
 			m_GridRenderer.GameSpeedMuti = m_Game.GameDropSpeed;
+		}
+
+
+		// Hint
+		private void LogHint (string key, bool flash = true) {
+			try {
+				m_Hint.SetHint(m_Language.Get(key), flash);
+			} catch { }
 		}
 
 

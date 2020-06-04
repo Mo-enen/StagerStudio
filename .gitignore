@@ -9,10 +9,13 @@
 *.ini
 *.sln
 *.config
+/Projects
+/QuickAccess Config.json
+/Assets/Stager Studio/测试
+/Assets/Stager Studio/测试.meta
 /_Built
 /_BackUp
-Projects
-QuickAccess Config.json
-Assets/Stager Studio/测试
-Assets/Stager Studio/测试.meta
 /Log
+/_Release
+/_Paper
+/_Res

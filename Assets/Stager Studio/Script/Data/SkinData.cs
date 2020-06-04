@@ -177,6 +177,16 @@
 		}
 
 
+		public int TryGetItemCount (SkinType type) {
+			int index = (int)type;
+			if (index >= 0 && index < Items.Count) {
+				var ani = Items[index];
+				return ani != null && ani.Rects != null ? ani.Rects.Count : 0;
+			}
+			return 0;
+		}
+
+
 		public void SetPng (Texture2D texture) {
 			Texture = texture;
 			PngBytes = texture != null ? texture.EncodeToPNG() : null;

@@ -4,3 +4,6 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("样式", "IDE1006:命名样式", Justification = "<挂起>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("样式", "IDE0019:使用模式匹配", Justification = "<挂起>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("样式", "IDE0062:使本地函数成为静态函数", Justification = "<挂起>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0029:使用 coalesce 運算式", Justification = "<暫止>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:刪除未使用的私用成員", Justification = "<暫止>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0074:使用复合分配", Justification = "<挂起>")]

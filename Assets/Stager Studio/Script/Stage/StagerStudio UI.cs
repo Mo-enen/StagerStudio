@@ -123,7 +123,7 @@
 					ToggleItemMap[ToggleType.UIScale_1].saving.Value = true;
 					ToggleItemMap[ToggleType.UIScale_2].saving.Value = false;
 				}
-			}, null, new SavingBool("SS.UIScale1", false), false));
+			}, null, new SavingBool("SS.UIScale1", true), false));
 
 			ToggleItemMap.Add(ToggleType.UIScale_2, ((isOn) => {
 				if (isOn) {
@@ -132,7 +132,7 @@
 					ToggleItemMap[ToggleType.UIScale_1].saving.Value = false;
 					ToggleItemMap[ToggleType.UIScale_2].saving.Value = true;
 				}
-			}, null, new SavingBool("SS.UIScale2", true), false));
+			}, null, new SavingBool("SS.UIScale2", false), false));
 
 			ToggleItemMap.Add(ToggleType.UseSFX, ((isOn) => {
 				m_SoundFX.SetUseFX(isOn);
@@ -531,7 +531,7 @@
 		private void SetUIScale (int uiScale) {
 			uiScale = Mathf.Clamp(uiScale, 0, 2);
 			var scalers = m_CanvasRoot.GetComponentsInChildren<CanvasScaler>(true);
-			float height = uiScale == 0 ? 1200 : uiScale == 1 ? 1000 : 800;
+			float height = uiScale == 0 ? 1000 : uiScale == 1 ? 800 : 600;
 			foreach (var scaler in scalers) {
 				scaler.referenceResolution = new Vector2(scaler.referenceResolution.x, height);
 			}

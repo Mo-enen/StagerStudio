@@ -784,6 +784,10 @@
 		public float GetStageY (int index) {
 			return index >= 0 && index < Stages.Count ? Stages[index].Y : 0f;
 		}
+		public int GetItemType (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item.ItemType : 0;
+		}
 
 
 		// Set

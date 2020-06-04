@@ -10,10 +10,10 @@
 
 
 		// Const
-		private static readonly float[] BEAT_DIVs = { 4f, 8f, 16f, 32f, };
+		private static readonly int[] BEAT_DIVs = { 4, 8, 16, 32, };
 
 		// Handler
-		public delegate void VoidHandler ();
+		public delegate void VoidHandler();
 		public VoidHandler OnEndEdit { get; set; } = null;
 
 		// Ser
@@ -30,7 +30,7 @@
 
 
 		// MSG
-		private void Awake () {
+		private void Awake() {
 			m_BeatIF.onEndEdit.AddListener((_) => {
 				if (!UIReady) { return; }
 				Beat = GetBeatFromUI();
@@ -54,23 +54,28 @@
 
 
 		// API
-		public void SetBeatToUI (float beat) {
+		public void SetBeatToUI(float beat) {
 			Beat = beat;
 			int beatCount = Mathf.FloorToInt(beat);
-			int beatAmount = Mathf.RoundToInt(Mathf.Repeat(beat, 1f) * BEAT_DIVs[DiVIndex]);
+			int div = BEAT_DIVs[DiVIndex];
+			int beatAmount = Mathf.RoundToInt(Mathf.Repeat(beat, 1f) * div);
+			if (beatAmount == div) {
+				beatAmount = 0;
+				beatCount++;
+			}
 			m_BeatIF.text = beatCount.ToString();
 			m_BeatAmountIF.text = beatAmount.ToString();
 		}
 
 
-		public float GetBeat () => Beat;
+		public float GetBeat() => Beat;
 
 
 
 
 		// LGC
-		private void RefreshUI () => RefreshUI(GetBeat());
-		private void RefreshUI (float beat) {
+		private void RefreshUI() => RefreshUI(GetBeat());
+		private void RefreshUI(float beat) {
 			UIReady = false;
 			try {
 				m_BeatDivIcon.sprite = m_DivSPs[DiVIndex];
@@ -80,7 +85,7 @@
 		}
 
 
-		private float GetBeatFromUI () {
+		private float GetBeatFromUI() {
 			int beatCount = 0;
 			int beatAmount = 0;
 			if (m_BeatIF.text.TryParseIntForInspector(out int _beatCount)) {

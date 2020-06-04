@@ -248,6 +248,9 @@ TextureImporter:
   - first:
       213: 1515658340994903166
     second: Skirt
+  - first:
+      213: -3374395645584494972
+    second: Link
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1155,27 +1158,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Book
-      rect:
-        serializedVersion: 2
-        x: 169
-        y: 103
-        width: 44
-        height: 41
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 48eaf45e90dbb21d0800000000000000
-      internalID: -3374395645584494972
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Grid
       rect:
         serializedVersion: 2
@@ -1247,7 +1229,7 @@ TextureImporter:
         width: 40
         height: 27
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1255,6 +1237,27 @@ TextureImporter:
       bones: []
       spriteID: e7cebd71b33b80510800000000000000
       internalID: 1515658340994903166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Link
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 101
+        width: 44
+        height: 35
+      alignment: 9
+      pivot: {x: -0.17709385, y: 1.2300733}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48eaf45e90dbb21d0800000000000000
+      internalID: -3374395645584494972
       vertices: []
       indices: 
       edges: []

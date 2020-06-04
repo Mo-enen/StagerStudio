@@ -103,13 +103,31 @@
 		#region --- MSG ---
 
 
-
 		protected override void Awake () {
 			base.Awake();
 #if UNITY_EDITOR
 			if (!UnityEditor.EditorApplication.isPlaying) { return; }
 #endif
 			m_DivIMG.sprite = m_DivIcons[DivisionIndex];
+		}
+
+
+		protected override void OnEnable () {
+			base.OnEnable();
+#if UNITY_EDITOR
+			if (!UnityEditor.EditorApplication.isPlaying) { return; }
+#endif
+			// Seek
+			var map = GetBeatmap();
+			if (map != null) {
+				float bps = GetBPM() / 60f;
+				float localMusicBeat = (GetMusicTime() - map.GetTime(ItemType, ItemIndex)) * bps;
+				var (_, _, _, beatDuration) = GetContentStartYEndY();
+				int beatCount = Mathf.CeilToInt(beatDuration) + 1;
+				if (beatCount > 0) {
+					ScrollValue = Mathf.Clamp01(localMusicBeat / beatCount);
+				}
+			}
 		}
 
 

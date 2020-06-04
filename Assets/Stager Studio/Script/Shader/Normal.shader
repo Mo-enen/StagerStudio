@@ -50,19 +50,22 @@ Shader "Object/Normal" {
 
 				fixed4 frag(v2f i) : SV_Target
 				{
-					// Mask
-					if (
-						i.vertex.x < _ZoneMinMax.x ||
-						i.vertex.y < _ZoneMinMax.y ||
-						i.vertex.x > _ZoneMinMax.z ||
-						i.vertex.y > _ZoneMinMax.w
-					) {
-						discard;
-					}
+					
 
 				// Color
 				fixed4 col = tex2D(_MainTex, i.texcoord);
 				col *= i.color;
+
+				// Mask
+				if (
+					i.vertex.x < _ZoneMinMax.x ||
+					i.vertex.y < _ZoneMinMax.y ||
+					i.vertex.x > _ZoneMinMax.z ||
+					i.vertex.y > _ZoneMinMax.w
+				) {
+					col.a *= 0.25f;
+				}
+
 				return col;
 			}
 		ENDCG

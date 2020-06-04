@@ -36,6 +36,9 @@
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static TweensHandler GetProjectTweens { get; set; } = null;
 
+		// Api
+		public static (int stage, int track, int note) TypeCount { get; set; } = (0, 0, 0);
+
 		// Short
 		private BeatmapInspectorUI BeatmapInspector => _BeatmapInspector != null ? _BeatmapInspector : (_BeatmapInspector = m_Container.GetChild(0).GetComponent<BeatmapInspectorUI>());
 		private StageInspectorUI StageInspector => _StageInspector != null ? _StageInspector : (_StageInspector = m_Container.GetChild(1).GetComponent<StageInspectorUI>());
@@ -198,6 +201,31 @@
 				OnItemEdited();
 				RefreshTimingInspector();
 			}
+		}
+
+
+		public void UI_SwitchItemType () {
+			int selectingType = GetSelectingType();
+			int selectingIndex = GetSelectingIndex();
+			var map = GetBeatmap();
+			if (map == null || selectingType < 0 || selectingType > 2 || selectingIndex < 0) { return; }
+			int typeCount = selectingType == 0 ? TypeCount.stage : selectingType == 1 ? TypeCount.track : TypeCount.note;
+			int itemType = map.GetItemType(selectingType, selectingIndex);
+			itemType = (itemType + 1) % typeCount;
+			map.SetItemType(selectingType, selectingIndex, itemType);
+			OnItemEdited();
+			RefreshAllInspectors();
+		}
+
+
+		public void UI_SetItemType (int value) {
+			int selectingType = GetSelectingType();
+			int selectingIndex = GetSelectingIndex();
+			var map = GetBeatmap();
+			if (map == null || selectingType < 0 || selectingIndex < 0) { return; }
+			map.SetItemType(selectingType, selectingIndex, value);
+			OnItemEdited();
+			RefreshAllInspectors();
 		}
 
 
@@ -760,7 +788,7 @@
 					yield return new WaitForEndOfFrame();
 				}
 				m_Container.anchoredPosition = new Vector2(fromX, conPosY);
-				motionRT.anchoredPosition = new Vector2(toX, conPosY);
+				motionRT.anchoredPosition = new Vector2(toX, motionPosY);
 				m_Container.gameObject.SetActive(!show);
 				m_MotionInspector.gameObject.SetActive(show);
 				MotionInspectorCor = null;
