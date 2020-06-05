@@ -35,5 +35,9 @@ Shortcut.Music.Volume.Down,	DownArrow,	False,	False,	False#
 Shortcut.Music.Volume.Up,	UpArrow,	False,	False,	False#
 Shortcut.Brush.SizeDown,	LeftBracket,	False,	False,	False#
 Shortcut.Brush.SizeUp,	RightBracket,	False,	False,	False#
+Shortcut.Brush.AltSizeDown,	Minus,	False,	False,	False#
+Shortcut.Brush.AltSizeUp,	Equals,	False,	False,	False#
 Shortcut.Linker,	X,	False,	False,	False#
 Shortcut.SwitchItemType,	Z,	False,	False,	False#
+Shortcut.Game.AddDropSpeed,	Equals,	True,	False,	False#
+Shortcut.Game.ReduceDropSpeed,	Minus,	True,	False,	False#

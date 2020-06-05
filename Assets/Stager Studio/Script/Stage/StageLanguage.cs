@@ -180,15 +180,15 @@
 				map.Clear();
 				using (var reader = new StreamReader(path, true)) {
 					string key = null, value = null;
-					while ((value = reader.ReadLine()) != null) {
-						if (key == null) {
-							key = value;
-						} else {
-							if (!map.ContainsKey(key)) {
+					string line = null;
+					while ((line = reader.ReadLine()) != null) {
+						int i = line.IndexOf(':');
+						if (i >= 0) {
+							key = line.Substring(0, i);
+							value = line.Substring(i + 1, line.Length - i - 1);
+							if (!string.IsNullOrEmpty(key) && !map.ContainsKey(key)) {
 								map.Add(key, value);
 							}
-							key = null;
-							reader.ReadLine();
 						}
 					}
 				}
@@ -379,8 +379,9 @@ namespace StagerStudio.Editor {
 						string key = System.Text.RegularExpressions.Regex.Replace(value.key, @"[^a-zA-Z0-9.]", "");
 						bool hasLetter = System.Text.RegularExpressions.Regex.IsMatch(key, @"[a-zA-Z]");
 						if (!hasLetter) { continue; }
-						builder.AppendLine(key);
-						builder.AppendLine(value.value);
+						builder.Append(key);
+						builder.Append(':');
+						builder.Append(value.value);
 						builder.AppendLine();
 					}
 					Util.TextToFile(builder.ToString(), path);

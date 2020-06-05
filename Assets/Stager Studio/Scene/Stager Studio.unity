@@ -15642,7 +15642,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &798248423
 MonoBehaviour:
@@ -16503,7 +16503,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1488624210}
           m_MethodName: BrushSizeDown
-          m_Mode: 1
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -16525,7 +16525,7 @@ MonoBehaviour:
         m_Calls:
         - m_Target: {fileID: 1488624210}
           m_MethodName: BrushSizeUp
-          m_Mode: 1
+          m_Mode: 6
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -16533,6 +16533,50 @@ MonoBehaviour:
             m_FloatArgument: 0.1
             m_StringArgument: 
             m_BoolArgument: 0
+          m_CallState: 2
+  - Name: Shortcut.Brush.AltSizeDown
+    Key: 45
+    Ctrl: 0
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: BrushSizeDown
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 1
+          m_CallState: 2
+  - Name: Shortcut.Brush.AltSizeUp
+    Key: 61
+    Ctrl: 0
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1488624210}
+          m_MethodName: BrushSizeUp
+          m_Mode: 6
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 1
           m_CallState: 2
   - Name: Shortcut.Linker
     Key: 120
@@ -16575,6 +16619,50 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 3
             m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Name: Shortcut.Game.AddDropSpeed
+    Key: 61
+    Ctrl: 1
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: AddGameDropSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: 0.1
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+  - Name: Shortcut.Game.ReduceDropSpeed
+    Key: 45
+    Ctrl: 1
+    Shift: 0
+    Alt: 0
+    AntiTFs:
+    - {fileID: 1820277924}
+    - {fileID: 213184611}
+    Action:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 1340495427}
+          m_MethodName: AddGameDropSpeed
+          m_Mode: 4
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 3
+            m_FloatArgument: -0.1
             m_StringArgument: 
             m_BoolArgument: 0
           m_CallState: 2
@@ -17141,7 +17229,6 @@ MonoBehaviour:
     - Menu.Grid.y0
     - Menu.Grid.y1
     - Menu.Grid.y2
-    - Menu.Grid.y3
     - 
     - Menu.Grid.bps0
     - Menu.Grid.bps1
@@ -17629,12 +17716,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX0
+          m_MethodName: SetGridCountX0Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17645,12 +17732,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX0
+          m_MethodName: SetGridCountX0Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 7
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17661,12 +17748,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX0
+          m_MethodName: SetGridCountX0Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 15
+            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17677,12 +17764,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX1
+          m_MethodName: SetGridCountX1Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17693,12 +17780,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX1
+          m_MethodName: SetGridCountX1Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 7
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17709,12 +17796,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX1
+          m_MethodName: SetGridCountX1Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 15
+            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17725,12 +17812,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX2
+          m_MethodName: SetGridCountX2Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17741,12 +17828,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX2
+          m_MethodName: SetGridCountX2Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 7
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17757,12 +17844,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountX2
+          m_MethodName: SetGridCountX2Index
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 15
+            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17773,12 +17860,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountY
+          m_MethodName: SetGridCountYIndex
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 1
+            m_IntArgument: 0
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17789,12 +17876,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountY
+          m_MethodName: SetGridCountYIndex
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 2
+            m_IntArgument: 1
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -17805,28 +17892,12 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountY
+          m_MethodName: SetGridCountYIndex
           m_Mode: 3
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 4
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  - Key: Menu.Grid.y3
-    Icon: {fileID: 0}
-    Callback:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 1340495427}
-          m_MethodName: SetGridCountY
-          m_Mode: 3
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 8
+            m_IntArgument: 2
             m_FloatArgument: 0
             m_StringArgument: 
             m_BoolArgument: 0
@@ -19739,6 +19810,49 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Type: 0
+--- !u!1 &848385316
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 848385317}
+  - component: {fileID: 848385318}
+  m_Layer: 0
+  m_Name: Tutorial
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &848385317
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848385316}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1488624209}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &848385318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 848385316}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94813c35cdfd4894f9e54b333873a9e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &852314208
 GameObject:
   m_ObjectHideFlags: 0
@@ -20281,7 +20395,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -20, y: 0}
+  m_AnchoredPosition: {x: -20.299774, y: 0}
   m_SizeDelta: {x: 24, y: 18}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &915685449
@@ -21759,7 +21873,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &995548659
 MonoBehaviour:
@@ -28062,7 +28176,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1346285583
 MonoBehaviour:
@@ -30702,6 +30816,7 @@ Transform:
   - {fileID: 826612609}
   - {fileID: 572003328}
   - {fileID: 793886118}
+  - {fileID: 848385317}
   - {fileID: 798248422}
   - {fileID: 2029856296}
   - {fileID: 995548658}
@@ -30804,7 +30919,6 @@ MonoBehaviour:
   - {fileID: 1149638195}
   - {fileID: 1969733948}
   - {fileID: 798280413}
-  - {fileID: 0}
   - {fileID: 754884773}
   m_Cursors:
   - Cursor: {fileID: 2800000, guid: 01635c49f9e1159469d4f4fb0c1f3a16, type: 3}
@@ -32610,7 +32724,7 @@ MonoBehaviour:
         BorderL: 60
         BorderR: 60
         Is3D: 1
-        Thickness3D: 24
+        Thickness3D: 56
       - X: 188
         Y: 16
         Width: 84
@@ -42184,7 +42298,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 12
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1967135109
 MonoBehaviour:
@@ -42199,6 +42313,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_DefaultData:
+  - Shortcut.Brush.AltSizeDown
+  - Brush Size Down (Sub)
+  - Shortcut.Brush.AltSizeUp
+  - Brush Size Up (Sub)
   - Author
   - Stager Official
   - Command.Hint.CommandDone
@@ -42314,31 +42432,29 @@ MonoBehaviour:
   - Menu.Grid.bps2
   - 4 Beats per Section
   - Menu.Grid.x00
-  - "Grid X (Stage) \xD71"
+  - Grid X (Stage) Less
   - Menu.Grid.x01
-  - "Grid X (Stage) \xD77"
+  - Grid X (Stage) Normal
   - Menu.Grid.x02
-  - "Grid X (Stage) \xD715"
+  - Grid X (Stage) Max
   - Menu.Grid.x10
-  - "Grid X (Track) \xD71"
+  - Grid X (Track) Less
   - Menu.Grid.x11
-  - "Grid X (Track) \xD77"
+  - Grid X (Track) Normal
   - Menu.Grid.x12
-  - "Grid X (Track) \xD715"
+  - Grid X (Track) Max
   - Menu.Grid.x20
-  - "Grid X (Note) \xD71"
+  - Grid X (Note) Less
   - Menu.Grid.x21
-  - "Grid X (Note) \xD77"
+  - Grid X (Note) Normal
   - Menu.Grid.x22
-  - "Grid X (Note) \xD715"
+  - Grid X (Note) Max
   - Menu.Grid.y0
-  - "Grid Y \xD71"
+  - Grid Y Less
   - Menu.Grid.y1
-  - "Grid Y \xD72"
+  - Grid Y Normal
   - Menu.Grid.y2
-  - "Grid Y \xD74"
-  - Menu.Grid.y3
-  - "Grid Y \xD78"
+  - Grid Y Max
   - Menu.Home.ImportProject
   - Import Project
   - Menu.Home.NewChapter
@@ -42567,6 +42683,10 @@ MonoBehaviour:
   - Hide Stage
   - Shortcut.Eye.Track
   - Hide Track
+  - Shortcut.Game.AddDropSpeed
+  - Add Drop Speed
+  - Shortcut.Game.ReduceDropSpeed
+  - Reduce Drop Speed
   - Shortcut.GlobalBrushScale
   - Global Brush Scale
   - Shortcut.Linker
@@ -42821,6 +42941,8 @@ MonoBehaviour:
   - Save and close the setting window
   - Tip.Setting.Framerate
   - Target framerate
+  - Tip.Setting.GridCount
+  - Grid count for map items
   - Tip.Setting.Keypress
   - Show the keys pressed on the screen for seconds
   - Tip.Setting.LargeUI
@@ -43060,6 +43182,14 @@ MonoBehaviour:
   - Background Brightness
   - UI.Setting.Framerate
   - Framerate
+  - UI.Setting.GridCountX0
+  - Grid Count X (Stage)
+  - UI.Setting.GridCountX1
+  - Grid Count X (Track)
+  - UI.Setting.GridCountX2
+  - Grid Count X (Note)
+  - UI.Setting.GridCountY
+  - Grid Count Y
   - UI.Setting.MusicVolume
   - Music Volume
   - UI.Setting.NoteBrushWidth
@@ -44675,7 +44805,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1488624209}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2029856297
 MonoBehaviour:

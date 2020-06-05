@@ -44,8 +44,12 @@ Available Actions:
 	Shortcut.Music.Volume.Up
 	Shortcut.Brush.SizeDown
 	Shortcut.Brush.SizeUp
+	Shortcut.Brush.AltSizeDown
+	Shortcut.Brush.AltSizeUp
 	Shortcut.Linker
 	Shortcut.SwitchItemType
+	Shortcut.Game.AddDropSpeed
+	Shortcut.Game.ReduceDropSpeed
 
 Available Keys:
 

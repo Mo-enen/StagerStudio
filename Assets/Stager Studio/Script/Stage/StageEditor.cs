@@ -28,19 +28,19 @@
 		}
 
 
-		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
-		public delegate void VoidHandler ();
-		public delegate float FloatHandler ();
-		public delegate void VoidFloatHandler (float f);
-		public delegate Beatmap BeatmapHandler ();
-		public delegate bool BoolHandler ();
-		public delegate void VoidStringBoolHandler (string str, bool b);
-		public delegate string StringStringHandler (string str);
-		public delegate float FillHandler (float time, float fill, float muti);
-		public delegate void LogAxisHintHandler (int axis, string hint);
-		public delegate float SnapTimeHandler (float time, float gap, float offset);
-		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
-		public delegate void ExceptionHandler (System.Exception ex);
+		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler();
+		public delegate void VoidHandler();
+		public delegate float FloatHandler();
+		public delegate void VoidFloatHandler(float f);
+		public delegate Beatmap BeatmapHandler();
+		public delegate bool BoolHandler();
+		public delegate void VoidStringBoolHandler(string str, bool b);
+		public delegate string StringStringHandler(string str);
+		public delegate float FillHandler(float time, float fill, float muti);
+		public delegate void LogAxisHintHandler(int axis, string hint);
+		public delegate float SnapTimeHandler(float time, float gap, float offset);
+		public delegate void EditHandler(EditType editType, int itemType, int itemIndex);
+		public delegate void ExceptionHandler(System.Exception ex);
 
 
 		#endregion
@@ -150,7 +150,7 @@
 		#region --- MSG ---
 
 
-		private void Awake () {
+		private void Awake() {
 
 			// Init Layer
 			SortingLayerID_UI = SortingLayer.NameToID("UI");
@@ -209,7 +209,7 @@
 		}
 
 
-		private void LateUpdate () {
+		private void LateUpdate() {
 			if (GetEditorActive() && AntiTargetAllow()) {
 				// Editor Active
 				var map = GetBeatmap();
@@ -238,7 +238,7 @@
 		}
 
 
-		private void LateUpdate_Key (Beatmap map) {
+		private void LateUpdate_Key(Beatmap map) {
 
 			bool hasSelection = SelectingItemType >= 0 && SelectingItemIndex >= 0;
 			bool isTyping = Util.IsTypeing;
@@ -351,7 +351,7 @@
 		}
 
 
-		private void LateUpdate_Selection () {
+		private void LateUpdate_Selection() {
 			if (SelectingItemIndex >= 0 && SelectingBrushIndex != -1) {
 				SelectingItemIndex = -1;
 				SelectingItemSubIndex = -1;
@@ -361,7 +361,7 @@
 		}
 
 
-		private void LateUpdate_Hover (Beatmap map) {
+		private void LateUpdate_Hover(Beatmap map) {
 			if (SelectingBrushIndex >= 0) {
 				// --- Painting ---
 				if (GetItemLock(SelectingBrushIndex)) {
@@ -389,7 +389,7 @@
 		}
 
 
-		private void LateUpdate_Down (Beatmap map) {
+		private void LateUpdate_Down(Beatmap map) {
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
 			if (SelectingBrushIndex == -1) {
 				// Select
@@ -420,130 +420,130 @@
 				// Paint
 				switch (SelectingBrushIndex) {
 					case 0: { // Stage
-						var (zoneMin, zoneMax, _, zoneRatio) = GetZoneMinMax();
-						var ghostWorldPos = m_Ghost.transform.position;
-						var zonePos = Util.Vector3InverseLerp3(
-							zoneMin, zoneMax,
-							ghostWorldPos.x, ghostWorldPos.y
-						);
-						float musicTime = GetMusicTime();
-						float paintTime = musicTime;
-						if (m_Grid.RendererEnable) {
-							paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							var (zoneMin, zoneMax, _, zoneRatio) = GetZoneMinMax();
+							var ghostWorldPos = m_Ghost.transform.position;
+							var zonePos = Util.Vector3InverseLerp3(
+								zoneMin, zoneMax,
+								ghostWorldPos.x, ghostWorldPos.y
+							);
+							float musicTime = GetMusicTime();
+							float paintTime = musicTime;
+							if (m_Grid.RendererEnable) {
+								paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							}
+							if (paintTime >= musicTime) {
+								paintTime -= m_Grid.TimeGap;
+							}
+							float musicDuration = GetMusicDuration();
+							BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
+							map.AddStage(
+								paintTime,
+								musicDuration - paintTime,
+								zonePos.x,
+								zonePos.y,
+								StageBrushWidth,
+								StageBrushHeight / zoneRatio
+							);
+							OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
 						}
-						if (paintTime >= musicTime) {
-							paintTime -= m_Grid.TimeGap;
-						}
-						float musicDuration = GetMusicDuration();
-						BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
-						map.AddStage(
-							paintTime,
-							musicDuration - paintTime,
-							zonePos.x,
-							zonePos.y,
-							StageBrushWidth,
-							StageBrushHeight / zoneRatio
-						);
-						OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
-					}
-					break;
+						break;
 					case 1: { // Track
-						var (type, index, _, _) = GetCastTypeIndex(ray, ItemMasks[0], true);
-						if (type != 0 || index < 0 || index >= map.Stages.Count) { break; }
-						float musicTime = GetMusicTime();
-						float paintTime = musicTime;
-						if (m_Grid.RendererEnable) {
-							paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							var (type, index, _, _) = GetCastTypeIndex(ray, ItemMasks[0], true);
+							if (type != 0 || index < 0 || index >= map.Stages.Count) { break; }
+							float musicTime = GetMusicTime();
+							float paintTime = musicTime;
+							if (m_Grid.RendererEnable) {
+								paintTime = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							}
+							if (paintTime >= musicTime) {
+								paintTime -= m_Grid.TimeGap;
+							}
+							var stage = map.Stages[index];
+							if (stage.duration <= 0) { break; }
+							var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+							var ghostWorldPos = m_Ghost.transform.position;
+							var zonePos = Util.Vector3InverseLerp3(
+								zoneMin, zoneMax,
+								ghostWorldPos.x, ghostWorldPos.y
+							);
+							float stageWidth = Mathf.Max(Stage.GetStageWidth(stage), 0.001f);
+							float trackX = Stage.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								Stage.GetStagePosition(stage, index),
+								stageWidth,
+								Stage.GetStageHeight(stage),
+								Stage.GetStagePivotY(stage),
+								Stage.GetStageWorldRotationZ(stage)
+							).x;
+							BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
+							map.AddTrack(
+								index,
+								paintTime,
+								Mathf.Max(stage.Duration - (paintTime - stage.Time), 0.001f),
+								trackX,
+								UseGlobalBrushScale.Value ? TrackBrushWidth / stageWidth : TrackBrushWidth
+							);
+							OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
 						}
-						if (paintTime >= musicTime) {
-							paintTime -= m_Grid.TimeGap;
-						}
-						var stage = map.Stages[index];
-						if (stage.duration <= 0) { break; }
-						var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-						var ghostWorldPos = m_Ghost.transform.position;
-						var zonePos = Util.Vector3InverseLerp3(
-							zoneMin, zoneMax,
-							ghostWorldPos.x, ghostWorldPos.y
-						);
-						float stageWidth = Mathf.Max(Stage.GetStageWidth(stage), 0.001f);
-						float trackX = Stage.ZoneToLocal(
-							zonePos.x, zonePos.y, zonePos.z,
-							Stage.GetStagePosition(stage, index),
-							stageWidth,
-							Stage.GetStageHeight(stage),
-							Stage.GetStagePivotY(stage),
-							Stage.GetStageWorldRotationZ(stage)
-						).x;
-						BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
-						map.AddTrack(
-							index,
-							paintTime,
-							Mathf.Max(stage.Duration - (paintTime - stage.Time), 0.001f),
-							trackX,
-							UseGlobalBrushScale.Value ? TrackBrushWidth / stageWidth : TrackBrushWidth
-						);
-						OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
-					}
-					break;
+						break;
 					case 2: { // Note 
-						var (type, index, _, _) = GetCastTypeIndex(ray, ItemMasks[1], true);
-						if (type != 1 || index < 0 || index >= map.Tracks.Count) { break; }
-						var track = map.Tracks[index];
-						if (track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-						var stage = map.Stages[track.StageIndex];
-						float stageWidth = Mathf.Max(Stage.GetStageWidth(stage), 0.001f);
-						float trackWidth = Mathf.Max(Track.GetTrackWidth(track), 0.001f);
-						var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
-						var ghostWorldPos = m_Ghost.transform.position;
-						var zonePos = Util.Vector3InverseLerp3(
-							zoneMin, zoneMax,
-							ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
-						);
-						var localPos = Track.ZoneToLocal(
-							zonePos.x, zonePos.y, zonePos.z,
-							Stage.GetStagePosition(stage, track.StageIndex),
-							stageWidth,
-							Stage.GetStageHeight(stage),
-							Stage.GetStagePivotY(stage),
-							Stage.GetStageWorldRotationZ(stage),
-							Track.GetTrackX(track),
-							trackWidth,
-							Track.GetTrackAngle(track)
-						);
-						BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
-						map.AddNote(
-							index,
-							GetFilledTime(GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
-							0f,
-							localPos.x,
-							UseGlobalBrushScale.Value ? NoteBrushWidth / trackWidth / stageWidth : NoteBrushWidth
-						);
-						OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
-					}
-					break;
-					case 3: { // Timing
-						var (zoneMin, zoneMax_real, _, _) = GetRealZoneMinMax();
-						var ghostWorldPos = m_Ghost.transform.position;
-						var zonePos = Util.Vector3InverseLerp3(
-							zoneMin, zoneMax_real,
-							ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
-						);
-						float timingTime = GetFilledTime(GetMusicTime(), zonePos.y, m_Grid.GameSpeedMuti);
-						if (m_Grid.RendererEnable) {
-							timingTime = GetSnapedTime(timingTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							var (type, index, _, _) = GetCastTypeIndex(ray, ItemMasks[1], true);
+							if (type != 1 || index < 0 || index >= map.Tracks.Count) { break; }
+							var track = map.Tracks[index];
+							if (track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+							var stage = map.Stages[track.StageIndex];
+							float stageWidth = Mathf.Max(Stage.GetStageWidth(stage), 0.001f);
+							float trackWidth = Mathf.Max(Track.GetTrackWidth(track), 0.001f);
+							var (zoneMin, zoneMax, _, _) = GetZoneMinMax();
+							var ghostWorldPos = m_Ghost.transform.position;
+							var zonePos = Util.Vector3InverseLerp3(
+								zoneMin, zoneMax,
+								ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
+							);
+							var localPos = Track.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								Stage.GetStagePosition(stage, track.StageIndex),
+								stageWidth,
+								Stage.GetStageHeight(stage),
+								Stage.GetStagePivotY(stage),
+								Stage.GetStageWorldRotationZ(stage),
+								Track.GetTrackX(track),
+								trackWidth,
+								Track.GetTrackAngle(track)
+							);
+							BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
+							map.AddNote(
+								index,
+								GetFilledTime(GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
+								0f,
+								localPos.x,
+								UseGlobalBrushScale.Value ? NoteBrushWidth / trackWidth / stageWidth : NoteBrushWidth
+							);
+							OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
 						}
-						BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
-						map.AddTiming(timingTime, 1f);
-						OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
-					}
-					break;
+						break;
+					case 3: { // Timing
+							var (zoneMin, zoneMax_real, _, _) = GetRealZoneMinMax();
+							var ghostWorldPos = m_Ghost.transform.position;
+							var zonePos = Util.Vector3InverseLerp3(
+								zoneMin, zoneMax_real,
+								ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
+							);
+							float timingTime = GetFilledTime(GetMusicTime(), zonePos.y, m_Grid.GameSpeedMuti);
+							if (m_Grid.RendererEnable) {
+								timingTime = GetSnapedTime(timingTime, m_Grid.TimeGap, m_Grid.TimeOffset);
+							}
+							BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
+							map.AddTiming(timingTime, 1f);
+							OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
+						}
+						break;
 				}
 			}
 		}
 
 
-		private void LateUpdate_Axis (Beatmap map) {
+		private void LateUpdate_Axis(Beatmap map) {
 			var con = SelectingItemType >= 0 && SelectingItemType < m_Containers.Length ? m_Containers[SelectingItemType] : null;
 			bool targetActive = map.GetActive(SelectingItemType, SelectingItemIndex);
 			if (
@@ -586,7 +586,11 @@
 				bool yActive = editorActive && SelectingItemType != 1;
 				bool xyActive = xActive || yActive;
 				bool wActive = editorActive && SelectingItemType != 3 && SelectingItemType != 4 && SelectingItemType != 5;
-				bool dActive = editorActive && SelectingItemType == 2;
+				bool dActive = editorActive && (SelectingItemType == 0 || SelectingItemType == 2);
+				if (dActive && Mathf.Abs(map.GetStagePivot(SelectingItemIndex) - 1f) < 0.1f) {
+					// Inactive on Pivot too Close to 1
+					dActive = false;
+				}
 				if (AxisMoveX.gameObject.activeSelf != xActive) {
 					AxisMoveX.gameObject.SetActive(xActive);
 				}
@@ -625,7 +629,7 @@
 		}
 
 
-		private void LateUpdate_Highlight () {
+		private void LateUpdate_Highlight() {
 			var con = SelectingItemType >= 0 && SelectingItemType < 3 ? m_Containers[SelectingItemType] : null;
 			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount && con.GetChild(SelectingItemIndex).gameObject.activeSelf;
 			m_Highlight.gameObject.TrySetActive(active);
@@ -641,7 +645,7 @@
 
 
 		// Hover
-		private void OnMouseHover_Grid (Beatmap map, bool selectingMode) {
+		private void OnMouseHover_Grid(Beatmap map, bool selectingMode) {
 
 			// Check
 			if (selectingMode && SelectingItemIndex < 0) {
@@ -718,7 +722,7 @@
 		}
 
 
-		private void OnMouseHover_Ghost () {
+		private void OnMouseHover_Ghost() {
 
 			// Ghost
 			var ray = GetMouseRay();
@@ -778,19 +782,19 @@
 						}
 						break;
 					case 3: { // Speed
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = 0.12f / zoneSize;
-							ghostSize.y = GHOST_NOTE_Y / zoneSize;
-							ghostPos.x = zoneMin.x;
-							ghostPos.y = m_Grid.SnapWorld(mousePos.Value, true).y;
-							ghostPos.z = zoneMin.z;
-							ghostRot = Quaternion.identity;
-							ghostPivotX = 0f;
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = 0.12f / zoneSize;
+								ghostSize.y = GHOST_NOTE_Y / zoneSize;
+								ghostPos.x = zoneMin.x;
+								ghostPos.y = m_Grid.SnapWorld(mousePos.Value, true).y;
+								ghostPos.z = zoneMin.z;
+								ghostRot = Quaternion.identity;
+								ghostPivotX = 0f;
+							}
 						}
-					}
-					break;
+						break;
 				}
 			}
 
@@ -809,7 +813,7 @@
 		}
 
 
-		private void OnMouseHover_Normal () {
+		private void OnMouseHover_Normal() {
 			if (GetMoveAxisHovering() || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
 				m_Hover.gameObject.TrySetActive(false);
 				return;
@@ -840,7 +844,7 @@
 		}
 
 
-		private void OnMouseHover_Erase () {
+		private void OnMouseHover_Erase() {
 			if (Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
 				m_Erase.gameObject.TrySetActive(false);
 				return;
@@ -861,7 +865,7 @@
 
 
 		// Axis
-		public void OnMoveAxisDrag (Vector3 pos, Vector3 downPos, int axis) {
+		public void OnMoveAxisDrag(Vector3 pos, Vector3 downPos, int axis) {
 			try {
 				OnMoveAxisDragLogic(pos, downPos, axis);
 			} catch (System.Exception ex) { OnException(ex); };
@@ -877,25 +881,25 @@
 
 
 		// Selector
-		public void MoveStageItemUp (object target) {
+		public void MoveStageItemUp(object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(0, index, index - 1);
 			}
 		}
-		public void MoveStageItemDown (object target) {
+		public void MoveStageItemDown(object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(0, index, index + 1);
 			}
 		}
-		public void MoveTrackItemUp (object target) {
+		public void MoveTrackItemUp(object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(1, index, index - 1);
 			}
 		}
-		public void MoveTrackItemDown (object target) {
+		public void MoveTrackItemDown(object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(1, index, index + 1);
@@ -904,7 +908,7 @@
 
 
 		// Selection
-		public void SetSelection (int type, int index, int subIndex = 0) {
+		public void SetSelection(int type, int index, int subIndex = 0) {
 			// No Stage Selection in Abreast View
 			if (GetUseAbreast() && (type == 0 || type == 4)) {
 				// Switch Abreast Index
@@ -930,7 +934,7 @@
 		}
 
 
-		public void ClearSelection () {
+		public void ClearSelection() {
 			if (SelectingItemIndex >= 0 || SelectingItemType >= 0) {
 				// Clear
 				SelectingItemIndex = -1;
@@ -943,13 +947,13 @@
 
 
 		// Container
-		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
+		public void UI_SwitchContainerActive(int index) => SetContainerActive(index, !GetContainerActive(index));
 
 
-		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
+		public bool GetContainerActive(int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
 
 
-		public void SetContainerActive (int index, bool active) {
+		public void SetContainerActive(int index, bool active) {
 			if (index < 0 || index >= m_Containers.Length) { return; }
 			m_Containers[index].gameObject.SetActive(active);
 			// UI
@@ -964,24 +968,24 @@
 
 
 		// Item Lock
-		public bool GetItemLock (int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
+		public bool GetItemLock(int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
 
 
-		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
+		public void UI_SwitchLock(int index) => SetLock(index, !GetItemLock(index));
 
 
 		// Brush
-		public void SetBrush (int index) {
+		public void SetBrush(int index) {
 			if (UIReady) {
 				SetBrushLogic(index);
 			}
 		}
 
 
-		public void SetErase () => SetEraseLogic();
+		public void SetErase() => SetEraseLogic();
 
 
-		public void SwitchUseGlobalBrushScale () {
+		public void SwitchUseGlobalBrushScale() {
 			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
 			OnBrushChanged();
 			try {
@@ -994,7 +998,7 @@
 
 
 		// Translate
-		public void TranslateSelectingItem (int direction) { // 0:L  1:R  2:D  3:U
+		public void TranslateSelectingItem(int direction) { // 0:L  1:R  2:D  3:U
 			var map = GetBeatmap();
 			if (SelectingItemType < 0 || SelectingItemIndex < 0 || map == null) { return; }
 			switch (direction) {
@@ -1036,7 +1040,7 @@
 		#region --- LGC ---
 
 
-		private bool AntiTargetAllow () {
+		private bool AntiTargetAllow() {
 			foreach (var t in m_AntiTargets) {
 				if (t.gameObject.activeSelf) {
 					return false;
@@ -1046,10 +1050,10 @@
 		}
 
 
-		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
+		private Ray GetMouseRay() => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private void SetLock (int index, bool locked) {
+		private void SetLock(int index, bool locked) {
 			// Set Logic
 			ItemLock[index] = locked;
 			// Refresh Unlock Mask
@@ -1064,7 +1068,7 @@
 		}
 
 
-		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
+		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex(Ray ray, LayerMask mask, bool insideZone) {
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
 			float overlapType = -1f;
 			int overlapIndex = -1;
@@ -1095,7 +1099,7 @@
 		}
 
 
-		private bool RayInsideZone (Ray ray, bool checkX = true, bool checkY = true) {
+		private bool RayInsideZone(Ray ray, bool checkX = true, bool checkY = true) {
 			var (zoneMin, zoneMax, _, _) = GetRealZoneMinMax();
 			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
 				var point = ray.GetPoint(enter);
@@ -1107,7 +1111,7 @@
 		}
 
 
-		private void RefreshUnlockedMask () {
+		private void RefreshUnlockedMask() {
 			var list = new List<string>();
 			for (int i = 0; i < ItemLock.Length; i++) {
 				if (!ItemLock[i]) {
@@ -1127,14 +1131,14 @@
 		}
 
 
-		private void TrySetGridInactive () {
+		private void TrySetGridInactive() {
 			if (m_Grid.GridEnabled) {
 				m_Grid.SetGridTransform(false);
 			}
 		}
 
 
-		private void SetBrushLogic (int brushIndex) {
+		private void SetBrushLogic(int brushIndex) {
 			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
 			UIReady = false;
 			try {
@@ -1165,7 +1169,7 @@
 		}
 
 
-		private void SetEraseLogic () {
+		private void SetEraseLogic() {
 			UIReady = false;
 			try {
 				if (!enabled || !GetEditorActive()) {
@@ -1184,7 +1188,7 @@
 		}
 
 
-		private void MoveItem (int type, int index, int newIndex) {
+		private void MoveItem(int type, int index, int newIndex) {
 			var map = GetBeatmap();
 			if (map != null) {
 				ClearSelection();
@@ -1193,7 +1197,7 @@
 		}
 
 
-		private void OnMoveAxisDragLogic (Vector3 pos, Vector3 downPos, int axis) {
+		private void OnMoveAxisDragLogic(Vector3 pos, Vector3 downPos, int axis) {
 			AxisDragging = true;
 			var map = GetBeatmap();
 			if (map == null || SelectingItemIndex < 0) { return; }
@@ -1214,166 +1218,186 @@
 			int index = SelectingItemIndex;
 			switch (SelectingItemType) {
 				case 0: { // Stage
-					if (index >= map.Stages.Count) { break; }
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
-					var stage = map.Stages[index];
-					Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
-					var worldPos = pos - DragOffsetWorld;
-					var snappedPos = m_Grid.SnapWorld(worldPos - worldMotion, false);
-					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
-					if (axis == 0 || axis == 2) {
-						map.SetX(0, index, snappedZonePos.x);
-						LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
-					}
-					if (axis == 1 || axis == 2) {
-						map.SetStageY(index, snappedZonePos.y);
-						LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
-					}
-					if (axis == 3) {
-						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
-						float oldWidth = Stage.GetStageWidth(stage);
-						float motionWidth = Mathf.Max(Stage.GetStageWidth_Motion(stage), 0.001f);
-						float localPosX = Stage.ZoneToLocal(
-							zonePos.x, zonePos.y, zonePos.z,
-							Stage.GetStagePosition(stage, index),
-							oldWidth,
-							Stage.GetStageHeight(stage),
-							Stage.GetStagePivotY(stage),
-							Stage.GetStageWorldRotationZ(stage)
-						).x;
-						float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
-						if (m_Grid.RendererEnable) {
-							newWidth = Util.Snap(newWidth, 20f);
-						}
-						newWidth = Mathf.Max(newWidth, 0.001f);
-						map.SetStageWidth(index, newWidth);
-						LogAxisMSG(axis, newWidth);
-					}
-					OnObjectEdited(EditType.Modify, SelectingItemType, index);
-				}
-				break;
-				case 1: {// Track
-					var track = index < map.Tracks.Count ? map.Tracks[index] : null;
-					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
-					var stage = map.Stages[track.StageIndex];
-					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
-					var sWidth = Stage.GetStageWidth(stage);
-					var sHeight = Stage.GetStageHeight(stage);
-					var sPivotY = Stage.GetStagePivotY(stage);
-					var sRotZ = Stage.GetStageWorldRotationZ(stage);
-					var basicZonePos = Stage.LocalToZone(
-						track.X, 0f, 0f,
-						sPos, sWidth, sHeight, sPivotY, sRotZ
-					);
-					var worldPos = pos - DragOffsetWorld;
-					if (axis == 0 || axis == 2) {
-						var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true, true);
+						if (index >= map.Stages.Count) { break; }
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
+						var stage = map.Stages[index];
+						Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
+						var worldPos = pos - DragOffsetWorld;
+						var snappedPos = m_Grid.SnapWorld(worldPos - worldMotion, false);
 						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
-						float newX = Stage.ZoneToLocal(
-							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-							sPos, sWidth, sHeight, sPivotY, sRotZ
-						).x;
-						map.SetX(1, index, newX);
-						LogAxisMSG(axis, newX);
-					}
-					if (axis == 3) {
-						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
-						float oldWidth = Track.GetTrackWidth(track);
-						float motionWidth = Mathf.Max(Track.GetTrackWidth_Motion(track), 0.0001f);
-						float localPosX = Track.ZoneToLocal(
-							zonePos.x, zonePos.y, zonePos.z,
-							sPos, sWidth, sHeight, sPivotY, sRotZ,
-							Track.GetTrackX(track),
-							oldWidth,
-							Track.GetTrackAngle(track)
-						).x;
-						float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
-						if (m_Grid.RendererEnable) {
-							newWidth = Util.Snap(newWidth, 20f);
+						if (axis == 0 || axis == 2) {
+							map.SetX(0, index, snappedZonePos.x);
+							LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
 						}
-						newWidth = Mathf.Max(newWidth, 0.001f);
-						map.SetTrackWidth(index, newWidth);
-						LogAxisMSG(axis, newWidth);
+						if (axis == 1 || axis == 2) {
+							map.SetStageY(index, snappedZonePos.y);
+							LogAxisMSG(axis, snappedZonePos.x, snappedZonePos.y);
+						}
+						if (axis == 3) {
+							var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+							float oldWidth = Stage.GetStageWidth(stage);
+							float motionWidth = Mathf.Max(Stage.GetStageWidth_Motion(stage), 0.001f);
+							float localPosX = Stage.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								Stage.GetStagePosition(stage, index),
+								oldWidth,
+								Stage.GetStageHeight(stage),
+								Stage.GetStagePivotY(stage),
+								Stage.GetStageWorldRotationZ(stage)
+							).x;
+							float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
+							if (m_Grid.RendererEnable) {
+								newWidth = Util.Snap(newWidth, 20f);
+							}
+							newWidth = Mathf.Max(newWidth, 0.001f);
+							map.SetStageWidth(index, newWidth);
+							LogAxisMSG(axis, newWidth);
+						}
+						if (axis == 4) {
+							var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+							float pivotY = Stage.GetStagePivotY(stage);
+							float oldHeight = Stage.GetStageHeight(stage);
+							float motionHeight = Mathf.Max(Stage.GetStageHeight_Motion(stage), 0.001f);
+							float localPosY = Stage.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								Stage.GetStagePosition(stage, index),
+								Stage.GetStageWidth(stage),
+								oldHeight,
+								pivotY,
+								Stage.GetStageWorldRotationZ(stage)
+							).y;
+							float newHeight = Mathf.Abs(localPosY) * oldHeight / motionHeight;
+							if (m_Grid.RendererEnable) {
+								newHeight = Util.Snap(newHeight, 20f);
+							}
+							map.SetStageHeight(index, newHeight);
+							LogAxisMSG(axis, newHeight);
+						}
+						OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					}
-					OnObjectEdited(EditType.Modify, SelectingItemType, index);
-				}
-				break;
-				case 2: { // Note
-					var note = index < map.Notes.Count ? map.Notes[index] : null;
-					if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
-					var track = map.Tracks[note.TrackIndex];
-					if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
-					var stage = map.Stages[track.StageIndex];
-					var sPos = Stage.GetStagePosition(stage, track.StageIndex);
-					var sWidth = Stage.GetStageWidth(stage);
-					var sHeight = Stage.GetStageHeight(stage);
-					var sPivotY = Stage.GetStagePivotY(stage);
-					var sRotZ = Stage.GetStageWorldRotationZ(stage);
-					var tX = Track.GetTrackX(track);
-					var tWidth = Track.GetTrackWidth(track);
-					var tAngle = Track.GetTrackAngle(track);
-					var worldPos = pos - DragOffsetWorld;
-					var snappedPos = m_Grid.SnapWorld(worldPos, true);
-					var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
-					var localPos = Track.ZoneToLocal(
-						snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
-						sPos, sWidth, sHeight, sPivotY, sRotZ,
-						tX, tWidth, tAngle
-					);
-					if (axis == 0 || axis == 2) {
-						map.SetX(2, index, localPos.x);
-						LogAxisMSG(axis, localPos.x);
-					}
-					if (axis == 1 || axis == 2) {
-						float newTime = GetFilledTime(
-							m_Grid.MusicTime,
-							localPos.y,
-							m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
+					break;
+				case 1: {// Track
+						var track = index < map.Tracks.Count ? map.Tracks[index] : null;
+						if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
+						var stage = map.Stages[track.StageIndex];
+						var sPos = Stage.GetStagePosition(stage, track.StageIndex);
+						var sWidth = Stage.GetStageWidth(stage);
+						var sHeight = Stage.GetStageHeight(stage);
+						var sPivotY = Stage.GetStagePivotY(stage);
+						var sRotZ = Stage.GetStageWorldRotationZ(stage);
+						var basicZonePos = Stage.LocalToZone(
+							track.X, 0f, 0f,
+							sPos, sWidth, sHeight, sPivotY, sRotZ
 						);
-						map.SetTime(2, index, newTime);
-						LogAxisMSG(axis, localPos.x, newTime);
+						var worldPos = pos - DragOffsetWorld;
+						if (axis == 0 || axis == 2) {
+							var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true, true);
+							var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+							float newX = Stage.ZoneToLocal(
+								snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
+								sPos, sWidth, sHeight, sPivotY, sRotZ
+							).x;
+							map.SetX(1, index, newX);
+							LogAxisMSG(axis, newX);
+						}
+						if (axis == 3) {
+							var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+							float oldWidth = Track.GetTrackWidth(track);
+							float motionWidth = Mathf.Max(Track.GetTrackWidth_Motion(track), 0.0001f);
+							float localPosX = Track.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								sPos, sWidth, sHeight, sPivotY, sRotZ,
+								Track.GetTrackX(track),
+								oldWidth,
+								Track.GetTrackAngle(track)
+							).x;
+							float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
+							if (m_Grid.RendererEnable) {
+								newWidth = Util.Snap(newWidth, 20f);
+							}
+							newWidth = Mathf.Max(newWidth, 0.001f);
+							map.SetTrackWidth(index, newWidth);
+							LogAxisMSG(axis, newWidth);
+						}
+						OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					}
-					if (axis == 4) {
-						float newDuration = GetFilledTime(
-							m_Grid.MusicTime,
-							localPos.y,
-							m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
-						) - note.Time;
-						map.SetDuration(2, index, Mathf.Max(newDuration, 0f));
-						LogAxisMSG(axis, newDuration);
-					}
-					if (axis == 3) {
-						var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
-						float localPosX = Track.ZoneToLocal(
-							zonePos.x, zonePos.y, zonePos.z,
+					break;
+				case 2: { // Note
+						var note = index < map.Notes.Count ? map.Notes[index] : null;
+						if (note == null || note.TrackIndex < 0 || note.TrackIndex >= map.Tracks.Count) { break; }
+						var track = map.Tracks[note.TrackIndex];
+						if (track == null || track.StageIndex < 0 || track.StageIndex >= map.Stages.Count) { break; }
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
+						var stage = map.Stages[track.StageIndex];
+						var sPos = Stage.GetStagePosition(stage, track.StageIndex);
+						var sWidth = Stage.GetStageWidth(stage);
+						var sHeight = Stage.GetStageHeight(stage);
+						var sPivotY = Stage.GetStagePivotY(stage);
+						var sRotZ = Stage.GetStageWorldRotationZ(stage);
+						var tX = Track.GetTrackX(track);
+						var tWidth = Track.GetTrackWidth(track);
+						var tAngle = Track.GetTrackAngle(track);
+						var worldPos = pos - DragOffsetWorld;
+						var snappedPos = m_Grid.SnapWorld(worldPos, true);
+						var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
+						var localPos = Track.ZoneToLocal(
+							snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
 							sPos, sWidth, sHeight, sPivotY, sRotZ,
 							tX, tWidth, tAngle
-						).x;
-						float newWidth = Mathf.Abs(note.X - localPosX) * 2f;
-						if (m_Grid.RendererEnable) {
-							newWidth = Util.Snap(newWidth, 20f);
+						);
+						if (axis == 0 || axis == 2) {
+							map.SetX(2, index, localPos.x);
+							LogAxisMSG(axis, localPos.x);
 						}
-						newWidth = Mathf.Max(newWidth, 0.001f);
-						map.SetNoteWidth(index, newWidth);
-						LogAxisMSG(axis, newWidth);
+						if (axis == 1 || axis == 2) {
+							float newTime = GetFilledTime(
+								m_Grid.MusicTime,
+								localPos.y,
+								m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
+							);
+							map.SetTime(2, index, newTime);
+							LogAxisMSG(axis, localPos.x, newTime);
+						}
+						if (axis == 3) {
+							var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+							float localPosX = Track.ZoneToLocal(
+								zonePos.x, zonePos.y, zonePos.z,
+								sPos, sWidth, sHeight, sPivotY, sRotZ,
+								tX, tWidth, tAngle
+							).x;
+							float newWidth = Mathf.Abs(note.X - localPosX) * 2f;
+							if (m_Grid.RendererEnable) {
+								newWidth = Util.Snap(newWidth, 20f);
+							}
+							newWidth = Mathf.Max(newWidth, 0.001f);
+							map.SetNoteWidth(index, newWidth);
+							LogAxisMSG(axis, newWidth);
+						}
+						if (axis == 4) {
+							float newDuration = GetFilledTime(
+								m_Grid.MusicTime,
+								localPos.y,
+								m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
+							) - note.Time;
+							map.SetDuration(2, index, Mathf.Max(newDuration, 0f));
+							LogAxisMSG(axis, newDuration);
+						}
+						OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					}
-					OnObjectEdited(EditType.Modify, SelectingItemType, index);
-				}
-				break;
+					break;
 				case 3: { // Timing
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
-					if (axis == 1 || axis == 2) {
-						var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
-						var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
-						float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.GameSpeedMuti, 0f);
-						map.SetTime(3, index, newTime);
-						LogAxisMSG(axis, newTime);
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
+						if (axis == 1 || axis == 2) {
+							var snappedPos = m_Grid.SnapWorld(pos - DragOffsetWorld, true);
+							var zonePos_real = Util.Vector3InverseLerp3(zoneMin, zoneMax_real, snappedPos.x, snappedPos.y, snappedPos.z);
+							float newTime = Mathf.Max(m_Grid.MusicTime + zonePos_real.y / m_Grid.GameSpeedMuti, 0f);
+							map.SetTime(3, index, newTime);
+							LogAxisMSG(axis, newTime);
+						}
+						OnObjectEdited(EditType.Modify, SelectingItemType, index);
 					}
-					OnObjectEdited(EditType.Modify, SelectingItemType, index);
-				}
-				break;
+					break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
 					BeforeObjectEdited(EditType.Modify, SelectingItemType, index);
@@ -1417,8 +1441,8 @@
 		}
 
 
-		private void LogAxisMSG (int axis, float value) => LogAxisMessage(axis, value.ToString("0.##"));
-		private void LogAxisMSG (int axis, float value0, float value1) {
+		private void LogAxisMSG(int axis, float value) => LogAxisMessage(axis, value.ToString("0.##"));
+		private void LogAxisMSG(int axis, float value0, float value1) {
 			switch (axis) {
 				case 0:
 					LogAxisMessage(axis, value0.ToString("0.##"));

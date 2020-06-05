@@ -34,12 +34,12 @@
 
 
 
-		private void OnEnable () {
+		private void OnEnable() {
 			Update();
 		}
 
 
-		private void Update () {
+		private void Update() {
 
 			MainRenderer.RendererEnable = false;
 
@@ -64,7 +64,7 @@
 		}
 
 
-		private void Update_Movement (Beatmap.Note noteData, bool tap, SkinType lumType) {
+		private void Update_Movement(Beatmap.Note noteData, bool tap, SkinType lumType) {
 
 			// Life Time
 			float noteEndTime = Time + noteData.Duration;
@@ -141,7 +141,7 @@
 		#region --- API ---
 
 
-		public static void SetLuminousSkin (SkinData skin) {
+		public static void SetLuminousSkin(SkinData skin) {
 			LuminousAppend.x = skin is null ? 0f : skin.LuminousAppendX;
 			LuminousAppend.y = skin is null ? 0f : skin.LuminousAppendY;
 			var lumAni0 = skin?.Items[(int)SkinType.NoteLuminous];
@@ -153,15 +153,15 @@
 		}
 
 
-		protected override void RefreshRendererZone () {
-			MainRenderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
-				float.MinValue, float.MinValue,
-				float.MaxValue, float.MaxValue
-			));
-		}
+		//protected override void RefreshRendererZone() {
+		//MainRenderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
+		//	float.MinValue, float.MinValue,
+		//	float.MaxValue, float.MaxValue
+		//));
+		//}
 
 
-		public static bool GetLumActive (Beatmap.Note noteData) {
+		public static bool GetLumActive(Beatmap.Note noteData) {
 			SkinType type = noteData.Duration > FLOAT_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			float duration = (type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold);
 			return

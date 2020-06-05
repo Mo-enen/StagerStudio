@@ -1,1488 +1,504 @@
-﻿Author
-Stager Official
-
-Command.Hint.CommandDone
-Command done
-
-Dialog.Editor.CannotSelectStage
-Can not select stage in panoramic mode
-
-Dialog.Editor.CannotSelectStageBrush
-Can not select stage brush in panoramic mode
-
-Dialog.Editor.SelectingLayerInactive
-Layer not visible
-
-Dialog.Editor.SelectingLayerLocked
-Layer locked
-
-Dialog.Error.FailCreateProject
-Error on creating project
-
-Dialog.OpenWebMSG
-Opening {0} Please check your web browser
-
-Dialog.Tutorial.CanNotFindProject
-Can not find tutorial project file
-
-Dialog.Tutorial.FirstTutorialMSG
-Start tutorial now?
-
-Dialog.TweenEditor.CancelConfirm
-Close tween editor? Changes will not be save.
-
-Editor.Hint.Copy
-Copy
-
-Editor.Hint.CopyFail
-Copy failed
-
-Editor.Hint.GlobalBrushScale
-Global brush size {0}
-
-Editor.Hint.Paste
-Paste
-
-Game.Hint.AbreastWidth
-Stage width {0}
-
-Game.Hint.GameDropSpeed
-Drop Speed × {0}
-
-Game.Hint.Pitch
-Music speed {0}
-
-Game.Hint.ShowGrid
-Grid and Auxiliary {0}
-
-Inspector.Header.Beatmap
-Beatmap
-
-Inspector.Header.Note
-Note
-
-Inspector.Header.Stage
-Stage
-
-Inspector.Header.Timing
-Timing
-
-Inspector.Header.Track
-Track
-
-Menu.Abreast.Width0
-Panorama mode stage width 25%
-
-Menu.Abreast.Width1
-Panorama mode stage width 33%
-
-Menu.Abreast.Width2
-Panorama mode stage width 62%
-
-Menu.Abreast.Width3
-Panorama mode stage width 100%
-
-Menu.AutoSave.0
-Auto save every 30 sec
-
-Menu.AutoSave.1
-Auto save every 2 min
-
-Menu.AutoSave.2
-Auto save every 5 min
-
-Menu.AutoSave.3
-Auto save every 10 min
-
-Menu.AutoSave.Off
-Do not auto save
-
-Menu.BeatmapItem.DeleteBeatmap
-Delete Beatmap
-
-Menu.BeatmapItem.DuplicateBeatmap
-Duplicate Beatmap
-
-Menu.BeatmapItem.ExportBeatmap
-Export Beatmap
-
-Menu.BeatmapItem.OpenBeatmap
-Open Beatmap
-
-Menu.ChapterItem.Delete
-Delete
-
-Menu.ChapterItem.Rename
-Rename
-
-Menu.ChapterItem.ShowInExplorer
-Show in Explorer
-
-Menu.Command.Command.None
-(Do nothing)
-
-Menu.Command.Command.Time
-Set time to
-
-Menu.Command.Command.TimeAdd
-Add time by
-
-Menu.Command.Command.Width
-Set width to
-
-Menu.Command.Command.WidthAdd
-Add width by
-
-Menu.Command.Command.X
-Set x to
-
-Menu.Command.Command.XAdd
-Add x by
-
-Menu.Command.Target.None
-(No Target)
-
-Menu.Command.Target.Note
-All notes
-
-Menu.Command.Target.NoteInside
-All notes which inside track
-
-Menu.Command.Target.Stage
-All stages
-
-Menu.Command.Target.Timing
-All timings
-
-Menu.Command.Target.Track
-All tracks
-
-Menu.Command.Target.TrackInside
-All tracks which inside stage
-
-Menu.Grid.bps0
-2 Beats per Section
-
-Menu.Grid.bps1
-3 Beats per Section
-
-Menu.Grid.bps2
-4 Beats per Section
-
-Menu.Grid.x00
-Grid X (Stage) ×1
-
-Menu.Grid.x01
-Grid X (Stage) ×7
-
-Menu.Grid.x02
-Grid X (Stage) ×15
-
-Menu.Grid.x10
-Grid X (Track) ×1
-
-Menu.Grid.x11
-Grid X (Track) ×7
-
-Menu.Grid.x12
-Grid X (Track) ×15
-
-Menu.Grid.x20
-Grid X (Note) ×1
-
-Menu.Grid.x21
-Grid X (Note) ×7
-
-Menu.Grid.x22
-Grid X (Note) ×15
-
-Menu.Grid.y0
-Grid Y ×1
-
-Menu.Grid.y1
-Grid Y ×2
-
-Menu.Grid.y2
-Grid Y ×4
-
-Menu.Grid.y3
-Grid Y ×8
-
-Menu.Home.ImportProject
-Import Project
-
-Menu.Home.NewChapter
-New Chapter
-
-Menu.Home.NewProject
-New Project
-
-Menu.Home.Refresh
-Refresh
-
-Menu.Home.ShowTrashbin
-Show Trashbin
-
-Menu.Home.ShowWorkspace
-Show Workspace
-
-Menu.Home.SortByName
-Sort by Name
-
-Menu.Home.SortByTime
-Sort by Time
-
-Menu.Inspector.Fx.BitCrush
-BitCrush
-
-Menu.Inspector.Fx.Flange
-Flange
-
-Menu.Inspector.Fx.Gate
-Gate
-
-Menu.Inspector.Fx.Glitch
-Glitch
-
-Menu.Inspector.Fx.HighPass
-HighPass
-
-Menu.Inspector.Fx.Knob
-Knob
-
-Menu.Inspector.Fx.KnobShoot
-KnobShoot
-
-Menu.Inspector.Fx.LowPass
-LowPass
-
-Menu.Inspector.Fx.None
-(No SFX)
-
-Menu.Inspector.Fx.PitchShift
-PitchShift
-
-Menu.Inspector.Fx.ShortDelay
-ShortDelay
-
-Menu.Inspector.Fx.SideChain
-SideChain
-
-Menu.Inspector.Fx.TapeScratch
-TapeScratch
-
-Menu.Inspector.Fx.Wobble
-Wobble
-
-Menu.ProjectInfo.DeleteClickSound
-Delete
-
-Menu.ProjectInfo.DeletePalette
-Delete
-
-Menu.ProjectInfo.DeleteTween
-Delete
-
-Menu.ProjectItem.Delete
-Delete
-
-Menu.ProjectItem.Move
-Move
-
-Menu.ProjectItem.ShowInExplorer
-Show in Explorer
-
-Menu.Selector.Stage.MoveDown
-Move to Next
-
-Menu.Selector.Stage.MoveUp
-Move to Previous
-
-Menu.Selector.Track.MoveDown
-Move to Next
-
-Menu.Selector.Track.MoveUp
-Move to Previous
-
-Menu.UI.QuitConfirm
-Are you sure to quit now?
-
-Music.Hint.Volume
-Music Volume {0}%
-
-PManager.DefaultChapterName
-(Default Chapter)
-
-PManager.Error.ChapterAlreadyExists
-Chapter already exists
-
-PManager.Error.NewProjectSourceNotExists
-Can not find template for create new project
-
-PManager.Error.ProjectAlreadyExists
-Project already exists
-
-PManager.NewChapterName
-New Chapter
-
-PManager.UI.DeleteChapterConfirm
-Delete chapter ? Projects inside will be move to trashbin.
-
-PManager.UI.DeleteProjectItemConfirm
-Delete project {0}? This will delete the file in disk.
-
-PManager.UI.FolderAlreadyExists
-Some folder didn't move because there already exists a folder with same name
-
-PManager.UI.OverlapProjectConfirm
-Already has a file named {0}, overwrite or not?
-
-PManager.UI.TrashbinEmpty
-Trashbin is empty
-
-PManager.UI.TrashProjectItemConfirm
-Move project {0} into the trashbin?
-
-Project.Error.AudioFormatNotSupport
-Audio format not support
-
-Project.Error.CantDeleteLastBeatmap
-Can not delete last beatmap
-
-Project.Error.CantPickOnLoadingProject
-loading conflict
-
-Project.Error.ErrorOnSavingProject
-Error on saving project
-
-Project.Error.FailGetProjectDataForWrite
-Error on reading project data
-
-Project.Error.FailLoadAudio
-Failed to load audio
-
-Project.Error.FailLoadBeatmap
-Failed to load beatmap
-
-Project.Error.FailLoadImage
-Failed to load image
-
-Project.Error.FailLoadProjectFile
-Failed to load project file
-
-Project.Error.FailLoadProjectInfo
-Failed to load project info
-
-Project.Error.FailLoadProjectPreview
-Failed to load preview
-
-Project.Error.FileNotExist
-File is not exists
-
-Project.Loading.Audio
-Loading Audio
-
-Project.Loading.Beatmap
-Loading Beatmap
-
-Project.Loading.File
-Loading Project File
-
-Project.Loading.Image
-Loading Image
-
-Project.UI.AutoSaveMSG
-Auto save every {0} sec
-
-Project.UI.BeatmapDuplicateTag
-(Duplicate)
-
-Project.UI.BeatmapLoadedMSG
-Beatmap {0} Loaded
-
-Project.UI.ExportBeatmapDone
-Beatmap exported.
-
-Project.UI.ExportBeatmapTitle
-Export Beatmap
-
-Project.UI.ImportBeatmapTitle
-Import Beatmap
-
-Project.UI.ImportBGTitle
-Import Background
-
-Project.UI.ImportClickSoundTitle
-Import Clicksound
-
-Project.UI.ImportCoverTitle
-Import Cover
-
-Project.UI.ImportMusicTitle
-Import Music
-
-Project.UI.NoAutoSaveMSG
-Auto save canceled
-
-Project.UI.ProjectSaveMSG
-Project saved
-
-Project.UI.RemoveBackgroundMSG
-Clear the background?
-
-Project.UI.RemoveBeatmapMSG
-Delete beatmap {0}?
-
-Project.UI.RemoveCoverMSG
-Clear the cover?
-
-Project.UI.RemoveMusicMSG
-Clear the music?
-
-Project.UI.SaveProjectConfirmMSG
-Do you want to save the changes?
-
-ProjectCreator.Error.NoMusic
-Music can not be empty
-
-ProjectCreator.Error.NoTitle
-Project name can not be empty
-
-ProjectCreator.Hint.Arcaea
-Use double layers template
-
-ProjectCreator.Hint.Deemo
-Use single tilt template
-
-ProjectCreator.Hint.Dynamix
-Use triple line template
-
-ProjectCreator.Hint.Osu
-Use simple side by side template
-
-ProjectCreator.Hint.Phigros
-Use dynamic stage template
-
-ProjectCreator.Hint.StagerStudio
-Create empty project
-
-ProjectCreator.Hint.Voez
-Use movable track template
-
-ProjectInfo.Dialog.DeletePal
-Delete color {0}? This can not be undo.
-
-ProjectInfo.Dialog.DeleteSound
-Delete click sound {0}? This can not be undo.
-
-ProjectInfo.Dialog.DeleteTween
-Delete tween {0}? This will not be undo.
-
-ProjectInfo.Dialog.ExportPaletteTitle
-Export Palette
-
-ProjectInfo.Dialog.ExportTweenTitle
-Export Tween
-
-ProjectInfo.Dialog.ImportPalette
-Import a new palette? This will replace the current palette.
-
-ProjectInfo.Dialog.ImportPaletteTitle
-Import Palette
-
-ProjectInfo.Dialog.ImportTween
-Import tweens? This will overlap the current tweens.
-
-ProjectInfo.Dialog.ImportTweenTitle
-Import Tween
-
-ProjectInfo.Dialog.PaletteExported
-Palette exported.
-
-ProjectInfo.Dialog.PaletteFull
-Can not have more than 256 colors.
-
-ProjectInfo.Dialog.TweenExported
-Tweens exported
-
-ProjectInfo.Dialog.TweenFull
-Can not have more than 256 tweens.
-
-Setting.ResetConfirm
-Reset all settings back to default?
-
-Shortcut.AbreastView
-Panorama View
-
-Shortcut.Brush.Note
-Note Brush
-
-Shortcut.Brush.SizeDown
-Brush Size Down
-
-Shortcut.Brush.SizeUp
-Brush Size Up
-
-Shortcut.Brush.Speed
-Speed Brush
-
-Shortcut.Brush.Stage
-Stage Brush
-
-Shortcut.Brush.Track
-Track Brush
-
-Shortcut.CancelZone
-Cancel
-
-Shortcut.Erase
-Erase Brush
-
-Shortcut.Eye.Note
-Hide Note
-
-Shortcut.Eye.Speed
-Hide Timing Note
-
-Shortcut.Eye.Stage
-Hide Stage
-
-Shortcut.Eye.Track
-Hide Track
-
-Shortcut.GlobalBrushScale
-Global Brush Scale
-
-Shortcut.Linker
-Quick Link Note
-
-Shortcut.Lock.Note
-Lock Note
-
-Shortcut.Lock.Speed
-Lock Timing Note
-
-Shortcut.Lock.Stage
-Lock Stage
-
-Shortcut.LockTrack
-Lock Track
-
-Shortcut.Music.Volume.Down
-Volume Down
-
-Shortcut.Music.Volume.Up
-Volume Up
-
-Shortcut.OpenProjectInfo
-Open Project Info
-
-Shortcut.OpenSetting
-Open Setting
-
-Shortcut.PitchDown
-Music Slower
-
-Shortcut.PitchUp
-Music Faster
-
-Shortcut.PlayPause
-Play / Pause
-
-Shortcut.PlayRepause
-Play / Repause
-
-Shortcut.Redo
-Redo
-
-Shortcut.SaveProject
-Save
-
-Shortcut.Seek.Negative
-Rewind
-
-Shortcut.Seek.Positive
-Fast Forward
-
-Shortcut.Select
-Select mode
-
-Shortcut.ShowGrid
-Show Grid
-
-Shortcut.SwitchItemType
-Switch Item Type
-
-Shortcut.Translate.Down
-Move Item Down
-
-Shortcut.Translate.Left
-Move Item Left
-
-Shortcut.Translate.Right
-Move Item Right
-
-Shortcut.Translate.Up
-Move Item Up
-
-Shortcut.Undo
-Undo
-
-Skin.Confirm.DeleteSkinConfirm
-Delete skin {0}?
-
-Skin.Confirm.NewSkinConfirm
-Create a new skin?
-
-Skin.Error.FailToSaveSkin
-Fail to save skin
-
-Skin.Error.SkinNotLoaded
-Fail to load skin
-
-SkinEditor.Dialog.CloseConfirm
-Save the changes?
-
-SkinEditor.Dialog.DeleteConfirm
-Delete selecting rect?
-
-SkinEditor.Dialog.ExportImageTitle
-Export Image
-
-SkinEditor.Dialog.ImportImageTitle
-Import Image
-
-SkinEditor.Dialog.SkinImageExported
-Image exported
-
-SkinEditor.Item.HoldLuminous
-Hold Lum
-
-SkinEditor.Item.Judgeline
-Judge Line
-
-SkinEditor.Item.Luminous
-Luminous
-
-SkinEditor.Item.Note
-Note
-
-SkinEditor.Item.Pole
-Pole
-
-SkinEditor.Item.Stage
-Stage
-
-SkinEditor.Item.Track
-Track
-
-SkinEditor.Item.TrackTint
-Track (Tint)
-
-SkinEditor.Item.Tray
-Tray
-
-SkinEditor.Saved
-Saved
-
-Stager.About
-About
-
-Stager.Quit
-Quit
-
-Tip.AbreastView
-Panorama mode (Right click to open menu)
-
-Tip.BeatmapSwiper
-Select beatmap and open
-
-Tip.GotoWeb
-Open offical website www.stager.studio
-
-Tip.Grid
-Show grid (right click to open menu)
-
-Tip.Home.ChapterItem
-Chapter, a folder contains several projects
-
-Tip.Home.Menu
-Menu
-
-Tip.Home.New
-Create new project or chapter
-
-Tip.Home.ProjectItem
-Project (double click to open)
-
-Tip.Home.Trushbin
-Trushbin, completely remove or restore the deleted project
-
-Tip.Insoector.MotionAngle
-Edit motion of angle
-
-Tip.Insoector.MotionColor
-Edit motion of color
-
-Tip.Insoector.MotionHeight
-Edit motion of height
-
-Tip.Insoector.MotionPos
-Edit motion of position
-
-Tip.Insoector.MotionRot
-Edit motion of rotation
-
-Tip.Insoector.MotionWidth
-Edit motion of width
-
-Tip.Insoector.MotionX
-Edit motion of position x
-
-Tip.Inspector.Angle
-Tilt angle
-
-Tip.Inspector.Beat
-Time in unit of beat
-
-Tip.Inspector.BeatDivide
-Subdivision of beat time
-
-Tip.Inspector.BPM
-Beat per minute
-
-Tip.Inspector.Click
-Index of the click sound, set to -1 for no click sound
-
-Tip.Inspector.Color
-Color index of the object
-
-Tip.Inspector.DropSpeed
-Drop speed multiplier
-
-Tip.Inspector.Duration
-Length of time the object lasts (sec)
-
-Tip.Inspector.FX
-Index of the sound effect, set to 0 for no effect
-
-Tip.Inspector.Height
-Height of the object
-
-Tip.Inspector.Level
-Difficulty of this beatmap
-
-Tip.Inspector.Link
-Index of note that linked with this note, set to -1 for no linked note
-
-Tip.Inspector.Motion.Div
-Division amount
-
-Tip.Inspector.Motion.Done
-Quit the motion editing mode
-
-Tip.Inspector.Motion.Painter
-Left click to add/select frame, right click to seek music, select and press del to delete frame
-
-Tip.Inspector.Motion.Tween
-Tween of the selecting motion node (Double click to open tween selector)
-
-Tip.Inspector.Motion.Value
-Value of the selecting motion node
-
-Tip.Inspector.OpenCommand
-Open command window
-
-Tip.Inspector.Param
-Param for the sound effect
-
-Tip.Inspector.Pivot
-Y of the stage pivot
-
-Tip.Inspector.Ratio
-Aspect ratio of this beatmap
-
-Tip.Inspector.Rot
-Rotation of the stage
-
-Tip.Inspector.Shift
-Offset of the beat in millisecond. Only effect the grid, don't effect the time of notes
-
-Tip.Inspector.StageIndex
-Index of stage for this track
-
-Tip.Inspector.Tag
-Tag of this beatmap (like EZ, HD)
-
-Tip.Inspector.Time
-The corresponding time of the object in the music (sec)
-
-Tip.Inspector.TimingDuration
-Duration of the sound effect
-
-Tip.Inspector.TimingSpeed
-Drop speed for notes
-
-Tip.Inspector.TrackIndex
-Index of track for this note
-
-Tip.Inspector.Tray
-Has tray of not
-
-Tip.Inspector.Type
-Number that indicate the type of object
-
-Tip.Inspector.Width
-Width of the object
-
-Tip.Inspector.X
-Position x of the object
-
-Tip.Inspector.Y
-Position y of the object
-
-Tip.Inspector.Z
-Z position
-
-Tip.Lib.Erase
-Erase mode
-
-Tip.Lib.Note
-Note brush
-
-Tip.Lib.Select
-Select mode
-
-Tip.Lib.Speed
-Speed brush
-
-Tip.Lib.Stage
-Stage brush
-
-Tip.Lib.Track
-Track brush
-
-Tip.Library.AddFromSelection
-Add current selecting objects to Library
-
-Tip.Music.Pause
-Pause music
-
-Tip.Music.PitchDown
-Music speed down
-
-Tip.Music.PitchUp
-Music speed up
-
-Tip.Music.Play
-Play music
-
-Tip.Music.Repause
-Pause music and return to the position before play
-
-Tip.Music.Replay
-Play music from the last played position
-
-Tip.PInfo.BrowseBG
-Select background from an image file
-
-Tip.PInfo.BrowseCover
-Select cover from an image file
-
-Tip.PInfo.BrowseMusic
-Select music from an audio file
-
-Tip.PInfo.ClearBG
-Remove background
-
-Tip.PInfo.ClearCover
-Remove cover
-
-Tip.PInfo.ClearMusic
-Remove music
-
-Tip.PInfo.Done
-Save and close the project info window
-
-Tip.ProjectInfo
-Project info: manage title, music, BG, BPM, etc.
-
-Tip.Save
-Save project (Right click to open menu)
-
-Tip.Selector.Stage
-Select stage
-
-Tip.Selector.Track
-Select track
-
-Tip.Setting
-Setting: Your own setting for this application.
-
-Tip.Setting.BgBright
-Brightness of the background
-
-Tip.Setting.Done
-Save and close the setting window
-
-Tip.Setting.Framerate
-Target framerate
-
-Tip.Setting.Keypress
-Show the keys pressed on the screen for seconds
-
-Tip.Setting.LargeUI
-Large UI, for small physical size display
-
-Tip.Setting.MusicVolume
-Music volume
-
-Tip.Setting.NormalUI
-Normal UI, for normal size display
-
-Tip.Setting.NoteBrushWidth
-Width of the note painted by brush
-
-Tip.Setting.PositiveScroll
-Only for mouse scrolling inside editor, such as adjusting y-position of notes
-
-Tip.Setting.Preview
-Show preview of the beatmap on the progress bar or not
-
-Tip.Setting.Reset
-Reset all settings
-
-Tip.Setting.ScaleBrush
-Change brush size by stage and track size or not
-
-Tip.Setting.SFX
-Use sound effects or not, turning this off will reduce CPU load
-
-Tip.Setting.ShowGrid
-Show grid and auxiliary lines
-
-Tip.Setting.ShowGridOnSelect
-Show grid shen selecting stage, track, note.
-
-Tip.Setting.ShowIndexLabel
-Show the index label or not
-
-Tip.Setting.ShowTimerOnPlay
-Show the handles which for adjusting time when playing music
-
-Tip.Setting.SmallUI
-Small UI, for larger physical size display
-
-Tip.Setting.SoloOnEditMotion
-Eg. When editing motion of a track, hide all notes, other tracks and other stages.
-
-Tip.Setting.SoundVolume
-Snap music time based on BPM
-
-Tip.Setting.StageBrushHeight
-Height of the stage painted by brush
-
-Tip.Setting.StageBrushWidth
-Width of the stage painted by brush
-
-Tip.Setting.Tip
-Show tooltip or not
-
-Tip.Setting.TrackBrushWidth
-Width of the track painted by brush
-
-Tip.Setting.UseEditorEffect
-Whether to display effects when editing the beatmap, such as effects for adding or deleting objects, etc.
-
-Tip.Setting.UseLog
-Log debuging info into text file
-
-Tip.Setting.Wave
-Show music wave or not
-
-Tip.TimeLabel
-Switch time unit
-
-Tip.Toolbar.EditSkin
-Edit current skin
-
-Tip.Toolbar.GlobalBrushSacle
-Use global brush scale or not
-
-Tip.Toolbar.Home
-Back to home page
-
-Tip.Toolbar.Skin
-Switch skin
-
-Tip.ViewContainer.Note
-Show/Hide notes
-
-Tip.ViewContainer.NoteLock
-Lock note
-
-Tip.ViewContainer.Speed
-Show/Hide timing notes
-
-Tip.ViewContainer.SpeedLock
-Lock timing note
-
-Tip.ViewContainer.Stage
-Show/Hide stages
-
-Tip.ViewContainer.StageLock
-Lock stage
-
-Tip.ViewContainer.Track
-Show/Hide tracks
-
-Tip.ViewContainer.TrackLock
-Lock track
-
-UI.Apply
-Apply
-
-UI.BeatmapInfo.BPM
-BPM
-
-UI.BeatmapInfo.Level
-Level
-
-UI.BeatmapInfo.Ratio
-Ratio
-
-UI.BeatmapInfo.Shift
-Shift
-
-UI.BeatmapInfo.Tag
-Tag
-
-UI.Browse
-Browse
-
-UI.Clear
-Clear
-
-UI.Create
-Create
-
-UI.Dialog.Cancel
-Cancel
-
-UI.Dialog.Delete
-Delete
-
-UI.Dialog.No
-No
-
-UI.Dialog.OK
-OK
-
-UI.Dialog.Yes
-Yes
-
-UI.Done
-Done
-
-UI.GoHomeConfirmMsg
-Back to home page?
-
-UI.GoHomeDirtyConfirmMsg
-Save project and back to home page?
-
-UI.ImportBeatmap
-Import
-
-UI.Inspector.Angle
-Angle
-
-UI.Inspector.BPM
-BPM
-
-UI.Inspector.Click
-Click
-
-UI.Inspector.Color
-Color
-
-UI.Inspector.Command
-CMD
-
-UI.Inspector.Done
-Done
-
-UI.Inspector.Duration
-Length
-
-UI.Inspector.FxParamA
-Fx A
-
-UI.Inspector.FxParamB
-Fx B
-
-UI.Inspector.Height
-Height
-
-UI.Inspector.Level
-Level
-
-UI.Inspector.Link
-Link
-
-UI.Inspector.Motion.Angle
-Angle
-
-UI.Inspector.Motion.Color
-Color
-
-UI.Inspector.Motion.Height
-Height
-
-UI.Inspector.Motion.Pos
-Pos
-
-UI.Inspector.Motion.Rot
-Rot
-
-UI.Inspector.Motion.Width
-Width
-
-UI.Inspector.Motion.X
-X
-
-UI.Inspector.Pivot
-Pivot
-
-UI.Inspector.Ratio
-Ratio
-
-UI.Inspector.Rot
-Angle
-
-UI.Inspector.Shift
-Shift
-
-UI.Inspector.Speed
-Speed
-
-UI.Inspector.Stage
-Stage
-
-UI.Inspector.Tag
-Tag
-
-UI.Inspector.Time
-Time
-
-UI.Inspector.Track
-Track
-
-UI.Inspector.Tray
-Tray
-
-UI.Inspector.Type
-Type
-
-UI.Inspector.Width
-Width
-
-UI.Inspector.X
-X
-
-UI.Inspector.Y
-Y
-
-UI.Inspector.Z
-Z
-
-UI.NewBeatmap
-New
-
-UI.OpenLanguageFolder
-Open Language Folder
-
-UI.OpenShortcutFolder
-Open Shortcut Folder
-
-UI.OpenSkinFolder
-Open Skin Folder
-
-UI.PManager.ImportProject
-Import Project
-
-UI.PManager.NewProject
-New Project
-
-UI.PManager.ProjectEmptyHint
-This chapter is empty, click the button below to create or import a project.
-
-UI.Progress.NoMusicHint
-No music in this project. Click here to import music (ogg, mp3, wav)
-
-UI.ProjectCreator.Back
-Back
-
-UI.ProjectCreator.Next
-Next
-
-UI.ProjectInfo.AddColor
-+ Color
-
-UI.ProjectInfo.AddSound
-+ Sound
-
-UI.ProjectInfo.AddTween
-+ Tween
-
-UI.ProjectInfo.Background
-Background
-
-UI.ProjectInfo.BackgroundAuthor
-Background Author
-
-UI.ProjectInfo.BeatmapAuthor
-Beatmap Author
-
-UI.ProjectInfo.Cover
-Cover
-
-UI.ProjectInfo.Export
-Export
-
-UI.ProjectInfo.Import
-Import
-
-UI.ProjectInfo.Music
-Music
-
-UI.ProjectInfo.MusicAuthor
-Music Author
-
-UI.ProjectInfo.NoBackgroundHint
-No Background
-
-UI.ProjectInfo.NoCoverHint
-No Cover
-
-UI.ProjectInfo.NoMusicHint
-No Music
-
-UI.ProjectInfo.ProjectDescription
-Project Description
-
-UI.ProjectInfo.ProjectName
-Project Name
-
-UI.ResetSettings
-Reset All
-
-UI.Save
-Save
-
-UI.Setting.BGBright
-Background Brightness
-
-UI.Setting.Framerate
-Framerate
-
-UI.Setting.MusicVolume
-Music Volume
-
-UI.Setting.NoteBrushWidth
-Note Brush Width
-
-UI.Setting.PositiveScroll
-Use Positive Mouse Scroll
-
-UI.Setting.Preview
-Show Beatmap Preview
-
-UI.Setting.ScaleBrush
-Use Global Scale for Brushs
-
-UI.Setting.ShowGrid
-Show Grid and Auxiliary
-
-UI.Setting.ShowGridOnSelect
-Show Grid On Select
-
-UI.Setting.ShowIndexLabelIndexLabel
-Show Index Label for Stage,Track and Note
-
-UI.Setting.ShowKeypress
-Show Keypress History
-
-UI.Setting.ShowTimerOnPlay
-Show grid and timer handle on play music
-
-UI.Setting.ShowTip
-Show Tooltip
-
-UI.Setting.SnapProgress
-Snap When Setting Music Time with Progressbar
-
-UI.Setting.SoloOnEditMotion
-Solo On Edit Motion
-
-UI.Setting.SoundVolume
-Sound Volume
-
-UI.Setting.StageBrushHeight
-Stage Brush Height
-
-UI.Setting.StageBrushWidth
-Stage Brush Width
-
-UI.Setting.TrackBrushWidth
-Track Brush Width
-
-UI.Setting.UIScale
-UI Scale
-
-UI.Setting.UIScale.0
-Small
-
-UI.Setting.UIScale.1
-Normal
-
-UI.Setting.UIScale.2
-Large
-
-UI.Setting.UseEditorEffect
-Use Editor Effect
-
-UI.Setting.UseLog
-Log to File
-
-UI.Setting.UseSFX
-Sound FX
-
-UI.Setting.Wave
-Show Sound Wave
-
-UI.SkinEditor.DarkBG
-Dark
-
-UI.SkinEditor.Duration
-Duration
-
-UI.SkinEditor.ExportImage
-Export Image
-
-UI.SkinEditor.FixedRatio
-Fixed Ratio
-
-UI.SkinEditor.FrontPole
-Front Pole
-
-UI.SkinEditor.Highlight
-Highlight
-
-UI.SkinEditor.ImportImage
-Import Image
-
-UI.SkinEditor.LuminousHeight
-Lum Height
-
-UI.SkinEditor.LuminousWidth
-Lum Width
-
-UI.SkinEditor.MinSize
-Min Size
-
-UI.SkinEditor.Scale
-Scale
-
-UI.SkinEditor.SkinAuthorLabel
-Author
-
-UI.SkinEditor.SkinNameLabel
-Name
-
-UI.SkinEditor.SubB
-B
-
-UI.SkinEditor.SubBorder
-Border
-
-UI.SkinEditor.SubH
-H
-
-UI.SkinEditor.SubL
-L
-
-UI.SkinEditor.SubPos
-Position
-
-UI.SkinEditor.SubR
-R
-
-UI.SkinEditor.SubT
-T
-
-UI.SkinEditor.SubW
-W
-
-UI.SkinEditor.SubX
-X
-
-UI.SkinEditor.SubY
-Y
-
-UI.SkinEditor.TintNote
-Tint Note
-
-UI.SkinEditor.VanishDuration
-Vanish
-
-UI.SkinEditor.View
-View (Hold)
-
-UI.Tab.BeatmapInfo
-Beatmap
-
-UI.Tab.Brush
-Brush
-
-UI.Tab.ClickSound
-Sound
-
-UI.Tab.Editor
-Editor
-
-UI.Tab.General
-General
-
-UI.Tab.Info
-Info
-
-UI.Tab.Language
-Language
-
-UI.Tab.Palette
-Palette
-
-UI.Tab.Shortcut
-Shortcut
-
-UI.Tab.Skin
-Skin
-
-UI.Tab.Tween
-Tween
-
-UI.Tutorial.BoardMSG
-Click Here to Start Tutorial
-
-UI.TweenEditor.AddPoint
-+ Point
-
-UI.TweenEditor.DeletePoint
-- Point
-
-UI.TweenEditor.Snap
-Snap
-
-Undo.Hint.Undo
-Undo Redo
-
+﻿Shortcut.Brush.AltSizeDown:Brush Size Down (Sub)
+Shortcut.Brush.AltSizeUp:Brush Size Up (Sub)
+Author:Stager Official
+Command.Hint.CommandDone:Command done
+Dialog.Editor.CannotSelectStage:Can not select stage in panoramic mode
+Dialog.Editor.CannotSelectStageBrush:Can not select stage brush in panoramic mode
+Dialog.Editor.SelectingLayerInactive:Layer not visible
+Dialog.Editor.SelectingLayerLocked:Layer locked
+Dialog.Error.FailCreateProject:Error on creating project
+Dialog.OpenWebMSG:Opening {0} Please check your web browser
+Dialog.Tutorial.CanNotFindProject:Can not find tutorial project file
+Dialog.Tutorial.FirstTutorialMSG:Start tutorial now?
+Dialog.TweenEditor.CancelConfirm:Close tween editor? Changes will not be save.
+Editor.Hint.Copy:Copy
+Editor.Hint.CopyFail:Copy failed
+Editor.Hint.GlobalBrushScale:Global brush size {0}
+Editor.Hint.Paste:Paste
+Game.Hint.AbreastWidth:Stage width {0}
+Game.Hint.GameDropSpeed:Drop Speed × {0}
+Game.Hint.Pitch:Music speed {0}
+Game.Hint.ShowGrid:Grid and Auxiliary {0}
+Inspector.Header.Beatmap:Beatmap
+Inspector.Header.Note:Note
+Inspector.Header.Stage:Stage
+Inspector.Header.Timing:Timing
+Inspector.Header.Track:Track
+Menu.Abreast.Width0:Panorama mode stage width 25%
+Menu.Abreast.Width1:Panorama mode stage width 33%
+Menu.Abreast.Width2:Panorama mode stage width 62%
+Menu.Abreast.Width3:Panorama mode stage width 100%
+Menu.AutoSave.0:Auto save every 30 sec
+Menu.AutoSave.1:Auto save every 2 min
+Menu.AutoSave.2:Auto save every 5 min
+Menu.AutoSave.3:Auto save every 10 min
+Menu.AutoSave.Off:Do not auto save
+Menu.BeatmapItem.DeleteBeatmap:Delete Beatmap
+Menu.BeatmapItem.DuplicateBeatmap:Duplicate Beatmap
+Menu.BeatmapItem.ExportBeatmap:Export Beatmap
+Menu.BeatmapItem.OpenBeatmap:Open Beatmap
+Menu.ChapterItem.Delete:Delete
+Menu.ChapterItem.Rename:Rename
+Menu.ChapterItem.ShowInExplorer:Show in Explorer
+Menu.Command.Command.None:(Do nothing)
+Menu.Command.Command.Time:Set time to
+Menu.Command.Command.TimeAdd:Add time by
+Menu.Command.Command.Width:Set width to
+Menu.Command.Command.WidthAdd:Add width by
+Menu.Command.Command.X:Set x to
+Menu.Command.Command.XAdd:Add x by
+Menu.Command.Target.None:(No Target)
+Menu.Command.Target.Note:All notes
+Menu.Command.Target.NoteInside:All notes which inside track
+Menu.Command.Target.Stage:All stages
+Menu.Command.Target.Timing:All timings
+Menu.Command.Target.Track:All tracks
+Menu.Command.Target.TrackInside:All tracks which inside stage
+Menu.Grid.bps0:2 Beats per Section
+Menu.Grid.bps1:3 Beats per Section
+Menu.Grid.bps2:4 Beats per Section
+Menu.Grid.x00:Grid X (Stage) Less
+Menu.Grid.x01:Grid X (Stage) Normal
+Menu.Grid.x02:Grid X (Stage) Max
+Menu.Grid.x10:Grid X (Track) Less
+Menu.Grid.x11:Grid X (Track) Normal
+Menu.Grid.x12:Grid X (Track) Max
+Menu.Grid.x20:Grid X (Note) Less
+Menu.Grid.x21:Grid X (Note) Normal
+Menu.Grid.x22:Grid X (Note) Max
+Menu.Grid.y0:Grid Y Less
+Menu.Grid.y1:Grid Y Normal
+Menu.Grid.y2:Grid Y Max
+Menu.Home.ImportProject:Import Project
+Menu.Home.NewChapter:New Chapter
+Menu.Home.NewProject:New Project
+Menu.Home.Refresh:Refresh
+Menu.Home.ShowTrashbin:Show Trashbin
+Menu.Home.ShowWorkspace:Show Workspace
+Menu.Home.SortByName:Sort by Name
+Menu.Home.SortByTime:Sort by Time
+Menu.Inspector.Fx.BitCrush:BitCrush
+Menu.Inspector.Fx.Flange:Flange
+Menu.Inspector.Fx.Gate:Gate
+Menu.Inspector.Fx.Glitch:Glitch
+Menu.Inspector.Fx.HighPass:HighPass
+Menu.Inspector.Fx.Knob:Knob
+Menu.Inspector.Fx.KnobShoot:KnobShoot
+Menu.Inspector.Fx.LowPass:LowPass
+Menu.Inspector.Fx.None:(No SFX)
+Menu.Inspector.Fx.PitchShift:PitchShift
+Menu.Inspector.Fx.ShortDelay:ShortDelay
+Menu.Inspector.Fx.SideChain:SideChain
+Menu.Inspector.Fx.TapeScratch:TapeScratch
+Menu.Inspector.Fx.Wobble:Wobble
+Menu.ProjectInfo.DeleteClickSound:Delete
+Menu.ProjectInfo.DeletePalette:Delete
+Menu.ProjectInfo.DeleteTween:Delete
+Menu.ProjectItem.Delete:Delete
+Menu.ProjectItem.Move:Move
+Menu.ProjectItem.ShowInExplorer:Show in Explorer
+Menu.Selector.Stage.MoveDown:Move to Next
+Menu.Selector.Stage.MoveUp:Move to Previous
+Menu.Selector.Track.MoveDown:Move to Next
+Menu.Selector.Track.MoveUp:Move to Previous
+Menu.UI.QuitConfirm:Are you sure to quit now?
+Music.Hint.Volume:Music Volume {0}%
+PManager.DefaultChapterName:(Default Chapter)
+PManager.Error.ChapterAlreadyExists:Chapter already exists
+PManager.Error.NewProjectSourceNotExists:Can not find template for create new project
+PManager.Error.ProjectAlreadyExists:Project already exists
+PManager.NewChapterName:New Chapter
+PManager.UI.DeleteChapterConfirm:Delete chapter ? Projects inside will be move to trashbin.
+PManager.UI.DeleteProjectItemConfirm:Delete project {0}? This will delete the file in disk.
+PManager.UI.FolderAlreadyExists:Some folder didn't move because there already exists a folder with same name
+PManager.UI.OverlapProjectConfirm:Already has a file named {0}, overwrite or not?
+PManager.UI.TrashbinEmpty:Trashbin is empty
+PManager.UI.TrashProjectItemConfirm:Move project {0} into the trashbin?
+Project.Error.AudioFormatNotSupport:Audio format not support
+Project.Error.CantDeleteLastBeatmap:Can not delete last beatmap
+Project.Error.CantPickOnLoadingProject:loading conflict
+Project.Error.ErrorOnSavingProject:Error on saving project
+Project.Error.FailGetProjectDataForWrite:Error on reading project data
+Project.Error.FailLoadAudio:Failed to load audio
+Project.Error.FailLoadBeatmap:Failed to load beatmap
+Project.Error.FailLoadImage:Failed to load image
+Project.Error.FailLoadProjectFile:Failed to load project file
+Project.Error.FailLoadProjectInfo:Failed to load project info
+Project.Error.FailLoadProjectPreview:Failed to load preview
+Project.Error.FileNotExist:File is not exists
+Project.Loading.Audio:Loading Audio
+Project.Loading.Beatmap:Loading Beatmap
+Project.Loading.File:Loading Project File
+Project.Loading.Image:Loading Image
+Project.UI.AutoSaveMSG:Auto save every {0} sec
+Project.UI.BeatmapDuplicateTag:(Duplicate)
+Project.UI.BeatmapLoadedMSG:Beatmap {0} Loaded
+Project.UI.ExportBeatmapDone:Beatmap exported.
+Project.UI.ExportBeatmapTitle:Export Beatmap
+Project.UI.ImportBeatmapTitle:Import Beatmap
+Project.UI.ImportBGTitle:Import Background
+Project.UI.ImportClickSoundTitle:Import Clicksound
+Project.UI.ImportCoverTitle:Import Cover
+Project.UI.ImportMusicTitle:Import Music
+Project.UI.NoAutoSaveMSG:Auto save canceled
+Project.UI.ProjectSaveMSG:Project saved
+Project.UI.RemoveBackgroundMSG:Clear the background?
+Project.UI.RemoveBeatmapMSG:Delete beatmap {0}?
+Project.UI.RemoveCoverMSG:Clear the cover?
+Project.UI.RemoveMusicMSG:Clear the music?
+Project.UI.SaveProjectConfirmMSG:Do you want to save the changes?
+ProjectCreator.Error.NoMusic:Music can not be empty
+ProjectCreator.Error.NoTitle:Project name can not be empty
+ProjectCreator.Hint.Arcaea:Use double layers template
+ProjectCreator.Hint.Deemo:Use single tilt template
+ProjectCreator.Hint.Dynamix:Use triple line template
+ProjectCreator.Hint.Osu:Use simple side by side template
+ProjectCreator.Hint.Phigros:Use dynamic stage template
+ProjectCreator.Hint.StagerStudio:Create empty project
+ProjectCreator.Hint.Voez:Use movable track template
+ProjectInfo.Dialog.DeletePal:Delete color {0}? This can not be undo.
+ProjectInfo.Dialog.DeleteSound:Delete click sound {0}? This can not be undo.
+ProjectInfo.Dialog.DeleteTween:Delete tween {0}? This will not be undo.
+ProjectInfo.Dialog.ExportPaletteTitle:Export Palette
+ProjectInfo.Dialog.ExportTweenTitle:Export Tween
+ProjectInfo.Dialog.ImportPalette:Import a new palette? This will replace the current palette.
+ProjectInfo.Dialog.ImportPaletteTitle:Import Palette
+ProjectInfo.Dialog.ImportTween:Import tweens? This will overlap the current tweens.
+ProjectInfo.Dialog.ImportTweenTitle:Import Tween
+ProjectInfo.Dialog.PaletteExported:Palette exported.
+ProjectInfo.Dialog.PaletteFull:Can not have more than 256 colors.
+ProjectInfo.Dialog.TweenExported:Tweens exported
+ProjectInfo.Dialog.TweenFull:Can not have more than 256 tweens.
+Setting.ResetConfirm:Reset all settings back to default?
+Shortcut.AbreastView:Panorama View
+Shortcut.Brush.Note:Note Brush
+Shortcut.Brush.SizeDown:Brush Size Down
+Shortcut.Brush.SizeUp:Brush Size Up
+Shortcut.Brush.Speed:Speed Brush
+Shortcut.Brush.Stage:Stage Brush
+Shortcut.Brush.Track:Track Brush
+Shortcut.CancelZone:Cancel
+Shortcut.Erase:Erase Brush
+Shortcut.Eye.Note:Hide Note
+Shortcut.Eye.Speed:Hide Timing Note
+Shortcut.Eye.Stage:Hide Stage
+Shortcut.Eye.Track:Hide Track
+Shortcut.Game.AddDropSpeed:Add Drop Speed
+Shortcut.Game.ReduceDropSpeed:Reduce Drop Speed
+Shortcut.GlobalBrushScale:Global Brush Scale
+Shortcut.Linker:Quick Link Note
+Shortcut.Lock.Note:Lock Note
+Shortcut.Lock.Speed:Lock Timing Note
+Shortcut.Lock.Stage:Lock Stage
+Shortcut.LockTrack:Lock Track
+Shortcut.Music.Volume.Down:Volume Down
+Shortcut.Music.Volume.Up:Volume Up
+Shortcut.OpenProjectInfo:Open Project Info
+Shortcut.OpenSetting:Open Setting
+Shortcut.PitchDown:Music Slower
+Shortcut.PitchUp:Music Faster
+Shortcut.PlayPause:Play / Pause
+Shortcut.PlayRepause:Play / Repause
+Shortcut.Redo:Redo
+Shortcut.SaveProject:Save
+Shortcut.Seek.Negative:Rewind
+Shortcut.Seek.Positive:Fast Forward
+Shortcut.Select:Select mode
+Shortcut.ShowGrid:Show Grid
+Shortcut.SwitchItemType:Switch Item Type
+Shortcut.Translate.Down:Move Item Down
+Shortcut.Translate.Left:Move Item Left
+Shortcut.Translate.Right:Move Item Right
+Shortcut.Translate.Up:Move Item Up
+Shortcut.Undo:Undo
+Skin.Confirm.DeleteSkinConfirm:Delete skin {0}?
+Skin.Confirm.NewSkinConfirm:Create a new skin?
+Skin.Error.FailToSaveSkin:Fail to save skin
+Skin.Error.SkinNotLoaded:Fail to load skin
+SkinEditor.Dialog.CloseConfirm:Save the changes?
+SkinEditor.Dialog.DeleteConfirm:Delete selecting rect?
+SkinEditor.Dialog.ExportImageTitle:Export Image
+SkinEditor.Dialog.ImportImageTitle:Import Image
+SkinEditor.Dialog.SkinImageExported:Image exported
+SkinEditor.Item.HoldLuminous:Hold Lum
+SkinEditor.Item.Judgeline:Judge Line
+SkinEditor.Item.Luminous:Luminous
+SkinEditor.Item.Note:Note
+SkinEditor.Item.Pole:Pole
+SkinEditor.Item.Stage:Stage
+SkinEditor.Item.Track:Track
+SkinEditor.Item.TrackTint:Track (Tint)
+SkinEditor.Item.Tray:Tray
+SkinEditor.Saved:Saved
+Stager.About:About
+Stager.Quit:Quit
+Tip.AbreastView:Panorama mode (Right click to open menu)
+Tip.BeatmapSwiper:Select beatmap and open
+Tip.GotoWeb:Open offical website www.stager.studio
+Tip.Grid:Show grid (right click to open menu)
+Tip.Home.ChapterItem:Chapter, a folder contains several projects
+Tip.Home.Menu:Menu
+Tip.Home.New:Create new project or chapter
+Tip.Home.ProjectItem:Project (double click to open)
+Tip.Home.Trushbin:Trushbin, completely remove or restore the deleted project
+Tip.Insoector.MotionAngle:Edit motion of angle
+Tip.Insoector.MotionColor:Edit motion of color
+Tip.Insoector.MotionHeight:Edit motion of height
+Tip.Insoector.MotionPos:Edit motion of position
+Tip.Insoector.MotionRot:Edit motion of rotation
+Tip.Insoector.MotionWidth:Edit motion of width
+Tip.Insoector.MotionX:Edit motion of position x
+Tip.Inspector.Angle:Tilt angle
+Tip.Inspector.Beat:Time in unit of beat
+Tip.Inspector.BeatDivide:Subdivision of beat time
+Tip.Inspector.BPM:Beat per minute
+Tip.Inspector.Click:Index of the click sound, set to -1 for no click sound
+Tip.Inspector.Color:Color index of the object
+Tip.Inspector.DropSpeed:Drop speed multiplier
+Tip.Inspector.Duration:Length of time the object lasts (sec)
+Tip.Inspector.FX:Index of the sound effect, set to 0 for no effect
+Tip.Inspector.Height:Height of the object
+Tip.Inspector.Level:Difficulty of this beatmap
+Tip.Inspector.Link:Index of note that linked with this note, set to -1 for no linked note
+Tip.Inspector.Motion.Div:Division amount
+Tip.Inspector.Motion.Done:Quit the motion editing mode
+Tip.Inspector.Motion.Painter:Left click to add/select frame, right click to seek music, select and press del to delete frame
+Tip.Inspector.Motion.Tween:Tween of the selecting motion node (Double click to open tween selector)
+Tip.Inspector.Motion.Value:Value of the selecting motion node
+Tip.Inspector.OpenCommand:Open command window
+Tip.Inspector.Param:Param for the sound effect
+Tip.Inspector.Pivot:Y of the stage pivot
+Tip.Inspector.Ratio:Aspect ratio of this beatmap
+Tip.Inspector.Rot:Rotation of the stage
+Tip.Inspector.Shift:Offset of the beat in millisecond. Only effect the grid, don't effect the time of notes
+Tip.Inspector.StageIndex:Index of stage for this track
+Tip.Inspector.Tag:Tag of this beatmap (like EZ, HD)
+Tip.Inspector.Time:The corresponding time of the object in the music (sec)
+Tip.Inspector.TimingDuration:Duration of the sound effect
+Tip.Inspector.TimingSpeed:Drop speed for notes
+Tip.Inspector.TrackIndex:Index of track for this note
+Tip.Inspector.Tray:Has tray of not
+Tip.Inspector.Type:Number that indicate the type of object
+Tip.Inspector.Width:Width of the object
+Tip.Inspector.X:Position x of the object
+Tip.Inspector.Y:Position y of the object
+Tip.Inspector.Z:Z position
+Tip.Lib.Erase:Erase mode
+Tip.Lib.Note:Note brush
+Tip.Lib.Select:Select mode
+Tip.Lib.Speed:Speed brush
+Tip.Lib.Stage:Stage brush
+Tip.Lib.Track:Track brush
+Tip.Library.AddFromSelection:Add current selecting objects to Library
+Tip.Music.Pause:Pause music
+Tip.Music.PitchDown:Music speed down
+Tip.Music.PitchUp:Music speed up
+Tip.Music.Play:Play music
+Tip.Music.Repause:Pause music and return to the position before play
+Tip.Music.Replay:Play music from the last played position
+Tip.PInfo.BrowseBG:Select background from an image file
+Tip.PInfo.BrowseCover:Select cover from an image file
+Tip.PInfo.BrowseMusic:Select music from an audio file
+Tip.PInfo.ClearBG:Remove background
+Tip.PInfo.ClearCover:Remove cover
+Tip.PInfo.ClearMusic:Remove music
+Tip.PInfo.Done:Save and close the project info window
+Tip.ProjectInfo:Project info: manage title, music, BG, BPM, etc.
+Tip.Save:Save project (Right click to open menu)
+Tip.Selector.Stage:Select stage
+Tip.Selector.Track:Select track
+Tip.Setting:Setting: Your own setting for this application.
+Tip.Setting.BgBright:Brightness of the background
+Tip.Setting.Done:Save and close the setting window
+Tip.Setting.Framerate:Target framerate
+Tip.Setting.GridCount:Grid count for map items
+Tip.Setting.Keypress:Show the keys pressed on the screen for seconds
+Tip.Setting.LargeUI:Large UI, for small physical size display
+Tip.Setting.MusicVolume:Music volume
+Tip.Setting.NormalUI:Normal UI, for normal size display
+Tip.Setting.NoteBrushWidth:Width of the note painted by brush
+Tip.Setting.PositiveScroll:Only for mouse scrolling inside editor, such as adjusting y-position of notes
+Tip.Setting.Preview:Show preview of the beatmap on the progress bar or not
+Tip.Setting.Reset:Reset all settings
+Tip.Setting.ScaleBrush:Change brush size by stage and track size or not
+Tip.Setting.SFX:Use sound effects or not, turning this off will reduce CPU load
+Tip.Setting.ShowGrid:Show grid and auxiliary lines
+Tip.Setting.ShowGridOnSelect:Show grid shen selecting stage, track, note.
+Tip.Setting.ShowIndexLabel:Show the index label or not
+Tip.Setting.ShowTimerOnPlay:Show the handles which for adjusting time when playing music
+Tip.Setting.SmallUI:Small UI, for larger physical size display
+Tip.Setting.SoloOnEditMotion:Eg. When editing motion of a track, hide all notes, other tracks and other stages.
+Tip.Setting.SoundVolume:Snap music time based on BPM
+Tip.Setting.StageBrushHeight:Height of the stage painted by brush
+Tip.Setting.StageBrushWidth:Width of the stage painted by brush
+Tip.Setting.Tip:Show tooltip or not
+Tip.Setting.TrackBrushWidth:Width of the track painted by brush
+Tip.Setting.UseEditorEffect:Whether to display effects when editing the beatmap, such as effects for adding or deleting objects, etc.
+Tip.Setting.UseLog:Log debuging info into text file
+Tip.Setting.Wave:Show music wave or not
+Tip.TimeLabel:Switch time unit
+Tip.Toolbar.EditSkin:Edit current skin
+Tip.Toolbar.GlobalBrushSacle:Use global brush scale or not
+Tip.Toolbar.Home:Back to home page
+Tip.Toolbar.Skin:Switch skin
+Tip.ViewContainer.Note:Show/Hide notes
+Tip.ViewContainer.NoteLock:Lock note
+Tip.ViewContainer.Speed:Show/Hide timing notes
+Tip.ViewContainer.SpeedLock:Lock timing note
+Tip.ViewContainer.Stage:Show/Hide stages
+Tip.ViewContainer.StageLock:Lock stage
+Tip.ViewContainer.Track:Show/Hide tracks
+Tip.ViewContainer.TrackLock:Lock track
+UI.Apply:Apply
+UI.BeatmapInfo.BPM:BPM
+UI.BeatmapInfo.Level:Level
+UI.BeatmapInfo.Ratio:Ratio
+UI.BeatmapInfo.Shift:Shift
+UI.BeatmapInfo.Tag:Tag
+UI.Browse:Browse
+UI.Clear:Clear
+UI.Create:Create
+UI.Dialog.Cancel:Cancel
+UI.Dialog.Delete:Delete
+UI.Dialog.No:No
+UI.Dialog.OK:OK
+UI.Dialog.Yes:Yes
+UI.Done:Done
+UI.GoHomeConfirmMsg:Back to home page?
+UI.GoHomeDirtyConfirmMsg:Save project and back to home page?
+UI.ImportBeatmap:Import
+UI.Inspector.Angle:Angle
+UI.Inspector.BPM:BPM
+UI.Inspector.Click:Click
+UI.Inspector.Color:Color
+UI.Inspector.Command:CMD
+UI.Inspector.Done:Done
+UI.Inspector.Duration:Length
+UI.Inspector.FxParamA:Fx A
+UI.Inspector.FxParamB:Fx B
+UI.Inspector.Height:Height
+UI.Inspector.Level:Level
+UI.Inspector.Link:Link
+UI.Inspector.Motion.Angle:Angle
+UI.Inspector.Motion.Color:Color
+UI.Inspector.Motion.Height:Height
+UI.Inspector.Motion.Pos:Pos
+UI.Inspector.Motion.Rot:Rot
+UI.Inspector.Motion.Width:Width
+UI.Inspector.Motion.X:X
+UI.Inspector.Pivot:Pivot
+UI.Inspector.Ratio:Ratio
+UI.Inspector.Rot:Angle
+UI.Inspector.Shift:Shift
+UI.Inspector.Speed:Speed
+UI.Inspector.Stage:Stage
+UI.Inspector.Tag:Tag
+UI.Inspector.Time:Time
+UI.Inspector.Track:Track
+UI.Inspector.Tray:Tray
+UI.Inspector.Type:Type
+UI.Inspector.Width:Width
+UI.Inspector.X:X
+UI.Inspector.Y:Y
+UI.Inspector.Z:Z
+UI.NewBeatmap:New
+UI.OpenLanguageFolder:Open Language Folder
+UI.OpenShortcutFolder:Open Shortcut Folder
+UI.OpenSkinFolder:Open Skin Folder
+UI.PManager.ImportProject:Import Project
+UI.PManager.NewProject:New Project
+UI.PManager.ProjectEmptyHint:This chapter is empty, click the button below to create or import a project.
+UI.Progress.NoMusicHint:No music in this project. Click here to import music (ogg, mp3, wav)
+UI.ProjectCreator.Back:Back
+UI.ProjectCreator.Next:Next
+UI.ProjectInfo.AddColor:+ Color
+UI.ProjectInfo.AddSound:+ Sound
+UI.ProjectInfo.AddTween:+ Tween
+UI.ProjectInfo.Background:Background
+UI.ProjectInfo.BackgroundAuthor:Background Author
+UI.ProjectInfo.BeatmapAuthor:Beatmap Author
+UI.ProjectInfo.Cover:Cover
+UI.ProjectInfo.Export:Export
+UI.ProjectInfo.Import:Import
+UI.ProjectInfo.Music:Music
+UI.ProjectInfo.MusicAuthor:Music Author
+UI.ProjectInfo.NoBackgroundHint:No Background
+UI.ProjectInfo.NoCoverHint:No Cover
+UI.ProjectInfo.NoMusicHint:No Music
+UI.ProjectInfo.ProjectDescription:Project Description
+UI.ProjectInfo.ProjectName:Project Name
+UI.ResetSettings:Reset All
+UI.Save:Save
+UI.Setting.BGBright:Background Brightness
+UI.Setting.Framerate:Framerate
+UI.Setting.GridCountX0:Grid Count X (Stage)
+UI.Setting.GridCountX1:Grid Count X (Track)
+UI.Setting.GridCountX2:Grid Count X (Note)
+UI.Setting.GridCountY:Grid Count Y
+UI.Setting.MusicVolume:Music Volume
+UI.Setting.NoteBrushWidth:Note Brush Width
+UI.Setting.PositiveScroll:Use Positive Mouse Scroll
+UI.Setting.Preview:Show Beatmap Preview
+UI.Setting.ScaleBrush:Use Global Scale for Brushs
+UI.Setting.ShowGrid:Show Grid and Auxiliary
+UI.Setting.ShowGridOnSelect:Show Grid On Select
+UI.Setting.ShowIndexLabelIndexLabel:Show Index Label for Stage,Track and Note
+UI.Setting.ShowKeypress:Show Keypress History
+UI.Setting.ShowTimerOnPlay:Show grid and timer handle on play music
+UI.Setting.ShowTip:Show Tooltip
+UI.Setting.SnapProgress:Snap When Setting Music Time with Progressbar
+UI.Setting.SoloOnEditMotion:Solo On Edit Motion
+UI.Setting.SoundVolume:Sound Volume
+UI.Setting.StageBrushHeight:Stage Brush Height
+UI.Setting.StageBrushWidth:Stage Brush Width
+UI.Setting.TrackBrushWidth:Track Brush Width
+UI.Setting.UIScale:UI Scale
+UI.Setting.UIScale.0:Small
+UI.Setting.UIScale.1:Normal
+UI.Setting.UIScale.2:Large
+UI.Setting.UseEditorEffect:Use Editor Effect
+UI.Setting.UseLog:Log to File
+UI.Setting.UseSFX:Sound FX
+UI.Setting.Wave:Show Sound Wave
+UI.SkinEditor.DarkBG:Dark
+UI.SkinEditor.Duration:Duration
+UI.SkinEditor.ExportImage:Export Image
+UI.SkinEditor.FixedRatio:Fixed Ratio
+UI.SkinEditor.FrontPole:Front Pole
+UI.SkinEditor.Highlight:Highlight
+UI.SkinEditor.ImportImage:Import Image
+UI.SkinEditor.LuminousHeight:Lum Height
+UI.SkinEditor.LuminousWidth:Lum Width
+UI.SkinEditor.MinSize:Min Size
+UI.SkinEditor.Scale:Scale
+UI.SkinEditor.SkinAuthorLabel:Author
+UI.SkinEditor.SkinNameLabel:Name
+UI.SkinEditor.SubB:B
+UI.SkinEditor.SubBorder:Border
+UI.SkinEditor.SubH:H
+UI.SkinEditor.SubL:L
+UI.SkinEditor.SubPos:Position
+UI.SkinEditor.SubR:R
+UI.SkinEditor.SubT:T
+UI.SkinEditor.SubW:W
+UI.SkinEditor.SubX:X
+UI.SkinEditor.SubY:Y
+UI.SkinEditor.TintNote:Tint Note
+UI.SkinEditor.VanishDuration:Vanish
+UI.SkinEditor.View:View (Hold)
+UI.Tab.BeatmapInfo:Beatmap
+UI.Tab.Brush:Brush
+UI.Tab.ClickSound:Sound
+UI.Tab.Editor:Editor
+UI.Tab.General:General
+UI.Tab.Info:Info
+UI.Tab.Language:Language
+UI.Tab.Palette:Palette
+UI.Tab.Shortcut:Shortcut
+UI.Tab.Skin:Skin
+UI.Tab.Tween:Tween
+UI.Tutorial.BoardMSG:Click Here to Start Tutorial
+UI.TweenEditor.AddPoint:+ Point
+UI.TweenEditor.DeletePoint:- Point
+UI.TweenEditor.Snap:Snap
+Undo.Hint.Undo:Undo Redo

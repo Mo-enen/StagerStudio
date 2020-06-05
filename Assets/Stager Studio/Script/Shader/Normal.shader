@@ -63,7 +63,7 @@ Shader "Object/Normal" {
 					i.vertex.x > _ZoneMinMax.z ||
 					i.vertex.y > _ZoneMinMax.w
 				) {
-					col.a *= 0.25f;
+					col.a *= 0.15f;
 				}
 
 				return col;

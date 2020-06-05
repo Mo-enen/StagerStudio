@@ -16,18 +16,18 @@
 		#region --- SUB ---
 
 
-		public delegate void VoidHandler ();
-		public delegate void VoidFloatHandler (float ratio);
-		public delegate float FloatHandler ();
-		public delegate void VoidBoolIntIntHandler (bool value, int a, int b);
-		public delegate string StringStringHandler (string str);
-		public delegate void VoidStringBoolHandler (string s, bool b);
-		public delegate bool BoolHandler ();
-		public delegate bool BoolIntHandler (int i);
-		public delegate Beatmap BeatmapHandler ();
-		public delegate void ExceptionHandler (System.Exception ex);
+		public delegate void VoidHandler();
+		public delegate void VoidFloatHandler(float ratio);
+		public delegate float FloatHandler();
+		public delegate void VoidBoolIntIntHandler(bool value, int a, int b);
+		public delegate string StringStringHandler(string str);
+		public delegate void VoidStringBoolHandler(string s, bool b);
+		public delegate bool BoolHandler();
+		public delegate bool BoolIntHandler(int i);
+		public delegate Beatmap BeatmapHandler();
+		public delegate void ExceptionHandler(System.Exception ex);
 
-		
+
 		#endregion
 
 
@@ -85,6 +85,10 @@
 		public float AbreastIndex { get; private set; } = 0f;
 		public float AbreastWidth { get; private set; } = 0.618f;
 		public bool PositiveScroll { get; set; } = true;
+		public int CurrentGridCountX0 => GetGridCount(0, Mathf.Clamp(GridCountIndex_X0.Value, 0, 2));
+		public int CurrentGridCountX1 => GetGridCount(1, Mathf.Clamp(GridCountIndex_X1.Value, 0, 2));
+		public int CurrentGridCountX2 => GetGridCount(2, Mathf.Clamp(GridCountIndex_X2.Value, 0, 2));
+		public int CurrentGridCountY => GetGridCount(3, Mathf.Clamp(GridCountIndex_Y.Value, 0, 2));
 
 		// Short
 		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
@@ -116,6 +120,10 @@
 		private Coroutine AbreastWidthCor = null;
 		private Coroutine AbreastIndexCor = null;
 		private Vector2? MouseMiddlePrevPos = null;
+		private Vector3Int GridCount_X0 = new Vector3Int(1, 7, 15);
+		private Vector3Int GridCount_X1 = new Vector3Int(1, 7, 15);
+		private Vector3Int GridCount_X2 = new Vector3Int(1, 7, 15);
+		private Vector3Int GridCount_Y = new Vector3Int(2, 4, 8);
 		private float _BPM = 120f;
 		private float _Ratio = 1.5f;
 		private float _GameDropSpeed = 1f;
@@ -125,10 +133,10 @@
 
 		// Saving
 		public SavingBool ShowGrid { get; private set; } = new SavingBool("StageGame.ShowGrid", true);
-		public SavingInt GridCountX0 { get; private set; } = new SavingInt("StageGame.GridCountX0", 7);
-		public SavingInt GridCountX1 { get; private set; } = new SavingInt("StageGame.GridCountX1", 7);
-		public SavingInt GridCountX2 { get; private set; } = new SavingInt("StageGame.GridCountX2", 7);
-		public SavingInt GridCountY { get; private set; } = new SavingInt("StageGame.GridCountY", 4);
+		public SavingInt GridCountIndex_X0 { get; private set; } = new SavingInt("StageGame.GridCountIndex_X0", 1);
+		public SavingInt GridCountIndex_X1 { get; private set; } = new SavingInt("StageGame.GridCountIndex_X1", 1);
+		public SavingInt GridCountIndex_X2 { get; private set; } = new SavingInt("StageGame.GridCountIndex_X2", 1);
+		public SavingInt GridCountIndex_Y { get; private set; } = new SavingInt("StageGame.GridCountIndex_Y", 1);
 		public SavingInt BeatPerSection { get; private set; } = new SavingInt("StageGame.BeatPerSection", 4);
 		public SavingInt AbreastWidthIndex { get; private set; } = new SavingInt("StageGame.AbreastWidthIndex", 1);
 		public SavingBool ShowGridTimerOnPlay { get; private set; } = new SavingBool("StageGame.ShowGridTimerOnPlay", false);
@@ -141,8 +149,8 @@
 
 #if UNITY_EDITOR
 		[Header("Test"), SerializeField] private Beatmap m_TestBeatmap = null;
-		public void SetTestBeatmap (Beatmap map) => m_TestBeatmap = map;
-		public Beatmap GetTestBeatmap () => m_TestBeatmap;
+		public void SetTestBeatmap(Beatmap map) => m_TestBeatmap = map;
+		public Beatmap GetTestBeatmap() => m_TestBeatmap;
 #endif
 
 
@@ -151,18 +159,18 @@
 		#region --- MSG ---
 
 
-		private void Start () {
+		private void Start() {
 			SetShowGrid(ShowGrid);
-			SetGridCountX0(GridCountX0);
-			SetGridCountX1(GridCountX1);
-			SetGridCountX2(GridCountX2);
-			SetGridCountY(GridCountY);
+			SetGridCountX0Index(GridCountIndex_X0);
+			SetGridCountX1Index(GridCountIndex_X1);
+			SetGridCountX2Index(GridCountIndex_X2);
+			SetGridCountY(GridCountIndex_Y);
 			SetBeatPerSection(BeatPerSection);
 			SetAbreastWidth(AbreastWidthIndex);
 		}
 
 
-		private void Update () {
+		private void Update() {
 			try {
 				Update_Beatmap();
 				Update_Stage();
@@ -175,7 +183,7 @@
 		}
 
 
-		private void Update_Beatmap () {
+		private void Update_Beatmap() {
 			if (MusicIsPlaying()) { return; }
 			var map = GetBeatmap();
 			if (map != null) {
@@ -227,7 +235,7 @@
 		}
 
 
-		private void Update_Stage () {
+		private void Update_Stage() {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int stageCount = map.Stages.Count;
@@ -258,7 +266,7 @@
 		}
 
 
-		private void Update_Track () {
+		private void Update_Track() {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int stageCount = map.Stages.Count;
@@ -290,7 +298,7 @@
 		}
 
 
-		private void Update_Note () {
+		private void Update_Note() {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int noteCount = map.Notes.Count;
@@ -324,7 +332,7 @@
 		}
 
 
-		private void Update_Timing () {
+		private void Update_Timing() {
 			var map = GetBeatmap();
 			if (map == null) { return; }
 			int timingCount = map.Timings.Count;
@@ -343,7 +351,7 @@
 		}
 
 
-		private void Update_SpeedCurve () {
+		private void Update_SpeedCurve() {
 			if (MusicIsPlaying()) { return; }
 			// Speed Curve
 			if (GetBeatmap() is null) {
@@ -386,7 +394,7 @@
 		}
 
 
-		private void Update_Mouse () {
+		private void Update_Mouse() {
 			// Reset Zoom
 			if (Input.GetMouseButtonDown(2) && Input.GetKey(KeyCode.LeftControl) && CheckAntiMouse()) {
 				SetGameDropSpeed(1f);
@@ -397,8 +405,7 @@
 				if (CheckAntiMouse()) {
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom Speed
-						SetGameDropSpeed(GameDropSpeed + Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
-						LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
+						AddGameDropSpeed(Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
 					} else {
 						// Seek Music
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
@@ -460,7 +467,7 @@
 			}
 
 			// Func
-			bool CheckAntiMouse (bool mustInZone = true) {
+			bool CheckAntiMouse(bool mustInZone = true) {
 				// Transform
 				foreach (var tf in m_AntiMouseTF) {
 					if (tf.gameObject.activeSelf) {
@@ -475,7 +482,7 @@
 				// Final
 				return true;
 			}
-			float GetMusicTimeAt (Vector2 screenPos) => FillTime(GetMusicTime(), m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed);
+			float GetMusicTimeAt(Vector2 screenPos) => FillTime(GetMusicTime(), m_ZoneRT.Get01Position(screenPos, Camera).y, GameDropSpeed);
 		}
 
 
@@ -487,7 +494,7 @@
 		#region --- API ---
 
 
-		public void ForceUpdateZone () {
+		public void ForceUpdateZone() {
 			Update_Beatmap();
 			Update_Stage();
 			Update_Track();
@@ -497,18 +504,18 @@
 		}
 
 
-		public void ClearAllContainers () {
+		public void ClearAllContainers() {
 			for (int i = 0; i < m_Containers.Length; i++) {
 				m_Containers[i].DestroyAllChildImmediately();
 			}
 		}
 
 
-		public int GetItemCount (int index) => m_Containers[index].childCount;
+		public int GetItemCount(int index) => m_Containers[index].childCount;
 
 
 		// Speed
-		public void SetGameDropSpeed (float speed) {
+		public void SetGameDropSpeed(float speed) {
 			speed = Mathf.Clamp(speed, 0.1f, 10f);
 			speed = Mathf.Round(speed * 10f) / 10f;
 			_GameDropSpeed = speed;
@@ -516,26 +523,32 @@
 		}
 
 
+		public void AddGameDropSpeed(float delta) {
+			SetGameDropSpeed(GameDropSpeed + delta);
+			LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
+		}
+
+
 		// Speed Curve
-		public void SetSpeedCurveDirty () => SpeedCurveDirty = true;
+		public void SetSpeedCurveDirty() => SpeedCurveDirty = true;
 
 
-		public float GetDropSpeedAt (float time) => UseDynamicSpeed ? SpeedCurve.Evaluate(time) : 1f;
+		public float GetDropSpeedAt(float time) => UseDynamicSpeed ? SpeedCurve.Evaluate(time) : 1f;
 
 
-		public float FillTime (float time, float fill, float muti) =>
+		public float FillTime(float time, float fill, float muti) =>
 			UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
 
 
-		public float AreaBetween (float timeA, float timeB, float muti) =>
+		public float AreaBetween(float timeA, float timeB, float muti) =>
 			UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
 
 
 		// Abreast
-		public void SwitchUseAbreastView () => SetUseAbreastView(!UseAbreast, true);
+		public void SwitchUseAbreastView() => SetUseAbreastView(!UseAbreast, true);
 
 
-		public void SetUseAbreastView (bool abreast, bool animation = false) {
+		public void SetUseAbreastView(bool abreast, bool animation = false) {
 			if (AbreastValueCor != null) {
 				StopCoroutine(AbreastValueCor);
 			}
@@ -543,7 +556,7 @@
 			var speedNotes = TimingContainer.GetComponentsInChildren<TimingNote>();
 			AbreastValueCor = StartCoroutine(AbreastValueing());
 			// === Func ===
-			IEnumerator AbreastValueing () {
+			IEnumerator AbreastValueing() {
 				float aimAbreast = abreast ? 1f : 0f;
 				if (!abreast) {
 					AbreastValue = 0.98f;
@@ -563,13 +576,13 @@
 		}
 
 
-		public void SetAbreastIndex (float newIndex) {
+		public void SetAbreastIndex(float newIndex) {
 			if (AbreastIndexCor != null) {
 				StopCoroutine(AbreastIndexCor);
 			}
 			AbreastIndexCor = StartCoroutine(AbreastIndexing());
 			// === Func ===
-			IEnumerator AbreastIndexing () {
+			IEnumerator AbreastIndexing() {
 				float aimIndex = Mathf.Max(newIndex, 0);
 				for (float t = 0f; t < 4f && Mathf.Abs(AbreastIndex - aimIndex) > 0.005f; t += Time.deltaTime) {
 					AbreastIndex = Mathf.Lerp(AbreastIndex, aimIndex, Time.deltaTime * 12f);
@@ -583,7 +596,7 @@
 		}
 
 
-		public void SetAbreastWidth (int index, bool animation = false) {
+		public void SetAbreastWidth(int index, bool animation = false) {
 			index = Mathf.Clamp(index, 0, ABREAST_WIDTHS.Length - 1);
 			AbreastWidthIndex.Value = index;
 			if (AbreastWidthCor != null) {
@@ -591,7 +604,7 @@
 			}
 			AbreastWidthCor = StartCoroutine(AbreastWidthing());
 			// === Func ===
-			IEnumerator AbreastWidthing () {
+			IEnumerator AbreastWidthing() {
 				if (animation) {
 					float to = ABREAST_WIDTHS[index];
 					for (float t = 0f; t < 4f && Mathf.Abs(AbreastWidth - to) > 0.005f; t += Time.deltaTime) {
@@ -607,7 +620,7 @@
 		}
 
 
-		public void UI_SetAbreastWidth (int index) {
+		public void UI_SetAbreastWidth(int index) {
 			SetAbreastWidth(index, true);
 			// Hint
 			string str = "% ";
@@ -619,53 +632,86 @@
 
 
 		// Grid
-		public float SnapTime (float time, int step) => SnapTime(time, 60f / BPM / step, Mathf.Repeat(Shift, 60f / BPM));
+		public float SnapTime(float time, int step) => SnapTime(time, 60f / BPM / step, Mathf.Repeat(Shift, 60f / BPM));
 
 
-		public float SnapTime (float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
+		public float SnapTime(float time, float gap, float offset) => Mathf.Round((time - offset) / gap) * gap + offset;
 
 
-		public void SwitchShowGrid () {
+		public void SwitchShowGrid() {
 			SetShowGrid(!ShowGrid);
 			LogGameHint_Key(SHOW_GRID_HINT, ShowGrid.Value ? "ON" : "OFF", true);
 		}
 
 
-		public void SetShowGrid (bool show) {
+		public void SetShowGrid(bool show) {
 			ShowGrid.Value = show;
 			OnGridChanged();
 		}
 
 
-		public void SetGridCountX0 (int x) {
-			GridCountX0.Value = Mathf.Clamp(x, 1, 32);
+		public void SetGridCountX0Index(int x) {
+			GridCountIndex_X0.Value = Mathf.Clamp(x, 0, 2);
 			OnGridChanged();
 		}
 
 
-		public void SetGridCountX1 (int x) {
-			GridCountX1.Value = Mathf.Clamp(x, 1, 32);
+		public void SetGridCountX1Index(int x) {
+			GridCountIndex_X1.Value = Mathf.Clamp(x, 0, 2);
 			OnGridChanged();
 		}
 
 
-		public void SetGridCountX2 (int x) {
-			GridCountX2.Value = Mathf.Clamp(x, 1, 32);
+		public void SetGridCountX2Index(int x) {
+			GridCountIndex_X2.Value = Mathf.Clamp(x, 0, 2);
 			OnGridChanged();
 		}
 
 
-		public void SetGridCountY (int y) {
-			GridCountY.Value = Mathf.Clamp(y, 1, 8);
+		public void SetGridCountY(int y) {
+			GridCountIndex_Y.Value = Mathf.Clamp(y, 0, 2);
 			OnGridChanged();
+		}
+
+
+		public void SetGridCount(int gridType, int gridSubType, int count) {
+			switch (gridType) {
+				case 0:
+					GridCount_X0[gridSubType] = Mathf.Clamp(count, 1, 64);
+					break;
+				case 1:
+					GridCount_X1[gridSubType] = Mathf.Clamp(count, 1, 64);
+					break;
+				case 2:
+					GridCount_X2[gridSubType] = Mathf.Clamp(count, 1, 64);
+					break;
+				case 3:
+					GridCount_Y[gridSubType] = Mathf.Clamp(count, 1, 32);
+					break;
+			}
+		}
+
+
+		public int GetGridCount(int gridType, int gridSubType) {
+			switch (gridType) {
+				case 0:
+					return GridCount_X0[gridSubType];
+				case 1:
+					return GridCount_X1[gridSubType];
+				case 2:
+					return GridCount_X2[gridSubType];
+				case 3:
+					return GridCount_Y[gridSubType];
+			}
+			return 0;
 		}
 
 
 		// Music
-		public void SeekMusic_BPM (float muti) => MusicSeek(GetMusicTime() + 60f / BPM * muti);
+		public void SeekMusic_BPM(float muti) => MusicSeek(GetMusicTime() + 60f / BPM * muti);
 
 
-		public void SetMusicPitch (float delta) {
+		public void SetMusicPitch(float delta) {
 			if (Mathf.Abs(delta) < 0.05f) {
 				SetPitch(1f);
 			} else {
@@ -677,7 +723,7 @@
 		}
 
 
-		public void SetBeatPerSection (int bps) {
+		public void SetBeatPerSection(int bps) {
 			BeatPerSection.Value = Mathf.Clamp(bps, 1, 16);
 			OnGridChanged();
 		}
@@ -692,7 +738,7 @@
 
 
 		// Beatmap Update
-		private bool FixObject (Transform prefab, Transform container, int count) {
+		private bool FixObject(Transform prefab, Transform container, int count) {
 			bool changed = false;
 			int conCount = container.childCount;
 			if (conCount > count) {
@@ -720,14 +766,10 @@
 
 
 		// Misc
-		private void LogGameHint_Key (string key, string arg, bool flash) => LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
+		private void LogGameHint_Key(string key, string arg, bool flash) => LogGameHint_Message(string.Format(GetLanguage(key), arg), flash);
 
 
-		private void LogGameHint_Message (string msg, bool flash) {
-			try {
-				LogHint(msg, flash);
-			} catch { }
-		}
+		private void LogGameHint_Message(string msg, bool flash) => LogHint(msg, flash);
 
 
 		#endregion
@@ -747,12 +789,12 @@ namespace StagerStudio.Editor {
 	[CustomEditor(typeof(StageGame))]
 	public class StageGameInspector : Editor {
 		private readonly static string[] Exclude = new string[] { "m_TestBeatmap" };
-		private void Awake () {
+		private void Awake() {
 			if (EditorApplication.isPlaying) {
 				(target as StageGame).SetTestBeatmap(FindObjectOfType<StageProject>().Beatmap);
 			}
 		}
-		public override void OnInspectorGUI () {
+		public override void OnInspectorGUI() {
 			if (EditorApplication.isPlaying) {
 				base.OnInspectorGUI();
 				if (GUI.changed) {

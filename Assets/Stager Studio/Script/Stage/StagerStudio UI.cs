@@ -14,9 +14,29 @@
 
 
 
+
+		#region --- SUB ---
+
+
 		[System.Serializable]
 		public enum InputType {
 			Frame,
+			GridCount_X0_S,
+			GridCount_X0_M,
+			GridCount_X0_L,
+			GridCount_X1_S,
+			GridCount_X1_M,
+			GridCount_X1_L,
+			GridCount_X2_S,
+			GridCount_X2_M,
+			GridCount_X2_L,
+			GridCount_Y_S,
+			GridCount_Y_M,
+			GridCount_Y_L,
+			StageBrushWidth,
+			StageBrushHeight,
+			TrackBrushWidth,
+			NoteBrushWidth,
 
 		}
 
@@ -51,12 +71,16 @@
 			MusicVolume,
 			SoundVolume,
 			BgBrightness,
-			StageBrushWidth,
-			StageBrushHeight,
-			TrackBrushWidth,
-			NoteBrushWidth,
 
 		}
+
+
+		#endregion
+
+
+
+
+		#region --- VAR ---
 
 
 		// Const
@@ -93,18 +117,219 @@
 		[SerializeField] private RectTransform m_CommandRoot = null;
 
 
-		// MSG
-		private void Awake_Setting_UI () {
+		#endregion
 
+
+
+
+		#region --- MSG ---
+
+
+		private void Awake_Setting_UI_Input() {
 
 			// Input
-			InputItemMap.Add(InputType.Frame, ((str) => {
-				if (int.TryParse(str, out int result)) {
-					Application.targetFrameRate = Mathf.Clamp(result, 12, 1200);
-					InputItemMap[InputType.Frame].saving.Value = result.ToString();
-				}
-			}, () => Application.targetFrameRate.ToString(), new SavingString("SS.FrameRate", "120"), true));
+			InputItemMap.Add(
+				InputType.Frame,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						Application.targetFrameRate = Mathf.Clamp(result, 12, 3600);
+						InputItemMap[InputType.Frame].saving.Value = result.ToString();
+					}
+				},
+				() => Application.targetFrameRate.ToString(),
+				new SavingString("SS.FrameRate", "120"),
+				true
+			));
 
+			// X0
+			InputItemMap.Add(
+				InputType.GridCount_X0_S,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(0, 0, result);
+					}
+					InputItemMap[InputType.GridCount_X0_S].saving.Value = m_Game.GetGridCount(0, 0).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X0_S", "1"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X0_M,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(0, 1, result);
+					}
+					InputItemMap[InputType.GridCount_X0_M].saving.Value = m_Game.GetGridCount(0, 1).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X0_M", "7"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X0_L,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(0, 2, result);
+					}
+					InputItemMap[InputType.GridCount_X0_L].saving.Value = m_Game.GetGridCount(0, 2).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X0_L", "15"),
+				true
+			));
+
+			// X1
+			InputItemMap.Add(
+				InputType.GridCount_X1_S,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(1, 0, result);
+					}
+					InputItemMap[InputType.GridCount_X1_S].saving.Value = m_Game.GetGridCount(1, 0).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X1_S", "1"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X1_M,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(1, 1, result);
+					}
+					InputItemMap[InputType.GridCount_X1_M].saving.Value = m_Game.GetGridCount(1, 1).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X1_M", "7"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X1_L,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(1, 2, result);
+					}
+					InputItemMap[InputType.GridCount_X1_L].saving.Value = m_Game.GetGridCount(1, 2).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X1_L", "15"),
+				true
+			));
+
+			// X2
+			InputItemMap.Add(
+				InputType.GridCount_X2_S,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(2, 0, result);
+					}
+					InputItemMap[InputType.GridCount_X2_S].saving.Value = m_Game.GetGridCount(2, 0).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X2_S", "1"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X2_M,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(2, 1, result);
+					}
+					InputItemMap[InputType.GridCount_X2_M].saving.Value = m_Game.GetGridCount(2, 1).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X2_M", "7"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_X2_L,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(2, 2, result);
+					}
+					InputItemMap[InputType.GridCount_X2_L].saving.Value = m_Game.GetGridCount(2, 2).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_X2_L", "15"),
+				true
+			));
+
+			// Y
+			InputItemMap.Add(
+				InputType.GridCount_Y_S,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(3, 0, result);
+					}
+					InputItemMap[InputType.GridCount_Y_S].saving.Value = m_Game.GetGridCount(3, 0).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_Y_S", "2"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_Y_M,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(3, 1, result);
+					}
+					InputItemMap[InputType.GridCount_Y_M].saving.Value = m_Game.GetGridCount(3, 1).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_Y_M", "4"),
+				true
+			));
+
+			InputItemMap.Add(
+				InputType.GridCount_Y_L,
+				((str) => {
+					if (int.TryParse(str, out int result)) {
+						m_Game.SetGridCount(3, 2, result);
+					}
+					InputItemMap[InputType.GridCount_Y_L].saving.Value = m_Game.GetGridCount(3, 2).ToString();
+				},
+				null,
+				new SavingString("SS.GridCount_Y_L", "8"),
+				true
+			));
+
+			// Brush
+			InputItemMap.Add(InputType.StageBrushWidth, ((str) => {
+				if (str.TryParseFloatForInspector(out float result)) {
+					SetBrushSize(0, 0, result);
+				}
+			}, null, new SavingString("SS.StageBrushWidth", "1"), true));
+
+			InputItemMap.Add(InputType.StageBrushHeight, ((str) => {
+				if (str.TryParseFloatForInspector(out float result)) {
+					SetBrushSize(0, 1, result);
+				}
+			}, null, new SavingString("SS.StageBrushHeight", "1"), true));
+
+			InputItemMap.Add(InputType.TrackBrushWidth, ((str) => {
+				if (str.TryParseFloatForInspector(out float result)) {
+					SetBrushSize(1, 0, result);
+				}
+			}, null, new SavingString("SS.TrackBrushWidth", "0.2"), true));
+
+			InputItemMap.Add(InputType.NoteBrushWidth, ((str) => {
+				if (str.TryParseFloatForInspector(out float result)) {
+					SetBrushSize(2, 0, result);
+				}
+			}, null, new SavingString("SS.NoteBrushWidth", "0.2"), true));
+
+		}
+
+
+		private void Awake_Setting_UI_Toggle() {
 
 			// Toggle
 			ToggleItemMap.Add(ToggleType.UIScale_0, ((isOn) => {
@@ -203,6 +428,11 @@
 				ToggleItemMap[ToggleType.Log].saving.Value = isOn;
 			}, () => DebugLog.UseLog, new SavingBool("SS.UseLog", true), true));
 
+		}
+
+
+		private void Awake_Setting_UI_Slider() {
+
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
 				SetMusicVolume(value / 12f);
@@ -220,28 +450,18 @@
 				SliderItemMap[SliderType.BgBrightness].saving.Value = value;
 			}, () => m_Background.Brightness * 12f, new SavingFloat("SS.BgBrightness", 3.7f), true));
 
-			SliderItemMap.Add(SliderType.StageBrushWidth, ((value) => {
-				SetBrushSize(0, 0, value / 12f);
-			}, null, new SavingFloat("SS.StageBrushWidth", 12f), true));
-
-			SliderItemMap.Add(SliderType.StageBrushHeight, ((value) => {
-				SetBrushSize(0, 1, value / 12f);
-			}, null, new SavingFloat("SS.StageBrushHeight", 12f), true));
-
-			SliderItemMap.Add(SliderType.TrackBrushWidth, ((value) => {
-				SetBrushSize(1, 0, value / 12f);
-			}, null, new SavingFloat("SS.TrackBrushWidth", 2.5f), true));
-
-			SliderItemMap.Add(SliderType.NoteBrushWidth, ((value) => {
-				SetBrushSize(2, 0, value / 12f);
-			}, null, new SavingFloat("SS.NoteBrushWidth", 2.5f), true));
-
-
 		}
 
 
+		#endregion
+
+
+
+		#region --- API ---
+
+
 		// UI
-		public void UI_SpawnSetting () {
+		public void UI_SpawnSetting() {
 
 			UI_RemoveUI();
 
@@ -287,37 +507,37 @@
 		}
 
 
-		public void UI_SpawnProjectInfo () {
+		public void UI_SpawnProjectInfo() {
 			UI_RemoveUI();
 			Util.SpawnUI(m_ProjectInfoPrefab, m_ProjectInfoRoot, "Project Info").Refresh();
 		}
 
 
-		public void UI_SpawnBeatmapSwiper () {
+		public void UI_SpawnBeatmapSwiper() {
 			UI_RemoveUI();
 			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init();
 		}
 
 
-		public void UI_SpawnSkinSwiper () {
+		public void UI_SpawnSkinSwiper() {
 			UI_RemoveUI();
 			Util.SpawnUI(m_SkinSwiperPrefab, m_SkinSwiperRoot, "Skin Swiper").Init();
 		}
 
 
-		public void SpawnProjectCreator (string root) {
+		public void SpawnProjectCreator(string root) {
 			UI_RemoveUI();
 			Util.SpawnUI(m_ProjectCreatorPrefab, m_ProjectCreatorRoot, "Project Creator").Init(root);
 		}
 
 
-		public void UI_SpawnCommand () {
+		public void UI_SpawnCommand() {
 			UI_RemoveUI();
 			Util.SpawnUI(m_CommandPrefab, m_CommandRoot, "Command");
 		}
 
 
-		public void UI_RemoveUI () {
+		public void UI_RemoveUI() {
 
 			m_SettingRoot.DestroyAllChildImmediately();
 			m_ProjectInfoRoot.DestroyAllChildImmediately();
@@ -350,15 +570,8 @@
 		}
 
 
-		private void RemoveLoading () {
-			m_LoadingRoot.DestroyAllChildImmediately();
-			m_LoadingRoot.gameObject.SetActive(false);
-			m_LoadingRoot.parent.InactiveIfNoChildActive();
-		}
-
-
 		// Color Picker
-		public void SpawnColorPicker (Color color, System.Action<Color> done) {
+		public void SpawnColorPicker(Color color, System.Action<Color> done) {
 			m_ColorPickerRoot.gameObject.SetActive(true);
 			m_ColorPickerRoot.parent.gameObject.SetActive(true);
 			MusicPause();
@@ -367,7 +580,7 @@
 
 
 		// Tween Editor
-		public void SpawnTweenEditor (AnimationCurve curve, System.Action<AnimationCurve> done) {
+		public void SpawnTweenEditor(AnimationCurve curve, System.Action<AnimationCurve> done) {
 			m_TweenEditorRoot.gameObject.SetActive(true);
 			m_TweenEditorRoot.parent.gameObject.SetActive(true);
 			MusicPause();
@@ -376,10 +589,10 @@
 
 
 		// Skin Editor
-		public void UI_SpawnSkinEditor () => SpawnSkinEditor(StageSkin.Data.Name, false);
+		public void UI_SpawnSkinEditor() => SpawnSkinEditor(StageSkin.Data.Name, false);
 
 
-		public void SpawnSkinEditor (string skinName, bool openSettingAfterClose) {
+		public void SpawnSkinEditor(string skinName, bool openSettingAfterClose) {
 			if (string.IsNullOrEmpty(skinName)) { return; }
 			UI_RemoveUI();
 			Util.SpawnUI(m_SkinEditorPrefab, m_SkinEditorRoot, "Skin Editor").Init(
@@ -389,7 +602,7 @@
 
 
 		// Project Info
-		public void UI_ProjectInfo_DeletePaletteItem (object palRT) {
+		public void UI_ProjectInfo_DeletePaletteItem(object palRT) {
 			if (palRT is null || !(palRT is RectTransform)) { return; }
 			int index = (palRT as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
@@ -403,7 +616,7 @@
 		}
 
 
-		public void UI_ProjectInfo_DeleteClickSound (object rtObj) {
+		public void UI_ProjectInfo_DeleteClickSound(object rtObj) {
 			if (rtObj is null || !(rtObj is RectTransform)) { return; }
 			int index = (rtObj as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
@@ -417,7 +630,7 @@
 		}
 
 
-		public void UI_ProjectInfo_DeleteTween (object rtObj) {
+		public void UI_ProjectInfo_DeleteTween(object rtObj) {
 			if (rtObj is null || !(rtObj is RectTransform)) { return; }
 			int index = (rtObj as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
@@ -432,7 +645,7 @@
 
 
 		// Command
-		public void UI_TrySetCommand_Target (int index) {
+		public void UI_TrySetCommand_Target(int index) {
 			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
 			if (command != null) {
 				command.SetTargetIndex(index);
@@ -440,7 +653,7 @@
 		}
 
 
-		public void UI_TrySetCommand_Command (int index) {
+		public void UI_TrySetCommand_Command(int index) {
 			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
 			if (command != null) {
 				command.SetCommandIndex(index);
@@ -449,59 +662,29 @@
 
 
 		// Brush
-		public void BrushSizeUp () => SetBrushSize(
-			m_Editor.SelectingBrushIndex, 0,
-			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) + 0.1f, 0.1f, 1f)
+		public void BrushSizeUp(bool alt) => SetBrushSize(
+			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
+			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) + 0.05f, 0.05f, 1f)
 		);
 
 
-		public void BrushSizeDown () => SetBrushSize(
-			m_Editor.SelectingBrushIndex, 0,
-			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex) - 0.1f, 0.1f, 1f)
+		public void BrushSizeDown(bool alt) => SetBrushSize(
+			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
+			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) - 0.05f, 0.05f, 1f)
 		);
 
 
-		private float GetBrushSize (int index) {
-			switch (index) {
-				default:
-					return 0f;
-				case 0: // Stage Width
-					return m_Editor.StageBrushWidth;
-				case 1: // Track Width
-					return m_Editor.TrackBrushWidth;
-				case 2: // Note Width
-					return m_Editor.NoteBrushWidth;
-			}
-		}
+		#endregion
 
 
-		private void SetBrushSize (int itemType, int brushType, float size01) {
-			switch (itemType) {
-				case 0: // Stage
-					if (brushType == 0) {
-						// Width
-						m_Editor.StageBrushWidth = Mathf.Clamp01(size01);
-						SliderItemMap[SliderType.StageBrushWidth].saving.Value = size01 * 12f;
-					} else {
-						// Height
-						m_Editor.StageBrushHeight = Mathf.Clamp01(size01);
-						SliderItemMap[SliderType.StageBrushHeight].saving.Value = size01 * 12f;
-					}
-					break;
-				case 1: // Track Width
-					m_Editor.TrackBrushWidth = Mathf.Clamp01(size01);
-					SliderItemMap[SliderType.TrackBrushWidth].saving.Value = size01 * 12f;
-					break;
-				case 2: // Note Width
-					m_Editor.NoteBrushWidth = Mathf.Clamp01(size01);
-					SliderItemMap[SliderType.NoteBrushWidth].saving.Value = size01 * 12f;
-					break;
-			}
-		}
 
 
-		// LGC
-		private void LoadAllSettings () {
+		#region --- LGC ---
+
+
+
+		// Setting
+		private void LoadAllSettings() {
 			foreach (var pair in InputItemMap) {
 				pair.Value.setHandler(pair.Value.saving);
 			}
@@ -514,21 +697,7 @@
 		}
 
 
-		private void ResetAllSettings () {
-			foreach (var pair in InputItemMap) {
-				pair.Value.saving.Reset();
-			}
-			foreach (var pair in ToggleItemMap) {
-				pair.Value.saving.Reset();
-			}
-			foreach (var pair in SliderItemMap) {
-				pair.Value.saving.Reset();
-			}
-		}
-
-
-		// Setting Logic
-		private void SetUIScale (int uiScale) {
+		private void SetUIScale(int uiScale) {
 			uiScale = Mathf.Clamp(uiScale, 0, 2);
 			var scalers = m_CanvasRoot.GetComponentsInChildren<CanvasScaler>(true);
 			float height = uiScale == 0 ? 1000 : uiScale == 1 ? 800 : 600;
@@ -538,10 +707,54 @@
 		}
 
 
-		private void SetMusicVolume (float value) {
+		private void SetMusicVolume(float value) {
 			m_Music.Volume = value;
 			SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
 		}
+
+
+		// Brush
+		private float GetBrushSize(int index, int brushType) {
+			switch (index) {
+				default:
+					return 0f;
+				case 0: // Stage Width
+					return brushType == 0 ? m_Editor.StageBrushWidth : m_Editor.StageBrushHeight;
+				case 1: // Track Width
+					return m_Editor.TrackBrushWidth;
+				case 2: // Note Width
+					return m_Editor.NoteBrushWidth;
+			}
+		}
+
+
+		private void SetBrushSize(int itemType, int brushType, float size01) {
+			size01 = Mathf.Clamp01(size01);
+			switch (itemType) {
+				case 0: // Stage
+					if (brushType == 0) {
+						// Width
+						m_Editor.StageBrushWidth = size01;
+						InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString();
+					} else {
+						// Height
+						m_Editor.StageBrushHeight = size01;
+						InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString();
+					}
+					break;
+				case 1: // Track Width
+					m_Editor.TrackBrushWidth = size01;
+					InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString();
+					break;
+				case 2: // Note Width
+					m_Editor.NoteBrushWidth = size01;
+					InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString();
+					break;
+			}
+		}
+
+
+		#endregion
 
 
 	}

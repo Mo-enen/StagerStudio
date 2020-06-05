@@ -15,7 +15,7 @@ Shader "Object/Normal" {
 				CGPROGRAM
 					#pragma vertex vert
 					#pragma fragment frag
-				//#pragma target 2.0
+				#pragma target 2.0
 
 				#include "UnityCG.cginc"
 
@@ -50,6 +50,11 @@ Shader "Object/Normal" {
 
 				fixed4 frag(v2f i) : SV_Target
 				{
+					
+					// Color
+					fixed4 col = tex2D(_MainTex, i.texcoord);
+					col *= i.color;
+				
 					// Mask
 					if (
 						i.vertex.x < _ZoneMinMax.x ||
@@ -57,16 +62,13 @@ Shader "Object/Normal" {
 						i.vertex.x > _ZoneMinMax.z ||
 						i.vertex.y > _ZoneMinMax.w
 					) {
-						discard;
+						col *= 0.3f;
 					}
 
-				// Color
-				fixed4 col = tex2D(_MainTex, i.texcoord);
-				col *= i.color;
-				return col;
-			}
-		ENDCG
-	}
+					return col;
+				}
+			ENDCG
 		}
+	}
 
 }
