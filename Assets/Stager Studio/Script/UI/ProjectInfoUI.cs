@@ -82,9 +82,9 @@
 		public delegate void VoidBeatmapHandler (Beatmap map);
 		public delegate Dictionary<string, Beatmap> BeatmapMapHandler ();
 		public delegate List<Color32> Color32sHandler ();
-		public delegate List<(AnimationCurve, Color32)> TweensHandler ();
+		public delegate List<AnimationCurve> TweensHandler ();
 		public delegate List<(Project.FileData data, AudioClip clip)> ClickSoundsHandler ();
-		public delegate void SetTweenHandler (AnimationCurve curve, Color32? color, int index);
+		public delegate void SetTweenHandler (AnimationCurve curve, int index);
 		public delegate void VoidHandler ();
 		public delegate void VoidCallbackHandler (System.Action action);
 		public delegate void VoidIntFloatHandler (int i, float f);
@@ -119,7 +119,6 @@
 		public static VoidIntFloatHandler MusicPlayClickSound { get; set; } = null;
 		public static VoidStringRtHandler OpenMenu { get; set; } = null;
 		public static VoidCallbackHandler ProjectImportPalette { get; set; } = null;
-		public static VoidHandler ProjectSaveProject { get; set; } = null;
 		public static VoidHandler ProjectSetDirty { get; set; } = null;
 		public static VoidHandler ProjectNewBeatmap { get; set; } = null;
 		public static VoidCallbackHandler ProjectImportBeatmap { get; set; } = null;
@@ -150,7 +149,6 @@
 		public static VoidStringHandler SetProjectInfo_MapAuthor { get; set; } = null;
 		public static ColorPickerHandler SpawnColorPicker { get; set; } = null;
 		public static TweenEditorHandler SpawnTweenEditor { get; set; } = null;
-
 
 		// Short
 		private BeatmapSortMode BeatmapSort {
@@ -237,32 +235,32 @@
 			m_ProjectInfoComponentData.Browse_Background.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectImportBackground();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 			m_ProjectInfoComponentData.Browse_Cover.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectImportCover();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 			m_ProjectInfoComponentData.Browse_Music.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectImportMusic();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 			m_ProjectInfoComponentData.Clear_Background.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectRemoveBackground();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 			m_ProjectInfoComponentData.Clear_Cover.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectRemoveCover();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 			m_ProjectInfoComponentData.Clear_Music.onClick.AddListener(() => {
 				if (!ReadyForUI) { return; }
 				ProjectRemoveMusic();
-				ProjectSaveProject();
+				ProjectSetDirty();
 			});
 		}
 
@@ -276,18 +274,23 @@
 
 
 		public void Close () {
-			ProjectSaveProject();
 			transform.parent.gameObject.SetActive(false);
 			transform.parent.parent.InactiveIfNoChildActive();
 			transform.parent.DestroyAllChildImmediately();
 		}
+
+
 		public void Refresh () => RefreshLogic();
+
+
 		public void NewBeatmap () {
 			ProjectNewBeatmap();
 			RefreshBeatmapUI();
 		}
 
+
 		public void ImportBeatmap () => ProjectImportBeatmap(RefreshBeatmapUI);
+
 
 		// Palette
 		public void AddPaletteColor () {
@@ -295,12 +298,19 @@
 			RefreshPaletteUI();
 		}
 
+
 		public void ImportPalette () => ProjectImportPalette(RefreshPaletteUI);
+
+
 		public void ExportPalette () => ProjectExportPalette();
+
 
 		// Sound
 		public void StopClickSounds () => MusicStopClickSounds();
+
+
 		public void AddClickSound () => ProjectImportClickSound();
+
 
 		// Tween
 		public void AddTween () {
@@ -308,7 +318,10 @@
 			RefreshTweenUI();
 		}
 
+
 		public void ImportTweens () => ProjectImportTween(RefreshTweenUI);
+
+
 		public void ExportTweens () => ProjectExportTween();
 
 
@@ -490,7 +503,7 @@
 			try {
 				m_TweenContent.DestroyAllChildImmediately();
 				var tweens = GetProjectTweens();
-				foreach (var (curve, color) in tweens) {
+				foreach (var curve in tweens) {
 					var item = SpawnItem(m_TweenItemPrefab, m_TweenContent);
 					var rt = item.transform as RectTransform;
 					int rtIndex = rt.GetSiblingIndex();
@@ -498,18 +511,10 @@
 					item.Grab<Curve>("Renderer").CurveData = curve;
 					var trigger = item.Grab<TriggerUI>();
 					trigger.CallbackLeft.AddListener(() => SpawnTweenEditor(curve, (resultCurve) => {
-						SetProjectTweenCurve(resultCurve, null, rtIndex);
+						SetProjectTweenCurve(resultCurve, rtIndex);
 						RefreshTweenUI();
 					}));
 					trigger.CallbackRight.AddListener(() => OpenMenu(MENU_TWEEN_KEY, rt));
-					var oldColor = color;
-					item.Grab<Image>("Color").color = oldColor;
-					item.Grab<Button>("Color").onClick.AddListener(() => {
-						SpawnColorPicker(oldColor, (resultColor) => {
-							SetProjectTweenCurve(null, resultColor, rtIndex);
-							RefreshTweenUI();
-						});
-					});
 				}
 			} catch { }
 			ReadyForUI = true;

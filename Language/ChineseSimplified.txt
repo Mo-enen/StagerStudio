@@ -1,6 +1,4 @@
-﻿Shortcut.Brush.AltSizeDown:减小笔刷尺寸（副）
-Shortcut.Brush.AltSizeUp:增加笔刷尺寸（副）
-Author:Stager 官方
+﻿Author:Stager 官方
 Command.Hint.CommandDone:指令已完成
 Dialog.Editor.CannotSelectStage:全景模式下不能选择舞台
 Dialog.Editor.CannotSelectStageBrush:全景模式下不能选择舞台笔刷
@@ -19,11 +17,11 @@ Game.Hint.AbreastWidth:全景舞台宽度 {0}
 Game.Hint.GameDropSpeed:下落速度 × {0}
 Game.Hint.Pitch:播放速度 {0}
 Game.Hint.ShowGrid:辅助线网格 {0}
-Inspector.Header.Beatmap:谱面
-Inspector.Header.Note:音符
-Inspector.Header.Stage:舞台
+Inspector.Header.Beatmap:谱  面
+Inspector.Header.Note:音  符
+Inspector.Header.Stage:舞  台
 Inspector.Header.Timing:时间点
-Inspector.Header.Track:轨道
+Inspector.Header.Track:轨  道
 Menu.Abreast.Width0:全景舞台宽度 25%
 Menu.Abreast.Width1:全景舞台宽度 33%
 Menu.Abreast.Width2:全景舞台宽度 62%
@@ -94,6 +92,12 @@ Menu.Inspector.Fx.Wobble:摇摆
 Menu.ProjectInfo.DeleteClickSound:删除
 Menu.ProjectInfo.DeletePalette:删除
 Menu.ProjectInfo.DeleteTween:删除
+Menu.ProjectInfo.MoveClickSoundLeft:左移
+Menu.ProjectInfo.MoveClickSoundRight:右移
+Menu.ProjectInfo.MovePaletteLeft:左移
+Menu.ProjectInfo.MovePaletteRight:右移
+Menu.ProjectInfo.MoveTweenLeft:左移
+Menu.ProjectInfo.MoveTweenRight:右移
 Menu.ProjectItem.Delete:删除
 Menu.ProjectItem.Move:移动
 Menu.ProjectItem.ShowInExplorer:查看
@@ -156,9 +160,7 @@ ProjectCreator.Hint.Osu:使用简易的并列轨道模板
 ProjectCreator.Hint.Phigros:使用咕咕咕动态舞台模板
 ProjectCreator.Hint.StagerStudio:创建空白工程
 ProjectCreator.Hint.Voez:使用移动轨道模板
-ProjectInfo.Dialog.DeletePal:确认删除颜色{0}吗？本操作不可撤销。
 ProjectInfo.Dialog.DeleteSound:删除按键音{0}吗？本操作不可撤销。
-ProjectInfo.Dialog.DeleteTween:删除补间{0}？本操作不可撤销。
 ProjectInfo.Dialog.ExportPaletteTitle:导出调色板
 ProjectInfo.Dialog.ExportTweenTitle:导出补间
 ProjectInfo.Dialog.ImportPalette:导入调色板吗？这会覆盖现有的调色板。
@@ -167,10 +169,13 @@ ProjectInfo.Dialog.ImportTween:是否导入补间？这将覆盖现有的内容
 ProjectInfo.Dialog.ImportTweenTitle:导入补间
 ProjectInfo.Dialog.PaletteExported:已导出调色板
 ProjectInfo.Dialog.PaletteFull:最多只能有256个颜色
+ProjectInfo.Dialog.SwipeSound:移动按键音吗？本操作无法撤销。
 ProjectInfo.Dialog.TweenExported:补间已导出
 ProjectInfo.Dialog.TweenFull:最多只能有256个补间
 Setting.ResetConfirm:是否将所有设置恢复为默认值？
 Shortcut.AbreastView:全景模式
+Shortcut.Brush.AltSizeDown:减小笔刷尺寸（副）
+Shortcut.Brush.AltSizeUp:增加笔刷尺寸（副）
 Shortcut.Brush.Note:音符笔刷
 Shortcut.Brush.SizeDown:减小笔刷尺寸
 Shortcut.Brush.SizeUp:增加笔刷尺寸
@@ -384,6 +389,8 @@ UI.Inspector.Motion.Color:颜色
 UI.Inspector.Motion.Height:高度
 UI.Inspector.Motion.Pos:位置
 UI.Inspector.Motion.Rot:旋转
+UI.Inspector.Motion.Tween:补间
+UI.Inspector.Motion.Value:值
 UI.Inspector.Motion.Width:宽度
 UI.Inspector.Motion.X:位置
 UI.Inspector.Pivot:原点
@@ -467,6 +474,7 @@ UI.SkinEditor.FixedRatio:固定长宽比
 UI.SkinEditor.FrontPole:前景连接杆
 UI.SkinEditor.Highlight:高光
 UI.SkinEditor.ImportImage:导入图片
+UI.SkinEditor.InfiniteJudgeline:无限判定线
 UI.SkinEditor.LuminousHeight:光效高度
 UI.SkinEditor.LuminousWidth:光效宽度
 UI.SkinEditor.MinSize:最小尺寸

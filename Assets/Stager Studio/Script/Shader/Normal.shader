@@ -2,6 +2,7 @@ Shader "Object/Normal" {
 	Properties{
 		_MainTex("Base (RGB) Trans (A)", 2D) = "white" {}
 		_ZoneMinMax("MinMax", Vector) = (0,0,3000,2000)
+		_ClampAlpha("ClampAlpha", float) = 0.15
 	}
 
 		SubShader{
@@ -36,6 +37,7 @@ Shader "Object/Normal" {
 				sampler2D _MainTex;
 				float4 _MainTex_ST;
 				float4 _ZoneMinMax;
+				float _ClampAlpha;
 
 				v2f vert(appdata_t v)
 				{
@@ -63,7 +65,7 @@ Shader "Object/Normal" {
 					i.vertex.x > _ZoneMinMax.z ||
 					i.vertex.y > _ZoneMinMax.w
 				) {
-					col.a *= 0.15f;
+					col.a *= _ClampAlpha;
 				}
 
 				return col;

@@ -72,6 +72,8 @@
 		[SerializeField] private Transform m_MotionContainer = null;
 		[SerializeField] private InputField m_ValueIF = null;
 		[SerializeField] private InputField m_TweenIF = null;
+		[SerializeField] private Selectable m_ValueLabel = null;
+		[SerializeField] private Selectable m_TweenLabel = null;
 		[SerializeField] private Color m_BgTintA = Color.white;
 		[SerializeField] private Color m_BgTintB = Color.white;
 		[SerializeField] private Color m_DivTint = Color.black;
@@ -117,6 +119,7 @@
 #if UNITY_EDITOR
 			if (!UnityEditor.EditorApplication.isPlaying) { return; }
 #endif
+			RefreshFieldUI();
 			// Seek
 			var map = GetBeatmap();
 			if (map != null) {
@@ -272,8 +275,18 @@
 		private void Update_UI () {
 			// Field
 			bool fieldActive = ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0;
-			m_ValueIF.gameObject.TrySetActive(fieldActive);
-			m_TweenIF.gameObject.TrySetActive(fieldActive);
+			if (m_ValueIF.interactable != fieldActive) {
+				m_ValueIF.interactable = fieldActive;
+			}
+			if (m_TweenIF.interactable != fieldActive) {
+				m_TweenIF.interactable = fieldActive;
+			}
+			if (m_ValueLabel.interactable != fieldActive) {
+				m_ValueLabel.interactable = fieldActive;
+			}
+			if (m_TweenLabel.interactable != fieldActive) {
+				m_TweenLabel.interactable = fieldActive;
+			}
 			if (MotionItem.SelectingMotionIndex != PrevSelectingMotionIndex) {
 				PrevSelectingMotionIndex = MotionItem.SelectingMotionIndex;
 				RefreshFieldUI();
@@ -490,8 +503,9 @@
 			if (!UIReady) { return; }
 			if (text.TryParseIntForInspector(out int tween)) {
 				TrySetCurrentTween(tween);
+			} else {
+				RefreshFieldUI();
 			}
-			RefreshFieldUI();
 		}
 
 
@@ -499,9 +513,9 @@
 			UIReady = false;
 			try {
 				var map = GetBeatmap();
+				string valueRes = "--";
+				string tweenRes = "--";
 				if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
-					string valueRes = "--";
-					string tweenRes = "--";
 					var (hasA, hasB) = map.GetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, out float valueA, out float valueB, out int tween);
 					if (MotionType == 0 && hasA && hasB) {
 						// Vector2
@@ -515,9 +529,9 @@
 						// Tween
 						tweenRes = tween.ToString();
 					}
-					m_ValueIF.text = valueRes;
-					m_TweenIF.text = tweenRes;
 				}
+				m_ValueIF.text = valueRes;
+				m_TweenIF.text = tweenRes;
 			} catch { }
 			UIReady = true;
 		}
@@ -528,6 +542,7 @@
 			if (map != null && ItemType >= 0 && ItemIndex >= 0 && MotionItem.SelectingMotionIndex >= 0) {
 				map.SetMotionValueTween(ItemIndex, MotionType, MotionItem.SelectingMotionIndex, null, null, tween);
 			}
+			RefreshFieldUI();
 		}
 
 

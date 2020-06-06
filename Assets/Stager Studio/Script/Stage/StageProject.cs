@@ -7,7 +7,7 @@
 	using UnityEngine.Networking;
 	using Saving;
 	using Data;
-
+	using NAudio.Wave;
 
 	public class StageProject : MonoBehaviour {
 
@@ -140,7 +140,7 @@
 		public (Project.ImageData data, Sprite sprite) FrontCover { get; private set; } = (null, null);
 		public (Project.FileData data, AudioClip clip) Music { get; private set; } = (null, null);
 		public List<Color32> Palette { get; } = new List<Color32>();
-		public List<(AnimationCurve curve, Color32 color)> Tweens { get; } = new List<(AnimationCurve, Color32)>();
+		public List<AnimationCurve> Tweens { get; } = new List<AnimationCurve>();
 		public List<(Project.FileData data, AudioClip clip)> ClickSounds { get; } = new List<(Project.FileData data, AudioClip clip)>();
 
 		// Short
@@ -280,7 +280,7 @@
 
 				// Cover
 				try {
-					FrontCover = (project.FrontCover, ProjectUtil.ImageData_to_Sprite(project.FrontCover));
+					FrontCover = (project.FrontCover, Project.ImageData_to_Sprite(project.FrontCover));
 					OnCoverLoaded.Invoke(FrontCover.sprite);
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectCover, true, ex.Message);
@@ -354,7 +354,6 @@
 
 				// Done
 				LogLoadingProgress("", -1f);
-				FixIndexRangesForProjectData();
 				yield return new WaitForSeconds(RENDERER_WAIT);
 				OnProjectLoaded();
 				RefreshAutoSaveTime();
@@ -551,39 +550,6 @@
 		}
 
 
-		public void UI_ImportPalette (System.Action done) {
-			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportPalette, DialogUtil.MarkType.Warning, () => {
-				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportPaletteTitle), "images", "png", "jpg");
-				if (string.IsNullOrEmpty(path)) { return; }
-				try {
-					var colors = Util.ImageToPixels(path, false).pixels;
-					if (colors is null) { throw new System.Exception("Error on import image."); }
-					Palette.Clear();
-					Palette.AddRange(colors);
-					SetDirty();
-					if (Palette.Count > 256) {
-						Palette.RemoveRange(256, Palette.Count - 256);
-					}
-					done();
-				} catch (System.Exception ex) {
-					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
-					OnException(ex);
-				}
-			});
-		}
-
-
-		public void ImportClickSound () {
-			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportClickSoundTitle, "", "mp3", "wav", "ogg");
-			if (!Util.FileExists(path)) { return; }
-			ImportAudioLogic(path, (data, clip) => {
-				ClickSounds.Add((data, clip));
-				LogClickSoundCallback();
-				SetDirty();
-			});
-		}
-
-
 		public void ImportAudioLogic (string path, System.Action<Project.FileData, AudioClip> callBack) {
 			if (LoadingCor != null) {
 				LogMessageLogic(LanguageData.Error_CantPickOnLoadingProject);
@@ -605,7 +571,7 @@
 					if (format == ".mp3") {
 						aimFormat = ".wav";
 						aimPath = Util.ChangeExtension(TempPath, name + aimFormat);
-						NAudioUtil.Mp3ToWav(path, aimPath);
+						Mp3ToWav(path, aimPath);
 						needDelete = true;
 					}
 					var audioType = GetAudioTyle(aimFormat);
@@ -642,7 +608,7 @@
 						}
 					}
 					if (clip) {
-						var aData = ProjectUtil.AudioBytes_to_AudioData(Util.GetNameWithoutExtension(path), format, Util.FileToByte(path));
+						var aData = Project.AudioBytes_to_AudioData(Util.GetNameWithoutExtension(path), format, Util.FileToByte(path));
 						if (aData != null) {
 							clip.name = aData.Name;
 							cBack.Invoke(aData, clip);
@@ -674,7 +640,7 @@
 
 			IEnumerator LoadImage (System.Action<Project.ImageData, Sprite> cBack, bool alpha) {
 				yield return LoadImageLogic(path, (texture, sprite) => {
-					var tData = ProjectUtil.Texture_to_ImageData(texture, texture.width, texture.height, alpha);
+					var tData = Project.Texture_to_ImageData(texture, texture.width, texture.height, alpha);
 					if (tData != null && sprite != null) {
 						cBack.Invoke(tData, sprite);
 					}
@@ -698,7 +664,7 @@
 
 			IEnumerator LoadImage (System.Action<Project.FileData, Sprite> cBack) {
 				yield return LoadImageLogic(path, (texture, sprite) => {
-					var tData = ProjectUtil.Texture_to_FileData(texture, Util.GetExtension(path));
+					var tData = Project.Texture_to_FileData(texture, Util.GetExtension(path));
 					if (tData != null && sprite != null) {
 						cBack.Invoke(tData, sprite);
 					}
@@ -731,11 +697,42 @@
 		});
 
 
+		// Click Sound
+		public void ImportClickSound () {
+			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportClickSoundTitle, "", "mp3", "wav", "ogg");
+			if (!Util.FileExists(path)) { return; }
+			ImportAudioLogic(path, (data, clip) => {
+				ClickSounds.Add((data, clip));
+				LogClickSoundCallback();
+				SetDirty();
+			});
+		}
+
+
 		public void RemoveClickSound (int index) {
 			if (index < 0 || index >= ClickSounds.Count) { return; }
 			ClickSounds.RemoveAt(index);
-			FixBeatmapClickSoundForDelete(index);
+			foreach (var pair in BeatmapMap) {
+				var map = pair.Value;
+				if (map is null) { continue; }
+				map.DeleteClickSound(index);
+			}
 			LogClickSoundCallback();
+			SetDirty();
+		}
+
+
+		public void SwipeClickSound (int index, int indexAlt) {
+			if (index < 0 || index >= Palette.Count || indexAlt < 0 || indexAlt >= Palette.Count || index == indexAlt) { return; }
+			var temp = ClickSounds[index];
+			ClickSounds[index] = ClickSounds[indexAlt];
+			ClickSounds[indexAlt] = temp;
+			// Fix All Beatmap Data
+			foreach (var pair in BeatmapMap) {
+				var map = pair.Value;
+				if (map is null) { continue; }
+				map.SwipeClickSound((short)index, (short)indexAlt);
+			}
 			SetDirty();
 		}
 
@@ -753,18 +750,8 @@
 			foreach (var pair in BeatmapMap) {
 				var map = pair.Value;
 				if (map is null) { continue; }
-				foreach (var track in map.Tracks) {
-					// Color
-					if (track.Color > index) {
-						track.Color--;
-					} else if (track.Color == index) {
-						track.Color = 0;
-					}
-					// Colors
-					FixBeatmapTweenValueIndexForDelete(track.Colors, index, true);
-				}
+				map.DeletePaletteColor(index);
 			}
-			FixIndexRangesForProjectData();
 		}
 
 
@@ -782,12 +769,49 @@
 		}
 
 
+		public void SwipePalette (int index, int indexAlt) {
+			if (index < 0 || index >= Palette.Count || indexAlt < 0 || indexAlt >= Palette.Count || index == indexAlt) { return; }
+			var temp = Palette[index];
+			Palette[index] = Palette[indexAlt];
+			Palette[indexAlt] = temp;
+			// Fix All Beatmap Data
+			foreach (var pair in BeatmapMap) {
+				var map = pair.Value;
+				if (map is null) { continue; }
+				map.SwipePaletteColor(index, indexAlt);
+			}
+			SetDirty();
+		}
+
+
 		public void UI_AddPaletteColor () {
 			if (Palette.Count >= 256) {
 				DialogUtil.Dialog_OK(LanguageData.UI_PaletteFull, DialogUtil.MarkType.Warning, () => { });
 				return;
 			}
 			AddPaletteColor(Color.white);
+		}
+
+
+		public void UI_ImportPalette (System.Action done) {
+			DialogUtil.Dialog_OK_Cancel(LanguageData.UI_ImportPalette, DialogUtil.MarkType.Warning, () => {
+				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportPaletteTitle), "images", "png", "jpg");
+				if (string.IsNullOrEmpty(path)) { return; }
+				try {
+					var colors = Util.ImageToPixels(path, false).pixels;
+					if (colors is null) { throw new System.Exception("Error on import image."); }
+					Palette.Clear();
+					Palette.AddRange(colors);
+					SetDirty();
+					if (Palette.Count > 256) {
+						Palette.RemoveRange(256, Palette.Count - 256);
+					}
+					done();
+				} catch (System.Exception ex) {
+					DialogUtil.Open(ex.Message, DialogUtil.MarkType.Error, () => { });
+					OnException(ex);
+				}
+			});
 		}
 
 
@@ -817,40 +841,27 @@
 			// Remove
 			Tweens.RemoveAt(index);
 			if (Tweens.Count == 0) {
-				Tweens.Add((AnimationCurve.Linear(0, 0, 1, 1), Color.white));
+				Tweens.Add(AnimationCurve.Linear(0, 0, 1, 1));
 			}
 			SetDirty();
 			// Fix All Beatmap Data
 			foreach (var pair in BeatmapMap) {
 				var map = pair.Value;
 				if (map is null) { continue; }
-				foreach (var stage in map.Stages) {
-					FixBeatmapTweenValueIndexForDelete(stage.Positions, index);
-					FixBeatmapTweenValueIndexForDelete(stage.Rotations, index);
-					FixBeatmapTweenValueIndexForDelete(stage.Widths, index);
-					FixBeatmapTweenValueIndexForDelete(stage.Heights, index);
-					FixBeatmapTweenValueIndexForDelete(stage.Colors, index, false);
-				}
-				foreach (var track in map.Tracks) {
-					FixBeatmapTweenValueIndexForDelete(track.Xs, index);
-					FixBeatmapTweenValueIndexForDelete(track.Widths, index);
-					FixBeatmapTweenValueIndexForDelete(track.Colors, index, false);
-					FixBeatmapTweenValueIndexForDelete(track.Angles, index);
-				}
+				map.DeleteTween(index);
 			}
-			FixIndexRangesForProjectData();
 		}
 
 
-		public void AddTweenCurve (AnimationCurve curve, Color32 color) {
-			Tweens.Add((curve, color));
+		public void AddTweenCurve (AnimationCurve curve) {
+			Tweens.Add(curve);
 			SetDirty();
 		}
 
 
-		public void SetTweenCurve (AnimationCurve curve, Color32? color, int index) {
+		public void SetTweenCurve (AnimationCurve curve, int index) {
 			if (index < 0 || index >= Tweens.Count) { return; }
-			var (projectTween, projectColor) = Tweens[index];
+			var projectTween = Tweens[index];
 			if (!(curve is null)) {
 				int len = projectTween.length;
 				for (int i = 0; i < len; i++) {
@@ -860,10 +871,22 @@
 					projectTween.AddKey(key);
 				}
 			}
-			if (color.HasValue) {
-				projectColor = color.Value;
+			Tweens[index] = projectTween;
+			SetDirty();
+		}
+
+
+		public void SwipeTween (int index, int indexAlt) {
+			if (index < 0 || index >= Tweens.Count || indexAlt < 0 || indexAlt >= Tweens.Count || index == indexAlt) { return; }
+			var temp = Tweens[index];
+			Tweens[index] = Tweens[indexAlt];
+			Tweens[indexAlt] = temp;
+			// Fix All Beatmap Data
+			foreach (var pair in BeatmapMap) {
+				var map = pair.Value;
+				if (map is null) { continue; }
+				map.SwipeTween(index, indexAlt);
 			}
-			Tweens[index] = (projectTween, projectColor);
 			SetDirty();
 		}
 
@@ -873,7 +896,7 @@
 				DialogUtil.Dialog_OK(LanguageData.UI_TweenFull, DialogUtil.MarkType.Warning, () => { });
 				return;
 			}
-			AddTweenCurve(AnimationCurve.Linear(0, 0, 1, 1), Color.white);
+			AddTweenCurve(AnimationCurve.Linear(0, 0, 1, 1));
 		}
 
 
@@ -882,7 +905,7 @@
 				var path = DialogUtil.PickFileDialog((LanguageData.UI_ImportTweenTitle), "json", "json");
 				if (string.IsNullOrEmpty(path) || !Util.FileExists(path)) { return; }
 				try {
-					var tArray = JsonUtility.FromJson<Data.Project.TweenArray>(Util.FileToText(path));
+					var tArray = JsonUtility.FromJson<Project.TweenArray>(Util.FileToText(path));
 					Tweens.Clear();
 					Tweens.AddRange(tArray.GetAnimationTweens());
 					SetDirty();
@@ -929,7 +952,6 @@
 			IsDirty = false;
 			SavingProgress = 0f;
 			OnProjectSavingStart.Invoke();
-			FixIndexRangesForProjectData();
 
 			// Stage >> Project Data
 			var project = new Project();
@@ -1008,7 +1030,7 @@
 			}
 			if (BeatmapMap.ContainsKey(key)) {
 				BeatmapMap.Remove(key);
-				OnBeatmapRemoved.Invoke();
+				OnBeatmapRemoved();
 				if (key == BeatmapKey) {
 					OpenFirstBeatmapLogic();
 				}
@@ -1055,7 +1077,7 @@
 				if (data.Format == ".mp3") {
 					aimFormat = ".wav";
 					aimPath = Util.ChangeExtension(path, aimFormat);
-					NAudioUtil.Mp3ToWav(path, aimPath);
+					Mp3ToWav(path, aimPath);
 					Util.DeleteFile(path);
 				}
 				var audioType = GetAudioTyle(aimFormat);
@@ -1195,6 +1217,7 @@
 		}
 
 
+
 		// Util
 		private AudioType GetAudioTyle (string extension) {
 			switch (extension) {
@@ -1227,122 +1250,9 @@
 		}
 
 
-		private void FixBeatmapTweenValueIndexForDelete (List<Beatmap.TimeIntTween> list, int index, bool fixValue) {
-			if (list is null || index < 0 || index >= list.Count) { return; }
-			for (int i = 0; i < list.Count; i++) {
-				var c = list[i];
-				if (fixValue) {
-					if (c.Value > index) {
-						c.Value--;
-						list[i] = c;
-					} else if (c.Value == index) {
-						c.Value = 0;
-						list[i] = c;
-					}
-				} else {
-					if (c.Tween > index) {
-						c.Tween--;
-						list[i] = c;
-					} else if (c.Tween == index) {
-						c.Tween = 0;
-						list[i] = c;
-					}
-				}
-			}
-		}
-
-
-		private void FixBeatmapTweenValueIndexForDelete (List<Beatmap.TimeFloatTween> list, int index) {
-			if (list is null || index < 0 || index >= list.Count) { return; }
-			for (int i = 0; i < list.Count; i++) {
-				var c = list[i];
-				if (c.Tween > index) {
-					c.Tween--;
-					list[i] = c;
-				} else if (c.Tween == index) {
-					c.Tween = 0;
-					list[i] = c;
-				}
-			}
-		}
-
-
-		private void FixBeatmapTweenValueIndexForDelete (List<Beatmap.TimeFloatFloatTween> list, int index) {
-			if (list is null || index < 0 || index >= list.Count) { return; }
-			for (int i = 0; i < list.Count; i++) {
-				var c = list[i];
-				if (c.Tween > index) {
-					c.Tween--;
-					list[i] = c;
-				} else if (c.Tween == index) {
-					c.Tween = 0;
-					list[i] = c;
-				}
-			}
-		}
-
-
-		private void FixBeatmapClickSoundForDelete (int index) {
-			foreach (var pair in BeatmapMap) {
-				var map = pair.Value;
-				if (map is null) { continue; }
-				foreach (var note in map.Notes) {
-					if (note.ClickSoundIndex > index) {
-						note.ClickSoundIndex--;
-					} else if (note.ClickSoundIndex == index) {
-						note.ClickSoundIndex = 0;
-					}
-				}
-			}
-		}
-
-
-		private void FixIndexRangesForProjectData () {
-			int palLen = Palette.Count;
-			int tweenLen = Tweens.Count;
-			foreach (var pair in BeatmapMap) {
-				var map = pair.Value;
-				if (map is null) { continue; }
-				foreach (var stage in map.Stages) {
-					FixRange_TFFT(stage.Positions);
-					FixRange_TFT(stage.Rotations);
-					FixRange_TFT(stage.Widths);
-					FixRange_TFT(stage.Heights);
-					FixRange_TIT(stage.Colors, palLen);
-				}
-				foreach (var track in map.Tracks) {
-					FixRange_TIT(track.Colors, palLen);
-					FixRange_TFT(track.Xs);
-					FixRange_TFT(track.Widths);
-					FixRange_TFT(track.Angles);
-				}
-			}
-			// Func
-			void FixRange_TIT (List<Beatmap.TimeIntTween> list, int valueLen) {
-				if (list is null) { return; }
-				for (int i = 0; i < list.Count; i++) {
-					var c = list[i];
-					c.Value = (byte)Mathf.Clamp(c.Value, 0, valueLen - 1);
-					c.Tween = (byte)Mathf.Clamp(c.Tween, 0, tweenLen - 1);
-					list[i] = c;
-				}
-			}
-			void FixRange_TFT (List<Beatmap.TimeFloatTween> list) {
-				if (list is null) { return; }
-				for (int i = 0; i < list.Count; i++) {
-					var c = list[i];
-					c.Tween = (byte)Mathf.Clamp(c.Tween, 0, tweenLen - 1);
-					list[i] = c;
-				}
-			}
-			void FixRange_TFFT (List<Beatmap.TimeFloatFloatTween> list) {
-				if (list is null) { return; }
-				for (int i = 0; i < list.Count; i++) {
-					var c = list[i];
-					c.Tween = (byte)Mathf.Clamp(c.Tween, 0, tweenLen - 1);
-					list[i] = c;
-				}
-			}
+		private void Mp3ToWav (string mp3, string wave) {
+			using (var reader = new Mp3FileReader(mp3))
+				WaveFileWriter.CreateWaveFile(wave, reader);
 		}
 
 

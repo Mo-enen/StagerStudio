@@ -1,6 +1,4 @@
-﻿Shortcut.Brush.AltSizeDown:Brush Size Down (Sub)
-Shortcut.Brush.AltSizeUp:Brush Size Up (Sub)
-Author:Stager Official
+﻿Author:Stager Official
 Command.Hint.CommandDone:Command done
 Dialog.Editor.CannotSelectStage:Can not select stage in panoramic mode
 Dialog.Editor.CannotSelectStageBrush:Can not select stage brush in panoramic mode
@@ -94,6 +92,12 @@ Menu.Inspector.Fx.Wobble:Wobble
 Menu.ProjectInfo.DeleteClickSound:Delete
 Menu.ProjectInfo.DeletePalette:Delete
 Menu.ProjectInfo.DeleteTween:Delete
+Menu.ProjectInfo.MoveClickSoundLeft:Move Left
+Menu.ProjectInfo.MoveClickSoundRight:Move Right
+Menu.ProjectInfo.MovePaletteLeft:Move Left
+Menu.ProjectInfo.MovePaletteRight:Move Right
+Menu.ProjectInfo.MoveTweenLeft:Move Left
+Menu.ProjectInfo.MoveTweenRight:Move Right
 Menu.ProjectItem.Delete:Delete
 Menu.ProjectItem.Move:Move
 Menu.ProjectItem.ShowInExplorer:Show in Explorer
@@ -156,9 +160,7 @@ ProjectCreator.Hint.Osu:Use simple side by side template
 ProjectCreator.Hint.Phigros:Use dynamic stage template
 ProjectCreator.Hint.StagerStudio:Create empty project
 ProjectCreator.Hint.Voez:Use movable track template
-ProjectInfo.Dialog.DeletePal:Delete color {0}? This can not be undo.
 ProjectInfo.Dialog.DeleteSound:Delete click sound {0}? This can not be undo.
-ProjectInfo.Dialog.DeleteTween:Delete tween {0}? This will not be undo.
 ProjectInfo.Dialog.ExportPaletteTitle:Export Palette
 ProjectInfo.Dialog.ExportTweenTitle:Export Tween
 ProjectInfo.Dialog.ImportPalette:Import a new palette? This will replace the current palette.
@@ -167,10 +169,13 @@ ProjectInfo.Dialog.ImportTween:Import tweens? This will overlap the current twee
 ProjectInfo.Dialog.ImportTweenTitle:Import Tween
 ProjectInfo.Dialog.PaletteExported:Palette exported.
 ProjectInfo.Dialog.PaletteFull:Can not have more than 256 colors.
+ProjectInfo.Dialog.SwipeSound:Move the click sound? This can not be undo.
 ProjectInfo.Dialog.TweenExported:Tweens exported
 ProjectInfo.Dialog.TweenFull:Can not have more than 256 tweens.
 Setting.ResetConfirm:Reset all settings back to default?
 Shortcut.AbreastView:Panorama View
+Shortcut.Brush.AltSizeDown:Brush Size Down (Sub)
+Shortcut.Brush.AltSizeUp:Brush Size Up (Sub)
 Shortcut.Brush.Note:Note Brush
 Shortcut.Brush.SizeDown:Brush Size Down
 Shortcut.Brush.SizeUp:Brush Size Up
@@ -384,6 +389,8 @@ UI.Inspector.Motion.Color:Color
 UI.Inspector.Motion.Height:Height
 UI.Inspector.Motion.Pos:Pos
 UI.Inspector.Motion.Rot:Rot
+UI.Inspector.Motion.Tween:Tween
+UI.Inspector.Motion.Value:Value
 UI.Inspector.Motion.Width:Width
 UI.Inspector.Motion.X:X
 UI.Inspector.Pivot:Pivot
@@ -467,6 +474,7 @@ UI.SkinEditor.FixedRatio:Fixed Ratio
 UI.SkinEditor.FrontPole:Front Pole
 UI.SkinEditor.Highlight:Highlight
 UI.SkinEditor.ImportImage:Import Image
+UI.SkinEditor.InfiniteJudgeline:Infinite Judgeline
 UI.SkinEditor.LuminousHeight:Lum Height
 UI.SkinEditor.LuminousWidth:Lum Width
 UI.SkinEditor.MinSize:Min Size

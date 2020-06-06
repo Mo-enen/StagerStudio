@@ -56,6 +56,7 @@
 		public float VanishDuration = 0.1f;
 		public bool TintNote = false;
 		public bool FrontPole = true;
+		public bool InfiniteJudgeLine = false;
 		public List<AnimatedItemData> Items = new List<AnimatedItemData>();
 
 		// Data

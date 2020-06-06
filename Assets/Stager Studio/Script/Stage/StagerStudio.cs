@@ -30,22 +30,129 @@
 
 		[System.Serializable]
 		private class UndoData {
+
+
+
+			[System.Serializable]
+			public struct UndoColor {
+				public byte R;
+				public byte G;
+				public byte B;
+				public byte A;
+				public UndoColor (Color32 color) {
+					R = color.r;
+					G = color.g;
+					B = color.b;
+					A = color.a;
+				}
+			}
+
+
+
+			[System.Serializable]
+			public struct UndoCurve {
+				[System.Serializable]
+				public struct UndoKeyframe {
+					public float time;
+					public float value;
+					public float inTangent;
+					public float outTangent;
+					public float inWeight;
+					public float outWeight;
+				}
+				public UndoKeyframe[] Keys;
+				public UndoCurve (AnimationCurve curve) {
+					int len = curve.length;
+					Keys = new UndoKeyframe[len];
+					for (int i = 0; i < len; i++) {
+						var sourceKey = curve[i];
+						Keys[i] = new UndoKeyframe() {
+							time = sourceKey.time,
+							value = sourceKey.value,
+							inTangent = sourceKey.inTangent,
+							outTangent = sourceKey.outTangent,
+							inWeight = sourceKey.inWeight,
+							outWeight = sourceKey.outWeight,
+						};
+					}
+				}
+			}
+
+
 			public Beatmap Map;
-			public bool[] ContainerActive;
+			public UndoColor[] Palette;
+			public UndoCurve[] Tweens;
+			public int SelectingItemType;
+			public int SelectingItemIndex;
+			public bool ContainerActive_0;
+			public bool ContainerActive_1;
+			public bool ContainerActive_2;
+			public bool ContainerActive_3;
+
+
+			public UndoData (
+				Beatmap map, List<Color32> palette, List<AnimationCurve> curves, int selectingItemType, int selectingItemIndex,
+				bool containerActive_0, bool containerActive_1, bool containerActive_2, bool containerActive_3
+			) {
+				Map = map;
+				SelectingItemType = selectingItemType;
+				SelectingItemIndex = selectingItemIndex;
+				ContainerActive_0 = containerActive_0;
+				ContainerActive_1 = containerActive_1;
+				ContainerActive_2 = containerActive_2;
+				ContainerActive_3 = containerActive_3;
+				// Pal
+				int pCount = palette.Count;
+				Palette = new UndoColor[pCount];
+				for (int i = 0; i < pCount; i++) {
+					Palette[i] = new UndoColor(palette[i]);
+				}
+				// Tween
+				int tCount = curves.Count;
+				Tweens = new UndoCurve[tCount];
+				for (int i = 0; i < tCount; i++) {
+					Tweens[i] = new UndoCurve(curves[i]);
+				}
+			}
+
+
+			public List<Color32> GetPalette () {
+				var result = new List<Color32>();
+				foreach (var c in Palette) {
+					result.Add(new Color32(c.R, c.G, c.B, c.A));
+				}
+				return result;
+			}
+
+
+			public List<AnimationCurve> GetTweens () {
+				var result = new List<AnimationCurve>();
+				foreach (var t in Tweens) {
+					int keyCount = t.Keys.Length;
+					var keyArray = new Keyframe[keyCount];
+					for (int i = 0; i < keyCount; i++) {
+						var sourceKey = t.Keys[i];
+						keyArray[i] = new Keyframe() {
+							time = sourceKey.time,
+							value = sourceKey.value,
+							inTangent = sourceKey.inTangent,
+							outTangent = sourceKey.outTangent,
+							inWeight = sourceKey.inWeight,
+							outWeight = sourceKey.outWeight,
+							weightedMode = WeightedMode.Both,
+						};
+					}
+					result.Add(new AnimationCurve() {
+						keys = keyArray,
+						postWrapMode = WrapMode.Clamp,
+						preWrapMode = WrapMode.Clamp,
+					});
+				}
+				return result;
+			}
+
+
 		}
-
-
-		// Handler
-		public delegate SkinData SkinDataStringHandler(string name);
-		public delegate Beatmap BeatmapHandler();
-		public delegate void VoidHandler();
-		public delegate bool BoolHandler();
-		public delegate float FloatHandler();
-		public delegate string StringStringHandler(string str);
-		public delegate int IntIntHandler(int i);
-		public delegate void VoidIntHandler(int i);
-		public delegate (float value, float index, float width) AbreastHandler();
-		public delegate (float a, float b) FloatFloatHandler();
 
 
 		#endregion
@@ -61,24 +168,11 @@
 		private const string UI_SelectorStageMenu = "Menu.UI.SelectorStage";
 		private const string UI_SelectorTrackMenu = "Menu.UI.SelectorTrack";
 		private const string UI_OpenWebMSG = "Dialog.OpenWebMSG";
-		private const string Confirm_DeleteProjectPal = "ProjectInfo.Dialog.DeletePal";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
-		private const string Confirm_DeleteProjectTween = "ProjectInfo.Dialog.DeleteTween";
+		private const string Confirm_SwipeProjectSound = "ProjectInfo.Dialog.SwipeSound";
 		private const string Hint_CommandDone = "Command.Hint.CommandDone";
 		private const string Hint_Volume = "Music.Hint.Volume";
 		private const string Hint_Undo = "Undo.Hint.Undo";
-
-		// Handler
-		private SkinDataStringHandler GetSkinFromDisk { get; set; } = null;
-		private StringStringHandler GetLanguage { get; set; } = null;
-		private FloatHandler GetDropSpeed { get; set; } = null;
-		private VoidIntHandler ProjectRemoveClickSound { get; set; } = null;
-		private VoidIntHandler ProjectRemoveTweenAt { get; set; } = null;
-		private VoidIntHandler ProjectRemovePaletteAt { get; set; } = null;
-		private AbreastHandler GetAbreastData { get; set; } = null;
-		private IntIntHandler GetGameItemCount { get; set; } = null;
-		private FloatHandler GetMusicTime { get; set; } = null;
-		private VoidHandler MusicPause { get; set; } = null;
 
 		// Ser
 		[Header("Stage")]
@@ -147,18 +241,7 @@
 		#region --- MSG ---
 
 
-		private void Awake() {
-
-			GetSkinFromDisk = m_Skin.GetSkinFromDisk;
-			MusicPause = m_Music.Pause;
-			GetMusicTime = () => m_Music.Time;
-			ProjectRemoveClickSound = m_Project.RemoveClickSound;
-			ProjectRemoveTweenAt = m_Project.RemoveTweenAt;
-			ProjectRemovePaletteAt = m_Project.RemovePaletteAt;
-			GetAbreastData = () => (m_Game.AbreastValue, m_Game.AbreastIndex, m_Game.AbreastWidth);
-			GetDropSpeed = () => m_Game.GameDropSpeed;
-			GetGameItemCount = m_Game.GetItemCount;
-			GetLanguage = m_Language.Get;
+		private void Awake () {
 
 			Awake_Message();
 			Awake_Quit();
@@ -182,7 +265,7 @@
 		}
 
 
-		private void Start() {
+		private void Start () {
 			LoadAllSettings();
 			UI_RemoveUI();
 			if (Screen.fullScreen) {
@@ -197,18 +280,14 @@
 		}
 
 
-		private void Update() {
+		private void Update () {
 
-			var (aValue, aIndex, aWidth) = GetAbreastData();
-			var dropSpeed = GetDropSpeed();
+			var dropSpeed = m_Game.GameDropSpeed;
 			var map = m_Project.Beatmap;
-			float musicTime = GetMusicTime();
+			float musicTime = m_Music.Time;
 			CursorUI.GlobalUpdate();
-			if (!Input.anyKey) {
-				UndoRedo.RegisterUndoIfDirty();
-			}
 			StageObject.ZoneMinMax = ObjectTimer.ZoneMinMax = m_Zone.GetZoneMinMax();
-			StageObject.Abreast = (aIndex, aValue, aWidth);
+			StageObject.Abreast = (m_Game.AbreastIndex, m_Game.AbreastValue, m_Game.AbreastWidth);
 			StageObject.ScreenZoneMinMax = m_Zone.GetScreenZoneMinMax();
 			StageObject.MusicTime = musicTime;
 			StageObject.ShowGridOnPlay = m_Game.ShowGridTimerOnPlay.Value;
@@ -218,13 +297,17 @@
 				map != null ? map.GetParentIndex(1, m_MotionPainter.ItemIndex) : -1,
 				m_MotionPainter.ItemType == 1 ? m_MotionPainter.ItemIndex : -1
 			);
-			Object.Stage.StageCount = GetGameItemCount(0);
+			Object.Stage.StageCount = m_Game.GetItemCount(0);
 			Note.CameraWorldPos = m_CameraTF.position;
 			TimingNote.ZoneMinMax = m_Zone.GetZoneMinMax(true);
 			TimingNote.GameSpeedMuti = dropSpeed;
 			TimingNote.MusicTime = musicTime;
 			ObjectTimer.MusicTime = musicTime;
 			ObjectTimer.SpeedMuti = dropSpeed;
+			// Undo
+			if (!Input.anyKey) {
+				UndoRedo.RegisterUndoIfDirty();
+			}
 			if (WillUndo) {
 				UndoRedo.Undo();
 				WillUndo = false;
@@ -236,12 +319,12 @@
 		}
 
 
-		private void OnApplicationQuit() {
+		private void OnApplicationQuit () {
 			DebugLog.CloseLogStream();
 		}
 
 
-		private void Awake_Message() {
+		private void Awake_Message () {
 			// Language
 			StageProject.GetLanguage = m_Language.Get;
 			StageGame.GetLanguage = m_Language.Get;
@@ -287,7 +370,7 @@
 		}
 
 
-		private void Awake_Quit() {
+		private void Awake_Quit () {
 			bool willQuit = false;
 			Application.wantsToQuit += () => {
 #if UNITY_EDITOR
@@ -312,7 +395,7 @@
 		}
 
 
-		private void Awake_Menu() {
+		private void Awake_Menu () {
 			// Grid
 			m_Menu.AddCheckerFunc("Menu.Grid.x00", () => m_Game.GridCountIndex_X0 == 0);
 			m_Menu.AddCheckerFunc("Menu.Grid.x01", () => m_Game.GridCountIndex_X0 == 1);
@@ -364,10 +447,11 @@
 		}
 
 
-		private void Awake_Object() {
-			StageObject.TweenEvaluate = (x, index) => m_Project.Tweens[Mathf.Clamp(index, 0, m_Project.Tweens.Count - 1)].curve.Evaluate(x);
-			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : m_Project.Palette[Mathf.Min(index, m_Project.Palette.Count - 1)];
-			StageObject.MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
+		private void Awake_Object () {
+			StageObject.TweenEvaluate = (x, index) => index < 0 ? 0f : m_Project.Tweens[Mathf.Min(index, Mathf.Max(0, m_Project.Tweens.Count - 1))].Evaluate(x);
+			StageObject.PaletteColor = (index) => index < 0 ? new Color32(0, 0, 0, 0) : m_Project.Palette[Mathf.Min(index, Mathf.Max(0, m_Project.Palette.Count - 1))];
+			StageObject.Shader_MaterialZoneID = Shader.PropertyToID("_ZoneMinMax");
+			StageObject.Shader_ClampAlphaID = Shader.PropertyToID("_ClampAlpha");
 			Note.GetFilledTime = m_Game.FillTime;
 			Note.GetDropSpeedAt = m_Game.GetDropSpeedAt;
 			Note.GetGameDropOffset = (muti) => m_Game.AreaBetween(0f, m_Music.Time, muti);
@@ -399,7 +483,7 @@
 		}
 
 
-		private void Awake_Project() {
+		private void Awake_Project () {
 
 			// Project
 			StageProject.OnProjectLoadingStart = () => {
@@ -508,7 +592,7 @@
 			StageProject.OnException = (ex) => DebugLog_Exception("Project", ex);
 
 			// Func
-			IEnumerator SaveProgressing() {
+			IEnumerator SaveProgressing () {
 				float pg = 0f;
 				m_Hint.SetProgress(0f);
 				while (m_Project.SavingProject) {
@@ -522,7 +606,7 @@
 		}
 
 
-		private void Awake_Game() {
+		private void Awake_Game () {
 			StageGame.OnItemCountChanged = () => {
 				m_Preview.SetDirty();
 				m_TimingPreview.SetDirty();
@@ -579,7 +663,7 @@
 		}
 
 
-		private void Awake_Music() {
+		private void Awake_Music () {
 			StageMusic.OnMusicPlayPause = (playing) => {
 				m_Progress.RefreshControlUI();
 				m_TimingPreview.SetDirty();
@@ -610,7 +694,7 @@
 		}
 
 
-		private void Awake_Sfx() {
+		private void Awake_Sfx () {
 			StageSoundFX.GetMusicPlaying = () => m_Music.IsPlaying;
 			StageSoundFX.GetMusicTime = () => m_Music.Time;
 			StageSoundFX.GetMusicVolume = () => SliderItemMap[SliderType.MusicVolume].saving.Value / 12f;
@@ -624,7 +708,7 @@
 		}
 
 
-		private void Awake_Editor() {
+		private void Awake_Editor () {
 			StageEditor.GetZoneMinMax = () => m_Zone.GetZoneMinMax();
 			StageEditor.GetRealZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
@@ -684,7 +768,7 @@
 		}
 
 
-		private void Awake_Skin() {
+		private void Awake_Skin () {
 			StageSkin.OnSkinLoaded = (data) => {
 				TryRefreshSetting();
 				StageObject.LoadSkin(data);
@@ -702,40 +786,53 @@
 		}
 
 
-		private void Awake_Undo() {
-			UndoRedo.GetStepData = () => new UndoData() {
-				Map = m_Project.Beatmap,
-				ContainerActive = new bool[4] {
-					m_Editor.GetContainerActive(0),
-					m_Editor.GetContainerActive(1),
-					m_Editor.GetContainerActive(2),
-					m_Editor.GetContainerActive(3),
-				},
-			};
+		private void Awake_Undo () {
+			UndoRedo.GetStepData = () => new UndoData(
+				m_Project.Beatmap,
+				m_Project.Palette,
+				m_Project.Tweens,
+				m_Editor.SelectingItemType,
+				m_Editor.SelectingItemIndex,
+				m_Editor.GetContainerActive(0),
+				m_Editor.GetContainerActive(1),
+				m_Editor.GetContainerActive(2),
+				m_Editor.GetContainerActive(3)
+			);
 			UndoRedo.OnUndoRedo = (stepObj) => {
 				var step = stepObj as UndoData;
 				if (step == null || step.Map == null) { return; }
 				// Map
 				m_Project.Beatmap.LoadFromOtherMap(step.Map);
+				// Project
+				m_Project.Tweens.Clear();
+				m_Project.Palette.Clear();
+				m_Project.Tweens.AddRange(step.GetTweens());
+				m_Project.Palette.AddRange(step.GetPalette());
+				m_Project.SetDirty();
+				// Selection
+				m_Editor.SetSelection(
+					step.SelectingItemType,
+					step.SelectingItemIndex
+				);
 				// Container Active
-				for (int i = 0; i < step.ContainerActive.Length; i++) {
-					m_Editor.SetContainerActive(i, step.ContainerActive[i]);
-				}
+				m_Editor.SetContainerActive(0, step.ContainerActive_0);
+				m_Editor.SetContainerActive(1, step.ContainerActive_1);
+				m_Editor.SetContainerActive(2, step.ContainerActive_2);
+				m_Editor.SetContainerActive(3, step.ContainerActive_3);
 				// Final
-				m_Editor.ClearSelection();
 				RefreshOnItemChange();
+				TryRefreshProjectInfo();
 				LogHint_Key(Hint_Undo);
 			};
 		}
 
 
-		private void Awake_ProjectInfo() {
+		private void Awake_ProjectInfo () {
 
 			ProjectInfoUI.MusicStopClickSounds = m_Music.StopClickSounds;
 			ProjectInfoUI.MusicPlayClickSound = m_Music.PlayClickSound;
 			ProjectInfoUI.OpenMenu = m_Menu.OpenMenu;
 			ProjectInfoUI.ProjectImportPalette = m_Project.UI_ImportPalette;
-			ProjectInfoUI.ProjectSaveProject = m_Project.SaveProject;
 			ProjectInfoUI.ProjectSetDirty = m_Project.SetDirty;
 			ProjectInfoUI.ProjectNewBeatmap = m_Project.NewBeatmap;
 			ProjectInfoUI.ProjectImportBeatmap = m_Project.UI_ImportBeatmap;
@@ -746,10 +843,16 @@
 			ProjectInfoUI.ProjectImportTween = m_Project.UI_ImportTween;
 			ProjectInfoUI.ProjectExportTween = m_Project.UI_ExportTween;
 			ProjectInfoUI.GetBeatmapMap = () => m_Project.BeatmapMap;
-			ProjectInfoUI.ProjectSetPaletteColor = m_Project.SetPaletteColor;
+			ProjectInfoUI.ProjectSetPaletteColor = (color, index) => {
+				m_Project.SetPaletteColor(color, index);
+				UndoRedo.SetDirty();
+			};
 			ProjectInfoUI.GetProjectPalette = () => m_Project.Palette;
 			ProjectInfoUI.GetProjectTweens = () => m_Project.Tweens;
-			ProjectInfoUI.SetProjectTweenCurve = m_Project.SetTweenCurve;
+			ProjectInfoUI.SetProjectTweenCurve = (curve, index) => {
+				m_Project.SetTweenCurve(curve, index);
+				UndoRedo.SetDirty();
+			};
 			ProjectInfoUI.GetProjectClickSounds = () => m_Project.ClickSounds;
 			ProjectInfoUI.GetProjectInfo = () => (
 				m_Project.ProjectName, m_Project.ProjectDescription,
@@ -781,7 +884,7 @@
 		}
 
 
-		private void Awake_Setting() {
+		private void Awake_Setting () {
 			SettingUI.ResetAllSettings = () => {
 				// Reset All
 				foreach (var pair in InputItemMap) {
@@ -829,7 +932,7 @@
 		}
 
 
-		private void Awake_Inspector() {
+		private void Awake_Inspector () {
 
 			// Stage
 			StageCommand.OnCommandDone = () => {
@@ -856,7 +959,6 @@
 				UndoRedo.SetDirty();
 			};
 			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
-			InspectorUI.GetProjectTweens = () => m_Project.Tweens;
 
 			// CMD
 			CommandUI.DoCommand = (type, command, index, value) => {
@@ -883,16 +985,19 @@
 				UndoRedo.SetDirty();
 			};
 			MotionPainterUI.OnSelectionChanged = () => {
-				m_Inspector.CloseTweenSelector();
+				UI_RemoveTweenSelector();
 			};
 			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
 			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
 			MotionPainterUI.SeekMusic = m_Music.Seek;
 
+			TweenSelectorUI.GetProjectTweens = () => m_Project.Tweens;
+			TweenSelectorUI.TrySetCurrentTween = m_MotionPainter.TrySetCurrentTween;
+
 		}
 
 
-		private void Awake_Misc() {
+		private void Awake_Misc () {
 
 			m_EasterEgg.Workspace = m_Project.Workspace;
 
@@ -918,7 +1023,7 @@
 			HomeUI.GotoEditor = m_State.GotoEditor;
 			HomeUI.GetWorkspace = () => m_Project.Workspace;
 			HomeUI.OpenMenu = m_Menu.OpenMenu;
-			HomeUI.SpawnProjectCreator = SpawnProjectCreator;
+			HomeUI.SpawnProjectCreator = UI_SpawnProjectCreator;
 			HomeUI.OnException = (ex) => DebugLog_Exception("Home", ex);
 
 			ProgressUI.GetDuration = () => m_Music.Duration;
@@ -1013,10 +1118,10 @@
 		#region --- API ---
 
 
-		public void Quit() => Application.Quit();
+		public void Quit () => Application.Quit();
 
 
-		public void About() => DialogUtil.Open(
+		public void About () => DialogUtil.Open(
 			$"<size=38><b>Stager Studio</b> v{Application.version}</size>\n" +
 			"<size=20>" +
 			"\nCreated by 楠瓜Moenen\n\n" +
@@ -1029,17 +1134,17 @@
 		);
 
 
-		public void GotoWeb() {
+		public void GotoWeb () {
 			Application.OpenURL("http://www.stager.studio");
 			DialogUtil.Open(
-				string.Format(GetLanguage(UI_OpenWebMSG), "www.stager.studio"),
+				string.Format(m_Language.Get(UI_OpenWebMSG), "www.stager.studio"),
 				DialogUtil.MarkType.Info,
 				() => { }, null, null, null, null
 			);
 		}
 
 
-		public void AddVolume(float delta) {
+		public void AddVolume (float delta) {
 			SetMusicVolume(Mathf.Clamp01(Util.Snap(m_Music.Volume + delta, 10f)));
 			try {
 				m_Hint.SetHint(string.Format(m_Language.Get(Hint_Volume), Mathf.RoundToInt(m_Music.Volume * 100f)));
@@ -1047,10 +1152,10 @@
 		}
 
 
-		public void Undo() => WillUndo = true;
+		public void Undo () => WillUndo = true;
 
 
-		public void Redo() => WillRedo = true;
+		public void Redo () => WillRedo = true;
 
 
 		#endregion
@@ -1062,7 +1167,7 @@
 
 
 		// Change
-		private void RefreshOnItemChange() {
+		private void RefreshOnItemChange () {
 			Note.SetCacheDirty();
 			TimingNote.SetCacheDirty();
 			ItemRenderer.SetGlobalDirty();
@@ -1075,7 +1180,7 @@
 		}
 
 
-		private void RefreshOnBeatmapInfoChange() { ///////////////// Invoking /////////////////
+		private void RefreshOnBeatmapInfoChange () { ///////////////// Invoking /////////////////
 			if (m_Project.Beatmap != null) {
 				m_Game.BPM = m_Project.Beatmap.BPM;
 				m_Game.Shift = m_Project.Beatmap.Shift;
@@ -1088,7 +1193,7 @@
 
 
 		// Try Refresh UI
-		private void TryRefreshSetting() {
+		private void TryRefreshSetting () {
 			var setting = m_SettingRoot.childCount > 0 ? m_SettingRoot.GetChild(0).GetComponent<SettingUI>() : null;
 			if (!(setting is null)) {
 				setting.Refresh();
@@ -1096,7 +1201,7 @@
 		}
 
 
-		private void TryRefreshProjectInfo() {
+		private void TryRefreshProjectInfo () {
 			var pInfo = m_ProjectInfoRoot.childCount > 0 ? m_ProjectInfoRoot.GetChild(0).GetComponent<ProjectInfoUI>() : null;
 			if (!(pInfo is null)) {
 				pInfo.Refresh();
@@ -1104,7 +1209,7 @@
 		}
 
 
-		private void RefreshLoading(float progress01, string hint = "") {
+		private void RefreshLoading (float progress01, string hint = "") {
 			var loading = m_LoadingRoot.childCount > 0 ? m_LoadingRoot.GetChild(0).GetComponent<LoadingUI>() : null;
 			if (loading is null) {
 				RemoveLoading();
@@ -1116,7 +1221,7 @@
 				loading.SetProgress(progress01, hint);
 			}
 			// ==== Func ===
-			void RemoveLoading() {
+			void RemoveLoading () {
 				m_LoadingRoot.DestroyAllChildImmediately();
 				m_LoadingRoot.gameObject.SetActive(false);
 				m_LoadingRoot.parent.InactiveIfNoChildActive();
@@ -1124,7 +1229,7 @@
 		}
 
 
-		private void RefreshGridRenderer() {
+		private void RefreshGridRenderer () {
 			m_GridRenderer.SetCountX(0, m_Game.CurrentGridCountX0);
 			m_GridRenderer.SetCountX(1, m_Game.CurrentGridCountX1);
 			m_GridRenderer.SetCountX(2, m_Game.CurrentGridCountX2);
@@ -1135,14 +1240,14 @@
 
 
 		// Hint
-		private void LogHint_Key(string key, bool flash = true) {
+		private void LogHint_Key (string key, bool flash = true) {
 			try {
 				m_Hint.SetHint(m_Language.Get(key), flash);
 			} catch { }
 		}
 
 
-		private void LogHint(string msg, bool flash = true) {
+		private void LogHint (string msg, bool flash = true) {
 			try {
 				m_Hint.SetHint(msg, flash);
 			} catch { }
@@ -1150,7 +1255,7 @@
 
 
 		// Debug Log
-		private void DebugLog_Start() {
+		private void DebugLog_Start () {
 			if (!DebugLog.UseLog) { return; }
 			DebugLog.LogFormat(
 				"System", "Start", true,
@@ -1161,7 +1266,7 @@
 		}
 
 
-		private void DebugLog_Project(string type) {
+		private void DebugLog_Project (string type) {
 			if (!DebugLog.UseLog) { return; }
 			DebugLog.LogFormat(
 				"Project", type, true,
@@ -1172,7 +1277,7 @@
 		}
 
 
-		private void DebugLog_Beatmap(string type) {
+		private void DebugLog_Beatmap (string type) {
 			if (!DebugLog.UseLog) { return; }
 			var map = m_Project.Beatmap;
 			if (map != null) {
@@ -1190,7 +1295,7 @@
 		}
 
 
-		private void DebugLog_Exception(string sub, System.Exception ex) => DebugLog.LogException("Error", sub, ex);
+		private void DebugLog_Exception (string sub, System.Exception ex) => DebugLog.LogException("Error", sub, ex);
 
 
 		#endregion
@@ -1216,7 +1321,7 @@ namespace StagerStudio.Editor {
 
 
 
-		public override void OnInspectorGUI() {
+		public override void OnInspectorGUI () {
 
 			if (EditorApplication.isPlaying) {
 				LayoutH(() => {
@@ -1238,14 +1343,14 @@ namespace StagerStudio.Editor {
 
 
 		// UTL
-		private Rect GUIRect(float width, float height) => GUILayoutUtility.GetRect(
+		private Rect GUIRect (float width, float height) => GUILayoutUtility.GetRect(
 			width, height,
 			GUILayout.ExpandWidth(width == 0),
 			GUILayout.ExpandHeight(height == 0)
 		);
 
 
-		private void LayoutH(System.Action action, bool box = false, GUIStyle style = null) {
+		private void LayoutH (System.Action action, bool box = false, GUIStyle style = null) {
 			if (box) {
 				style = GUI.skin.box;
 			}
@@ -1259,7 +1364,7 @@ namespace StagerStudio.Editor {
 		}
 
 
-		private void Space(float space = 4f) => GUILayout.Space(space);
+		private void Space (float space = 4f) => GUILayout.Space(space);
 
 
 	}

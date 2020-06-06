@@ -47,10 +47,12 @@
 		public static bool MusicPlaying { get; set; } = false;
 		public static bool ShowIndexLabel { get; set; } = true;
 		public static bool ShowGrid { get; set; } = true;
-		public static int MaterialZoneID { get; set; } = 0;
+		public static int Shader_MaterialZoneID { get; set; } = 0;
+		public static int Shader_ClampAlphaID { get; set; } = 0;
 		public static int SortingLayerID_Gizmos { get; set; } = -1;
 		public static bool TintNote { get; set; } = false;
 		public static bool FrontPole { get; set; } = true;
+		public static bool InfiniteJudgeLine { get; set; } = false;
 		public static (bool active, int stage, int track) Solo { get; set; } = (false, -1, -1);
 
 		protected static SkinData Skin { get; set; } = null;
@@ -208,7 +210,7 @@
 
 
 		protected static void RefreshRendererZoneFor (ItemRenderer renderer) =>
-			renderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
+			renderer.Renderer.material.SetVector(Shader_MaterialZoneID, new Vector4(
 				ScreenZoneMinMax.min.x,
 				Screen.height - ScreenZoneMinMax.max.y,
 				ScreenZoneMinMax.max.x,
@@ -223,6 +225,7 @@
 			HighlightTints = new Color32[typeCount];
 			TintNote = skin.TintNote;
 			FrontPole = skin.FrontPole;
+			InfiniteJudgeLine = skin.InfiniteJudgeLine;
 			if (skin == null) { return; }
 			for (int i = 0; i < RectSizess.Length && i < skin.Items.Count; i++) {
 				int rectCount = skin.Items[i].Rects.Count;

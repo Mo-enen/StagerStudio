@@ -759,6 +759,28 @@
 		public static float Beat_to_Time (float beat, float bpm, float shift) => 60f * beat / bpm + shift;
 
 
+		public static float GetMaxDistanceBetweenLineAndRect (Vector2 a, Vector2 b, Vector2 min, Vector2 max) {
+			float x_minY = (b.x - a.x) * ((min.y - a.y) / (b.y - a.y)) + a.x;
+			float x_maxY = (b.x - a.x) * ((max.y - a.y) / (b.y - a.y)) + a.x;
+			float y_minX = (b.y - a.y) * ((min.x - a.x) / (b.x - a.x)) + a.y;
+			float y_maxX = (b.y - a.y) * ((max.x - a.x) / (b.x - a.x)) + a.y;
+			float dis = 0f;
+			if (x_minY >= min.x && x_minY <= max.x) {
+				dis = Mathf.Max(dis, Vector2.Distance(a, new Vector2(x_minY, min.y)));
+			}
+			if (x_maxY >= min.x && x_maxY <= max.x) {
+				dis = Mathf.Max(dis, Vector2.Distance(a, new Vector2(x_maxY, max.y)));
+			}
+			if (y_minX >= min.y && y_minX <= max.y) {
+				dis = Mathf.Max(dis, Vector2.Distance(a, new Vector2(min.x, y_minX)));
+			}
+			if (y_maxX >= min.y && y_maxX <= max.y) {
+				dis = Mathf.Max(dis, Vector2.Distance(a, new Vector2(max.x, y_maxX)));
+			}
+			return dis;
+		}
+
+
 		#endregion
 
 

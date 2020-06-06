@@ -1,4 +1,4 @@
-﻿namespace StagerStudio.Curve {
+﻿namespace Curve {
 	using System.Collections.Generic;
 
 

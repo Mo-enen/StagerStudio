@@ -20,35 +20,29 @@
 
 
 		// API
-		public void CheckEasterEggs() {
+		public void CheckEasterEggs () {
 			// Suit
 			int index = 0;
 			try {
 				var dirs = Util.GetDirectsIn(Workspace, true);
 				foreach (var dir in dirs) {
-					switch (dir.Name) {
-						case "短袖圆领T恤":
-							index = 0;
-							break;
-						case "水手服":
-							index = 1;
-							break;
-						case "百褶裙":
-							index = 2;
-							break;
+					if (dir.Name.StartsWith("水手服")) {
+						index = 1;
+						break;
+					}
+					if (dir.Name.StartsWith("百褶裙")) {
+						index = 2;
+						break;
 					}
 				}
 			} catch { }
 			SetShirtIcon(index);
-
-
-
 		}
 
 
 
 		// LGC
-		private void SetShirtIcon(int index) {
+		private void SetShirtIcon (int index) {
 			m_Skin.sprite = m_ShirtIcons[Mathf.Clamp(index, 0, m_ShirtIcons.Length - 1)];
 		}
 

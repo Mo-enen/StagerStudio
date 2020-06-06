@@ -1,6 +1,6 @@
-﻿namespace StagerStudio.Curve {
+﻿namespace Curve {
 	using System.Collections.Generic;
-
+	using UnityEngine;
 
 	public class ConstantFloat {
 
@@ -96,6 +96,7 @@
 
 			// Main
 			if (Items.Count > 1) {
+				float areaDone = 0f;
 				float keyAlt;
 				float value = EvaluateKey(itemKeys, itemValues, key, muti);
 				float valueAlt;
@@ -106,19 +107,17 @@
 				) {
 					keyAlt = itemKeys[index];
 					valueAlt = Items[keyAlt].Value * muti;
-					if (value > 0f && valueAlt < 0f) {
-						deltaArea = GetAreaAt(right ? index - 1 : index, true, muti);
-						float prevKey = itemKeys[right ? index - 1 : index + 1];
-						deltaArea -= Abs(key - prevKey) * (key < prevKey ? value * muti : muti * Items[prevKey].Value);
-						if (area <= deltaArea) {
-							return right ? key + area / value : key - area / valueAlt;
-						}
-					}
 					deltaArea = GetAreaBetweenKeys(key, keyAlt, muti);
+					// Alt
+					if (deltaArea < 0 && -deltaArea > areaDone) {
+						return right ? key + areaDone / Mathf.Abs(value) : key - areaDone / Mathf.Abs(valueAlt);
+					}
+					// Normal
 					if (area <= deltaArea) {
 						return right ? key + area / value : key - area / valueAlt;
 					} else {
 						area -= deltaArea;
+						areaDone += deltaArea;
 						key = keyAlt;
 						value = valueAlt;
 					}
@@ -330,6 +329,8 @@
 
 
 		#endregion
+
+
 
 
 	}

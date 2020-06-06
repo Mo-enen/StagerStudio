@@ -1,7 +1,7 @@
 ﻿///*
 
 #if UNITY_EDITOR
-namespace StagerStudio.Curve {
+namespace Curve {
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
@@ -10,7 +10,7 @@ namespace StagerStudio.Curve {
 
 
 	[System.Serializable]
-	public class LinerFloatSer : LinerFloat, ISerializationCallbackReceiver {
+	public class ConstantFloatSer : ConstantFloat, ISerializationCallbackReceiver {
 
 
 
@@ -51,12 +51,12 @@ namespace StagerStudio.Curve {
 
 
 
-	public class LinerCurveTester : MonoBehaviour {
+	public class ConstantCurveTester : MonoBehaviour {
 
 
 
 
-		[SerializeField] private LinerFloatSer m_Curve = null;
+		[SerializeField] private ConstantFloatSer m_Curve = null;
 		[SerializeField] private float m_EvaluateKey = 0f;
 		[SerializeField] private float m_SearchKey = 0f;
 		[SerializeField] private Vector2 m_AreaBetween = new Vector2();
@@ -108,7 +108,7 @@ namespace StagerStudio.Curve {
 				for (int i = 1; i < m_Curve.Count; i++) {
 					float key = m_Curve.GetKeyAt(i);
 					float value = m_Curve.GetValue(key) * m_Muti;
-					DrawLine(prevKey, prevValue, key, value);
+					DrawLine(prevKey, prevValue, key, prevValue);
 					DrawLabel(key, value);
 					DrawCube(key, value);
 					prevKey = key;

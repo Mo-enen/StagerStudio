@@ -35,7 +35,7 @@
 		#region --- MSG ---
 
 
-		protected override void Awake() {
+		protected override void Awake () {
 			base.Awake();
 			ColRot = null;
 			m_JudgelineRenderer.SkinData = Skin;
@@ -44,12 +44,12 @@
 		}
 
 
-		private void OnEnable() {
+		private void OnEnable () {
 			Update();
 		}
 
 
-		private void Update() {
+		private void Update () {
 
 
 			MainRenderer.RendererEnable = false;
@@ -87,9 +87,9 @@
 		}
 
 
-		private void Update_Movement(Beatmap.Stage stageData, int stageIndex) {
+		private void Update_Movement (Beatmap.Stage stageData, int stageIndex) {
 
-			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
+			var (zoneMin, zoneMax, zoneSize, ratio) = ZoneMinMax;
 			float width = GetStageWidth(stageData);
 			float height = GetStageHeight(stageData);
 			float pivotY = GetStagePivotY(stageData);
@@ -97,20 +97,21 @@
 			var judgeLineSize = GetRectSize(SkinType.JudgeLine, stageData.ItemType);
 			var stageColor = GetStageColor(stageData);
 			float stageAlpha = GetStageAlpha(stageData) * stageColor.a;
-			var rendererPos = new Vector3(0f, -height * pivotY * zoneSize, 0f);
+			var stagePosition = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
+			var stageRotation = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
+			var rendererPosition = new Vector3(0f, -height * pivotY * zoneSize, 0f);
+			float judgeWidth = InfiniteJudgeLine ? Util.GetMaxDistanceBetweenLineAndRect(
+				stagePosition, stagePosition + stageRotation * Vector3.right,
+				zoneMin, new Vector2(zoneMax.x, zoneMin.y + zoneSize / ratio)
+			) * 2f : zoneSize * width;
 
 			// Movement
-			var stageRot = Quaternion.Euler(0f, 0f, GetStageWorldRotationZ(stageData));
-			transform.position = Util.Vector3Lerp3(zoneMin, zoneMax, stagePos.x, stagePos.y);
-			transform.localRotation = stageRot;
+			transform.position = stagePosition;
+			transform.localRotation = stageRotation;
 			ColSize = MainRenderer.transform.localScale = new Vector3(zoneSize * width, Mathf.Max(zoneSize * height, 0.00001f), 1f);
-			MainRenderer.transform.localPosition = rendererPos;
-			m_JudgelineRenderer.transform.localPosition = rendererPos;
-			m_JudgelineRenderer.transform.localScale = new Vector3(
-				zoneSize * width,
-				Mathf.Max(zoneSize * judgeLineSize.y, 0.00001f),
-				1f
-			);
+			MainRenderer.transform.localPosition = rendererPosition;
+			m_JudgelineRenderer.transform.localPosition = rendererPosition;
+			m_JudgelineRenderer.transform.localScale = new Vector3(judgeWidth, Mathf.Max(zoneSize * judgeLineSize.y, 0.00001f), 1f);
 			ColPivotY = pivotY;
 
 			// Renderer
@@ -127,13 +128,13 @@
 			m_JudgelineRenderer.Tint = stageColor;
 			m_JudgelineRenderer.Alpha = stageAlpha;
 			m_JudgelineRenderer.Duration = Duration;
-			m_JudgelineRenderer.Scale = new Vector2(width, judgeLineSize.y);
+			m_JudgelineRenderer.Scale = new Vector2(judgeWidth, judgeLineSize.y);
 			m_JudgelineRenderer.SetSortingLayer(SortingLayerID_Judge, GetSortingOrder());
 
 		}
 
 
-		private void Update_Gizmos(bool stageActive, int stageIndex) {
+		private void Update_Gizmos (bool stageActive, int stageIndex) {
 
 			// Label
 			if (Label != null) {
@@ -156,54 +157,55 @@
 		#region --- API ---
 
 
-		public static void UpdateCache(Beatmap.Stage stageData, int index, bool timerActive, float parentSpeed) {
+		public static void UpdateCache (Beatmap.Stage stageData, int index, bool timerActive, float parentSpeed) {
 			stageData._Active = GetStageActive(stageData, index);
 			stageData._SpeedMuti = parentSpeed * stageData.Speed;
 			stageData._TimerActive = timerActive;
 		}
 
 
-		protected override void RefreshRendererZone() {
+		protected override void RefreshRendererZone () {
 			base.RefreshRendererZone();
 			RefreshRendererZoneFor(m_JudgelineRenderer);
+			m_JudgelineRenderer.Renderer.material.SetFloat(Shader_ClampAlphaID, InfiniteJudgeLine ? 0f : 0.15f);
 		}
 
 
-		public static float GetStageWorldRotationZ(Beatmap.Stage stageData) => Mathf.LerpAngle(
+		public static float GetStageWorldRotationZ (Beatmap.Stage stageData) => Mathf.LerpAngle(
 			-Mathf.Repeat(stageData.Rotation + Evaluate(stageData.Rotations, MusicTime - stageData.Time), 360f),
 			0f,
 			Abreast.value
 		);
 
 
-		public static float GetStageWidth(Beatmap.Stage data) => Mathf.Lerp(
+		public static float GetStageWidth (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Max(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f),
 			Abreast.width - ABREAST_GAP,
 			Abreast.value
 		);
 
 
-		public static float GetStageWidth_Motion(Beatmap.Stage data) => Evaluate(data.Widths, MusicTime - data.Time, 1f);
+		public static float GetStageWidth_Motion (Beatmap.Stage data) => Evaluate(data.Widths, MusicTime - data.Time, 1f);
 
 
-		public static float GetStageHeight_Motion(Beatmap.Stage data) => Evaluate(data.Heights, MusicTime - data.Time, 1f);
+		public static float GetStageHeight_Motion (Beatmap.Stage data) => Evaluate(data.Heights, MusicTime - data.Time, 1f);
 
 
-		public static float GetStageHeight(Beatmap.Stage data) => Mathf.Lerp(
+		public static float GetStageHeight (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Max(data.Height * Evaluate(data.Heights, MusicTime - data.Time, 1f), 0.00001f),
 			Mathf.Clamp(1f / ZoneMinMax.ratio, 0f, 256f),
 			Abreast.value
 		);
 
 
-		public static float GetStagePivotY(Beatmap.Stage data) => Mathf.Lerp(
+		public static float GetStagePivotY (Beatmap.Stage data) => Mathf.Lerp(
 			data.PivotY,
 			0f,
 			Abreast.value
 		);
 
 
-		public static float GetStageAlpha(Beatmap.Stage data) => Mathf.Lerp(
+		public static float GetStageAlpha (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Clamp01(
 				VanishDuration < FLOAT_GAP ? 1f :
 				Mathf.Min(data.Time + data.Duration - MusicTime, MusicTime - data.Time) / VanishDuration
@@ -212,15 +214,15 @@
 		);
 
 
-		public static float GetStageSpeed(Beatmap.Stage data) => Mathf.Lerp(
+		public static float GetStageSpeed (Beatmap.Stage data) => Mathf.Lerp(
 			data.Speed, 1f, Abreast.value
 		);
 
 
-		public static Vector2 GetStagePosition(Beatmap.Stage data, int stageIndex) => GetStagePosition(data, stageIndex, MusicTime);
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex) => GetStagePosition(data, stageIndex, MusicTime);
 
 
-		public static Vector2 GetStagePosition(Beatmap.Stage data, int stageIndex, float musicTime) {
+		public static Vector2 GetStagePosition (Beatmap.Stage data, int stageIndex, float musicTime) {
 			if (Abreast.value < 0.0001f) {
 				return GetNormalPos();
 			} else if (Abreast.value > 0.9999f) {
@@ -229,9 +231,9 @@
 				return Vector2.Lerp(GetNormalPos(), GetAbreastPos(), Abreast.value);
 			}
 			// === Func ===
-			Vector3 GetNormalPos() =>
+			Vector3 GetNormalPos () =>
 				new Vector2(data.X, data.Y) + Evaluate(data.Positions, musicTime - data.Time);
-			Vector3 GetAbreastPos() {
+			Vector3 GetAbreastPos () {
 				if (StageCount <= 1) {
 					return new Vector2(0.5f, 0f);
 				} else {
@@ -241,17 +243,17 @@
 		}
 
 
-		public static Color GetStageColor(Beatmap.Stage data) => EvaluateColor(
+		public static Color GetStageColor (Beatmap.Stage data) => EvaluateColor(
 			data.Colors, MusicTime - data.Time, PaletteColor(data.Color)
 		);
 
 
 		// Motion
-		public static Vector2 GetStagePosition_Motion(Beatmap.Stage data) => Evaluate(data.Positions, MusicTime - data.Time);
+		public static Vector2 GetStagePosition_Motion (Beatmap.Stage data) => Evaluate(data.Positions, MusicTime - data.Time);
 
 
 		// Matrix
-		public static Vector3 LocalToZone(
+		public static Vector3 LocalToZone (
 			float x01, float y01, float z01,
 			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ
 		) => Matrix4x4.TRS(
@@ -261,7 +263,7 @@
 		).MultiplyPoint3x4(new Vector3(x01 - 0.5f, y01 - stagePivotY, z01));
 
 
-		public static Vector3 ZoneToLocal(
+		public static Vector3 ZoneToLocal (
 			float zoneX, float zoneY, float zoneZ,
 			Vector2 stagePos, float stageWidth, float stageHeight, float stagePivotY, float stageRotZ
 		) {
@@ -284,7 +286,7 @@
 		#region --- LGC ---
 
 
-		private static bool GetStageActive(Beatmap.Stage data, int stageIndex) =>
+		private static bool GetStageActive (Beatmap.Stage data, int stageIndex) =>
 			Solo.active ? stageIndex == Solo.stage :
 			Abreast.value >= 0.5f || (MusicTime >= data.Time && MusicTime <= data.Time + data.Duration);
 

@@ -16,8 +16,7 @@
 		public delegate float FloatHandler ();
 		public delegate void VoidHandler ();
 		public delegate string StringStringHandler (string str);
-		public delegate List<(AnimationCurve, Color32)> TweensHandler ();
-
+		
 		// Const
 		private const string HEADER_BEATMAP = "Inspector.Header.Beatmap";
 		private const string HEADER_STAGE = "Inspector.Header.Stage";
@@ -34,8 +33,7 @@
 		public static VoidHandler OnBeatmapEdited { get; set; } = null;
 		public static VoidHandler OnItemEdited { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
-		public static TweensHandler GetProjectTweens { get; set; } = null;
-
+		
 		// Api
 		public static (int stage, int track, int note) TypeCount { get; set; } = (0, 0, 0);
 
@@ -52,9 +50,6 @@
 		[SerializeField] private RectTransform m_Container = null;
 		[SerializeField] private RectTransform m_MotionInspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
-		[SerializeField] private RectTransform m_TweenSelectorRoot = null;
-		[SerializeField] private RectTransform m_TweenSelectorContent = null;
-		[SerializeField] private Grabber m_TweenSelectorPrefab = null;
 
 		// Data
 		private BeatmapInspectorUI _BeatmapInspector = null;
@@ -141,7 +136,6 @@
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			MotionItem.SelectingMotionIndex = -1;
-			CloseTweenSelector();
 			PlayMotionAnimation(true, true);
 		}
 
@@ -152,39 +146,7 @@
 			m_MotionPainter.ScrollValue = 0f;
 			m_MotionPainter.SetVerticesDirty();
 			MotionItem.SelectingMotionIndex = -1;
-			CloseTweenSelector();
 			PlayMotionAnimation(false, useAnimation);
-		}
-
-
-		public void OpenTweenSelector () {
-			m_TweenSelectorRoot.gameObject.TrySetActive(true);
-			m_TweenSelectorContent.DestroyAllChildImmediately();
-			var tweens = GetProjectTweens();
-			if (tweens == null || tweens.Count == 0) { return; }
-			for (int i = 0; i < tweens.Count; i++) {
-				int index = i;
-				var grab = Instantiate(m_TweenSelectorPrefab, m_TweenSelectorContent);
-				var rt = grab.transform as RectTransform;
-				rt.anchoredPosition3D = rt.anchoredPosition;
-				rt.localScale = Vector3.one;
-				rt.localRotation = Quaternion.identity;
-				rt.SetAsLastSibling();
-				grab.Grab<Button>().onClick.AddListener(() => {
-					m_MotionPainter.TrySetCurrentTween(index);
-					m_MotionPainter.RefreshFieldUI();
-					CloseTweenSelector();
-				});
-				grab.Grab<Text>("Label").text = index.ToString("00");
-				grab.Grab<Curve>("Curve").CurveData = tweens[index].Item1;
-				grab.Grab<Image>("Mark").color = tweens[index].Item2;
-			}
-		}
-
-
-		public void CloseTweenSelector () {
-			m_TweenSelectorRoot.gameObject.TrySetActive(false);
-			m_TweenSelectorContent.DestroyAllChildImmediately();
 		}
 
 

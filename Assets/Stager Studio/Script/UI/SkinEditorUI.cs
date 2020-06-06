@@ -15,11 +15,11 @@
 
 
 		// Handler
-		public delegate string StringStringHandler(string key);
-		public delegate void VoidFloatHandler(float value);
-		public delegate void VoidHandler();
-		public delegate void VoidStringHandler(string str);
-		public delegate string PathSkinStringHandler(SkinData skin, string name);
+		public delegate string StringStringHandler (string key);
+		public delegate void VoidFloatHandler (float value);
+		public delegate void VoidHandler ();
+		public delegate void VoidStringHandler (string str);
+		public delegate string PathSkinStringHandler (SkinData skin, string name);
 
 		// Const
 		private const string HINT_Saved = "SkinEditor.Saved";
@@ -59,6 +59,7 @@
 		[SerializeField] private InputField m_MinSizeIF = null;
 		[SerializeField] private Toggle m_TintNoteTG = null;
 		[SerializeField] private Toggle m_FrontPoleTG = null;
+		[SerializeField] private Toggle m_InfiniteJudgelineTG = null;
 		[SerializeField] private Button m_HighlightTint = null;
 		[SerializeField] private Toggle m_FixedRatioTG = null;
 		[SerializeField] private Image m_Background = null;
@@ -84,10 +85,10 @@
 		#region --- MSG ---
 
 
-		private void Awake() => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
+		private void Awake () => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
 
 
-		private void Update() {
+		private void Update () {
 			if (transform.localScale.x < 0.5f) {
 				if (Input.GetMouseButton(0)) {
 					// Viewing
@@ -113,7 +114,7 @@
 		#region --- API ---
 
 
-		public void Init(SkinData skinData, string skinName, bool openSettingAfterClose) {
+		public void Init (SkinData skinData, string skinName, bool openSettingAfterClose) {
 
 			if (skinData == null || string.IsNullOrEmpty(skinName)) {
 				SkinReloadSkin();
@@ -229,6 +230,12 @@
 				Data.FrontPole = isOn;
 			});
 
+			// Infinite Judgeline
+			m_InfiniteJudgelineTG.onValueChanged.AddListener((isOn) => {
+				if (!UIReady) { return; }
+				Data.InfiniteJudgeLine = isOn;
+			});
+
 			// Type TGs
 			int len = m_TypeTgContainer.childCount;
 			for (int i = 0; i < len; i++) {
@@ -255,7 +262,7 @@
 		}
 
 
-		public void Save() {
+		public void Save () {
 			if (Data is null) { return; }
 			Data.Author = SkinAuthor;
 			var newPath = SkinSaveSkin(Data, SkinName);
@@ -272,7 +279,7 @@
 		}
 
 
-		public void Close() {
+		public void Close () {
 			DialogUtil.Dialog_Yes_No_Cancel(DIALOG_CloseConfirm, DialogUtil.MarkType.Warning, () => {
 				Save();
 				if (OpenSettingAfterClose) {
@@ -292,7 +299,7 @@
 		}
 
 
-		public void RefreshInfoUI() {
+		public void RefreshInfoUI () {
 			var data = Data;
 			var ani = GetEditingAniData();
 			if (data is null || ani is null) { return; }
@@ -327,22 +334,23 @@
 				m_FixedRatioTG.isOn = ani.FixedRatio;
 				m_TintNoteTG.isOn = data.TintNote;
 				m_FrontPoleTG.isOn = data.FrontPole;
+				m_InfiniteJudgelineTG.isOn = data.InfiniteJudgeLine;
 			} catch { }
 			UIReady = true;
 		}
 
 
-		public AnimatedItemData GetEditingAniData() {
+		public AnimatedItemData GetEditingAniData () {
 			if (Data is null || Data.Items is null) { return null; }
 			return (int)EditingType < Data.Items.Count ? Data.Items[(int)EditingType] : null;
 		}
 
 
-		public void ShowPainterMenu() => OpenMenu(PAINTER_MENU_KEY);
+		public void ShowPainterMenu () => OpenMenu(PAINTER_MENU_KEY);
 
 
 		// UI
-		public void UI_ImportImage() {
+		public void UI_ImportImage () {
 			if (Data == null) { return; }
 			var path = DialogUtil.PickFileDialog(DIALOG_ImportImageTitle, "image", "png", "jpg");
 			if (string.IsNullOrEmpty(path)) { return; }
@@ -366,7 +374,7 @@
 		}
 
 
-		public void UI_ExportImage() {
+		public void UI_ExportImage () {
 			if (Data == null || Data.Texture == null) { return; }
 			var path = DialogUtil.CreateFileDialog(DIALOG_ExportImageTitle, $"{SkinName}_Export", "png");
 			if (string.IsNullOrEmpty(path)) { return; }
@@ -377,15 +385,15 @@
 		}
 
 
-		public void UI_DeleteSelection() {
+		public void UI_DeleteSelection () {
 			Painter.DeleteSelection();
 		}
 
 
-		public void UI_SetDarkBackground(bool dark) => m_Background.color = dark ? new Color(0.055f, 0.055f, 0.055f, 1f) : Color.white;
+		public void UI_SetDarkBackground (bool dark) => m_Background.color = dark ? new Color(0.055f, 0.055f, 0.055f, 1f) : Color.white;
 
 
-		public void UI_HideSkinEditorUI() => transform.localScale = Vector3.zero;
+		public void UI_HideSkinEditorUI () => transform.localScale = Vector3.zero;
 
 
 		#endregion
@@ -396,7 +404,7 @@
 		#region --- LGC ---
 
 
-		private void TrimAllRects() {
+		private void TrimAllRects () {
 			var ani = GetEditingAniData();
 			if (Data is null || Data.Texture is null || ani is null || ani.Rects is null || ani.Rects.Count == 0) { return; }
 			int width = Data.Texture.width;

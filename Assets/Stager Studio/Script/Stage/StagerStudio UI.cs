@@ -101,6 +101,7 @@
 		[SerializeField] private LoadingUI m_LoadingPrefab = null;
 		[SerializeField] private ProjectCreatorUI m_ProjectCreatorPrefab = null;
 		[SerializeField] private CommandUI m_CommandPrefab = null;
+		[SerializeField] private TweenSelectorUI m_TweenSelectorPrefab = null;
 
 		[Header("Spawn Root")]
 		[SerializeField] private RectTransform m_Root = null;
@@ -115,6 +116,7 @@
 		[SerializeField] private RectTransform m_LoadingRoot = null;
 		[SerializeField] private RectTransform m_ProjectCreatorRoot = null;
 		[SerializeField] private RectTransform m_CommandRoot = null;
+		[SerializeField] private RectTransform m_TweenSelectorRoot = null;
 
 
 		#endregion
@@ -125,7 +127,7 @@
 		#region --- MSG ---
 
 
-		private void Awake_Setting_UI_Input() {
+		private void Awake_Setting_UI_Input () {
 
 			// Input
 			InputItemMap.Add(
@@ -329,7 +331,7 @@
 		}
 
 
-		private void Awake_Setting_UI_Toggle() {
+		private void Awake_Setting_UI_Toggle () {
 
 			// Toggle
 			ToggleItemMap.Add(ToggleType.UIScale_0, ((isOn) => {
@@ -431,7 +433,7 @@
 		}
 
 
-		private void Awake_Setting_UI_Slider() {
+		private void Awake_Setting_UI_Slider () {
 
 			// Slider
 			SliderItemMap.Add(SliderType.MusicVolume, ((value) => {
@@ -461,7 +463,7 @@
 
 
 		// UI
-		public void UI_SpawnSetting() {
+		public void UI_SpawnSetting () {
 
 			UI_RemoveUI();
 
@@ -507,37 +509,43 @@
 		}
 
 
-		public void UI_SpawnProjectInfo() {
+		public void UI_SpawnProjectInfo () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_ProjectInfoPrefab, m_ProjectInfoRoot, "Project Info").Refresh();
 		}
 
 
-		public void UI_SpawnBeatmapSwiper() {
+		public void UI_SpawnBeatmapSwiper () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_BeatmapSwiperPrefab, m_BeatmapSwiperRoot, "Beatmap Swiper").Init();
 		}
 
 
-		public void UI_SpawnSkinSwiper() {
+		public void UI_SpawnSkinSwiper () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_SkinSwiperPrefab, m_SkinSwiperRoot, "Skin Swiper").Init();
 		}
 
 
-		public void SpawnProjectCreator(string root) {
+		public void UI_SpawnProjectCreator (string root) {
 			UI_RemoveUI();
 			Util.SpawnUI(m_ProjectCreatorPrefab, m_ProjectCreatorRoot, "Project Creator").Init(root);
 		}
 
 
-		public void UI_SpawnCommand() {
+		public void UI_SpawnCommand () {
 			UI_RemoveUI();
 			Util.SpawnUI(m_CommandPrefab, m_CommandRoot, "Command");
 		}
 
 
-		public void UI_RemoveUI() {
+		public void UI_SpawnTweenSelector () {
+			//UI_RemoveUI();
+			Util.SpawnUI(m_TweenSelectorPrefab, m_TweenSelectorRoot, "TweenSelector").Open();
+		}
+
+
+		public void UI_RemoveUI () {
 
 			m_SettingRoot.DestroyAllChildImmediately();
 			m_ProjectInfoRoot.DestroyAllChildImmediately();
@@ -550,6 +558,7 @@
 			m_LoadingRoot.DestroyAllChildImmediately();
 			m_ProjectCreatorRoot.DestroyAllChildImmediately();
 			m_CommandRoot.DestroyAllChildImmediately();
+			m_TweenSelectorRoot.DestroyAllChildImmediately();
 
 			m_SettingRoot.gameObject.SetActive(false);
 			m_ProjectInfoRoot.gameObject.SetActive(false);
@@ -562,53 +571,71 @@
 			m_LoadingRoot.gameObject.SetActive(false);
 			m_ProjectCreatorRoot.gameObject.SetActive(false);
 			m_CommandRoot.gameObject.SetActive(false);
+			m_TweenSelectorRoot.gameObject.SetActive(false);
 
 			m_Root.InactiveIfNoChildActive();
 			m_Inspector.StopEditMotion(false);
 
-			MusicPause();
+			m_Music.Pause();
+		}
+
+
+		public void UI_RemoveTweenSelector () {
+			m_TweenSelectorRoot.DestroyAllChildImmediately();
+			m_TweenSelectorRoot.gameObject.SetActive(false);
+			m_Root.InactiveIfNoChildActive();
 		}
 
 
 		// Color Picker
-		public void SpawnColorPicker(Color color, System.Action<Color> done) {
+		public void SpawnColorPicker (Color color, System.Action<Color> done) {
 			m_ColorPickerRoot.gameObject.SetActive(true);
 			m_ColorPickerRoot.parent.gameObject.SetActive(true);
-			MusicPause();
+			m_Music.Pause();
 			Util.SpawnUI(m_ColorPickerPrefab, m_ColorPickerRoot, "Color Picker").Init(color, done);
 		}
 
 
 		// Tween Editor
-		public void SpawnTweenEditor(AnimationCurve curve, System.Action<AnimationCurve> done) {
+		public void SpawnTweenEditor (AnimationCurve curve, System.Action<AnimationCurve> done) {
 			m_TweenEditorRoot.gameObject.SetActive(true);
 			m_TweenEditorRoot.parent.gameObject.SetActive(true);
-			MusicPause();
+			m_Music.Pause();
 			Util.SpawnUI(m_TweenEditorPrefab, m_TweenEditorRoot, "Tween Editor").Init(curve, done);
 		}
 
 
 		// Skin Editor
-		public void UI_SpawnSkinEditor() => SpawnSkinEditor(StageSkin.Data.Name, false);
+		public void UI_SpawnSkinEditor () => SpawnSkinEditor(StageSkin.Data.Name, false);
 
 
-		public void SpawnSkinEditor(string skinName, bool openSettingAfterClose) {
+		public void SpawnSkinEditor (string skinName, bool openSettingAfterClose) {
 			if (string.IsNullOrEmpty(skinName)) { return; }
 			UI_RemoveUI();
 			Util.SpawnUI(m_SkinEditorPrefab, m_SkinEditorRoot, "Skin Editor").Init(
-				GetSkinFromDisk(skinName), skinName, openSettingAfterClose
+				m_Skin.GetSkinFromDisk(skinName), skinName, openSettingAfterClose
 			);
 		}
 
 
-		// Project Info
-		public void UI_ProjectInfo_DeletePaletteItem(object palRT) {
+		// Project Info - Delete
+		public void UI_ProjectInfo_DeletePaletteItem (object palRT) {
 			if (palRT is null || !(palRT is RectTransform)) { return; }
 			int index = (palRT as RectTransform).GetSiblingIndex();
+			m_Project.RemovePaletteAt(index);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
+		}
+
+
+		public void UI_ProjectInfo_DeleteClickSound (object rtObj) {
+			if (rtObj is null || !(rtObj is RectTransform)) { return; }
+			int index = (rtObj as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(GetLanguage(Confirm_DeleteProjectPal), index),
-				DialogUtil.MarkType.Warning, null, null, () => {
-					ProjectRemovePaletteAt(index);
+				string.Format(m_Language.Get(Confirm_DeleteProjectSound), index),
+				DialogUtil.MarkType.Warning, null, null,
+				() => {
+					m_Project.RemoveClickSound(index);
 					TryRefreshProjectInfo();
 					UndoRedo.ClearUndo();
 				}, null, () => { }
@@ -616,13 +643,42 @@
 		}
 
 
-		public void UI_ProjectInfo_DeleteClickSound(object rtObj) {
+		public void UI_ProjectInfo_DeleteTween (object rtObj) {
 			if (rtObj is null || !(rtObj is RectTransform)) { return; }
 			int index = (rtObj as RectTransform).GetSiblingIndex();
+			m_Project.RemoveTweenAt(index);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
+		}
+
+
+		// Project Info - Swipe
+		public void UI_ProjectInfo_SwipePaletteItem_Left (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
+			m_Project.SwipePalette(index, index - 1);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
+		}
+
+
+		public void UI_ProjectInfo_SwipePaletteItem_Right (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
+			m_Project.SwipePalette(index, index + 1);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
+		}
+
+
+		public void UI_ProjectInfo_SwipeClickSoundItem_Left (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(GetLanguage(Confirm_DeleteProjectSound), index),
-				DialogUtil.MarkType.Warning, null, null, () => {
-					ProjectRemoveClickSound(index);
+				string.Format(m_Language.Get(Confirm_SwipeProjectSound), index),
+				DialogUtil.MarkType.Warning, null, null,
+				() => {
+					m_Project.SwipeClickSound(index, index - 1);
 					TryRefreshProjectInfo();
 					UndoRedo.ClearUndo();
 				}, null, () => { }
@@ -630,22 +686,41 @@
 		}
 
 
-		public void UI_ProjectInfo_DeleteTween(object rtObj) {
-			if (rtObj is null || !(rtObj is RectTransform)) { return; }
-			int index = (rtObj as RectTransform).GetSiblingIndex();
+		public void UI_ProjectInfo_SwipeClickSoundItem_Right (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
 			DialogUtil.Open(
-				string.Format(GetLanguage(Confirm_DeleteProjectTween), index),
-				DialogUtil.MarkType.Warning, null, null, () => {
-					ProjectRemoveTweenAt(index);
+				string.Format(m_Language.Get(Confirm_SwipeProjectSound), index),
+				DialogUtil.MarkType.Warning, null, null,
+				() => {
+					m_Project.SwipeClickSound(index, index + 1);
 					TryRefreshProjectInfo();
 					UndoRedo.ClearUndo();
 				}, null, () => { }
 			);
+		}
+
+
+		public void UI_ProjectInfo_SwipeTweenItem_Left (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
+			m_Project.SwipeTween(index, index - 1);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
+		}
+
+
+		public void UI_ProjectInfo_SwipeTweenItem_Right (object itemRT) {
+			if (itemRT is null || !(itemRT is RectTransform)) { return; }
+			int index = (itemRT as RectTransform).GetSiblingIndex();
+			m_Project.SwipeTween(index, index + 1);
+			TryRefreshProjectInfo();
+			UndoRedo.SetDirty();
 		}
 
 
 		// Command
-		public void UI_TrySetCommand_Target(int index) {
+		public void UI_TrySetCommand_Target (int index) {
 			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
 			if (command != null) {
 				command.SetTargetIndex(index);
@@ -653,7 +728,7 @@
 		}
 
 
-		public void UI_TrySetCommand_Command(int index) {
+		public void UI_TrySetCommand_Command (int index) {
 			var command = m_CommandRoot.childCount > 0 ? m_CommandRoot.GetChild(0).GetComponent<CommandUI>() : null;
 			if (command != null) {
 				command.SetCommandIndex(index);
@@ -662,13 +737,13 @@
 
 
 		// Brush
-		public void BrushSizeUp(bool alt) => SetBrushSize(
+		public void BrushSizeUp (bool alt) => SetBrushSize(
 			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
 			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) + 0.05f, 0.05f, 1f)
 		);
 
 
-		public void BrushSizeDown(bool alt) => SetBrushSize(
+		public void BrushSizeDown (bool alt) => SetBrushSize(
 			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
 			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) - 0.05f, 0.05f, 1f)
 		);
@@ -684,7 +759,7 @@
 
 
 		// Setting
-		private void LoadAllSettings() {
+		private void LoadAllSettings () {
 			foreach (var pair in InputItemMap) {
 				pair.Value.setHandler(pair.Value.saving);
 			}
@@ -697,7 +772,7 @@
 		}
 
 
-		private void SetUIScale(int uiScale) {
+		private void SetUIScale (int uiScale) {
 			uiScale = Mathf.Clamp(uiScale, 0, 2);
 			var scalers = m_CanvasRoot.GetComponentsInChildren<CanvasScaler>(true);
 			float height = uiScale == 0 ? 1000 : uiScale == 1 ? 800 : 600;
@@ -707,14 +782,14 @@
 		}
 
 
-		private void SetMusicVolume(float value) {
+		private void SetMusicVolume (float value) {
 			m_Music.Volume = value;
 			SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
 		}
 
 
 		// Brush
-		private float GetBrushSize(int index, int brushType) {
+		private float GetBrushSize (int index, int brushType) {
 			switch (index) {
 				default:
 					return 0f;
@@ -728,7 +803,7 @@
 		}
 
 
-		private void SetBrushSize(int itemType, int brushType, float size01) {
+		private void SetBrushSize (int itemType, int brushType, float size01) {
 			size01 = Mathf.Clamp01(size01);
 			switch (itemType) {
 				case 0: // Stage

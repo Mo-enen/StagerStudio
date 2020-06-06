@@ -28,19 +28,19 @@
 		}
 
 
-		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler();
-		public delegate void VoidHandler();
-		public delegate float FloatHandler();
-		public delegate void VoidFloatHandler(float f);
-		public delegate Beatmap BeatmapHandler();
-		public delegate bool BoolHandler();
-		public delegate void VoidStringBoolHandler(string str, bool b);
-		public delegate string StringStringHandler(string str);
-		public delegate float FillHandler(float time, float fill, float muti);
-		public delegate void LogAxisHintHandler(int axis, string hint);
-		public delegate float SnapTimeHandler(float time, float gap, float offset);
-		public delegate void EditHandler(EditType editType, int itemType, int itemIndex);
-		public delegate void ExceptionHandler(System.Exception ex);
+		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
+		public delegate void VoidHandler ();
+		public delegate float FloatHandler ();
+		public delegate void VoidFloatHandler (float f);
+		public delegate Beatmap BeatmapHandler ();
+		public delegate bool BoolHandler ();
+		public delegate void VoidStringBoolHandler (string str, bool b);
+		public delegate string StringStringHandler (string str);
+		public delegate float FillHandler (float time, float fill, float muti);
+		public delegate void LogAxisHintHandler (int axis, string hint);
+		public delegate float SnapTimeHandler (float time, float gap, float offset);
+		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
+		public delegate void ExceptionHandler (System.Exception ex);
 
 
 		#endregion
@@ -150,7 +150,7 @@
 		#region --- MSG ---
 
 
-		private void Awake() {
+		private void Awake () {
 
 			// Init Layer
 			SortingLayerID_UI = SortingLayer.NameToID("UI");
@@ -209,7 +209,7 @@
 		}
 
 
-		private void LateUpdate() {
+		private void LateUpdate () {
 			if (GetEditorActive() && AntiTargetAllow()) {
 				// Editor Active
 				var map = GetBeatmap();
@@ -238,7 +238,7 @@
 		}
 
 
-		private void LateUpdate_Key(Beatmap map) {
+		private void LateUpdate_Key (Beatmap map) {
 
 			bool hasSelection = SelectingItemType >= 0 && SelectingItemIndex >= 0;
 			bool isTyping = Util.IsTypeing;
@@ -351,7 +351,7 @@
 		}
 
 
-		private void LateUpdate_Selection() {
+		private void LateUpdate_Selection () {
 			if (SelectingItemIndex >= 0 && SelectingBrushIndex != -1) {
 				SelectingItemIndex = -1;
 				SelectingItemSubIndex = -1;
@@ -361,7 +361,7 @@
 		}
 
 
-		private void LateUpdate_Hover(Beatmap map) {
+		private void LateUpdate_Hover (Beatmap map) {
 			if (SelectingBrushIndex >= 0) {
 				// --- Painting ---
 				if (GetItemLock(SelectingBrushIndex)) {
@@ -389,7 +389,7 @@
 		}
 
 
-		private void LateUpdate_Down(Beatmap map) {
+		private void LateUpdate_Down (Beatmap map) {
 			if (GetMoveAxisHovering() || !Input.GetMouseButtonDown(0)) { return; }
 			if (SelectingBrushIndex == -1) {
 				// Select
@@ -543,7 +543,7 @@
 		}
 
 
-		private void LateUpdate_Axis(Beatmap map) {
+		private void LateUpdate_Axis (Beatmap map) {
 			var con = SelectingItemType >= 0 && SelectingItemType < m_Containers.Length ? m_Containers[SelectingItemType] : null;
 			bool targetActive = map.GetActive(SelectingItemType, SelectingItemIndex);
 			if (
@@ -629,7 +629,7 @@
 		}
 
 
-		private void LateUpdate_Highlight() {
+		private void LateUpdate_Highlight () {
 			var con = SelectingItemType >= 0 && SelectingItemType < 3 ? m_Containers[SelectingItemType] : null;
 			bool active = con != null && SelectingItemIndex >= 0 && SelectingItemIndex < con.childCount && con.GetChild(SelectingItemIndex).gameObject.activeSelf;
 			m_Highlight.gameObject.TrySetActive(active);
@@ -645,7 +645,7 @@
 
 
 		// Hover
-		private void OnMouseHover_Grid(Beatmap map, bool selectingMode) {
+		private void OnMouseHover_Grid (Beatmap map, bool selectingMode) {
 
 			// Check
 			if (selectingMode && SelectingItemIndex < 0) {
@@ -722,7 +722,7 @@
 		}
 
 
-		private void OnMouseHover_Ghost() {
+		private void OnMouseHover_Ghost () {
 
 			// Ghost
 			var ray = GetMouseRay();
@@ -813,7 +813,7 @@
 		}
 
 
-		private void OnMouseHover_Normal() {
+		private void OnMouseHover_Normal () {
 			if (GetMoveAxisHovering() || Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
 				m_Hover.gameObject.TrySetActive(false);
 				return;
@@ -844,7 +844,7 @@
 		}
 
 
-		private void OnMouseHover_Erase() {
+		private void OnMouseHover_Erase () {
 			if (Input.GetMouseButton(0) || Input.GetMouseButton(1)) {
 				m_Erase.gameObject.TrySetActive(false);
 				return;
@@ -865,7 +865,7 @@
 
 
 		// Axis
-		public void OnMoveAxisDrag(Vector3 pos, Vector3 downPos, int axis) {
+		public void OnMoveAxisDrag (Vector3 pos, Vector3 downPos, int axis) {
 			try {
 				OnMoveAxisDragLogic(pos, downPos, axis);
 			} catch (System.Exception ex) { OnException(ex); };
@@ -881,25 +881,25 @@
 
 
 		// Selector
-		public void MoveStageItemUp(object target) {
+		public void MoveStageItemUp (object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(0, index, index - 1);
 			}
 		}
-		public void MoveStageItemDown(object target) {
+		public void MoveStageItemDown (object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(0, index, index + 1);
 			}
 		}
-		public void MoveTrackItemUp(object target) {
+		public void MoveTrackItemUp (object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(1, index, index - 1);
 			}
 		}
-		public void MoveTrackItemDown(object target) {
+		public void MoveTrackItemDown (object target) {
 			if (target is RectTransform) {
 				int index = (target as RectTransform).GetSiblingIndex();
 				MoveItem(1, index, index + 1);
@@ -908,7 +908,7 @@
 
 
 		// Selection
-		public void SetSelection(int type, int index, int subIndex = 0) {
+		public void SetSelection (int type, int index, int subIndex = 0) {
 			// No Stage Selection in Abreast View
 			if (GetUseAbreast() && (type == 0 || type == 4)) {
 				// Switch Abreast Index
@@ -934,7 +934,7 @@
 		}
 
 
-		public void ClearSelection() {
+		public void ClearSelection () {
 			if (SelectingItemIndex >= 0 || SelectingItemType >= 0) {
 				// Clear
 				SelectingItemIndex = -1;
@@ -947,13 +947,13 @@
 
 
 		// Container
-		public void UI_SwitchContainerActive(int index) => SetContainerActive(index, !GetContainerActive(index));
+		public void UI_SwitchContainerActive (int index) => SetContainerActive(index, !GetContainerActive(index));
 
 
-		public bool GetContainerActive(int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
+		public bool GetContainerActive (int index) => index >= 0 && index < m_Containers.Length && m_Containers[index].gameObject.activeSelf;
 
 
-		public void SetContainerActive(int index, bool active) {
+		public void SetContainerActive (int index, bool active) {
 			if (index < 0 || index >= m_Containers.Length) { return; }
 			m_Containers[index].gameObject.SetActive(active);
 			// UI
@@ -968,24 +968,24 @@
 
 
 		// Item Lock
-		public bool GetItemLock(int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
+		public bool GetItemLock (int item) => item >= 0 && item < ItemLock.Length && ItemLock[item];
 
 
-		public void UI_SwitchLock(int index) => SetLock(index, !GetItemLock(index));
+		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
 
 
 		// Brush
-		public void SetBrush(int index) {
+		public void SetBrush (int index) {
 			if (UIReady) {
 				SetBrushLogic(index);
 			}
 		}
 
 
-		public void SetErase() => SetEraseLogic();
+		public void SetErase () => SetEraseLogic();
 
 
-		public void SwitchUseGlobalBrushScale() {
+		public void SwitchUseGlobalBrushScale () {
 			UseGlobalBrushScale.Value = !UseGlobalBrushScale;
 			OnBrushChanged();
 			try {
@@ -998,7 +998,7 @@
 
 
 		// Translate
-		public void TranslateSelectingItem(int direction) { // 0:L  1:R  2:D  3:U
+		public void TranslateSelectingItem (int direction) { // 0:L  1:R  2:D  3:U
 			var map = GetBeatmap();
 			if (SelectingItemType < 0 || SelectingItemIndex < 0 || map == null) { return; }
 			switch (direction) {
@@ -1040,7 +1040,7 @@
 		#region --- LGC ---
 
 
-		private bool AntiTargetAllow() {
+		private bool AntiTargetAllow () {
 			foreach (var t in m_AntiTargets) {
 				if (t.gameObject.activeSelf) {
 					return false;
@@ -1050,10 +1050,10 @@
 		}
 
 
-		private Ray GetMouseRay() => Camera.ScreenPointToRay(Input.mousePosition);
+		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private void SetLock(int index, bool locked) {
+		private void SetLock (int index, bool locked) {
 			// Set Logic
 			ItemLock[index] = locked;
 			// Refresh Unlock Mask
@@ -1068,7 +1068,7 @@
 		}
 
 
-		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex(Ray ray, LayerMask mask, bool insideZone) {
+		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
 			float overlapType = -1f;
 			int overlapIndex = -1;
@@ -1099,7 +1099,7 @@
 		}
 
 
-		private bool RayInsideZone(Ray ray, bool checkX = true, bool checkY = true) {
+		private bool RayInsideZone (Ray ray, bool checkX = true, bool checkY = true) {
 			var (zoneMin, zoneMax, _, _) = GetRealZoneMinMax();
 			if (new Plane(Vector3.back, zoneMin).Raycast(ray, out float enter)) {
 				var point = ray.GetPoint(enter);
@@ -1111,7 +1111,7 @@
 		}
 
 
-		private void RefreshUnlockedMask() {
+		private void RefreshUnlockedMask () {
 			var list = new List<string>();
 			for (int i = 0; i < ItemLock.Length; i++) {
 				if (!ItemLock[i]) {
@@ -1131,14 +1131,14 @@
 		}
 
 
-		private void TrySetGridInactive() {
+		private void TrySetGridInactive () {
 			if (m_Grid.GridEnabled) {
 				m_Grid.SetGridTransform(false);
 			}
 		}
 
 
-		private void SetBrushLogic(int brushIndex) {
+		private void SetBrushLogic (int brushIndex) {
 			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
 			UIReady = false;
 			try {
@@ -1169,7 +1169,7 @@
 		}
 
 
-		private void SetEraseLogic() {
+		private void SetEraseLogic () {
 			UIReady = false;
 			try {
 				if (!enabled || !GetEditorActive()) {
@@ -1188,7 +1188,7 @@
 		}
 
 
-		private void MoveItem(int type, int index, int newIndex) {
+		private void MoveItem (int type, int index, int newIndex) {
 			var map = GetBeatmap();
 			if (map != null) {
 				ClearSelection();
@@ -1197,7 +1197,7 @@
 		}
 
 
-		private void OnMoveAxisDragLogic(Vector3 pos, Vector3 downPos, int axis) {
+		private void OnMoveAxisDragLogic (Vector3 pos, Vector3 downPos, int axis) {
 			AxisDragging = true;
 			var map = GetBeatmap();
 			if (map == null || SelectingItemIndex < 0) { return; }
@@ -1441,8 +1441,8 @@
 		}
 
 
-		private void LogAxisMSG(int axis, float value) => LogAxisMessage(axis, value.ToString("0.##"));
-		private void LogAxisMSG(int axis, float value0, float value1) {
+		private void LogAxisMSG (int axis, float value) => LogAxisMessage(axis, value.ToString("0.##"));
+		private void LogAxisMSG (int axis, float value0, float value1) {
 			switch (axis) {
 				case 0:
 					LogAxisMessage(axis, value0.ToString("0.##"));

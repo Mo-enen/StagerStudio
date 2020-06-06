@@ -7,3 +7,5 @@
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0029:使用 coalesce 運算式", Justification = "<暫止>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality", "IDE0051:刪除未使用的私用成員", Justification = "<暫止>")]
 [assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0074:使用复合分配", Justification = "<挂起>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0066:将 switch 语句转换为表达式", Justification = "<挂起>")]
+[assembly: System.Diagnostics.CodeAnalysis.SuppressMessage("Style", "IDE0063:使用简单的 \"using\" 语句", Justification = "<挂起>")]
