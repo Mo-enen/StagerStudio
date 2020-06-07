@@ -178,6 +178,11 @@
 		);
 
 
+		public static float GetStageWorldRotationZ_Motion (Beatmap.Stage stageData) {
+			return Evaluate(stageData.Rotations, MusicTime - stageData.Time);
+		}
+
+
 		public static float GetStageWidth (Beatmap.Stage data) => Mathf.Lerp(
 			Mathf.Max(data.Width * Evaluate(data.Widths, MusicTime - data.Time, 1f), 0f),
 			Abreast.width - ABREAST_GAP,

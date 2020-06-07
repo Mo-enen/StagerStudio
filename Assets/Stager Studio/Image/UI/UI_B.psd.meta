@@ -463,7 +463,7 @@ TextureImporter:
     second: Selector Track
   - first:
       213: -6423150161576652754
-    second: Axis Duration
+    second: Axis Height
   - first:
       213: 7897921642572680099
     second: Music Note 1
@@ -533,6 +533,15 @@ TextureImporter:
   - first:
       213: -7528560149791335482
     second: Shirt
+  - first:
+      213: 8935555774325379482
+    second: Move Axis Back
+  - first:
+      213: 8935555774325379482
+    second: Axis Rot
+  - first:
+      213: -8851053322734798200
+    second: Icon Magnet
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1023,10 +1032,10 @@ TextureImporter:
       name: Axis Width
       rect:
         serializedVersion: 2
-        x: 1
-        y: 163
-        width: 72
-        height: 72
+        x: 0
+        y: 174
+        width: 77
+        height: 51
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1083,12 +1092,12 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Axis Duration
+      name: Axis Height
       rect:
         serializedVersion: 2
-        x: 76
+        x: 88
         y: 163
-        width: 77
+        width: 51
         height: 77
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -1377,27 +1386,6 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Global Icon
-      rect:
-        serializedVersion: 2
-        x: 335
-        y: 225
-        width: 83
-        height: 83
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 88af95ad5edba2580800000000000000
-      internalID: -8851053322734798200
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: Brush Stage
       rect:
         serializedVersion: 2
@@ -1561,6 +1549,48 @@ TextureImporter:
       bones: []
       spriteID: 6cb96898e6e258790800000000000000
       internalID: -7528560149791335482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Axis Rot
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 321
+        width: 54
+        height: 63
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a91da5752a8710c70800000000000000
+      internalID: 8935555774325379482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon Magnet
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 228
+        width: 87
+        height: 87
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 88af95ad5edba2580800000000000000
+      internalID: -8851053322734798200
       vertices: []
       indices: 
       edges: []

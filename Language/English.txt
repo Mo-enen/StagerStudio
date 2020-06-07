@@ -11,7 +11,6 @@ Dialog.Tutorial.FirstTutorialMSG:Start tutorial now?
 Dialog.TweenEditor.CancelConfirm:Close tween editor? Changes will not be save.
 Editor.Hint.Copy:Copy
 Editor.Hint.CopyFail:Copy failed
-Editor.Hint.GlobalBrushScale:Global brush size {0}
 Editor.Hint.Paste:Paste
 Game.Hint.AbreastWidth:Stage width {0}
 Game.Hint.GameDropSpeed:Drop Speed × {0}
@@ -190,7 +189,6 @@ Shortcut.Eye.Stage:Hide Stage
 Shortcut.Eye.Track:Hide Track
 Shortcut.Game.AddDropSpeed:Add Drop Speed
 Shortcut.Game.ReduceDropSpeed:Reduce Drop Speed
-Shortcut.GlobalBrushScale:Global Brush Scale
 Shortcut.Linker:Quick Link Note
 Shortcut.Lock.Note:Lock Note
 Shortcut.Lock.Speed:Lock Timing Note
@@ -216,6 +214,7 @@ Shortcut.Translate.Left:Move Item Left
 Shortcut.Translate.Right:Move Item Right
 Shortcut.Translate.Up:Move Item Up
 Shortcut.Undo:Undo
+Shortcut.UseMagnetSnap:Use Magnet Snap
 Skin.Confirm.DeleteSkinConfirm:Delete skin {0}?
 Skin.Confirm.NewSkinConfirm:Create a new skin?
 Skin.Error.FailToSaveSkin:Fail to save skin
@@ -325,7 +324,6 @@ Tip.Setting.NoteBrushWidth:Width of the note painted by brush
 Tip.Setting.PositiveScroll:Only for mouse scrolling inside editor, such as adjusting y-position of notes
 Tip.Setting.Preview:Show preview of the beatmap on the progress bar or not
 Tip.Setting.Reset:Reset all settings
-Tip.Setting.ScaleBrush:Change brush size by stage and track size or not
 Tip.Setting.SFX:Use sound effects or not, turning this off will reduce CPU load
 Tip.Setting.ShowGrid:Show grid and auxiliary lines
 Tip.Setting.ShowGridOnSelect:Show grid shen selecting stage, track, note.
@@ -340,6 +338,7 @@ Tip.Setting.Tip:Show tooltip or not
 Tip.Setting.TrackBrushWidth:Width of the track painted by brush
 Tip.Setting.UseEditorEffect:Whether to display effects when editing the beatmap, such as effects for adding or deleting objects, etc.
 Tip.Setting.UseLog:Log debuging info into text file
+Tip.Setting.UseSnap:Snap to the surrounding objects when adjusting the stage, track, and notes
 Tip.Setting.Wave:Show music wave or not
 Tip.TimeLabel:Switch time unit
 Tip.Toolbar.EditSkin:Edit current skin
@@ -446,7 +445,6 @@ UI.Setting.MusicVolume:Music Volume
 UI.Setting.NoteBrushWidth:Note Brush Width
 UI.Setting.PositiveScroll:Use Positive Mouse Scroll
 UI.Setting.Preview:Show Beatmap Preview
-UI.Setting.ScaleBrush:Use Global Scale for Brushs
 UI.Setting.ShowGrid:Show Grid and Auxiliary
 UI.Setting.ShowGridOnSelect:Show Grid On Select
 UI.Setting.ShowIndexLabelIndexLabel:Show Index Label for Stage,Track and Note
@@ -466,6 +464,7 @@ UI.Setting.UIScale.2:Large
 UI.Setting.UseEditorEffect:Use Editor Effect
 UI.Setting.UseLog:Log to File
 UI.Setting.UseSFX:Sound FX
+UI.Setting.UseSnap:Snap to Surrounding When Adjust
 UI.Setting.Wave:Show Sound Wave
 UI.SkinEditor.DarkBG:Dark
 UI.SkinEditor.Duration:Duration

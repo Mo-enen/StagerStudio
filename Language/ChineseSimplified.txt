@@ -11,7 +11,6 @@ Dialog.Tutorial.FirstTutorialMSG:是否开始教程？
 Dialog.TweenEditor.CancelConfirm:关闭补间编辑器吗？修改将不会被保存
 Editor.Hint.Copy:已复制
 Editor.Hint.CopyFail:复制失败
-Editor.Hint.GlobalBrushScale:全局笔刷尺寸 {0}
 Editor.Hint.Paste:已粘贴
 Game.Hint.AbreastWidth:全景舞台宽度 {0}
 Game.Hint.GameDropSpeed:下落速度 × {0}
@@ -190,7 +189,6 @@ Shortcut.Eye.Stage:隐藏舞台
 Shortcut.Eye.Track:隐藏轨道
 Shortcut.Game.AddDropSpeed:增加下落速度
 Shortcut.Game.ReduceDropSpeed:减少下落速度
-Shortcut.GlobalBrushScale:全局笔刷尺寸
 Shortcut.Linker:快速链接音符
 Shortcut.Lock.Note:锁定音符
 Shortcut.Lock.Speed:锁定时间音符
@@ -216,6 +214,7 @@ Shortcut.Translate.Left:左移物体
 Shortcut.Translate.Right:右移物体
 Shortcut.Translate.Up:上移物体
 Shortcut.Undo:撤销
+Shortcut.UseMagnetSnap:使用磁力紧贴
 Skin.Confirm.DeleteSkinConfirm:确认删除皮肤{0}吗？
 Skin.Confirm.NewSkinConfirm:创建新皮肤？
 Skin.Error.FailToSaveSkin:皮肤保存失败
@@ -325,7 +324,6 @@ Tip.Setting.NoteBrushWidth:音符笔刷绘制内容的宽度
 Tip.Setting.PositiveScroll:仅限编辑器内的鼠标滚动，例如调整音符纵向位置等
 Tip.Setting.Preview:是否在进度条上显示谱面预览
 Tip.Setting.Reset:重制所有设置
-Tip.Setting.ScaleBrush:笔刷尺寸是否随轨道和舞台改变
 Tip.Setting.SFX:是否使用音乐特效，关闭特效可以降低CPU负担
 Tip.Setting.ShowGrid:是否显示网格辅助线
 Tip.Setting.ShowGridOnSelect:选择舞台、轨道、音符时显示网格
@@ -340,6 +338,7 @@ Tip.Setting.Tip:是否显示工具提示
 Tip.Setting.TrackBrushWidth:轨道笔刷绘制内容的宽度
 Tip.Setting.UseEditorEffect:是否在编辑谱面时显示特效，比如添加或删除物体时的光效等
 Tip.Setting.UseLog:是否将调试信息输出到日志文件
+Tip.Setting.UseSnap:在调整舞台、轨道、音符时紧贴至邻近的物体
 Tip.Setting.Wave:是否显示声波
 Tip.TimeLabel:切换时间单位
 Tip.Toolbar.EditSkin:编辑当前皮肤
@@ -446,7 +445,6 @@ UI.Setting.MusicVolume:音乐音量
 UI.Setting.NoteBrushWidth:音符笔刷宽度
 UI.Setting.PositiveScroll:使用正向的鼠标滚动
 UI.Setting.Preview:显示谱面预览
-UI.Setting.ScaleBrush:使用全局尺寸笔刷
 UI.Setting.ShowGrid:显示网格辅助线
 UI.Setting.ShowGridOnSelect:选择时显示网格
 UI.Setting.ShowIndexLabelIndexLabel:显示舞台、轨道、音符的编号
@@ -466,6 +464,7 @@ UI.Setting.UIScale.2:大
 UI.Setting.UseEditorEffect:使用编辑器特效
 UI.Setting.UseLog:使用日志文件
 UI.Setting.UseSFX:音乐特效
+UI.Setting.UseSnap:调整物体时使用磁力紧贴
 UI.Setting.Wave:显示声波
 UI.SkinEditor.DarkBG:深色
 UI.SkinEditor.Duration:帧时长

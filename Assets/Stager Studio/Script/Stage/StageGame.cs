@@ -164,7 +164,7 @@
 			SetGridCountX0Index(GridCountIndex_X0);
 			SetGridCountX1Index(GridCountIndex_X1);
 			SetGridCountX2Index(GridCountIndex_X2);
-			SetGridCountY(GridCountIndex_Y);
+			SetGridCountYIndex(GridCountIndex_Y);
 			SetBeatPerSection(BeatPerSection);
 			SetAbreastWidth(AbreastWidthIndex);
 		}
@@ -663,7 +663,7 @@
 		}
 
 
-		public void SetGridCountY (int y) {
+		public void SetGridCountYIndex (int y) {
 			GridCountIndex_Y.Value = Mathf.Clamp(y, 0, 2);
 			OnGridChanged();
 		}

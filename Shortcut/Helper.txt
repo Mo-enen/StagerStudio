@@ -25,6 +25,7 @@ Available Actions:
 	Shortcut.Eye.Note
 	Shortcut.Eye.Speed
 	Shortcut.ShowGrid
+	Shortcut.UseMagnetSnap
 	Shortcut.Lock.Stage
 	Shortcut.LockTrack
 	Shortcut.Lock.Note
@@ -33,7 +34,6 @@ Available Actions:
 	Shortcut.Seek.Negative
 	Shortcut.PitchUp
 	Shortcut.PitchDown
-	Shortcut.GlobalBrushScale
 	Shortcut.Erase
 	Shortcut.Select
 	Shortcut.Translate.Left
@@ -49,7 +49,6 @@ Available Actions:
 	Shortcut.Linker
 	Shortcut.SwitchItemType
 	Shortcut.Game.AddDropSpeed
-	Shortcut.Game.ReduceDropSpeed
 
 Available Keys:
 

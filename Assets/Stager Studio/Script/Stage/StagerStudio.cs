@@ -195,6 +195,7 @@
 		[SerializeField] private Text m_SkinSwiperLabel = null;
 		[SerializeField] private Image m_AbreastTGMark = null;
 		[SerializeField] private Toggle m_GridTG = null;
+		[SerializeField] private Toggle m_SnapTG = null;
 		[SerializeField] private Text m_VersionLabel = null;
 		[SerializeField] private GridRenderer m_GridRenderer = null;
 		[SerializeField] private RectTransform m_PitchWarningBlock = null;
@@ -206,7 +207,6 @@
 		[SerializeField] private RectTransform m_MotionInspector = null;
 		[SerializeField] private RectTransform m_SelectBrushMark = null;
 		[SerializeField] private RectTransform m_EraseBrushMark = null;
-		[SerializeField] private RectTransform m_GlobalBrushMark = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -275,7 +275,6 @@
 			m_Background.SetBackground(null, false);
 			m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
 			m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
-			m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
 			DebugLog_Start();
 		}
 
@@ -726,7 +725,6 @@
 			StageEditor.OnBrushChanged = () => {
 				m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
 				m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
-				m_GlobalBrushMark.gameObject.TrySetActive(m_Editor.UseGlobalBrushScale.Value);
 				m_Linker.StopLinker();
 			};
 			StageEditor.OnLockEyeChanged = () => {
@@ -734,6 +732,9 @@
 				m_Editor.SetBrush(m_Editor.SelectingBrushIndex);
 				m_TimingPreview.SetDirty();
 				m_Linker.StopLinker();
+			};
+			StageEditor.OnSettingChanged = () => {
+				m_SnapTG.isOn = m_Editor.UseMagnetSnap.Value;
 			};
 			StageEditor.GetBeatmap = () => m_Project.Beatmap;
 			StageEditor.GetEditorActive = () =>

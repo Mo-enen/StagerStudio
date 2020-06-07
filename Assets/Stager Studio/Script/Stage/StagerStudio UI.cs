@@ -56,12 +56,13 @@
 			ShowIndexLabel,
 			ShowGrid,
 			ShowKeypress,
-			BrushScale,
+			BrushScale, // Removed
 			ShowGridOnSelect,
 			SoloOnEditMotion,
 			UseEditorEffect,
 			ShowTimerOnPlay,
 			Log,
+			UseSnap,
 
 		}
 
@@ -404,11 +405,6 @@
 				ToggleItemMap[ToggleType.ShowKeypress].saving.Value = isOn;
 			}, () => m_Keypress.gameObject.activeSelf, new SavingBool("StageGame.ShowKeypress", false), true));
 
-			ToggleItemMap.Add(ToggleType.BrushScale, ((isOn) => {
-				m_Editor.UseGlobalBrushScale.Value = isOn;
-				m_GlobalBrushMark.gameObject.TrySetActive(isOn);
-			}, () => m_Editor.UseGlobalBrushScale.Value, m_Editor.UseGlobalBrushScale, true));
-
 			ToggleItemMap.Add(ToggleType.ShowGridOnSelect, ((isOn) => {
 				m_Editor.ShowGridOnSelect.Value = isOn;
 			}, () => m_Editor.ShowGridOnSelect.Value, m_Editor.ShowGridOnSelect, true));
@@ -429,6 +425,15 @@
 				DebugLog.UseLog = isOn;
 				ToggleItemMap[ToggleType.Log].saving.Value = isOn;
 			}, () => DebugLog.UseLog, new SavingBool("SS.UseLog", true), true));
+
+			ToggleItemMap.Add(ToggleType.UseSnap, ((isOn) => {
+				if (isOn != m_Editor.UseMagnetSnap.Value) {
+					m_Editor.SetUseMagnetSnap(isOn);
+				}
+			}, () => m_Editor.UseMagnetSnap.Value, m_Editor.UseMagnetSnap, true));
+
+
+
 
 		}
 

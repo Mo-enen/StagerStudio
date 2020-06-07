@@ -36,9 +36,9 @@
 
 		// Ser
 		[SerializeField] private TextRenderer m_Hint = null;
+		[SerializeField] private float m_TintBgAlpha = 1f;
 		[SerializeField] private Renderer[] AxisRenderers = null;
 		[SerializeField] private Color[] m_HintTints = null;
-		[SerializeField] private float m_TintBgAlpha = 0.12f;
 		[Space, SerializeField] private AxisEventHandler m_OnDrag = null;
 
 		// Data
@@ -53,6 +53,11 @@
 
 
 		#region --- MSG ---
+
+
+		private void Awake () {
+			m_Hint.SetSortingLayer(SortingLayer.NameToID("UI"), 99);
+		}
 
 
 		private void Update () {
@@ -109,7 +114,7 @@
 			m_Hint.Text = $" {hint} ";
 			if (axis >= 0 && axis < m_HintTints.Length) {
 				var tint = m_HintTints[axis];
-				m_Hint.Tint = tint;
+				//m_Hint.Tint = tint;
 				tint.a = m_TintBgAlpha;
 				m_Hint.Background = tint;
 			}
