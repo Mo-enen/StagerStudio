@@ -49,6 +49,7 @@ Available Actions:
 	Shortcut.Linker
 	Shortcut.SwitchItemType
 	Shortcut.Game.AddDropSpeed
+	Shortcut.Game.ReduceDropSpeed
 
 Available Keys:
 

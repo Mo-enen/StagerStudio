@@ -251,6 +251,9 @@ TextureImporter:
   - first:
       213: -3374395645584494972
     second: Link
+  - first:
+      213: -7605453835300853377
+    second: Soft Pixel
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1258,6 +1261,27 @@ TextureImporter:
       bones: []
       spriteID: 48eaf45e90dbb21d0800000000000000
       internalID: -3374395645584494972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Soft Pixel
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 186
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 10, y: 10, z: 10, w: 10}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f79a24f3800047690800000000000000
+      internalID: -7605453835300853377
       vertices: []
       indices: 
       edges: []

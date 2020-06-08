@@ -8,8 +8,8 @@
 	using Saving;
 	using Object;
 	using UI;
-
-
+	using System.Drawing.Drawing2D;
+	using UnityEditorInternal;
 
 	public class StageEditor : MonoBehaviour {
 
@@ -113,6 +113,7 @@
 		[SerializeField] private AxisHandleUI m_MoveAxis = null;
 		[SerializeField] private Sprite m_HoverSP_Item = null;
 		[SerializeField] private Sprite m_HoverSP_Timer = null;
+		[SerializeField] private SpriteRenderer m_MagnetLine = null;
 		[Header("Axis")]
 		[SerializeField] private Transform m_AxisMoveX = null;
 		[SerializeField] private Transform m_AxisMoveY = null;
@@ -135,6 +136,8 @@
 		private int CopyType = -1;
 		private int CopyLength = 0;
 		private int SortingLayerID_UI = -1;
+		private int FinalMagnetID = 0; // 0: none  1:left  2:mid  3:right   -1:bottom  -2:mid  -3:top
+		private bool NegativeDragging = false;
 		private bool UIReady = true;
 		private Camera _Camera = null;
 		private LayerMask UnlockedMask = default;
@@ -153,7 +156,7 @@
 
 		// Saving
 		public SavingBool ShowGridOnSelect { get; set; } = new SavingBool("StageEditor.ShowGridOnSelect", false);
-		public SavingBool UseMagnetSnap { get; set; } = new SavingBool("StageEditor.UseMagnetSnap", true);
+		public SavingBool UseMagnetSnap { get; set; } = new SavingBool("StageEditor.UseMagnetSnap", false);
 
 
 		#endregion
@@ -230,6 +233,11 @@
 		}
 
 
+		private void Start () {
+			SetUseMagnetSnap(UseMagnetSnap.Value);
+		}
+
+
 		private void LateUpdate () {
 			if (GetEditorActive() && AntiTargetAllow()) {
 				// Editor Active
@@ -241,6 +249,7 @@
 					LateUpdate_Down(map);
 					LateUpdate_Axis(map);
 					LateUpdate_Highlight();
+					LateUpdate_MagnetLine();
 				} catch (System.Exception ex) { OnException(ex); }
 			} else {
 				// Editor InActive
@@ -250,6 +259,7 @@
 				m_MoveAxis.gameObject.TrySetActive(false);
 				m_Highlight.gameObject.TrySetActive(false);
 				m_Erase.gameObject.TrySetActive(false);
+				m_MagnetLine.gameObject.TrySetActive(false);
 				AxisDragging = false;
 				if (SelectingBrushIndex != -1) {
 					SetBrushLogic(-1);
@@ -688,6 +698,44 @@
 				m_Highlight.transform.localScale = scale;
 				m_Highlight.Size = scale * 24f;
 			}
+		}
+
+
+		private void LateUpdate_MagnetLine () {
+
+			// Active Check
+			bool magActive = true;
+			if (
+				FinalMagnetID == 0 || SelectingItemType < 0 || SelectingItemIndex < 0 ||
+				!Input.GetMouseButton(0) ||
+				SelectingItemType >= m_Containers.Length || SelectingItemIndex >= m_Containers[SelectingItemType].childCount
+			) {
+				magActive = false;
+				FinalMagnetID = 0;
+			}
+			m_MagnetLine.gameObject.TrySetActive(magActive);
+			if (!magActive) { return; }
+
+			// Active
+			int fmID = NegativeDragging ?
+				(FinalMagnetID > 0 ? (4 - FinalMagnetID) : (FinalMagnetID - 4)) :
+				FinalMagnetID;
+			var target = m_Containers[SelectingItemType].GetChild(SelectingItemIndex).GetChild(0);
+			var targetScl = target.localScale * 0.5f;
+			var (zoneMin, zoneMax_real, _, _) = GetRealZoneMinMax();
+			m_MagnetLine.transform.position =
+				fmID == 1 ? (target.position - target.right * targetScl.x) :
+				fmID == 3 ? (target.position + target.right * targetScl.x) :
+				fmID == -2 ? (target.position + target.up * targetScl.y) :
+				fmID == -3 ? (target.position + 2f * target.up * targetScl.y) :
+				target.position;
+			m_MagnetLine.transform.rotation = target.rotation;
+			float lineScl = m_MagnetLine.transform.localScale.z;
+			m_MagnetLine.size = new Vector2(
+				fmID < 0 ? 100f / lineScl : 0.5f,
+				fmID < 0 ? 0.5f : 100f / lineScl
+			);
+
 		}
 
 
@@ -1288,8 +1336,12 @@
 			var stage = map.Stages[index];
 			Vector3 worldMotion = Stage.GetStagePosition_Motion(stage) * zoneSize;
 			var worldPos = pos - DragOffsetWorld;
-			if (!TryGetMagnetSnappedPosition_Stage(map, index, axis, worldPos - worldMotion, out Vector3 snappedPos)) {
-				snappedPos = m_Grid.SnapWorld(worldPos - worldMotion, false);
+			bool magnetSnapped = true;
+			if (!TryGetMagnetSnappedPosition(map, 0, index, axis, worldPos - worldMotion, zoneSize, out Vector3 snappedPos)) {
+				magnetSnapped = false;
+				snappedPos = axis == 0 || axis == 1 || axis == 2 ?
+					m_Grid.SnapWorld(worldPos - worldMotion, false) :
+					worldPos;
 			}
 			var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 			if (axis == 0 || axis == 2) {
@@ -1303,7 +1355,7 @@
 				SetAxisIconDelta(axis, (pos - downPos).x, (pos - downPos).y);
 			}
 			if (axis == 3) {
-				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, worldPos.z);
 				float oldWidth = Stage.GetStageWidth(stage);
 				float motionWidth = Mathf.Max(Stage.GetStageWidth_Motion(stage), 0.001f);
 				float localPosX = Stage.ZoneToLocal(
@@ -1315,7 +1367,8 @@
 					Stage.GetStageWorldRotationZ(stage)
 				).x;
 				float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
-				if (m_Grid.RendererEnable) {
+				NegativeDragging = localPosX - 0.5f < 0f;
+				if (!magnetSnapped && m_Grid.RendererEnable) {
 					newWidth = Util.Snap(newWidth, 20f);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
@@ -1324,7 +1377,7 @@
 				SetAxisIconDelta(axis, (pos - downPos).magnitude);
 			}
 			if (axis == 4) {
-				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, worldPos.z);
 				float pivotY = Stage.GetStagePivotY(stage);
 				float oldHeight = Stage.GetStageHeight(stage);
 				float motionHeight = Mathf.Max(Stage.GetStageHeight_Motion(stage), 0.001f);
@@ -1337,7 +1390,8 @@
 					Stage.GetStageWorldRotationZ(stage)
 				).y;
 				float newHeight = Mathf.Abs(localPosY) * oldHeight / motionHeight;
-				if (m_Grid.RendererEnable) {
+				NegativeDragging = localPosY < 0f;
+				if (!magnetSnapped && m_Grid.RendererEnable) {
 					newHeight = Util.Snap(newHeight, 20f);
 				}
 				map.SetStageHeight(index, newHeight);
@@ -1383,7 +1437,10 @@
 			);
 			var worldPos = pos - DragOffsetWorld;
 			if (axis == 0 || axis == 2) {
-				var snappedPos = m_Grid.SnapWorld(worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z), true, true);
+				var _pos = worldPos - axisWorldPos + Util.Vector3Lerp3(zoneMin, zoneMax, basicZonePos.x, basicZonePos.y, basicZonePos.z);
+				if (!TryGetMagnetSnappedPosition(map, 1, index, axis, _pos, zoneSize, out Vector3 snappedPos)) {
+					snappedPos = m_Grid.SnapWorld(_pos, false, true);
+				}
 				var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 				float newX = Stage.ZoneToLocal(
 					snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -1399,7 +1456,12 @@
 				);
 			}
 			if (axis == 3) {
-				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+				bool magnetSnapped = true;
+				if (!TryGetMagnetSnappedPosition(map, 1, index, axis, worldPos, zoneSize, out Vector3 snappedPos)) {
+					magnetSnapped = false;
+					snappedPos = worldPos;
+				}
+				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 				float oldWidth = Track.GetTrackWidth(track);
 				float motionWidth = Mathf.Max(Track.GetTrackWidth_Motion(track), 0.0001f);
 				float localPosX = Track.ZoneToLocal(
@@ -1410,7 +1472,8 @@
 					Track.GetTrackAngle(track)
 				).x;
 				float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
-				if (m_Grid.RendererEnable) {
+				NegativeDragging = localPosX - 0.5f < 0f;
+				if (!magnetSnapped && m_Grid.RendererEnable) {
 					newWidth = Util.Snap(newWidth, 20f);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
@@ -1427,7 +1490,7 @@
 						Mathf.Sign(90f - Vector3.Angle(deltaDrag, moveY_up)) *
 						Vector3.Project(deltaDrag, moveY_up).magnitude
 					) * 360f;
-					float newBaseRot = DragDownRotation + deltaRot;
+					float newBaseRot = DragDownRotation - deltaRot;
 					if (m_Grid.RendererEnable) {
 						newBaseRot = Util.Snap(newBaseRot, 1f / 15f);
 					}
@@ -1462,7 +1525,9 @@
 			var tWidth = Track.GetTrackWidth(track);
 			var tAngle = Track.GetTrackAngle(track);
 			var worldPos = pos - DragOffsetWorld;
-			var snappedPos = m_Grid.SnapWorld(worldPos, true);
+			if (!TryGetMagnetSnappedPosition(map, 2, index, axis, worldPos, zoneSize, out Vector3 snappedPos)) {
+				snappedPos = m_Grid.SnapWorld(worldPos, true);
+			}
 			var snappedZonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos.x, snappedPos.y, snappedPos.z);
 			var localPos = Track.ZoneToLocal(
 				snappedZonePos.x, snappedZonePos.y, snappedZonePos.z,
@@ -1494,14 +1559,20 @@
 				);
 			}
 			if (axis == 3) {
-				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, worldPos.x, worldPos.y, worldPos.z);
+				bool magnetSnapped = true;
+				if (!TryGetMagnetSnappedPosition(map, 2, index, axis, worldPos, zoneSize, out Vector3 snappedPos_w)) {
+					magnetSnapped = false;
+					snappedPos_w = worldPos;
+				}
+				var zonePos = Util.Vector3InverseLerp3(zoneMin, zoneMax, snappedPos_w.x, snappedPos_w.y, snappedPos_w.z);
 				float localPosX = Track.ZoneToLocal(
 					zonePos.x, zonePos.y, zonePos.z,
 					sPos, sWidth, sHeight, sPivotY, sRotZ,
 					tX, tWidth, tAngle
 				).x;
-				float newWidth = Mathf.Abs(note.X - localPosX) * 2f;
-				if (m_Grid.RendererEnable) {
+				float newWidth = Mathf.Abs(localPosX - note.X) * 2f;
+				NegativeDragging = localPosX - note.X < 0f;
+				if (!magnetSnapped && m_Grid.RendererEnable) {
 					newWidth = Util.Snap(newWidth, 20f);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
@@ -1606,15 +1677,15 @@
 			switch (axis) {
 				case 0:
 					m_AxisMoveX_Icon.localPosition = m_AxisMoveX_IconPos +
-						Vector3.right * Mathf.Clamp(delta * 10f, -0.5f, 0.5f);
+						Vector3.right * Mathf.Clamp(delta * 10f, -0.4f, 0.4f);
 					break;
 				case 1:
 					m_AxisMoveY_Icon.localPosition = m_AxisMoveY_IconPos +
-						Vector3.up * Mathf.Clamp(deltaAlt * 10f, -0.5f, 0.5f);
+						Vector3.up * Mathf.Clamp(deltaAlt * 10f, -0.4f, 0.4f);
 					break;
 				case 2:
 					m_AxisMoveXY_Icon.localPosition = m_AxisMoveXY_IconPos +
-						new Vector3(Mathf.Clamp(delta * 10f, -0.3f, 0.3f), Mathf.Clamp(deltaAlt * 10f, -0.3f, 0.3f), 0f);
+						new Vector3(Mathf.Clamp(delta * 10f, -0.12f, 0.12f), Mathf.Clamp(deltaAlt * 10f, -0.12f, 0.12f), 0f);
 					break;
 				case 3:
 					m_AxisWidth_Icon.localScale = m_AxisWidth_IconScl *
@@ -1636,30 +1707,111 @@
 		}
 
 
-		private bool TryGetMagnetSnappedPosition_Stage (Beatmap map, int itemIndex, int axis, Vector3 worldPos, out Vector3 snappedPos) {
+		private bool TryGetMagnetSnappedPosition (Beatmap map, int itemType, int itemIndex, int axis, Vector3 worldPos, float zoneSize, out Vector3 snappedPos) {
 			snappedPos = worldPos;
-			if (!UseMagnetSnap.Value) { return false; }
-			if (axis == 0 || axis == 2) {
-				// X
-
-
+			// Check
+			if (!UseMagnetSnap.Value || axis == 2 || axis >= 5) { return false; }
+			// Con Check
+			var container = m_Containers[itemType];
+			int count = container.childCount;
+			if (itemIndex < 0 || itemIndex >= count) { return false; }
+			var target = container.GetChild(itemIndex).GetChild(0);
+			int parentIndex = itemType != 0 ? map.GetParentIndex(itemType, itemIndex) : -1;
+			// Do the Magnet
+			Vector3? snappedResult = null;
+			float minDistance = float.MaxValue;
+			FinalMagnetID = 0;
+			for (int i = 0; i < count; i++) {
+				if (i == itemIndex) { continue; }
+				var item = container.GetChild(i);
+				if (!item.gameObject.activeSelf || (itemType != 0 && map.GetParentIndex(itemType, i) != parentIndex)) { continue; }
+				var tf = item.GetChild(0);
+				int magnetID = CheckMagnetSnap(target, tf, worldPos, axis, zoneSize * 0.02f, itemType != 2, out Vector3 result);
+				if (magnetID >= 0) {
+					// Min Check
+					float distance = Vector3.Distance(worldPos, result);
+					if (distance < minDistance) {
+						minDistance = distance;
+						snappedResult = result;
+						snappedPos = result;
+						FinalMagnetID = axis == 0 || axis == 3 ? magnetID + 1 : -magnetID - 1;
+					}
+				}
 			}
-			if (axis == 1 || axis == 2) {
-				// Y
+			return snappedResult.HasValue;
+		}
 
 
+		private int CheckMagnetSnap (Transform targetA, Transform targetB, Vector3 worldPos, int axis, float snapDistance, bool useMidY, out Vector3 result) {
+
+			result = worldPos;
+			int vectorAxis = axis == 0 || axis == 3 ? 0 : 1;
+			bool isPos = axis == 0 || axis == 1;
+
+			// Pos Check
+			var fixA = targetA.localScale[vectorAxis] * 0.5f * (vectorAxis == 0 ? targetA.right : targetA.up);
+			var posA_Mid = vectorAxis == 0 ? worldPos : worldPos + fixA;
+			var posA_Min = posA_Mid - fixA;
+			var posA_Max = posA_Mid + fixA;
+
+			var fixB = targetB.localScale[vectorAxis] * 0.5f * (vectorAxis == 0 ? targetB.right : targetB.up);
+			var posB_Mid = vectorAxis == 0 ? targetB.position : targetB.position + fixB;
+			var posB_Min = posB_Mid - fixB;
+			var posB_Max = posB_Mid + fixB;
+
+			var normalA = vectorAxis == 0 ? targetA.right : targetA.up;
+			if (vectorAxis == 0) {
+				if (isPos && CheckSnap(posA_Min, true, out Vector3 res_Min)) {
+					result = res_Min + fixA;
+					return 0;
+				}
+				if (CheckSnap(posA_Mid, !isPos, out Vector3 res_Mid)) {
+					result = res_Mid;
+					return isPos ? 1 : 2;
+				}
+				if (isPos && CheckSnap(posA_Max, true, out Vector3 res_Max)) {
+					result = res_Max - fixA;
+					return 2;
+				}
+			} else {
+				if (CheckSnap(posA_Min, !useMidY || isPos, out Vector3 res_Min)) {
+					result = res_Min;
+					return isPos ? 0 : 2;
+				}
+				if (isPos && useMidY && CheckSnap(posA_Mid, false, out Vector3 res_Mid)) {
+					result = res_Mid - fixA;
+					return 1;
+				}
+				if (isPos && CheckSnap(posA_Max, true, out Vector3 res_Max)) {
+					result = res_Max - 2f * fixA;
+					return 2;
+				}
 			}
-			if (axis == 3) {
-				// Width
 
+			return -1;
 
+			// === Func ===
+			bool CheckSnap (Vector3 posA_mmm, bool ignoreMid, out Vector3 localResult) {
+				var pro = Vector3.Project(posB_Min - posA_mmm, normalA);
+				if (pro.magnitude <= snapDistance) {
+					localResult = posA_mmm + pro;
+					return true;
+				}
+				if (!ignoreMid) {
+					pro = Vector3.Project(posB_Mid - posA_mmm, normalA);
+					if (pro.magnitude <= snapDistance) {
+						localResult = posA_mmm + pro;
+						return true;
+					}
+				}
+				pro = Vector3.Project(posB_Max - posA_mmm, normalA);
+				if (pro.magnitude <= snapDistance) {
+					localResult = posA_mmm + pro;
+					return true;
+				}
+				localResult = default;
+				return false;
 			}
-			if (axis == 4) {
-				// Height
-
-
-			}
-			return false;
 		}
 
 

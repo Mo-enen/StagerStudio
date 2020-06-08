@@ -40,3 +40,4 @@ Shortcut.Brush.AltSizeUp,	Equals,	False,	False,	False#
 Shortcut.Linker,	X,	False,	False,	False#
 Shortcut.SwitchItemType,	Z,	False,	False,	False#
 Shortcut.Game.AddDropSpeed,	Equals,	True,	False,	False#
+Shortcut.Game.ReduceDropSpeed,	Minus,	True,	False,	False#
