@@ -9,34 +9,6 @@
 	public class ProjectCreatorUI : MonoBehaviour {
 
 
-		// SUB
-		[System.Serializable]
-		public class ProjectAsset {
-#if UNITY_EDITOR
-			private string EditorLabelWarningKiller => EditorLabel;
-			[SerializeField] private string EditorLabel = "";
-#endif
-			public ProjectType Type = ProjectType.StagerStudio;
-			public Color32[] Palette = null;
-			public GeneData Gene = null;
-			public TextAsset Tween = null;
-			public TextAsset Beatmap = null;
-		}
-
-
-		public enum ProjectType {
-			StagerStudio = 0,
-			Voez = 1,
-			Dynamix = 2,
-			Deemo = 3,
-			Mania = 4,
-			SDVX = 5,
-			Phigros = 6,
-			Arcaea = 7,
-
-		}
-
-
 		// Handler
 		public delegate string StringStringHandler (string key);
 		public delegate void VoidStringHandler (string str);
@@ -51,7 +23,7 @@
 		// Ser
 		[SerializeField] private RectTransform[] m_Containers = null;
 		[SerializeField] private RectTransform[] m_Dots = null;
-		[SerializeField] private ProjectAsset[] m_Assets = null;
+		[SerializeField] private ProjectTemplateAsset[] m_Templates = null;
 		[SerializeField] private RectTransform m_ContentRoot = null;
 		[SerializeField] private RectTransform m_ContentPivot = null;
 		[SerializeField] private RectTransform m_Lerp = null;
@@ -64,28 +36,18 @@
 		[SerializeField] private InputField m_BeatmapAuthor = null;
 		[SerializeField] private InputField m_MusicAuthor = null;
 		[SerializeField] private Text m_MusicSizeLabel = null;
+		[SerializeField] private ProjectTemplateType m_FuckedType = ProjectTemplateType.Stager;
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
 		private const string PROJECT_TEMPLATE_HINT_KEY = "ProjectCreator.Hint.Template";
 		private const string PROJECT_TYPE_HINT_KEY_FUCK = ".Fuck";
-		private readonly string[] PROJECT_TYPE_HINT_KEYS = {
-			"Gene.Stager",
-			"Gene.Voez",
-			"Gene.Dynamix",
-			"Gene.Deemo",
-			"Gene.Mania",
-			"Gene.SDVX",
-			"Gene.Phigros",
-			"Gene.Arcaea",
-
-		};
 		private const string DIALOG_ErrorOnCreateProject = "Dialog.Error.FailCreateProject";
 		private const string DIALOG_NoTitle = "ProjectCreator.Error.NoTitle";
 		private const string DIALOG_NoMusic = "ProjectCreator.Error.NoMusic";
+		private ProjectTemplateType CurrentProjectType = ProjectTemplateType.Stager;
 		private int CurrentStep = 0;
 		private bool UIMoving = true;
-		private ProjectType CurrentProjectType = ProjectType.StagerStudio;
 
 		// Project
 		private static bool MusicSizeDirty = true;
@@ -143,7 +105,7 @@
 			MusicSizeDirty = true;
 			RootPath = rootPath;
 			GotoStep(0);
-			UI_SetProjectType((int)ProjectType.StagerStudio);
+			UI_SetProjectType((int)ProjectTemplateType.Stager);
 		}
 
 
@@ -175,19 +137,19 @@
 				BackgroundData = null,
 				FrontCover = null,
 			};
-			// Asset
-			ProjectAsset asset = null;
-			foreach (var _asset in m_Assets) {
-				if (_asset.Type == CurrentProjectType) {
-					asset = _asset;
+			// Template
+			ProjectTemplateAsset template = null;
+			foreach (var _template in m_Templates) {
+				if (_template.Type == CurrentProjectType) {
+					template = _template;
 					break;
 				}
 			}
-			if (asset != null) {
+			if (template != null) {
 				// Data
 				try {
-					result.Palette.AddRange(asset.Palette);
-					result.Tweens.AddRange(JsonUtility.FromJson<Project.TweenArray>(asset.Tween.text).GetAnimationTweens());
+					result.Palette.AddRange(template.Palette.GetPixels32());
+					result.Tweens.AddRange(JsonUtility.FromJson<Project.TweenArray>(template.Tween.text).GetAnimationTweens());
 				} catch {
 					Debug.LogError("Failed to add data");
 				}
@@ -195,7 +157,7 @@
 				try {
 					var key = System.Guid.NewGuid().ToString();
 					result.OpeningBeatmap = key;
-					Beatmap map = asset.Beatmap != null ? JsonUtility.FromJson<Beatmap>(asset.Beatmap.text) : Beatmap.NewBeatmap();
+					Beatmap map = template.Beatmap != null ? JsonUtility.FromJson<Beatmap>(template.Beatmap.text) : Beatmap.NewBeatmap();
 					map.CreatedTime = Util.GetLongTime();
 					result.BeatmapMap.Add(key, map);
 				} catch {
@@ -203,7 +165,7 @@
 				}
 				// Gene
 				try {
-					result.Gene = asset.Gene;
+					result.Gene = template.Gene;
 				} catch {
 					Debug.LogError("Failed to do gene");
 				}
@@ -233,9 +195,17 @@
 
 
 		public void UI_SetProjectType (int type) {
-			CurrentProjectType = (ProjectType)type;
-			m_GeneHintLabel.text =
-				$"{GetLanguage(PROJECT_TEMPLATE_HINT_KEY)}{GetLanguage(PROJECT_TYPE_HINT_KEYS[type] + (CurrentProjectType == ProjectType.SDVX ? PROJECT_TYPE_HINT_KEY_FUCK : ""))}";
+			CurrentProjectType = (ProjectTemplateType)type;
+			ProjectTemplateAsset template = null;
+			foreach (var _template in m_Templates) {
+				if (_template.Type == CurrentProjectType) {
+					template = _template;
+					break;
+				}
+			}
+			if (template != null) {
+				m_GeneHintLabel.text = $"{GetLanguage(PROJECT_TEMPLATE_HINT_KEY)}{GetLanguage(template.Gene.Key + (CurrentProjectType == m_FuckedType ? PROJECT_TYPE_HINT_KEY_FUCK : ""))}";
+			}
 		}
 
 

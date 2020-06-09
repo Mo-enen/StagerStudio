@@ -37,6 +37,7 @@
 			public Button Clear_Background;
 			public Button Clear_Cover;
 			public Button Clear_Music;
+			public Text GeneLabel;
 		}
 
 
@@ -149,6 +150,7 @@
 		public static VoidStringHandler SetProjectInfo_MapAuthor { get; set; } = null;
 		public static ColorPickerHandler SpawnColorPicker { get; set; } = null;
 		public static TweenEditorHandler SpawnTweenEditor { get; set; } = null;
+		public static StringHandler GetProjectGeneKey { get; set; } = null;
 
 		// Short
 		private BeatmapSortMode BeatmapSort {
@@ -262,6 +264,7 @@
 				ProjectRemoveMusic();
 				ProjectSetDirty();
 			});
+			m_ProjectInfoComponentData.GeneLabel.text = GetLanguage(GetProjectGeneKey());
 		}
 
 

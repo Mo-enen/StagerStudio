@@ -28,21 +28,27 @@
 		public struct StageConfig {
 
 			// API-SER
+			public bool UseConfig;
+			public bool Motion;
+			public ActiveInt ItemType;
 			public ActiveInt Time_Real;
 			public ActiveInt Duration_Real;
 			public ActiveInt X;
-			public ActiveInt Y_Real;
+			public ActiveInt Y;
 			public ActiveInt Rotation;
 			public ActiveInt Width;
-			public ActiveInt Height_Real;
+			public ActiveInt Height;
 			public ActiveInt PivotY;
 			public ActiveInt Speed;
 
-			public static StageConfig AllInactive => new StageConfig() {
+			public static StageConfig IgnoreAll => new StageConfig() {
+				UseConfig = false,
+				Motion = true,
+				ItemType = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,
-				Y_Real = ActiveInt.Inactive,
+				Y = ActiveInt.Inactive,
 				Rotation = ActiveInt.Inactive,
-				Height_Real = ActiveInt.Inactive,
+				Height = ActiveInt.Inactive,
 				PivotY = ActiveInt.Inactive,
 				Width = ActiveInt.Inactive,
 				Speed = ActiveInt.Inactive,
@@ -58,20 +64,30 @@
 		public struct TrackConfig {
 
 			// API-SER
+			public bool UseConfig;
+			public bool Motion;
+			public ActiveInt ItemType;
+			public ActiveInt StageIndex;
 			public ActiveInt Time_Real;
 			public ActiveInt Duration_Real;
 			public ActiveInt X;
 			public ActiveInt Angle;
 			public ActiveInt Width;
 			public ActiveInt Speed;
+			public ActiveInt HasTray;
 
-			public static TrackConfig AllInactive => new TrackConfig() {
+			public static TrackConfig IgnoreAll => new TrackConfig() {
+				UseConfig = false,
+				Motion = true,
+				StageIndex = ActiveInt.Inactive,
+				ItemType = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,
 				Angle = ActiveInt.Inactive,
 				Duration_Real = ActiveInt.Inactive,
 				Speed = ActiveInt.Inactive,
 				Width = ActiveInt.Inactive,
 				Time_Real = ActiveInt.Inactive,
+				HasTray = ActiveInt.Inactive,
 			};
 
 		}
@@ -82,8 +98,9 @@
 		public bool Allow_EditStage = true;
 		public bool Allow_EditTrack = true;
 		public bool Allow_EditTiming = true;
-		public StageConfig Config_Stage = StageConfig.AllInactive;
-		public TrackConfig Config_Track = TrackConfig.AllInactive;
+		public ActiveInt Ratio = ActiveInt.Inactive;
+		public StageConfig Config_Stage = StageConfig.IgnoreAll;
+		public TrackConfig Config_Track = TrackConfig.IgnoreAll;
 		public StageConfig[] StaticConfigs_Stage = { };
 		public TrackConfig[] StaticConfigs_Track = { };
 

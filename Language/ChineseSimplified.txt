@@ -321,6 +321,7 @@ Tip.PInfo.ClearCover:删除工程的封面图片
 Tip.PInfo.ClearMusic:删除工程的音乐
 Tip.PInfo.Done:保存并关闭工程信息窗口
 Tip.ProjectInfo:工程信息：管理标题、音乐、背景，谱面难度、BPM等
+Tip.ProjectInfo.ProjectGene:决定了该工程遵守哪种规范，工程创建后不可修改
 Tip.Save:保存工程 (右键打开菜单)
 Tip.Selector.Stage:选择舞台
 Tip.Selector.Track:选择轨道
@@ -448,6 +449,7 @@ UI.ProjectInfo.NoBackgroundHint:无背景
 UI.ProjectInfo.NoCoverHint:无封面
 UI.ProjectInfo.NoMusicHint:无音乐
 UI.ProjectInfo.ProjectDescription:工程简介
+UI.ProjectInfo.ProjectGene:工程基因
 UI.ProjectInfo.ProjectName:工程标题
 UI.ResetSettings:恢复默认值
 UI.Save:保存

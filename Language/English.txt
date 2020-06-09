@@ -321,6 +321,7 @@ Tip.PInfo.ClearCover:Remove cover
 Tip.PInfo.ClearMusic:Remove music
 Tip.PInfo.Done:Save and close the project info window
 Tip.ProjectInfo:Project info: manage title, music, BG, BPM, etc.
+Tip.ProjectInfo.ProjectGene:Shows which rules are applied to the project, cannot be modified after the project is created
 Tip.Save:Save project (Right click to open menu)
 Tip.Selector.Stage:Select stage
 Tip.Selector.Track:Select track
@@ -448,6 +449,7 @@ UI.ProjectInfo.NoBackgroundHint:No Background
 UI.ProjectInfo.NoCoverHint:No Cover
 UI.ProjectInfo.NoMusicHint:No Music
 UI.ProjectInfo.ProjectDescription:Project Description
+UI.ProjectInfo.ProjectGene:Project Gene
 UI.ProjectInfo.ProjectName:Project Name
 UI.ResetSettings:Reset All
 UI.Save:Save

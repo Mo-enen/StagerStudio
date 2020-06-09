@@ -907,6 +907,7 @@
 			ProjectInfoUI.OnProjectInfoChanged = () => {
 				TryRefreshProjectInfo();
 			};
+			ProjectInfoUI.GetProjectGeneKey = () => m_Project.Gene.Key;
 
 		}
 
