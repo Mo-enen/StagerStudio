@@ -46,7 +46,8 @@
 		// Handler
 		public static StringStringHandler GetLanguage { get; set; } = null;
 		public static VoidHandler OnItemCountChanged { get; set; } = null;
-		public static VoidHandler OnSpeedChanged { get; set; } = null;
+		public static VoidHandler OnDropSpeedChanged { get; set; } = null;
+		public static VoidHandler OnSpeedCurveChanged { get; set; } = null;
 		public static VoidHandler OnAbreastChanged { get; set; } = null;
 		public static VoidHandler OnGridChanged { get; set; } = null;
 		public static VoidFloatHandler OnRatioChanged { get; set; } = null;
@@ -128,8 +129,9 @@
 		private float _Ratio = 1.5f;
 		private float _GameDropSpeed = 1f;
 		private bool SpeedCurveDirty = true;
-		private float MouseDownMusicTime = -1f;
+		private bool UIReady = true;
 		private bool MusicPlayingForMouseDrag = false;
+		private float MouseDownMusicTime = -1f;
 
 		// Saving
 		public SavingBool ShowGrid { get; private set; } = new SavingBool("StageGame.ShowGrid", true);
@@ -388,7 +390,7 @@
 			}
 			// Dirty
 			if (SpeedCurveDirty) {
-				OnSpeedChanged();
+				OnSpeedCurveChanged();
 				SpeedCurveDirty = false;
 			}
 		}
@@ -406,6 +408,7 @@
 					if (Input.GetKey(KeyCode.LeftControl)) {
 						// Zoom Speed
 						AddGameDropSpeed(Input.mouseScrollDelta.y * (PositiveScroll ? 0.1f : -0.1f));
+						LogDropSpeedHint();
 					} else {
 						// Seek Music
 						float delta = Input.mouseScrollDelta.y * (PositiveScroll ? -0.1f : 0.1f) / GameDropSpeed;
@@ -514,12 +517,26 @@
 			speed = Mathf.Clamp(speed, 0.1f, 10f);
 			speed = Mathf.Round(speed * 10f) / 10f;
 			_GameDropSpeed = speed;
-			OnSpeedChanged();
+			UIReady = false;
+			try {
+				OnDropSpeedChanged();
+			} catch { }
+			UIReady = true;
+		}
+
+
+		public void SetGameDropSpeed_Slider (float speed_10) {
+			if (!UIReady) { return; }
+			SetGameDropSpeed(speed_10 / 10f);
 		}
 
 
 		public void AddGameDropSpeed (float delta) {
 			SetGameDropSpeed(GameDropSpeed + delta);
+		}
+
+
+		public void LogDropSpeedHint () {
 			LogGameHint_Key(GAME_DROP_SPEED_HINT, _GameDropSpeed.ToString("0.#"), false);
 		}
 
@@ -565,7 +582,7 @@
 				}
 				AbreastValue = aimAbreast;
 				OnAbreastChanged();
-				OnSpeedChanged();
+				OnSpeedCurveChanged();
 				AbreastValueCor = null;
 			}
 		}

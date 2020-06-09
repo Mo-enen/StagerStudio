@@ -142,12 +142,14 @@
 		public List<Color32> Palette { get; } = new List<Color32>();
 		public List<AnimationCurve> Tweens { get; } = new List<AnimationCurve>();
 		public List<(Project.FileData data, AudioClip clip)> ClickSounds { get; } = new List<(Project.FileData data, AudioClip clip)>();
+		public GeneData Gene { get => _Gene != null ? _Gene : (_Gene = new GeneData()); private set => _Gene = value; }
 
 		// Short
 		private string TempPath => Util.CombinePaths(Application.temporaryCachePath, "Temp");
 
 		// Data
 		private Coroutine LoadingCor = null;
+		private GeneData _Gene = null;
 		private bool _IsDirty = false;
 		private float NextAutoSaveTime = float.MaxValue;
 
@@ -230,6 +232,7 @@
 				Palette.Clear();
 				Tweens.Clear();
 				ClickSounds.Clear();
+				_Gene = null;
 				LastEditTime = 0;
 				OnProjectLoadingStart();
 				RefreshAutoSaveTime();
@@ -249,7 +252,7 @@
 				} catch (System.Exception ex) {
 					LogMessageLogic(LanguageData.Error_FailLoadProjectFile, true, ex.Message);
 					LogLoadingProgress("", -1f);
-					OnProjectLoaded?.Invoke();
+					OnProjectLoaded.Invoke();
 					LoadingCor = null;
 					OnException(ex);
 					yield break;
@@ -263,7 +266,7 @@
 					if (!project) {
 						LoadingCor = null;
 						LogLoadingProgress("", -1f);
-						OnProjectLoaded?.Invoke();
+						OnProjectLoaded.Invoke();
 						yield break;
 					}
 					ProjectName = project.ProjectName;
@@ -292,6 +295,9 @@
 
 				// Tween
 				Tweens.AddRange(project.Tweens);
+
+				// Gene
+				_Gene = project.Gene;
 
 				// Music
 				LogLoadingProgress(LanguageData.Loading_Audio, 0.2f);
@@ -328,7 +334,6 @@
 				} else {
 					OnBackgroundLoaded(null);
 				}
-
 
 				// Beatmap
 				LogLoadingProgress(LanguageData.Loading_Beatmap, 0.8f);

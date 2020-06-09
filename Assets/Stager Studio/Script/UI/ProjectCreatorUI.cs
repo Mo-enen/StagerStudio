@@ -12,8 +12,13 @@
 		// SUB
 		[System.Serializable]
 		public class ProjectAsset {
+#if UNITY_EDITOR
+			private string EditorLabelWarningKiller => EditorLabel;
+			[SerializeField] private string EditorLabel = "";
+#endif
 			public ProjectType Type = ProjectType.StagerStudio;
 			public Color32[] Palette = null;
+			public GeneData Gene = null;
 			public TextAsset Tween = null;
 			public TextAsset Beatmap = null;
 		}
@@ -24,9 +29,10 @@
 			Voez = 1,
 			Dynamix = 2,
 			Deemo = 3,
-			Osu = 4,
-			Arcaea = 5,
+			Mania = 4,
+			SDVX = 5,
 			Phigros = 6,
+			Arcaea = 7,
 
 		}
 
@@ -61,14 +67,18 @@
 		[SerializeField] private Text[] m_LanguageTexts = null;
 
 		// Data
+		private const string PROJECT_TEMPLATE_HINT_KEY = "ProjectCreator.Hint.Template";
+		private const string PROJECT_TYPE_HINT_KEY_FUCK = ".Fuck";
 		private readonly string[] PROJECT_TYPE_HINT_KEYS = {
-			"ProjectCreator.Hint.StagerStudio",
-			"ProjectCreator.Hint.Voez",
-			"ProjectCreator.Hint.Dynamix",
-			"ProjectCreator.Hint.Deemo",
-			"ProjectCreator.Hint.Osu",
-			"ProjectCreator.Hint.Arcaea",
-			"ProjectCreator.Hint.Phigros",
+			"Gene.Stager",
+			"Gene.Voez",
+			"Gene.Dynamix",
+			"Gene.Deemo",
+			"Gene.Mania",
+			"Gene.SDVX",
+			"Gene.Phigros",
+			"Gene.Arcaea",
+
 		};
 		private const string DIALOG_ErrorOnCreateProject = "Dialog.Error.FailCreateProject";
 		private const string DIALOG_NoTitle = "ProjectCreator.Error.NoTitle";
@@ -191,6 +201,12 @@
 				} catch {
 					Debug.LogError("Failed to create beatmap");
 				}
+				// Gene
+				try {
+					result.Gene = asset.Gene;
+				} catch {
+					Debug.LogError("Failed to do gene");
+				}
 			}
 			// Create File
 			string path = Util.CombinePaths(RootPath, $"{Util.GetTimeString()}_{m_ProjectName.text}.stager");
@@ -218,7 +234,8 @@
 
 		public void UI_SetProjectType (int type) {
 			CurrentProjectType = (ProjectType)type;
-			m_GeneHintLabel.text = GetLanguage(PROJECT_TYPE_HINT_KEYS[type]);
+			m_GeneHintLabel.text =
+				$"{GetLanguage(PROJECT_TEMPLATE_HINT_KEY)}{GetLanguage(PROJECT_TYPE_HINT_KEYS[type] + (CurrentProjectType == ProjectType.SDVX ? PROJECT_TYPE_HINT_KEY_FUCK : ""))}";
 		}
 
 

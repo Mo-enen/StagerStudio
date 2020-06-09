@@ -542,6 +542,12 @@ TextureImporter:
   - first:
       213: -8851053322734798200
     second: Icon Magnet
+  - first:
+      213: -334316856523923910
+    second: Drop Speed
+  - first:
+      213: 6813076448839186041
+    second: SDVX Icon
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -801,7 +807,7 @@ TextureImporter:
       name: Arcaea Icon
       rect:
         serializedVersion: 2
-        x: 243
+        x: 373
         y: 448
         width: 59
         height: 46
@@ -990,7 +996,7 @@ TextureImporter:
       name: Phigros Icon
       rect:
         serializedVersion: 2
-        x: 303
+        x: 308
         y: 447
         width: 64
         height: 64
@@ -1583,7 +1589,7 @@ TextureImporter:
         width: 87
         height: 87
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -1591,6 +1597,48 @@ TextureImporter:
       bones: []
       spriteID: 88af95ad5edba2580800000000000000
       internalID: -8851053322734798200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Drop Speed
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 1
+        width: 51
+        height: 81
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a3e577c17944c5bf0800000000000000
+      internalID: -334316856523923910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: SDVX Icon
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 448
+        width: 64
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 976b3a8dee8ec8e50800000000000000
+      internalID: 6813076448839186041
       vertices: []
       indices: 
       edges: []

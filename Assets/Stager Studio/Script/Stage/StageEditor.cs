@@ -95,6 +95,8 @@
 		public float TrackBrushWidth { get; set; } = 0.2f;
 		public float NoteBrushWidth { get; set; } = 0.2f;
 		public bool AxisDragging { get; private set; } = false;
+		public int SizeSnapCount { get; set; } = 20;
+		public int RotationSnapCount { get; set; } = 24;
 
 		// Short
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
@@ -1369,7 +1371,7 @@
 				float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
 				NegativeDragging = localPosX - 0.5f < 0f;
 				if (!magnetSnapped && m_Grid.RendererEnable) {
-					newWidth = Util.Snap(newWidth, 20f);
+					newWidth = Util.Snap(newWidth, SizeSnapCount);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
 				map.SetStageWidth(index, newWidth);
@@ -1392,7 +1394,7 @@
 				float newHeight = Mathf.Abs(localPosY) * oldHeight / motionHeight;
 				NegativeDragging = localPosY < 0f;
 				if (!magnetSnapped && m_Grid.RendererEnable) {
-					newHeight = Util.Snap(newHeight, 20f);
+					newHeight = Util.Snap(newHeight, SizeSnapCount);
 				}
 				map.SetStageHeight(index, newHeight);
 				LogAxisMSG(axis, newHeight);
@@ -1404,7 +1406,7 @@
 					float deltaRot = ((pos - downPos) / zoneSize).x * 360f;
 					float newBaseRot = DragDownRotation + deltaRot;
 					if (m_Grid.RendererEnable) {
-						newBaseRot = Util.Snap(newBaseRot, 1f / 15f);
+						newBaseRot = Util.Snap(newBaseRot, RotationSnapCount / 360f);
 					}
 					map.SetStageRotation(index, newBaseRot);
 					LogAxisMSG(axis, Mathf.Round(newBaseRot));
@@ -1474,7 +1476,7 @@
 				float newWidth = 2f * Mathf.Abs(localPosX - 0.5f) * oldWidth / motionWidth;
 				NegativeDragging = localPosX - 0.5f < 0f;
 				if (!magnetSnapped && m_Grid.RendererEnable) {
-					newWidth = Util.Snap(newWidth, 20f);
+					newWidth = Util.Snap(newWidth, SizeSnapCount);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
 				map.SetTrackWidth(index, newWidth);
@@ -1492,7 +1494,7 @@
 					) * 360f;
 					float newBaseRot = DragDownRotation - deltaRot;
 					if (m_Grid.RendererEnable) {
-						newBaseRot = Util.Snap(newBaseRot, 1f / 15f);
+						newBaseRot = Util.Snap(newBaseRot, RotationSnapCount / 360f);
 					}
 					map.SetTrackAngle(index, newBaseRot);
 					LogAxisMSG(axis, Mathf.Round(newBaseRot));
@@ -1573,7 +1575,7 @@
 				float newWidth = Mathf.Abs(localPosX - note.X) * 2f;
 				NegativeDragging = localPosX - note.X < 0f;
 				if (!magnetSnapped && m_Grid.RendererEnable) {
-					newWidth = Util.Snap(newWidth, 20f);
+					newWidth = Util.Snap(newWidth, SizeSnapCount);
 				}
 				newWidth = Mathf.Max(newWidth, 0.001f);
 				map.SetNoteWidth(index, newWidth);

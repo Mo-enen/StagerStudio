@@ -168,6 +168,7 @@
 		private const string UI_SelectorStageMenu = "Menu.UI.SelectorStage";
 		private const string UI_SelectorTrackMenu = "Menu.UI.SelectorTrack";
 		private const string UI_OpenWebMSG = "Dialog.OpenWebMSG";
+		private const string UI_OpenSkinEditorConfirm = "Dialog.OpenSkinEditorConfirm";
 		private const string Confirm_DeleteProjectSound = "ProjectInfo.Dialog.DeleteSound";
 		private const string Confirm_SwipeProjectSound = "ProjectInfo.Dialog.SwipeSound";
 		private const string Hint_CommandDone = "Command.Hint.CommandDone";
@@ -207,6 +208,7 @@
 		[SerializeField] private RectTransform m_MotionInspector = null;
 		[SerializeField] private RectTransform m_SelectBrushMark = null;
 		[SerializeField] private RectTransform m_EraseBrushMark = null;
+		[SerializeField] private Slider m_DropSpeedSlider = null;
 		[Header("UI")]
 		[SerializeField] private BackgroundUI m_Background = null;
 		[SerializeField] private ProgressUI m_Progress = null;
@@ -258,8 +260,14 @@
 			Awake_Editor();
 			Awake_Skin();
 			Awake_Undo();
+			Awake_Gene();
 			Awake_ProjectInfo();
 			Awake_Inspector();
+			Awake_Home();
+			Awake_Progress();
+			Awake_SkinEditor();
+			Awake_Selector();
+			Awake_Linker();
 			Awake_Misc();
 
 		}
@@ -268,14 +276,16 @@
 		private void Start () {
 			LoadAllSettings();
 			UI_RemoveUI();
-			if (Screen.fullScreen) {
-				Screen.fullScreen = false;
-			}
+			DebugLog_Start();
+			if (Screen.fullScreen) { Screen.fullScreen = false; }
 			QualitySettings.vSyncCount = 0;
+			m_EasterEgg.Workspace = m_Project.Workspace;
 			m_Background.SetBackground(null, false);
 			m_SelectBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -1);
 			m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
-			DebugLog_Start();
+			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
+			m_VersionLabel.text = $"v{Application.version}";
+			m_TextSheet.Init();
 		}
 
 
@@ -624,10 +634,17 @@
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 			};
-			StageGame.OnSpeedChanged = () => {
+			StageGame.OnDropSpeedChanged = () => {
 				if (!m_Game.UseDynamicSpeed) {
 					m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
 				}
+				m_TimingPreview.SetDirty();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				RefreshGridRenderer();
+				m_DropSpeedSlider.value = Mathf.Clamp(m_Game.GameDropSpeed * 10f, m_DropSpeedSlider.minValue, m_DropSpeedSlider.maxValue);
+			};
+			StageGame.OnSpeedCurveChanged = () => {
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
@@ -828,6 +845,15 @@
 		}
 
 
+		private void Awake_Gene () {
+			StageGene.GetGene = () => m_Project.Gene;
+			StageGene.GetBeatmap = () => m_Project.Beatmap;
+
+
+		}
+
+
+		// Awake UI 
 		private void Awake_ProjectInfo () {
 
 			ProjectInfoUI.MusicStopClickSounds = m_Music.StopClickSounds;
@@ -998,35 +1024,17 @@
 		}
 
 
-		private void Awake_Misc () {
-
-			m_EasterEgg.Workspace = m_Project.Workspace;
-
-			CursorUI.GetCursorTexture = (index) => (
-				index >= 0 ? m_Cursors[index].Cursor : null,
-				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
-			);
-
-			ProgressUI.GetSnapTime = (time, step) => m_Game.SnapTime(time, step);
-
-			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : m_Game.AreaBetween(timeA, timeB, muti);
-			GridRenderer.GetSnapedTime = m_Game.SnapTime;
-
-			TrackSectionRenderer.GetAreaBetween = m_Game.AreaBetween;
-			TrackSectionRenderer.GetSnapedTime = m_Game.SnapTime;
-
-			BeatmapSwiperUI.GetBeatmapMap = () => m_Project.BeatmapMap;
-			BeatmapSwiperUI.TriggerSwitcher = (key) => {
-				m_Project.SaveProject();
-				m_Project.OpenBeatmap(key);
-			};
-
+		private void Awake_Home () {
 			HomeUI.GotoEditor = m_State.GotoEditor;
 			HomeUI.GetWorkspace = () => m_Project.Workspace;
 			HomeUI.OpenMenu = m_Menu.OpenMenu;
 			HomeUI.SpawnProjectCreator = UI_SpawnProjectCreator;
 			HomeUI.OnException = (ex) => DebugLog_Exception("Home", ex);
+		}
 
+
+		private void Awake_Progress () {
+			ProgressUI.GetSnapTime = (time, step) => m_Game.SnapTime(time, step);
 			ProgressUI.GetDuration = () => m_Music.Duration;
 			ProgressUI.GetReadyPlay = () => (m_Music.IsReady, m_Music.IsPlaying);
 			ProgressUI.PlayMusic = m_Music.Play;
@@ -1034,19 +1042,10 @@
 			ProgressUI.SeekMusic = m_Music.Seek;
 			ProgressUI.GetBPM = () => m_Game.BPM;
 			ProgressUI.GetShift = () => m_Game.Shift;
+		}
 
-			PreviewUI.GetMusicTime01 = (time) => time / m_Music.Duration;
-			PreviewUI.GetBeatmap = () => m_Project.Beatmap;
 
-			ProjectCreatorUI.ImportMusic = () => {
-				m_Project.ImportMusic((data, _) => {
-					if (data is null) { return; }
-					ProjectCreatorUI.MusicData = data;
-					ProjectCreatorUI.SetMusicSizeDirty();
-				});
-			};
-			ProjectCreatorUI.GotoEditor = m_State.GotoEditor;
-
+		private void Awake_SkinEditor () {
 			SkinEditorUI.MusicSeek_Add = (add) => m_Music.Seek(m_Music.Time + add);
 			SkinEditorUI.SkinReloadSkin = m_Skin.ReloadSkin;
 			SkinEditorUI.OpenMenu = m_Menu.OpenMenu;
@@ -1054,17 +1053,10 @@
 			SkinEditorUI.SkinSaveSkin = m_Skin.SaveSkin;
 			SkinEditorUI.SpawnSetting = UI_SpawnSetting;
 			SkinEditorUI.RemoveUI = UI_RemoveUI;
+		}
 
-			SkinSwiperUI.GetAllSkinNames = () => m_Skin.AllSkinNames;
-			SkinSwiperUI.SkinLoadSkin = m_Skin.LoadSkin;
 
-			TimingPreviewUI.GetBeatmap = () => m_Project.Beatmap;
-			TimingPreviewUI.GetMusicTime = () => m_Music.Time;
-			TimingPreviewUI.GetSpeedMuti = () => m_Game.GameDropSpeed;
-			TimingPreviewUI.ShowPreview = () => m_Game.ShowGrid && m_Editor.GetContainerActive(3);
-
-			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
-
+		private void Awake_Selector () {
 			SelectorUI.GetBeatmap = () => m_Project.Beatmap;
 			SelectorUI.SelectStage = (index) => {
 				m_Editor.SetSelection(0, index);
@@ -1086,11 +1078,10 @@
 			SelectorUI.OpenItemMenu = (rt, type) => m_Menu.OpenMenu(type == 0 ? UI_SelectorStageMenu : UI_SelectorTrackMenu, rt);
 			SelectorUI.GetSelectionType = () => m_Editor.SelectingItemType;
 			SelectorUI.GetSelectionIndex = () => m_Editor.SelectingItemIndex;
+		}
 
-			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
 
-			BackgroundUI.OnException = (ex) => DebugLog_Exception("Background", ex);
-
+		private void Awake_Linker () {
 			LinkerUI.GetBeatmap = () => m_Project.Beatmap;
 			LinkerUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
 			LinkerUI.OnLink = () => {
@@ -1103,10 +1094,54 @@
 				!m_Music.IsPlaying &&
 				!m_MotionInspector.gameObject.activeSelf &&
 				!m_Root.gameObject.activeSelf;
+		}
 
-			m_GridRenderer.SetSortingLayer(SortingLayer.NameToID("Gizmos"), 0);
-			m_VersionLabel.text = $"v{Application.version}";
-			m_TextSheet.Init();
+
+		// Awake Misc
+		private void Awake_Misc () {
+
+			CursorUI.GetCursorTexture = (index) => (
+				index >= 0 ? m_Cursors[index].Cursor : null,
+				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
+			);
+
+			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : m_Game.AreaBetween(timeA, timeB, muti);
+			GridRenderer.GetSnapedTime = m_Game.SnapTime;
+
+			TrackSectionRenderer.GetAreaBetween = m_Game.AreaBetween;
+			TrackSectionRenderer.GetSnapedTime = m_Game.SnapTime;
+
+			BeatmapSwiperUI.GetBeatmapMap = () => m_Project.BeatmapMap;
+			BeatmapSwiperUI.TriggerSwitcher = (key) => {
+				m_Project.SaveProject();
+				m_Project.OpenBeatmap(key);
+			};
+
+			PreviewUI.GetMusicTime01 = (time) => time / m_Music.Duration;
+			PreviewUI.GetBeatmap = () => m_Project.Beatmap;
+
+			ProjectCreatorUI.ImportMusic = () => {
+				m_Project.ImportMusic((data, _) => {
+					if (data is null) { return; }
+					ProjectCreatorUI.MusicData = data;
+					ProjectCreatorUI.SetMusicSizeDirty();
+				});
+			};
+			ProjectCreatorUI.GotoEditor = m_State.GotoEditor;
+
+			SkinSwiperUI.GetAllSkinNames = () => m_Skin.AllSkinNames;
+			SkinSwiperUI.SkinLoadSkin = m_Skin.LoadSkin;
+
+			TimingPreviewUI.GetBeatmap = () => m_Project.Beatmap;
+			TimingPreviewUI.GetMusicTime = () => m_Music.Time;
+			TimingPreviewUI.GetSpeedMuti = () => m_Game.GameDropSpeed;
+			TimingPreviewUI.ShowPreview = () => m_Game.ShowGrid && m_Editor.GetContainerActive(3);
+
+			AxisHandleUI.GetZoneMinMax = () => m_Zone.GetZoneMinMax(true);
+
+			TextRenderer.GetSprite = m_TextSheet.Char_to_Sprite;
+
+			BackgroundUI.OnException = (ex) => DebugLog_Exception("Background", ex);
 
 		}
 

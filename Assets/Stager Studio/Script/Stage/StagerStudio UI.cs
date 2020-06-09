@@ -37,6 +37,9 @@
 			StageBrushHeight,
 			TrackBrushWidth,
 			NoteBrushWidth,
+			SizeSnapCount,
+			RotationSnapCount,
+
 
 		}
 
@@ -329,6 +332,20 @@
 				}
 			}, null, new SavingString("SS.NoteBrushWidth", "0.2"), true));
 
+			InputItemMap.Add(InputType.SizeSnapCount, ((str) => {
+				if (str.TryParseIntForInspector(out int result)) {
+					m_Editor.SizeSnapCount = Mathf.Clamp(result, 2, 80);
+				}
+				InputItemMap[InputType.SizeSnapCount].saving.Value = m_Editor.SizeSnapCount.ToString();
+			}, null, new SavingString("SS.SizeSnapCount", "20"), true));
+
+			InputItemMap.Add(InputType.RotationSnapCount, ((str) => {
+				if (str.TryParseIntForInspector(out int result)) {
+					m_Editor.RotationSnapCount = Mathf.Clamp(result, 8, 96);
+				}
+				InputItemMap[InputType.RotationSnapCount].saving.Value = m_Editor.RotationSnapCount.ToString();
+			}, null, new SavingString("SS.RotationSnapCount", "24"), true));
+
 		}
 
 
@@ -611,7 +628,10 @@
 
 
 		// Skin Editor
-		public void UI_SpawnSkinEditor () => SpawnSkinEditor(StageSkin.Data.Name, false);
+		public void UI_SpawnSkinEditor () => DialogUtil.Dialog_OK_Cancel(
+			UI_OpenSkinEditorConfirm, DialogUtil.MarkType.Info,
+			() => SpawnSkinEditor(StageSkin.Data.Name, false)
+		);
 
 
 		public void SpawnSkinEditor (string skinName, bool openSettingAfterClose) {
@@ -762,7 +782,6 @@
 		#region --- LGC ---
 
 
-
 		// Setting
 		private void LoadAllSettings () {
 			foreach (var pair in InputItemMap) {
@@ -810,25 +829,26 @@
 
 		private void SetBrushSize (int itemType, int brushType, float size01) {
 			size01 = Mathf.Clamp01(size01);
+			size01 = Mathf.Round(size01 * 100f) / 100f;
 			switch (itemType) {
 				case 0: // Stage
 					if (brushType == 0) {
 						// Width
 						m_Editor.StageBrushWidth = size01;
-						InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString();
+						InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString("0.##");
 					} else {
 						// Height
 						m_Editor.StageBrushHeight = size01;
-						InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString();
+						InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString("0.##");
 					}
 					break;
 				case 1: // Track Width
 					m_Editor.TrackBrushWidth = size01;
-					InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString();
+					InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString("0.##");
 					break;
 				case 2: // Note Width
 					m_Editor.NoteBrushWidth = size01;
-					InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString();
+					InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString("0.##");
 					break;
 			}
 		}

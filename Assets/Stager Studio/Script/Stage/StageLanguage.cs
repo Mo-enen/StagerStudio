@@ -49,7 +49,7 @@
 			{SystemLanguage.Catalan, "Català" },
 			{SystemLanguage.Chinese, "中文" },
 			{SystemLanguage.ChineseSimplified, "简体中文" },
-			{SystemLanguage.ChineseTraditional, "繁体中文" },
+			{SystemLanguage.ChineseTraditional, "正体中文" },
 			{SystemLanguage.Czech, "čeština" },
 			{SystemLanguage.Danish, "dansk" },
 			{SystemLanguage.Dutch, "Nederlands" },

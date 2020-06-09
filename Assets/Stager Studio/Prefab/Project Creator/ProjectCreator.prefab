@@ -284,7 +284,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &8935264900337467075
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -505,7 +505,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &756423990411515582
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +762,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &6783085105221821069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -990,6 +990,81 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Project Description
+--- !u!1 &1040188151031470541
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4991048901566497399}
+  - component: {fileID: 4003581570154618996}
+  - component: {fileID: 4458879962736576578}
+  m_Layer: 0
+  m_Name: Highlight
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4991048901566497399
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040188151031470541}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8145430778556409259}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &4003581570154618996
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040188151031470541}
+  m_CullTransparentMesh: 0
+--- !u!114 &4458879962736576578
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040188151031470541}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.11536932, g: 0.655, b: 0.52474433, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -469349188787951888, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+    type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &1161175304344824528
 GameObject:
   m_ObjectHideFlags: 0
@@ -1867,7 +1942,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &5140979353792663848
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2114,7 +2189,8 @@ MonoBehaviour:
   - {fileID: 6298244789872679947}
   - {fileID: 2009533416767619747}
   m_Assets:
-  - Type: 0
+  - EditorLabel: Stager Studio
+    Type: 0
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
@@ -2140,9 +2216,64 @@ MonoBehaviour:
       rgba: 4288357842
     - serializedVersion: 2
       rgba: 16777215
+    Gene:
+      Key: Gene.Stager
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: e1b0634f6cf2ac547834c659bb3b14f5, type: 3}
     Beatmap: {fileID: 4900000, guid: 06653e03e3fe0774982a3186db4043d8, type: 3}
-  - Type: 1
+  - EditorLabel: Voez
+    Type: 1
     Palette:
     - serializedVersion: 2
       rgba: 4287991801
@@ -2164,25 +2295,190 @@ MonoBehaviour:
       rgba: 4291550070
     - serializedVersion: 2
       rgba: 4293961390
+    Gene:
+      Key: Gene.Voez
+      Allow_EditStage: 0
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: 26808e66a372ba24fb462a0becef9c0b, type: 3}
     Beatmap: {fileID: 4900000, guid: 6d53e2b544d736947ae45a0cb5dd17be, type: 3}
-  - Type: 2
+  - EditorLabel: Dynamix
+    Type: 2
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
+    Gene:
+      Key: Gene.Dynamix
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: 42a05c5d4cd57054e83d95fac72a1a0b, type: 3}
     Beatmap: {fileID: 4900000, guid: b30be3bf4a1e17f4283d078f13c7c4d1, type: 3}
-  - Type: 3
+  - EditorLabel: Deemo
+    Type: 3
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
+    Gene:
+      Key: Gene.Deemo
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: 4e2c32bf974f305479792013a50d8097, type: 3}
     Beatmap: {fileID: 4900000, guid: 5dc459b117b5ea547826842feae7a786, type: 3}
-  - Type: 4
+  - EditorLabel: Mania
+    Type: 4
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
@@ -2192,24 +2488,251 @@ MonoBehaviour:
       rgba: 268435455
     - serializedVersion: 2
       rgba: 251699967
+    Gene:
+      Key: Gene.Mania
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: b5407d18ed38e7c4eb443be5512dfd9c, type: 3}
     Beatmap: {fileID: 4900000, guid: 183ee389bae0a494a8d72479e9a862ae, type: 3}
-  - Type: 5
+  - EditorLabel: SDVX
+    Type: 5
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
+    Gene:
+      Key: Gene.SDVX
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: aa5983c5a429d1b4eb14a7bf30dd5bb9, type: 3}
     Beatmap: {fileID: 4900000, guid: 9c9aed541c5b77c409700530871718d0, type: 3}
-  - Type: 6
+  - EditorLabel: Phigros
+    Type: 6
     Palette:
     - serializedVersion: 2
       rgba: 4294967295
     - serializedVersion: 2
       rgba: 16777215
+    Gene:
+      Key: Gene.Phigros
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
     Tween: {fileID: 4900000, guid: 2e869615f4d63214a8ea9f1a7f810bb1, type: 3}
     Beatmap: {fileID: 4900000, guid: 141e81409a5ff0b46b60ca98750aeb28, type: 3}
+  - EditorLabel: Arcaea
+    Type: 7
+    Palette:
+    - serializedVersion: 2
+      rgba: 4294967295
+    - serializedVersion: 2
+      rgba: 16777215
+    Gene:
+      Key: Gene.Arcaea
+      Allow_EditStage: 1
+      Allow_EditTrack: 1
+      Allow_EditTiming: 1
+      Config_Stage:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Y_Real:
+          Active: 0
+          Value: 0
+        Rotation:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Height_Real:
+          Active: 0
+          Value: 0
+        PivotY:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      Config_Track:
+        Time_Real:
+          Active: 0
+          Value: 0
+        Duration_Real:
+          Active: 0
+          Value: 0
+        X:
+          Active: 0
+          Value: 0
+        Angle:
+          Active: 0
+          Value: 0
+        Width:
+          Active: 0
+          Value: 0
+        Speed:
+          Active: 0
+          Value: 0
+      StaticConfigs_Stage: []
+      StaticConfigs_Track: []
+    Tween: {fileID: 4900000, guid: 5369905293c273c4b924de6627a63ea0, type: 3}
+    Beatmap: {fileID: 4900000, guid: 3177d7399d0b34c428c0207f983cb965, type: 3}
   m_ContentRoot: {fileID: 6188474199923220270}
   m_ContentPivot: {fileID: 8735111449506750999}
   m_Lerp: {fileID: 6955376485275984957}
@@ -2490,7 +3013,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &3515214528377245683
 GameObject:
   m_ObjectHideFlags: 0
@@ -2633,7 +3156,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8807946476653934533, guid: da7f946bf2fc8f84f95134f233c99156,
+  m_Sprite: {fileID: 6813076448839186041, guid: da7f946bf2fc8f84f95134f233c99156,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -2847,7 +3370,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &2149941906644407636
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2993,7 +3516,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &3831221469487267587
 GameObject:
   m_ObjectHideFlags: 0
@@ -3241,7 +3764,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &6111204840934731191
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3926,7 +4449,7 @@ GameObject:
   - component: {fileID: 63973781251360858}
   - component: {fileID: 6538305952022077547}
   m_Layer: 0
-  m_Name: Osu
+  m_Name: Mania
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3990,7 +4513,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &63973781251360858
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4518,7 +5041,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &5851666826394126879
 GameObject:
   m_ObjectHideFlags: 0
@@ -5076,7 +5599,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &6739036198081888698
 GameObject:
   m_ObjectHideFlags: 0
@@ -5360,7 +5883,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &6985025106679909748
 GameObject:
   m_ObjectHideFlags: 0
@@ -5396,6 +5919,7 @@ RectTransform:
   - {fileID: 2720623724863305806}
   - {fileID: 180177652681581038}
   - {fileID: 1285269301417352754}
+  - {fileID: 8145430778556409259}
   m_Father: {fileID: 3359065946223162103}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5569,6 +6093,156 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: Next
+--- !u!1 &7216771225412207461
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8145430778556409259}
+  - component: {fileID: 6836794369042375507}
+  - component: {fileID: 6561759153705416155}
+  - component: {fileID: 1554827047133647084}
+  - component: {fileID: 8948679142163891124}
+  m_Layer: 0
+  m_Name: Arcaea
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8145430778556409259
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216771225412207461}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 4991048901566497399}
+  - {fileID: 4908545831558230004}
+  m_Father: {fileID: 2986963852846423614}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 151, y: -276}
+  m_SizeDelta: {x: 81, y: 81}
+  m_Pivot: {x: 0, y: 1}
+--- !u!222 &6836794369042375507
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216771225412207461}
+  m_CullTransparentMesh: 0
+--- !u!114 &6561759153705416155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216771225412207461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.36, g: 0.36, b: 0.36, a: 1}
+  m_RaycastTarget: 1
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -469349188787951888, guid: 94d3f24984f3ab641bdcdbc2dbcdcff3,
+    type: 3}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 6
+--- !u!114 &1554827047133647084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216771225412207461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9085046f02f69544eb97fd06b6048fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Navigation:
+    m_Mode: 0
+    m_SelectOnUp: {fileID: 0}
+    m_SelectOnDown: {fileID: 0}
+    m_SelectOnLeft: {fileID: 0}
+    m_SelectOnRight: {fileID: 0}
+  m_Transition: 1
+  m_Colors:
+    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
+    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_PressedColor: {r: 0.84, g: 0.84, b: 0.84, a: 1}
+    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_ColorMultiplier: 1
+    m_FadeDuration: 0.1
+  m_SpriteState:
+    m_HighlightedSprite: {fileID: 0}
+    m_PressedSprite: {fileID: 0}
+    m_SelectedSprite: {fileID: 0}
+    m_DisabledSprite: {fileID: 0}
+  m_AnimationTriggers:
+    m_NormalTrigger: Normal
+    m_HighlightedTrigger: Highlighted
+    m_PressedTrigger: Pressed
+    m_SelectedTrigger: Selected
+    m_DisabledTrigger: Disabled
+  m_Interactable: 1
+  m_TargetGraphic: {fileID: 6561759153705416155}
+  toggleTransition: 1
+  graphic: {fileID: 4458879962736576578}
+  m_Group: {fileID: 8288281096523297624}
+  onValueChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1865921094707821726}
+        m_MethodName: UI_SetProjectType
+        m_Mode: 3
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 7
+          m_FloatArgument: 0
+          m_StringArgument: ProjectCreator.Hint.Dynamix
+          m_BoolArgument: 0
+        m_CallState: 2
+  m_IsOn: 0
+--- !u!114 &8948679142163891124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7216771225412207461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11973bf1f1255234a997180f4313882f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Type: 0
 --- !u!1 &8092809981306034166
 GameObject:
   m_ObjectHideFlags: 0
@@ -5797,7 +6471,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!1 &8240921824972674314
 GameObject:
   m_ObjectHideFlags: 0
@@ -5954,6 +6628,81 @@ MonoBehaviour:
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: 
+--- !u!1 &8673981569816800639
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4908545831558230004}
+  - component: {fileID: 2610876259167579954}
+  - component: {fileID: 6720407597413041225}
+  m_Layer: 0
+  m_Name: Icon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4908545831558230004
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8673981569816800639}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 8145430778556409259}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: -2.8000007}
+  m_SizeDelta: {x: 0, y: -29.400002}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &2610876259167579954
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8673981569816800639}
+  m_CullTransparentMesh: 0
+--- !u!114 &6720407597413041225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8673981569816800639}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.94, g: 0.94, b: 0.94, a: 1}
+  m_RaycastTarget: 0
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: -8807946476653934533, guid: da7f946bf2fc8f84f95134f233c99156,
+    type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &8722247605076978768
 GameObject:
   m_ObjectHideFlags: 0
@@ -6247,7 +6996,7 @@ GameObject:
   - component: {fileID: 1314459161835862280}
   - component: {fileID: 2634107466949458035}
   m_Layer: 0
-  m_Name: Arcaea
+  m_Name: SDVX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6271,7 +7020,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 237.19989, y: -191.00002}
+  m_AnchoredPosition: {x: 237.20001, y: -191}
   m_SizeDelta: {x: 81, y: 81}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &8064918423795189253
@@ -6311,7 +7060,7 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 4
+  m_PixelsPerUnitMultiplier: 6
 --- !u!114 &1314459161835862280
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@
 		public delegate float FloatHandler ();
 		public delegate void VoidHandler ();
 		public delegate string StringStringHandler (string str);
-		
+
 		// Const
 		private const string HEADER_BEATMAP = "Inspector.Header.Beatmap";
 		private const string HEADER_STAGE = "Inspector.Header.Stage";
@@ -33,7 +33,7 @@
 		public static VoidHandler OnBeatmapEdited { get; set; } = null;
 		public static VoidHandler OnItemEdited { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
-		
+
 		// Api
 		public static (int stage, int track, int note) TypeCount { get; set; } = (0, 0, 0);
 
@@ -290,6 +290,27 @@
 				var map = GetBeatmap();
 				if (!UIReady || map == null) { return; }
 				map.SetStagePivot(GetSelectingIndex(), StageInspector.GetPivot());
+				OnItemEdited();
+				RefreshStageInspector();
+			});
+			StageInspector.PivotButton_Top.onClick.AddListener(() => {
+				var map = GetBeatmap();
+				if (!UIReady || map == null) { return; }
+				map.SetStagePivot(GetSelectingIndex(), 1f);
+				OnItemEdited();
+				RefreshStageInspector();
+			});
+			StageInspector.PivotButton_Mid.onClick.AddListener(() => {
+				var map = GetBeatmap();
+				if (!UIReady || map == null) { return; }
+				map.SetStagePivot(GetSelectingIndex(), 0.5f);
+				OnItemEdited();
+				RefreshStageInspector();
+			});
+			StageInspector.PivotButton_Bottom.onClick.AddListener(() => {
+				var map = GetBeatmap();
+				if (!UIReady || map == null) { return; }
+				map.SetStagePivot(GetSelectingIndex(), 0f);
 				OnItemEdited();
 				RefreshStageInspector();
 			});

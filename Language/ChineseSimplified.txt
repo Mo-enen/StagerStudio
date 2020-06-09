@@ -5,6 +5,7 @@ Dialog.Editor.CannotSelectStageBrush:全景模式下不能选择舞台笔刷
 Dialog.Editor.SelectingLayerInactive:图层不可见
 Dialog.Editor.SelectingLayerLocked:图层已锁定
 Dialog.Error.FailCreateProject:创建工程时发生错误
+Dialog.OpenSkinEditorConfirm:是否开始编辑当前皮肤？这将改变皮肤文件的内容。
 Dialog.OpenWebMSG:正在尝试打开 {0} 请查看您的浏览器
 Dialog.Tutorial.CanNotFindProject:找不到教学工程文件
 Dialog.Tutorial.FirstTutorialMSG:是否开始教程？
@@ -16,6 +17,22 @@ Game.Hint.AbreastWidth:全景舞台宽度 {0}
 Game.Hint.GameDropSpeed:下落速度 × {0}
 Game.Hint.Pitch:播放速度 {0}
 Game.Hint.ShowGrid:辅助线网格 {0}
+Gene.Arcaea:双重舞台
+Gene.Arcaea.Fuck:大玻璃碴子
+Gene.Deemo:自由音符
+Gene.Deemo.Fuck:小黑萝莉
+Gene.Dynamix:三线落点
+Gene.Dynamix.Fuck:导弹猫
+Gene.Mania:定点下落
+Gene.Mania.Fuck:面海乱糊
+Gene.Phigros:自由舞台
+Gene.Phigros.Fuck:咕咕咕
+Gene.SDVX:三重舞台
+Gene.SDVX.Fuck:节奏水龙头
+Gene.Stager:STAGER
+Gene.Stager.Fuck:抖S抖S
+Gene.Voez:自由轨道
+Gene.Voez.Fuck:吃我菱形
 Inspector.Header.Beatmap:谱  面
 Inspector.Header.Note:音  符
 Inspector.Header.Stage:舞  台
@@ -152,13 +169,7 @@ Project.UI.RemoveMusicMSG:确认清除音乐吗？
 Project.UI.SaveProjectConfirmMSG:是否保存工程？
 ProjectCreator.Error.NoMusic:必须选择音乐
 ProjectCreator.Error.NoTitle:标题不能为空
-ProjectCreator.Hint.Arcaea:使用双层倾斜轨道模板
-ProjectCreator.Hint.Deemo:使用单倾斜轨道模板
-ProjectCreator.Hint.Dynamix:使用三线落点模板
-ProjectCreator.Hint.Osu:使用简易的并列轨道模板
-ProjectCreator.Hint.Phigros:使用咕咕咕动态舞台模板
-ProjectCreator.Hint.StagerStudio:创建空白工程
-ProjectCreator.Hint.Voez:使用移动轨道模板
+ProjectCreator.Hint.Template:使用模板：
 ProjectInfo.Dialog.DeleteSound:删除按键音{0}吗？本操作不可撤销。
 ProjectInfo.Dialog.ExportPaletteTitle:导出调色板
 ProjectInfo.Dialog.ExportTweenTitle:导出补间
@@ -242,7 +253,8 @@ Tip.GotoWeb:打开官网 www.stager.studio
 Tip.Grid:显示网格、辅助线（右键打开菜单）
 Tip.Home.ChapterItem:章节，包含若干工程的文件夹
 Tip.Home.Menu:菜单
-Tip.Home.New:新建工程或章节
+Tip.Home.NewChapter:新建章节
+Tip.Home.NewProject:新建工程
 Tip.Home.ProjectItem:工程（双击打开）
 Tip.Home.Trushbin:回收站，将删除的工程彻底清除或恢复
 Tip.Insoector.MotionAngle:编辑角度运动
@@ -258,7 +270,8 @@ Tip.Inspector.BeatDivide:节拍的细分程度
 Tip.Inspector.BPM:每分钟节拍数
 Tip.Inspector.Click:按键音编号，无按键音时为-1
 Tip.Inspector.Color:物体的颜色编号
-Tip.Inspector.DropSpeed:音符下落速度倍数
+Tip.Inspector.DropSpeed:物体的下落速度
+Tip.Inspector.DropSpeedButton:拖拽以调节音符下落速度
 Tip.Inspector.Duration:物体持续的时间长度（秒）
 Tip.Inspector.FX:特效编号，无特效时为0
 Tip.Inspector.Height:物体的高度
@@ -324,11 +337,13 @@ Tip.Setting.NoteBrushWidth:音符笔刷绘制内容的宽度
 Tip.Setting.PositiveScroll:仅限编辑器内的鼠标滚动，例如调整音符纵向位置等
 Tip.Setting.Preview:是否在进度条上显示谱面预览
 Tip.Setting.Reset:重制所有设置
+Tip.Setting.RotationSnapCount:拖拽控件调整物体角度时的紧贴台阶数
 Tip.Setting.SFX:是否使用音乐特效，关闭特效可以降低CPU负担
 Tip.Setting.ShowGrid:是否显示网格辅助线
 Tip.Setting.ShowGridOnSelect:选择舞台、轨道、音符时显示网格
 Tip.Setting.ShowIndexLabel:是否显示编号标签
 Tip.Setting.ShowTimerOnPlay:在播放音乐时依然显示调整舞台、轨道时间用的拉杆按钮
+Tip.Setting.SizeSnapCount:拖拽控件调整物体尺寸时的紧贴台阶数
 Tip.Setting.SmallUI:较小的界面，适合物理尺寸较大的显示器
 Tip.Setting.SoloOnEditMotion:例如：编辑一个轨道的运动时，不显示音符、其它轨道和其它舞台
 Tip.Setting.SoundVolume:根据BPM来对齐调整的时间
@@ -377,6 +392,7 @@ UI.Inspector.Click:按键音
 UI.Inspector.Color:颜色
 UI.Inspector.Command:命令行
 UI.Inspector.Done:完 成
+UI.Inspector.DropSpeedButton:下落速度
 UI.Inspector.Duration:时长
 UI.Inspector.FxParamA:变量A
 UI.Inspector.FxParamB:变量B
@@ -445,12 +461,14 @@ UI.Setting.MusicVolume:音乐音量
 UI.Setting.NoteBrushWidth:音符笔刷宽度
 UI.Setting.PositiveScroll:使用正向的鼠标滚动
 UI.Setting.Preview:显示谱面预览
+UI.Setting.RotationSnapCount:角度紧贴数量
 UI.Setting.ShowGrid:显示网格辅助线
 UI.Setting.ShowGridOnSelect:选择时显示网格
 UI.Setting.ShowIndexLabelIndexLabel:显示舞台、轨道、音符的编号
 UI.Setting.ShowKeypress:显示按键历史
 UI.Setting.ShowTimerOnPlay:播放音乐时显示网格与时间拉杆
 UI.Setting.ShowTip:显示工具提示
+UI.Setting.SizeSnapCount:尺寸紧贴数量
 UI.Setting.SnapProgress:使用进度条设置时间时对齐到节拍
 UI.Setting.SoloOnEditMotion:编辑运动时隐藏其它物体
 UI.Setting.SoundVolume:音效音量

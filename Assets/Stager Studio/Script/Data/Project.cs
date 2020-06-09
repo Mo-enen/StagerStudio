@@ -216,12 +216,15 @@
 		public enum ChunkType {
 			Info = 0,
 			Cover = 1,
+			// Preview: 2 Removed
 			Music = 3,
 			Background = 4,
 			Beatmap = 5,
 			Palette = 6,
 			Tween = 7,
 			ClickSound = 8,
+			Gene = 9,
+
 		}
 
 
@@ -254,6 +257,7 @@
 		public FileData MusicData { get; set; } = null;
 		public FileData BackgroundData { get; set; } = null;
 		public ImageData FrontCover { get; set; } = null;
+		public GeneData Gene { get; set; } = null;
 
 		// Config
 		private bool[] TargetData { get; } = new bool[10] { true, true, true, true, true, true, true, true, true, true, };
@@ -285,6 +289,7 @@
 			MusicData = null;
 			BackgroundData = null;
 			BeatmapMap.Clear();
+			Gene = null;
 			// Get New Data
 			short dataVersion = -1;
 			int count = reader.ReadInt32();
@@ -359,6 +364,10 @@
 						case ChunkType.ClickSound: {
 								ClickSounds.Clear();
 								ClickSounds.AddRange(((FileDataArray)Util.BytesToObject(chunk.GetBytes("Data"))).Array);
+								break;
+							}
+						case ChunkType.Gene: {
+								Gene = JsonUtility.FromJson<GeneData>(chunk.GetString("Gene"));
 								break;
 							}
 					}
@@ -475,6 +484,16 @@
 			} catch (System.Exception ex) {
 				messageCallback?.Invoke("Error on get click sound.\n" + ex.Message);
 			}
+
+			// Gene
+			try {
+				chunks.Add(new Chunk((byte)ChunkType.Gene, new Dictionary<string, object>() {
+					{"Gene", JsonUtility.ToJson(Gene, false) }
+				}));
+			} catch (System.Exception ex) {
+				messageCallback?.Invoke("Error on get gene.\n" + ex.Message);
+			}
+
 			// Write Chunks
 			progressCallback?.Invoke(0.5f);
 			try {
@@ -508,7 +527,6 @@
 
 
 		public static implicit operator bool (Project p) => p != null;
-
 
 
 		// Audio

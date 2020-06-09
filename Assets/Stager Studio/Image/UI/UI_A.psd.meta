@@ -254,6 +254,21 @@ TextureImporter:
   - first:
       213: -7605453835300853377
     second: Soft Pixel
+  - first:
+      213: 3832202884257668723
+    second: Icon Book
+  - first:
+      213: -7774816882060180812
+    second: Icon New Project
+  - first:
+      213: 4052736512281295245
+    second: Icon New Chapter
+  - first:
+      213: -197542310831226487
+    second: Rect Round Top Left
+  - first:
+      213: 2537070342187739557
+    second: Rect Round Bottom Left
   externalObjects: {}
   serializedVersion: 11
   mipmaps:
@@ -1248,10 +1263,10 @@ TextureImporter:
       name: Link
       rect:
         serializedVersion: 2
-        x: 169
-        y: 101
-        width: 44
-        height: 35
+        x: 171
+        y: 99
+        width: 41
+        height: 40
       alignment: 9
       pivot: {x: -0.17709385, y: 1.2300733}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -1274,7 +1289,7 @@ TextureImporter:
         width: 25
         height: 25
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 10, y: 10, z: 10, w: 10}
       outline: []
       physicsShape: []
@@ -1282,6 +1297,111 @@ TextureImporter:
       bones: []
       spriteID: f79a24f3800047690800000000000000
       internalID: -7605453835300853377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon Book
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 181
+        width: 37
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 37ed7672838be2530800000000000000
+      internalID: 3832202884257668723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon New Project
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 150
+        width: 27
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4b2c71f0d3d4a1490800000000000000
+      internalID: -7774816882060180812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon New Chapter
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 191
+        width: 25
+        height: 22
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d8938c6b2663e3830800000000000000
+      internalID: 4052736512281295245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rect Round Top Left
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 215
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 32, y: 0, z: 0, w: 32}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9818bce9050324df0800000000000000
+      internalID: -197542310831226487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Rect Round Bottom Left
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 183
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 32, y: 32, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5a96744c80c753320800000000000000
+      internalID: 2537070342187739557
       vertices: []
       indices: 
       edges: []

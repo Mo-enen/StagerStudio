@@ -5,6 +5,7 @@ Dialog.Editor.CannotSelectStageBrush:Can not select stage brush in panoramic mod
 Dialog.Editor.SelectingLayerInactive:Layer not visible
 Dialog.Editor.SelectingLayerLocked:Layer locked
 Dialog.Error.FailCreateProject:Error on creating project
+Dialog.OpenSkinEditorConfirm:Edit current skin? This will change the skin file.
 Dialog.OpenWebMSG:Opening {0} Please check your web browser
 Dialog.Tutorial.CanNotFindProject:Can not find tutorial project file
 Dialog.Tutorial.FirstTutorialMSG:Start tutorial now?
@@ -16,6 +17,22 @@ Game.Hint.AbreastWidth:Stage width {0}
 Game.Hint.GameDropSpeed:Drop Speed × {0}
 Game.Hint.Pitch:Music speed {0}
 Game.Hint.ShowGrid:Grid and Auxiliary {0}
+Gene.Arcaea:OVERLAP-STAGE-2
+Gene.Arcaea.Fuck:FUCKIN-GLASSES
+Gene.Deemo:FREE-NOTE
+Gene.Deemo.Fuck:BLACK-LOLI
+Gene.Dynamix:TRIPLE-FALL
+Gene.Dynamix.Fuck:BOMB-CAT
+Gene.Mania:FIX-FALL
+Gene.Mania.Fuck:NOODLE-SEA
+Gene.Phigros:FREE-STAGE
+Gene.Phigros.Fuck:GU-GU-GU
+Gene.SDVX:OVERLAP-STAGE-3
+Gene.SDVX.Fuck:RHYTHM-WATER-PIPE
+Gene.Stager:STAGER
+Gene.Stager.Fuck:ドSドS
+Gene.Voez:FREE-TRACK
+Gene.Voez.Fuck:EAT-MY-RHOMBUS
 Inspector.Header.Beatmap:Beatmap
 Inspector.Header.Note:Note
 Inspector.Header.Stage:Stage
@@ -152,13 +169,7 @@ Project.UI.RemoveMusicMSG:Clear the music?
 Project.UI.SaveProjectConfirmMSG:Do you want to save the changes?
 ProjectCreator.Error.NoMusic:Music can not be empty
 ProjectCreator.Error.NoTitle:Project name can not be empty
-ProjectCreator.Hint.Arcaea:Use double layers template
-ProjectCreator.Hint.Deemo:Use single tilt template
-ProjectCreator.Hint.Dynamix:Use triple line template
-ProjectCreator.Hint.Osu:Use simple side by side template
-ProjectCreator.Hint.Phigros:Use dynamic stage template
-ProjectCreator.Hint.StagerStudio:Create empty project
-ProjectCreator.Hint.Voez:Use movable track template
+ProjectCreator.Hint.Template:Use Template: 
 ProjectInfo.Dialog.DeleteSound:Delete click sound {0}? This can not be undo.
 ProjectInfo.Dialog.ExportPaletteTitle:Export Palette
 ProjectInfo.Dialog.ExportTweenTitle:Export Tween
@@ -242,7 +253,8 @@ Tip.GotoWeb:Open offical website www.stager.studio
 Tip.Grid:Show grid (right click to open menu)
 Tip.Home.ChapterItem:Chapter, a folder contains several projects
 Tip.Home.Menu:Menu
-Tip.Home.New:Create new project or chapter
+Tip.Home.NewChapter:New Chapter
+Tip.Home.NewProject:New Project
 Tip.Home.ProjectItem:Project (double click to open)
 Tip.Home.Trushbin:Trushbin, completely remove or restore the deleted project
 Tip.Insoector.MotionAngle:Edit motion of angle
@@ -258,7 +270,8 @@ Tip.Inspector.BeatDivide:Subdivision of beat time
 Tip.Inspector.BPM:Beat per minute
 Tip.Inspector.Click:Index of the click sound, set to -1 for no click sound
 Tip.Inspector.Color:Color index of the object
-Tip.Inspector.DropSpeed:Drop speed multiplier
+Tip.Inspector.DropSpeed:Drop speed of this item
+Tip.Inspector.DropSpeedButton:Drag to adjust the note drop speed
 Tip.Inspector.Duration:Length of time the object lasts (sec)
 Tip.Inspector.FX:Index of the sound effect, set to 0 for no effect
 Tip.Inspector.Height:Height of the object
@@ -324,11 +337,13 @@ Tip.Setting.NoteBrushWidth:Width of the note painted by brush
 Tip.Setting.PositiveScroll:Only for mouse scrolling inside editor, such as adjusting y-position of notes
 Tip.Setting.Preview:Show preview of the beatmap on the progress bar or not
 Tip.Setting.Reset:Reset all settings
+Tip.Setting.RotationSnapCount:Count of snap when adjust item rotation by dragging axis
 Tip.Setting.SFX:Use sound effects or not, turning this off will reduce CPU load
 Tip.Setting.ShowGrid:Show grid and auxiliary lines
 Tip.Setting.ShowGridOnSelect:Show grid shen selecting stage, track, note.
 Tip.Setting.ShowIndexLabel:Show the index label or not
 Tip.Setting.ShowTimerOnPlay:Show the handles which for adjusting time when playing music
+Tip.Setting.SizeSnapCount:Count of snap when adjust item size by dragging axis
 Tip.Setting.SmallUI:Small UI, for larger physical size display
 Tip.Setting.SoloOnEditMotion:Eg. When editing motion of a track, hide all notes, other tracks and other stages.
 Tip.Setting.SoundVolume:Snap music time based on BPM
@@ -377,6 +392,7 @@ UI.Inspector.Click:Click
 UI.Inspector.Color:Color
 UI.Inspector.Command:CMD
 UI.Inspector.Done:Done
+UI.Inspector.DropSpeedButton:Speed
 UI.Inspector.Duration:Length
 UI.Inspector.FxParamA:Fx A
 UI.Inspector.FxParamB:Fx B
@@ -445,12 +461,14 @@ UI.Setting.MusicVolume:Music Volume
 UI.Setting.NoteBrushWidth:Note Brush Width
 UI.Setting.PositiveScroll:Use Positive Mouse Scroll
 UI.Setting.Preview:Show Beatmap Preview
+UI.Setting.RotationSnapCount:Rotation Snap Count
 UI.Setting.ShowGrid:Show Grid and Auxiliary
 UI.Setting.ShowGridOnSelect:Show Grid On Select
 UI.Setting.ShowIndexLabelIndexLabel:Show Index Label for Stage,Track and Note
 UI.Setting.ShowKeypress:Show Keypress History
 UI.Setting.ShowTimerOnPlay:Show grid and timer handle on play music
 UI.Setting.ShowTip:Show Tooltip
+UI.Setting.SizeSnapCount:Size Snap Count
 UI.Setting.SnapProgress:Snap When Setting Music Time with Progressbar
 UI.Setting.SoloOnEditMotion:Solo On Edit Motion
 UI.Setting.SoundVolume:Sound Volume

@@ -22,6 +22,9 @@
 		public InputField WidthIF => m_WidthIF;
 		public InputField HeightIF => m_HeightIF;
 		public InputField ColorIF => m_ColorIF;
+		public Button PivotButton_Top => m_PivotButton_Top;
+		public Button PivotButton_Mid => m_PivotButton_Mid;
+		public Button PivotButton_Bottom => m_PivotButton_Bottom;
 		public Text[] LanguageLabels => m_LanguageLabels;
 
 		// Ser
@@ -37,6 +40,9 @@
 		[SerializeField] private InputField m_WidthIF = null;
 		[SerializeField] private InputField m_HeightIF = null;
 		[SerializeField] private InputField m_ColorIF = null;
+		[SerializeField] private Button m_PivotButton_Top = null;
+		[SerializeField] private Button m_PivotButton_Mid = null;
+		[SerializeField] private Button m_PivotButton_Bottom = null;
 		[SerializeField] private Text[] m_LanguageLabels = null;
 
 
