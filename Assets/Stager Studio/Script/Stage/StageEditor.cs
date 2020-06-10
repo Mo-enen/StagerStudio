@@ -41,6 +41,8 @@
 		public delegate float SnapTimeHandler (float time, float gap, float offset);
 		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
 		public delegate void ExceptionHandler (System.Exception ex);
+		public delegate int FixBrushIndexHandler (int i);
+		public delegate bool FixEyeLockHandler (int i, bool a);
 
 
 		#endregion
@@ -84,6 +86,9 @@
 		public static LogAxisHintHandler LogAxisMessage { get; set; } = null;
 		public static SnapTimeHandler GetSnapedTime { get; set; } = null;
 		public static ExceptionHandler OnException { get; set; } = null;
+		public static FixBrushIndexHandler FixBrushIndexFromGene { get; set; } = null;
+		public static FixEyeLockHandler FixContainerFromGene { get; set; } = null;
+		public static FixEyeLockHandler FixLockFromGene { get; set; } = null;
 
 		// Api
 		public int SelectingItemType { get; private set; } = -1;
@@ -1052,6 +1057,7 @@
 
 		public void SetContainerActive (int index, bool active) {
 			if (index < 0 || index >= m_Containers.Length) { return; }
+			active = FixContainerFromGene(index, active);
 			m_Containers[index].gameObject.SetActive(active);
 			// UI
 			UIReady = false;
@@ -1069,6 +1075,22 @@
 
 
 		public void UI_SwitchLock (int index) => SetLock(index, !GetItemLock(index));
+
+
+		public void SetLock (int index, bool locked) {
+			locked = FixLockFromGene(index, locked);
+			// Set Logic
+			ItemLock[index] = locked;
+			// Refresh Unlock Mask
+			RefreshUnlockedMask();
+			// Refresh UI
+			UIReady = false;
+			try {
+				m_LockTGs[index].isOn = locked;
+			} catch (System.Exception ex) { OnException(ex); }
+			UIReady = true;
+			OnLockEyeChanged();
+		}
 
 
 		// Brush
@@ -1148,21 +1170,6 @@
 		private Ray GetMouseRay () => Camera.ScreenPointToRay(Input.mousePosition);
 
 
-		private void SetLock (int index, bool locked) {
-			// Set Logic
-			ItemLock[index] = locked;
-			// Refresh Unlock Mask
-			RefreshUnlockedMask();
-			// Refresh UI
-			UIReady = false;
-			try {
-				m_LockTGs[index].isOn = locked;
-			} catch (System.Exception ex) { OnException(ex); }
-			UIReady = true;
-			OnLockEyeChanged();
-		}
-
-
 		private (int type, int index, int subIndex, Transform target) GetCastTypeIndex (Ray ray, LayerMask mask, bool insideZone) {
 			int count = Physics.RaycastNonAlloc(ray, CastHits, float.MaxValue, mask);
 			float overlapType = -1f;
@@ -1237,6 +1244,8 @@
 			if (!enabled || !GetEditorActive()) { brushIndex = -1; }
 			UIReady = false;
 			try {
+				// Gene Fix
+				brushIndex = FixBrushIndexFromGene(brushIndex);
 				// No Stage in Abreast
 				if (brushIndex == 0 && GetUseAbreast()) {
 					brushIndex = -1;

@@ -360,7 +360,7 @@ namespace StagerStudio.Editor {
 			}
 			Space(4);
 
-			base.OnInspectorGUI();
+			//base.OnInspectorGUI();
 
 		}
 

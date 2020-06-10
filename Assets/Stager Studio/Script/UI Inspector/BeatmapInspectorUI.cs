@@ -9,11 +9,6 @@
 
 
 		// Api
-		public InputField BpmIF => m_BpmIF;
-		public InputField ShiftIF => m_ShiftIF;
-		public InputField RatioIF => m_RatioIF;
-		public InputField LevelIF => m_LevelIF;
-		public InputField TagIF => m_TagIF;
 		public Text[] LanguageLabels => m_LanguageLabels;
 
 		// Ser

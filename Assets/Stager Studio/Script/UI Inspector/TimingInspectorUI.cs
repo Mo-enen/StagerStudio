@@ -12,12 +12,6 @@
 		public static LanguageHandler GetLanguage { get; set; } = null;
 
 		// Api
-		public InputField TimeIF => m_TimeIF;
-		public BeatInputUI BeatIF => m_BeatIF;
-		public InputField DurationIF => m_DurationIF;
-		public InputField SpeedIF => m_SpeedIF;
-		public InputField SfxParamAIF => m_SfxParamAIF;
-		public InputField SfxParamBIF => m_SfxParamBIF;
 		public Text[] LanguageLabels => m_LanguageLabels;
 
 		// Ser

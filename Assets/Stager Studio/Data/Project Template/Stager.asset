@@ -18,16 +18,25 @@ MonoBehaviour:
   Tween: {fileID: 4900000, guid: e1b0634f6cf2ac547834c659bb3b14f5, type: 3}
   Gene:
     Key: Gene.Stager
-    Allow_EditStage: 1
-    Allow_EditTrack: 1
-    Allow_EditTiming: 1
+    StageAccessable: 1
+    TrackAccessable: 1
+    NoteAccessable: 1
+    TimingAccessable: 1
+    StageAccess: 0
+    TrackAccess: 0
+    NoteAccess: 0
+    TimingAccess: 0
     Ratio:
       Active: 0
       Value: 0
     Config_Stage:
       UseConfig: 0
       Motion: 1
+      TileTrack: 0
       ItemType:
+        Active: 0
+        Value: 0
+      TrackCount:
         Active: 0
         Value: 0
       Time_Real:
@@ -59,7 +68,7 @@ MonoBehaviour:
         Value: 0
     Config_Track:
       UseConfig: 0
-      Motion: 0
+      Motion: 1
       ItemType:
         Active: 0
         Value: 0

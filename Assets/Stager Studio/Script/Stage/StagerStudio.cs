@@ -189,6 +189,8 @@
 		[SerializeField] private StageState m_State = null;
 		[SerializeField] private StageEffect m_Effect = null;
 		[SerializeField] private StageEasterEgg m_EasterEgg = null;
+		[SerializeField] private StageGene m_Gene = null;
+		[SerializeField] private StageInspector m_Inspector = null;
 		[Header("Misc")]
 		[SerializeField] private Transform m_CanvasRoot = null;
 		[SerializeField] private RectTransform m_DirtyMark = null;
@@ -218,7 +220,6 @@
 		[SerializeField] private WaveUI m_Wave = null;
 		[SerializeField] private TimingPreviewUI m_TimingPreview = null;
 		[SerializeField] private AxisHandleUI m_Axis = null;
-		[SerializeField] private InspectorUI m_Inspector = null;
 		[SerializeField] private MotionPainterUI m_MotionPainter = null;
 		[SerializeField] private KeypressUI m_Keypress = null;
 		[SerializeField] private LinkerUI m_Linker = null;
@@ -351,7 +352,7 @@
 			SkinEditorUI.GetLanguage = m_Language.Get;
 			SettingUI.GetLanguage = m_Language.Get;
 			StageEditor.GetLanguage = m_Language.Get;
-			InspectorUI.GetLanguage = m_Language.Get;
+			StageInspector.GetLanguage = m_Language.Get;
 			CommandUI.GetLanguage = m_Language.Get;
 			TimingInspectorUI.GetLanguage = m_Language.Get;
 			NoteInspectorUI.GetLanguage = m_Language.Get;
@@ -513,6 +514,7 @@
 				m_Game.SetSpeedCurveDirty();
 				m_Music.Pitch = 1f;
 				m_Music.Seek(0f);
+				m_Gene.RefreshUI();
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 				DebugLog_Project("Loaded");
@@ -551,6 +553,7 @@
 				m_Game.ClearAllContainers();
 				m_Music.Pitch = 1f;
 				m_Music.Seek(0f);
+				m_Gene.FixMapFromGene();
 				UndoRedo.ClearUndo();
 				UndoRedo.SetDirty();
 				m_Preview.SetDirty();
@@ -774,6 +777,7 @@
 				m_MotionPainter.TrySetDirty();
 				if (editType == StageEditor.EditType.Create) {
 					m_Effect.SpawnCreateEffect(itemType, itemIndex);
+					m_Gene.FixItemFromGene(itemType, itemIndex);
 				}
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
@@ -783,6 +787,9 @@
 			StageEditor.GetMusicDuration = () => m_Music.Duration;
 			StageEditor.GetSnapedTime = m_Game.SnapTime;
 			StageEditor.OnException = (ex) => DebugLog_Exception("Editor", ex);
+			StageEditor.FixBrushIndexFromGene = m_Gene.FixBrushIndexFromGene;
+			StageEditor.FixContainerFromGene = m_Gene.FixContainerFromGene;
+			StageEditor.FixLockFromGene = m_Gene.FixLockFromGene;
 		}
 
 
@@ -795,7 +802,7 @@
 				TypeSelectorUI.CalculateSprites(data);
 				m_Game.ClearAllContainers();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
-				InspectorUI.TypeCount = (data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.Note));
+				StageInspector.TypeCount = (data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.Note));
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();
@@ -848,8 +855,8 @@
 		private void Awake_Gene () {
 			StageGene.GetGene = () => m_Project.Gene;
 			StageGene.GetBeatmap = () => m_Project.Beatmap;
-
-
+			StageGene.SetContainerActive = m_Editor.SetContainerActive;
+			StageGene.SetUseLock = m_Editor.SetLock;
 		}
 
 
@@ -969,7 +976,7 @@
 			};
 
 			// Inspector
-			InspectorUI.GetSelectingType = () => {
+			StageInspector.GetSelectingType = () => {
 				if (m_Editor.SelectingItemType == 4) {
 					return 0;
 				}
@@ -978,15 +985,15 @@
 				}
 				return m_Editor.SelectingItemType;
 			};
-			InspectorUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
-			InspectorUI.GetBeatmap = () => m_Project.Beatmap;
-			InspectorUI.GetBPM = () => m_Game.BPM;
-			InspectorUI.GetShift = () => m_Game.Shift;
-			InspectorUI.OnItemEdited = () => {
+			StageInspector.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
+			StageInspector.GetBeatmap = () => m_Project.Beatmap;
+			StageInspector.GetBPM = () => m_Game.BPM;
+			StageInspector.GetShift = () => m_Game.Shift;
+			StageInspector.OnItemEdited = () => {
 				RefreshOnItemChange();
 				UndoRedo.SetDirty();
 			};
-			InspectorUI.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
+			StageInspector.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
 
 			// CMD
 			CommandUI.DoCommand = (type, command, index, value) => {

@@ -9,17 +9,6 @@
 
 
 		// Api
-		public InputField TimeIF => m_TimeIF;
-		public BeatInputUI BeatIF => m_BeatIF;
-		public InputField TypeIF => m_TypeIF;
-		public InputField DurationIF => m_DurationIF;
-		public InputField SpeedIF => m_SpeedIF;
-		public InputField PosXIF => m_PosXIF;
-		public InputField WidthIF => m_WidthIF;
-		public InputField AngleIF => m_AngleIF;
-		public InputField ColorIF => m_ColorIF;
-		public InputField IndexIF => m_IndexIF;
-		public Toggle TrayTG => m_TrayTG;
 		public Text[] LanguageLabels => m_LanguageLabels;
 
 		// Ser

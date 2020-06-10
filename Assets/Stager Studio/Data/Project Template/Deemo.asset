@@ -18,16 +18,21 @@ MonoBehaviour:
   Tween: {fileID: 4900000, guid: 4e2c32bf974f305479792013a50d8097, type: 3}
   Gene:
     Key: Gene.Deemo
-    Allow_EditStage: 0
-    Allow_EditTrack: 0
-    Allow_EditTiming: 0
+    StageAccessable: 0
+    TrackAccessable: 0
+    NoteAccessable: 1
+    TimingAccessable: 0
     Ratio:
       Active: 1
       Value: 1500
     Config_Stage:
       UseConfig: 0
       Motion: 1
+      TileTrack: 0
       ItemType:
+        Active: 0
+        Value: 0
+      TrackCount:
         Active: 0
         Value: 0
       Time_Real:
@@ -87,11 +92,38 @@ MonoBehaviour:
       HasTray:
         Active: 0
         Value: 0
+    Config_Note:
+      UseConfig: 0
+      ItemType:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Z:
+        Active: 0
+        Value: 0
+      Duration:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      TrackIndex:
+        Active: 0
+        Value: 0
+      LinkedNoteIndex:
+        Active: 0
+        Value: 0
     StaticConfigs_Stage:
     - UseConfig: 1
       Motion: 0
+      TileTrack: 0
       ItemType:
         Active: 1
+        Value: 0
+      TrackCount:
+        Active: 0
         Value: 0
       Time_Real:
         Active: 1
@@ -149,4 +181,27 @@ MonoBehaviour:
         Value: 1000
       HasTray:
         Active: 1
+        Value: 0
+    StaticConfigs_Note:
+    - UseConfig: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Z:
+        Active: 1
+        Value: 0
+      Duration:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      TrackIndex:
+        Active: 1
+        Value: 0
+      LinkedNoteIndex:
+        Active: 0
         Value: 0

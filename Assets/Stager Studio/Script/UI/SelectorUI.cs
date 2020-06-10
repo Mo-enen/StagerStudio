@@ -129,7 +129,24 @@
 				m_Highlight.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, target.rect.width);
 				m_Highlight.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, target.rect.height);
 			}
+
+			// Fix Height
+			var rt = transform as RectTransform;
+			var prt = transform.parent as RectTransform;
+			float aimHeight = Mathf.Max(prt.rect.height + rt.anchoredPosition.y, 0f);
+			if (Mathf.Abs(aimHeight - rt.rect.height) > 1f) {
+				rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, aimHeight);
+			}
+
 		}
+
+
+		#endregion
+
+
+
+
+		#region --- LGC ---
 
 
 		private void RefreshAllIndex (RectTransform container) {
@@ -142,6 +159,7 @@
 
 
 		#endregion
+
 
 
 

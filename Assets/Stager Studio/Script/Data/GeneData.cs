@@ -30,7 +30,9 @@
 			// API-SER
 			public bool UseConfig;
 			public bool Motion;
+			public bool TileTrack;
 			public ActiveInt ItemType;
+			public ActiveInt TrackCount;
 			public ActiveInt Time_Real;
 			public ActiveInt Duration_Real;
 			public ActiveInt X;
@@ -44,7 +46,9 @@
 			public static StageConfig IgnoreAll => new StageConfig() {
 				UseConfig = false,
 				Motion = true,
+				TileTrack = false,
 				ItemType = ActiveInt.Inactive,
+				TrackCount = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,
 				Y = ActiveInt.Inactive,
 				Rotation = ActiveInt.Inactive,
@@ -93,17 +97,50 @@
 		}
 
 
+
+		[System.Serializable]
+		public struct NoteConfig {
+
+
+			// API-SER
+			public bool UseConfig;
+			public ActiveInt ItemType;
+			public ActiveInt X;
+			public ActiveInt Z;
+			public ActiveInt Duration;
+			public ActiveInt Width;
+			public ActiveInt LinkedNoteIndex;
+
+
+			public static NoteConfig IgnoreAll => new NoteConfig() {
+				UseConfig = false,
+				ItemType = ActiveInt.Inactive,
+				X = ActiveInt.Inactive,
+				Z = ActiveInt.Inactive,
+				Duration = ActiveInt.Inactive,
+				Width = ActiveInt.Inactive,
+				LinkedNoteIndex = ActiveInt.Inactive,
+			};
+
+
+
+		}
+
+
+
 		// SER-API
 		public string Key = "";
-		public bool Allow_EditStage = true;
-		public bool Allow_EditTrack = true;
-		public bool Allow_EditTiming = true;
+		public bool StageAccessable = true;
+		public bool TrackAccessable = true;
+		public bool NoteAccessable = true;
+		public bool TimingAccessable = true;
 		public ActiveInt Ratio = ActiveInt.Inactive;
 		public StageConfig Config_Stage = StageConfig.IgnoreAll;
 		public TrackConfig Config_Track = TrackConfig.IgnoreAll;
+		public NoteConfig Config_Note = NoteConfig.IgnoreAll;
 		public StageConfig[] StaticConfigs_Stage = { };
 		public TrackConfig[] StaticConfigs_Track = { };
-
+		public NoteConfig[] StaticConfigs_Note = { };
 
 
 	}

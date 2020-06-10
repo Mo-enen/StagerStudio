@@ -2,19 +2,23 @@
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
+	using UnityEngine.Events;
 	using UnityEngine.UI;
+
 
 
 	public class BeatInputUI : MonoBehaviour {
 
 
 
+		// SUB
+		[System.Serializable] public class EndEditHandler : UnityEvent { };
+
 		// Const
 		private static readonly int[] BEAT_DIVs = { 4, 8, 16, 32, };
 
 		// Handler
-		public delegate void VoidHandler();
-		public VoidHandler OnEndEdit { get; set; } = null;
+		public EndEditHandler OnEndEdit => m_OnEndEdit;
 
 		// Ser
 		[SerializeField] private InputField m_BeatIF = null;
@@ -22,6 +26,7 @@
 		[SerializeField] private Button m_BeatDiv = null;
 		[SerializeField] private Image m_BeatDivIcon = null;
 		[SerializeField] private Sprite[] m_DivSPs = null;
+		[SerializeField] private EndEditHandler m_OnEndEdit = null;
 
 		// Data
 		private bool UIReady = true;
@@ -30,7 +35,7 @@
 
 
 		// MSG
-		private void Awake() {
+		private void Awake () {
 			m_BeatIF.onEndEdit.AddListener((_) => {
 				if (!UIReady) { return; }
 				Beat = GetBeatFromUI();
@@ -54,7 +59,7 @@
 
 
 		// API
-		public void SetBeatToUI(float beat) {
+		public void SetBeatToUI (float beat) {
 			Beat = beat;
 			int beatCount = Mathf.FloorToInt(beat);
 			int div = BEAT_DIVs[DiVIndex];
@@ -68,14 +73,14 @@
 		}
 
 
-		public float GetBeat() => Beat;
+		public float GetBeat () => Beat;
 
 
 
 
 		// LGC
-		private void RefreshUI() => RefreshUI(GetBeat());
-		private void RefreshUI(float beat) {
+		private void RefreshUI () => RefreshUI(GetBeat());
+		private void RefreshUI (float beat) {
 			UIReady = false;
 			try {
 				m_BeatDivIcon.sprite = m_DivSPs[DiVIndex];
@@ -85,7 +90,7 @@
 		}
 
 
-		private float GetBeatFromUI() {
+		private float GetBeatFromUI () {
 			int beatCount = 0;
 			int beatAmount = 0;
 			if (m_BeatIF.text.TryParseIntForInspector(out int _beatCount)) {
