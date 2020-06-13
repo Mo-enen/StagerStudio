@@ -1,4 +1,5 @@
-﻿Author:Stager 官方
+﻿Menu.Background.Default.Random:随机
+Author:Stager 官方
 Command.Hint.CommandDone:指令已完成
 Dialog.Editor.CannotSelectStage:全景模式下不能选择舞台
 Dialog.Editor.CannotSelectStageBrush:全景模式下不能选择舞台笔刷
@@ -47,6 +48,10 @@ Menu.AutoSave.1:每2分钟自动保存
 Menu.AutoSave.2:每5分钟自动保存
 Menu.AutoSave.3:每10分钟自动保存
 Menu.AutoSave.Off:关闭自动保存
+Menu.Background.Default.0:默认背景-孔雀蓝
+Menu.Background.Default.1:默认背景-罂粟红
+Menu.Background.Default.2:默认背景-梅花白
+Menu.Background.Default.3:默认背景-罗兰紫
 Menu.BeatmapItem.DeleteBeatmap:删除谱面
 Menu.BeatmapItem.DuplicateBeatmap:复制谱面
 Menu.BeatmapItem.ExportBeatmap:导出谱面
@@ -257,6 +262,7 @@ Tip.Home.NewChapter:新建章节
 Tip.Home.NewProject:新建工程
 Tip.Home.ProjectItem:工程（双击打开）
 Tip.Home.Trushbin:回收站，将删除的工程彻底清除或恢复
+Tip.Inpsector.TweenSelector:打开补间选择器
 Tip.Insoector.MotionAngle:编辑角度运动
 Tip.Insoector.MotionColor:编辑颜色运动
 Tip.Insoector.MotionHeight:编辑高度运动
@@ -270,6 +276,7 @@ Tip.Inspector.BeatDivide:节拍的细分程度
 Tip.Inspector.BPM:每分钟节拍数
 Tip.Inspector.Click:按键音编号，无按键音时为-1
 Tip.Inspector.Color:物体的颜色编号
+Tip.Inspector.ColorSelector:打开颜色选择器
 Tip.Inspector.DropSpeed:物体的下落速度
 Tip.Inspector.DropSpeedButton:拖拽以调节音符下落速度
 Tip.Inspector.Duration:物体持续的时间长度（秒）

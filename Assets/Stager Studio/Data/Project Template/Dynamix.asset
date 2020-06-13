@@ -22,6 +22,7 @@ MonoBehaviour:
     TrackAccessable: 0
     NoteAccessable: 1
     TimingAccessable: 0
+    SfxAccessable: 0
     Ratio:
       Active: 1
       Value: 1500
@@ -30,9 +31,6 @@ MonoBehaviour:
       Motion: 1
       TileTrack: 0
       ItemType:
-        Active: 0
-        Value: 0
-      TrackCount:
         Active: 0
         Value: 0
       Time_Real:
@@ -93,7 +91,7 @@ MonoBehaviour:
         Active: 0
         Value: 0
     Config_Note:
-      UseConfig: 0
+      UseConfig: 1
       ItemType:
         Active: 0
         Value: 0
@@ -101,7 +99,7 @@ MonoBehaviour:
         Active: 0
         Value: 0
       Z:
-        Active: 0
+        Active: 1
         Value: 0
       Duration:
         Active: 0
@@ -110,7 +108,13 @@ MonoBehaviour:
         Active: 0
         Value: 0
       LinkedNoteIndex:
-        Active: 0
+        Active: 1
+        Value: -1
+      Speed:
+        Active: 1
+        Value: 1000
+      ClickSound:
+        Active: 1
         Value: 0
     StaticConfigs_Stage:
     - UseConfig: 1
@@ -118,9 +122,6 @@ MonoBehaviour:
       TileTrack: 0
       ItemType:
         Active: 1
-        Value: 0
-      TrackCount:
-        Active: 0
         Value: 0
       Time_Real:
         Active: 1
@@ -154,9 +155,6 @@ MonoBehaviour:
       TileTrack: 0
       ItemType:
         Active: 1
-        Value: 0
-      TrackCount:
-        Active: 0
         Value: 0
       Time_Real:
         Active: 1
@@ -190,9 +188,6 @@ MonoBehaviour:
       TileTrack: 0
       ItemType:
         Active: 1
-        Value: 0
-      TrackCount:
-        Active: 0
         Value: 0
       Time_Real:
         Active: 1
@@ -309,61 +304,4 @@ MonoBehaviour:
       HasTray:
         Active: 0
         Value: 0
-    StaticConfigs_Note:
-    - UseConfig: 1
-      ItemType:
-        Active: 0
-        Value: 0
-      X:
-        Active: 0
-        Value: 0
-      Z:
-        Active: 1
-        Value: 0
-      Duration:
-        Active: 0
-        Value: 0
-      Width:
-        Active: 0
-        Value: 0
-      LinkedNoteIndex:
-        Active: 1
-        Value: -1
-    - UseConfig: 1
-      ItemType:
-        Active: 0
-        Value: 0
-      X:
-        Active: 0
-        Value: 0
-      Z:
-        Active: 1
-        Value: 0
-      Duration:
-        Active: 0
-        Value: 0
-      Width:
-        Active: 0
-        Value: 0
-      LinkedNoteIndex:
-        Active: 1
-        Value: -1
-    - UseConfig: 1
-      ItemType:
-        Active: 0
-        Value: 0
-      X:
-        Active: 0
-        Value: 0
-      Z:
-        Active: 1
-        Value: 0
-      Duration:
-        Active: 0
-        Value: 0
-      Width:
-        Active: 0
-        Value: 0
-      LinkedNoteIndex:
-        Active: 1
-        Value: -1
+    StaticConfigs_Note: []

@@ -334,11 +334,11 @@
 			public int rotation = 0;
 			public int pivotY = 0;
 			public int color = 0;
-			public List<TimeFloatFloatTween> positions;
-			public List<TimeFloatTween> rotations;
-			public List<TimeIntTween> colors;
-			public List<TimeFloatTween> widths;
-			public List<TimeFloatTween> heights;
+			public List<TimeFloatFloatTween> positions = new List<TimeFloatFloatTween>();
+			public List<TimeFloatTween> rotations = new List<TimeFloatTween>();
+			public List<TimeIntTween> colors = new List<TimeIntTween>();
+			public List<TimeFloatTween> widths = new List<TimeFloatTween>();
+			public List<TimeFloatTween> heights = new List<TimeFloatTween>();
 
 			// Cache
 			[System.NonSerialized] public int c_TrackCount = 0;
@@ -436,10 +436,10 @@
 			public int stageIndex = -1;
 			public int color = 0;
 			public bool hasTray = false;
-			public List<TimeFloatTween> xs;
-			public List<TimeFloatTween> angles;
-			public List<TimeIntTween> colors;
-			public List<TimeFloatTween> widths;
+			public List<TimeFloatTween> xs = new List<TimeFloatTween>();
+			public List<TimeFloatTween> angles = new List<TimeFloatTween>();
+			public List<TimeIntTween> colors = new List<TimeIntTween>();
+			public List<TimeFloatTween> widths = new List<TimeFloatTween>();
 
 			// Cache
 			[System.NonSerialized] public (float min, float max) c_TrayX = (0.5f, 0.5f);

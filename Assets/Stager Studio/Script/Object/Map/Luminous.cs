@@ -153,14 +153,6 @@
 		}
 
 
-		//protected override void RefreshRendererZone() {
-		//MainRenderer.Renderer.material.SetVector(MaterialZoneID, new Vector4(
-		//	float.MinValue, float.MinValue,
-		//	float.MaxValue, float.MaxValue
-		//));
-		//}
-
-
 		public static bool GetLumActive(Beatmap.Note noteData) {
 			SkinType type = noteData.Duration > FLOAT_GAP && MusicTime < noteData.Time + noteData.Duration ? SkinType.HoldLuminous : SkinType.NoteLuminous;
 			float duration = (type == SkinType.NoteLuminous ? LuminousDuration_Tap : LuminousDuration_Hold);

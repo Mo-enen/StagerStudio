@@ -16,7 +16,7 @@
 		#region --- SUB ---
 
 
-		public delegate void VoidHandler();
+		public delegate void VoidHandler ();
 
 
 		#endregion
@@ -98,7 +98,7 @@
 		#region --- MSG ---
 
 
-		private void Awake() {
+		private void Awake () {
 
 			// Init Default Map
 			DefaultMap.Clear();
@@ -143,7 +143,7 @@
 		#region --- API ---
 
 
-		public List<SystemLanguage> RefreshAllLanguageNames() {
+		public List<SystemLanguage> RefreshAllLanguageNames () {
 			_AllLanguages = new List<SystemLanguage>();
 			try {
 				var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language");
@@ -160,7 +160,7 @@
 		}
 
 
-		public bool LoadLanguage(SystemLanguage language) {
+		public bool LoadLanguage (SystemLanguage language) {
 			// Load to Map
 			bool success = GetLanguageMap(language, Map);
 			if (success) {
@@ -173,7 +173,7 @@
 		}
 
 
-		public bool GetLanguageMap(SystemLanguage language, Dictionary<string, string> map) {
+		public bool GetLanguageMap (SystemLanguage language, Dictionary<string, string> map) {
 			try {
 				var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language", language.ToString() + ".txt");
 				if (!Util.FileExists(path)) { return false; }
@@ -197,15 +197,15 @@
 		}
 
 
-		public string Get(string key) {
+		public string Get (string key) {
 			return Map.ContainsKey(key) ? Map[key] : DefaultMap.ContainsKey(key) ? DefaultMap[key] : "";
 		}
 
 
-		public string GetDisplayName() => GetDisplayName((SystemLanguage)LanguageIndex.Value);
+		public string GetDisplayName () => GetDisplayName((SystemLanguage)LanguageIndex.Value);
 
 
-		public string GetDisplayName(SystemLanguage language) => DISPLAY_NAME_MAP.ContainsKey(language) ? DISPLAY_NAME_MAP[language] : "";
+		public string GetDisplayName (SystemLanguage language) => DISPLAY_NAME_MAP.ContainsKey(language) ? DISPLAY_NAME_MAP[language] : "";
 
 
 		#endregion
@@ -234,7 +234,7 @@ namespace StagerStudio.Editor {
 
 		// SUB
 		private class StringStringComparer : IComparer<(string, string)> {
-			public int Compare((string, string) x, (string, string) y) => x.Item1.CompareTo(y.Item1);
+			public int Compare ((string, string) x, (string, string) y) => x.Item1.CompareTo(y.Item1);
 		}
 
 
@@ -245,7 +245,7 @@ namespace StagerStudio.Editor {
 
 
 		// MSG
-		private void OnEnable() {
+		private void OnEnable () {
 			var targetLanguage = target as StageLanguage;
 			// Get Languages
 			var languages = targetLanguage.RefreshAllLanguageNames();
@@ -290,10 +290,10 @@ namespace StagerStudio.Editor {
 		}
 
 
-		private void OnDisable() => Save();
+		private void OnDisable () => Save();
 
 
-		public override void OnInspectorGUI() {
+		public override void OnInspectorGUI () {
 
 			Space(4);
 
@@ -366,7 +366,7 @@ namespace StagerStudio.Editor {
 
 
 		// LGC
-		private void Save() {
+		private void Save () {
 			// Save Maps
 			int defaultIndex = 0;
 			int index = 0;
@@ -417,14 +417,14 @@ namespace StagerStudio.Editor {
 
 
 		// UTL
-		private Rect GUIRect(float width, float height) => GUILayoutUtility.GetRect(
+		private Rect GUIRect (float width, float height) => GUILayoutUtility.GetRect(
 			width, height,
 			GUILayout.ExpandWidth(width == 0),
 			GUILayout.ExpandHeight(height == 0)
 		);
 
 
-		private void LayoutH(System.Action action, bool box = false, GUIStyle style = null) {
+		private void LayoutH (System.Action action, bool box = false, GUIStyle style = null) {
 			if (box) {
 				style = GUI.skin.box;
 			}
@@ -438,7 +438,8 @@ namespace StagerStudio.Editor {
 		}
 
 
-		private void Space(float space = 4f) => GUILayout.Space(space);
+		private void Space (float space = 4f) => GUILayout.Space(space);
+
 
 
 

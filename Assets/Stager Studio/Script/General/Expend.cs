@@ -15,6 +15,13 @@
 		}
 
 
+		public static void TrySetActive (this Transform tf, bool active) {
+			if (tf.gameObject.activeSelf != active) {
+				tf.gameObject.SetActive(active);
+			}
+		}
+
+
 		public static void SetAllChildActive (this Transform transform, bool active) {
 			int len = transform.childCount;
 			for (int i = 0; i < len; i++) {

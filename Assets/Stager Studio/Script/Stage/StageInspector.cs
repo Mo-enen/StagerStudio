@@ -100,33 +100,33 @@
 				if (type >= 0 && type < m_Container.childCount && selectingIndex >= 0) {
 					switch (type) {
 						case 0: // Stage
-							m_Header.text = GetLanguage(HEADER_STAGE);
-							m_Index.text = selectingIndex.ToString("00");
-							m_Index.transform.parent.gameObject.TrySetActive(true);
-							SetInspectorActive(1);
-							RefreshStageInspector();
-							break;
+						m_Header.text = GetLanguage(HEADER_STAGE);
+						m_Index.text = selectingIndex.ToString("00");
+						m_Index.transform.parent.gameObject.TrySetActive(true);
+						SetInspectorActive(1);
+						RefreshStageInspector();
+						break;
 						case 1: // Track
-							m_Header.text = GetLanguage(HEADER_TRACK);
-							m_Index.text = selectingIndex.ToString("00");
-							m_Index.transform.parent.gameObject.TrySetActive(true);
-							SetInspectorActive(2);
-							RefreshTrackInspector();
-							break;
+						m_Header.text = GetLanguage(HEADER_TRACK);
+						m_Index.text = selectingIndex.ToString("00");
+						m_Index.transform.parent.gameObject.TrySetActive(true);
+						SetInspectorActive(2);
+						RefreshTrackInspector();
+						break;
 						case 2: // Note
-							m_Header.text = GetLanguage(HEADER_NOTE);
-							m_Index.text = selectingIndex.ToString("00");
-							m_Index.transform.parent.gameObject.TrySetActive(true);
-							SetInspectorActive(3);
-							RefreshNoteInspector();
-							break;
+						m_Header.text = GetLanguage(HEADER_NOTE);
+						m_Index.text = selectingIndex.ToString("00");
+						m_Index.transform.parent.gameObject.TrySetActive(true);
+						SetInspectorActive(3);
+						RefreshNoteInspector();
+						break;
 						case 3: // Timing
-							m_Header.text = GetLanguage(HEADER_TIMING);
-							m_Index.text = selectingIndex.ToString("00");
-							m_Index.transform.parent.gameObject.TrySetActive(true);
-							SetInspectorActive(4);
-							RefreshTimingInspector();
-							break;
+						m_Header.text = GetLanguage(HEADER_TIMING);
+						m_Index.text = selectingIndex.ToString("00");
+						m_Index.transform.parent.gameObject.TrySetActive(true);
+						SetInspectorActive(4);
+						RefreshTimingInspector();
+						break;
 					}
 				} else {
 					m_Header.text = GetLanguage(HEADER_BEATMAP);
@@ -207,23 +207,23 @@
 			if (!UIReady || map == null) { return; }
 			switch (id.ToLower()) {
 				case "bpm":
-					map.BPM = InspectorBeatmap.GetBpm();
-					break;
+				map.BPM = InspectorBeatmap.GetBpm();
+				break;
 				case "shift":
-					map.shift = InspectorBeatmap.GetShift();
-					break;
+				map.shift = InspectorBeatmap.GetShift();
+				break;
 				case "ratio":
-					map.Ratio = InspectorBeatmap.GetRatio();
-					break;
+				map.Ratio = InspectorBeatmap.GetRatio();
+				break;
 				case "level":
-					map.Level = InspectorBeatmap.GetLevel();
-					break;
+				map.Level = InspectorBeatmap.GetLevel();
+				break;
 				case "tag":
-					map.Tag = InspectorBeatmap.GetTag();
-					break;
+				map.Tag = InspectorBeatmap.GetTag();
+				break;
 				default:
-					Debug.LogWarning("wrong id: " + id.ToLower());
-					break;
+				Debug.LogWarning("wrong id: " + id.ToLower());
+				break;
 			}
 			OnBeatmapEdited();
 			RefreshBeatmapInspector();
@@ -235,53 +235,53 @@
 			if (!UIReady || map == null) { return; }
 			switch (id.ToLower()) {
 				case "time":
-					map.SetTime(0, GetSelectingIndex(), InspectorStage.GetTime());
-					break;
+				map.SetTime(0, GetSelectingIndex(), InspectorStage.GetTime());
+				break;
 				case "beat":
-					map.SetTime(0, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorStage.GetBeat(), map.BPM, map.Shift), 0f));
-					break;
+				map.SetTime(0, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorStage.GetBeat(), map.BPM, map.Shift), 0f));
+				break;
 				case "type":
-					map.SetItemType(0, GetSelectingIndex(), InspectorStage.GetItemType());
-					break;
+				map.SetItemType(0, GetSelectingIndex(), InspectorStage.GetItemType());
+				break;
 				case "duration":
-					map.SetDuration(0, GetSelectingIndex(), InspectorStage.GetDuration());
-					break;
+				map.SetDuration(0, GetSelectingIndex(), InspectorStage.GetDuration());
+				break;
 				case "speed":
-					map.SetSpeed(0, GetSelectingIndex(), InspectorStage.GetSpeed());
-					break;
+				map.SetSpeed(0, GetSelectingIndex(), InspectorStage.GetSpeed());
+				break;
 				case "pivot":
-					map.SetStagePivot(GetSelectingIndex(), InspectorStage.GetPivot());
-					break;
+				map.SetStagePivot(GetSelectingIndex(), InspectorStage.GetPivot());
+				break;
 				case "pivot.top":
-					map.SetStagePivot(GetSelectingIndex(), 1f);
-					break;
+				map.SetStagePivot(GetSelectingIndex(), 1f);
+				break;
 				case "pivot.mid":
-					map.SetStagePivot(GetSelectingIndex(), 0.5f);
-					break;
+				map.SetStagePivot(GetSelectingIndex(), 0.5f);
+				break;
 				case "pivot.bottom":
-					map.SetStagePivot(GetSelectingIndex(), 0f);
-					break;
+				map.SetStagePivot(GetSelectingIndex(), 0f);
+				break;
 				case "x":
-					map.SetX(0, GetSelectingIndex(), InspectorStage.GetPosX());
-					break;
+				map.SetX(0, GetSelectingIndex(), InspectorStage.GetPosX());
+				break;
 				case "y":
-					map.SetStageY(GetSelectingIndex(), InspectorStage.GetPosY());
-					break;
+				map.SetStageY(GetSelectingIndex(), InspectorStage.GetPosY());
+				break;
 				case "rot":
-					map.SetStageRotation(GetSelectingIndex(), InspectorStage.GetRot());
-					break;
+				map.SetStageRotation(GetSelectingIndex(), InspectorStage.GetRot());
+				break;
 				case "width":
-					map.SetStageWidth(GetSelectingIndex(), InspectorStage.GetWidth());
-					break;
+				map.SetStageWidth(GetSelectingIndex(), InspectorStage.GetWidth());
+				break;
 				case "height":
-					map.SetStageHeight(GetSelectingIndex(), InspectorStage.GetHeight());
-					break;
+				map.SetStageHeight(GetSelectingIndex(), InspectorStage.GetHeight());
+				break;
 				case "color":
-					map.SetStageColor(GetSelectingIndex(), InspectorStage.GetColor());
-					break;
+				map.SetStageColor(GetSelectingIndex(), InspectorStage.GetColor());
+				break;
 				default:
-					Debug.LogWarning("wrong id: " + id.ToLower());
-					break;
+				Debug.LogWarning("wrong id: " + id.ToLower());
+				break;
 			}
 			OnItemEdited();
 			RefreshStageInspector();
@@ -293,41 +293,41 @@
 			if (!UIReady || map == null) { return; }
 			switch (id.ToLower()) {
 				case "time":
-					map.SetTime(1, GetSelectingIndex(), InspectorTrack.GetTime());
-					break;
+				map.SetTime(1, GetSelectingIndex(), InspectorTrack.GetTime());
+				break;
 				case "beat":
-					map.SetTime(1, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorTrack.GetBeat(), map.BPM, map.Shift), 0f));
-					break;
+				map.SetTime(1, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorTrack.GetBeat(), map.BPM, map.Shift), 0f));
+				break;
 				case "type":
-					map.SetItemType(1, GetSelectingIndex(), InspectorTrack.GetItemType());
-					break;
+				map.SetItemType(1, GetSelectingIndex(), InspectorTrack.GetItemType());
+				break;
 				case "duration":
-					map.SetDuration(1, GetSelectingIndex(), InspectorTrack.GetDuration());
-					break;
+				map.SetDuration(1, GetSelectingIndex(), InspectorTrack.GetDuration());
+				break;
 				case "speed":
-					map.SetSpeed(1, GetSelectingIndex(), InspectorTrack.GetSpeed());
-					break;
+				map.SetSpeed(1, GetSelectingIndex(), InspectorTrack.GetSpeed());
+				break;
 				case "x":
-					map.SetX(1, GetSelectingIndex(), InspectorTrack.GetPosX());
-					break;
+				map.SetX(1, GetSelectingIndex(), InspectorTrack.GetPosX());
+				break;
 				case "width":
-					map.SetTrackWidth(GetSelectingIndex(), InspectorTrack.GetWidth());
-					break;
+				map.SetTrackWidth(GetSelectingIndex(), InspectorTrack.GetWidth());
+				break;
 				case "angle":
-					map.SetTrackAngle(GetSelectingIndex(), InspectorTrack.GetAngle());
-					break;
+				map.SetTrackAngle(GetSelectingIndex(), InspectorTrack.GetAngle());
+				break;
 				case "color":
-					map.SetTrackColor(GetSelectingIndex(), InspectorTrack.GetColor());
-					break;
+				map.SetTrackColor(GetSelectingIndex(), InspectorTrack.GetColor());
+				break;
 				case "tray":
-					map.SetTrackTray(GetSelectingIndex(), InspectorTrack.GetTray());
-					break;
+				map.SetTrackTray(GetSelectingIndex(), InspectorTrack.GetTray());
+				break;
 				case "stageindex":
-					map.SetTrackStageIndex(GetSelectingIndex(), Mathf.Clamp(InspectorTrack.GetIndex(), 0, map.Stages.Count - 1));
-					break;
+				map.SetTrackStageIndex(GetSelectingIndex(), Mathf.Clamp(InspectorTrack.GetIndex(), 0, map.Stages.Count - 1));
+				break;
 				default:
-					Debug.LogWarning("wrong id: " + id.ToLower());
-					break;
+				Debug.LogWarning("wrong id: " + id.ToLower());
+				break;
 			}
 			OnItemEdited();
 			RefreshTrackInspector();
@@ -339,47 +339,47 @@
 			if (!UIReady || map == null) { return; }
 			switch (id.ToLower()) {
 				case "time":
-					map.SetTime(2, GetSelectingIndex(), InspectorNote.GetTime());
-					break;
+				map.SetTime(2, GetSelectingIndex(), InspectorNote.GetTime());
+				break;
 				case "beat":
-					map.SetTime(2, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorNote.GetBeat(), map.BPM, map.Shift), 0f));
-					break;
+				map.SetTime(2, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorNote.GetBeat(), map.BPM, map.Shift), 0f));
+				break;
 				case "type":
-					map.SetItemType(2, GetSelectingIndex(), InspectorNote.GetItemType());
-					break;
+				map.SetItemType(2, GetSelectingIndex(), InspectorNote.GetItemType());
+				break;
 				case "duration":
-					map.SetDuration(2, GetSelectingIndex(), InspectorNote.GetDuration());
-					break;
+				map.SetDuration(2, GetSelectingIndex(), InspectorNote.GetDuration());
+				break;
 				case "speed":
-					map.SetSpeed(2, GetSelectingIndex(), InspectorNote.GetSpeed());
-					break;
+				map.SetSpeed(2, GetSelectingIndex(), InspectorNote.GetSpeed());
+				break;
 				case "x":
-					map.SetX(2, GetSelectingIndex(), InspectorNote.GetPosX());
-					break;
+				map.SetX(2, GetSelectingIndex(), InspectorNote.GetPosX());
+				break;
 				case "width":
-					map.SetNoteWidth(GetSelectingIndex(), InspectorNote.GetWidth());
-					break;
+				map.SetNoteWidth(GetSelectingIndex(), InspectorNote.GetWidth());
+				break;
 				case "trackindex":
-					map.SetNoteTrackIndex(GetSelectingIndex(), Mathf.Clamp(InspectorNote.GetIndex(), 0, map.Tracks.Count - 1));
-					break;
+				map.SetNoteTrackIndex(GetSelectingIndex(), Mathf.Clamp(InspectorNote.GetIndex(), 0, map.Tracks.Count - 1));
+				break;
 				case "link":
-					map.SetNoteLinkedIndex(GetSelectingIndex(), Mathf.Clamp(InspectorNote.GetLink(), -1, map.Notes.Count - 1));
-					break;
+				map.SetNoteLinkedIndex(GetSelectingIndex(), Mathf.Clamp(InspectorNote.GetLink(), -1, map.Notes.Count - 1));
+				break;
 				case "z":
-					map.SetNoteZ(GetSelectingIndex(), InspectorNote.GetPosZ());
-					break;
+				map.SetNoteZ(GetSelectingIndex(), InspectorNote.GetPosZ());
+				break;
 				case "click":
-					map.SetNoteClickIndex(GetSelectingIndex(), InspectorNote.GetClick());
-					break;
+				map.SetNoteClickIndex(GetSelectingIndex(), InspectorNote.GetClick());
+				break;
 				case "parama":
-					map.SetNoteParamA(GetSelectingIndex(), InspectorNote.GetSfxParamA());
-					break;
+				map.SetNoteParamA(GetSelectingIndex(), InspectorNote.GetSfxParamA());
+				break;
 				case "paramb":
-					map.SetNoteParamB(GetSelectingIndex(), InspectorNote.GetSfxParamB());
-					break;
+				map.SetNoteParamB(GetSelectingIndex(), InspectorNote.GetSfxParamB());
+				break;
 				default:
-					Debug.LogWarning("wrong id: " + id.ToLower());
-					break;
+				Debug.LogWarning("wrong id: " + id.ToLower());
+				break;
 			}
 			OnItemEdited();
 			RefreshNoteInspector();
@@ -391,29 +391,48 @@
 			if (!UIReady || map == null) { return; }
 			switch (id.ToLower()) {
 				case "time":
-					map.SetTime(3, GetSelectingIndex(), InspectorTiming.GetTime());
-					break;
+				map.SetTime(3, GetSelectingIndex(), InspectorTiming.GetTime());
+				break;
 				case "beat":
-					map.SetTime(3, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorTiming.GetBeat(), map.BPM, map.Shift), 0f));
-					break;
+				map.SetTime(3, GetSelectingIndex(), Mathf.Max(Util.Beat_to_Time(InspectorTiming.GetBeat(), map.BPM, map.Shift), 0f));
+				break;
 				case "duration":
-					map.SetDuration(3, GetSelectingIndex(), InspectorTiming.GetDuration());
-					break;
+				map.SetDuration(3, GetSelectingIndex(), InspectorTiming.GetDuration());
+				break;
 				case "speed":
-					map.SetTimingX(GetSelectingIndex(), InspectorTiming.GetSpeed());
-					break;
+				map.SetTimingX(GetSelectingIndex(), InspectorTiming.GetSpeed());
+				break;
 				case "parama":
-					map.SetTimingParamA(GetSelectingIndex(), InspectorTiming.GetSfxParamA());
-					break;
+				map.SetTimingParamA(GetSelectingIndex(), InspectorTiming.GetSfxParamA());
+				break;
 				case "paramb":
-					map.SetTimingParamB(GetSelectingIndex(), InspectorTiming.GetSfxParamB());
-					break;
+				map.SetTimingParamB(GetSelectingIndex(), InspectorTiming.GetSfxParamB());
+				break;
 				default:
-					Debug.LogWarning("wrong id: " + id.ToLower());
-					break;
+				Debug.LogWarning("wrong id: " + id.ToLower());
+				break;
 			}
 			OnItemEdited();
 			RefreshTimingInspector();
+		}
+
+
+		public void SetCurrentColor (int newColor) {
+			int selectingType = GetSelectingType();
+			int selectingIndex = GetSelectingIndex();
+			var map = GetBeatmap();
+			if (map == null || selectingType < 0 || selectingIndex < 0) { return; }
+			if (selectingType == 0) {
+				map.SetStageColor(selectingIndex, newColor);
+				OnItemEdited();
+				RefreshStageInspector();
+			} else if (selectingType == 1) {
+				map.SetTrackColor(selectingIndex, newColor);
+				OnItemEdited();
+				RefreshTrackInspector();
+			} else {
+				OnItemEdited();
+			}
 		}
 
 

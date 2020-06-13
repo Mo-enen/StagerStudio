@@ -262,6 +262,7 @@
 			Awake_Skin();
 			Awake_Undo();
 			Awake_Gene();
+			Awake_Command();
 			Awake_ProjectInfo();
 			Awake_Inspector();
 			Awake_Home();
@@ -453,7 +454,12 @@
 			m_Menu.AddCheckerFunc("Menu.Command.Command.Width", () => CommandUI.CommandIndex == 5);
 			m_Menu.AddCheckerFunc("Menu.Command.Command.WidthAdd", () => CommandUI.CommandIndex == 6);
 			m_Menu.AddCheckerFunc("Menu.Command.Command.Delete", () => CommandUI.CommandIndex == 7);
-
+			// Default BG
+			m_Menu.AddCheckerFunc("Menu.Background.Default.0", () => m_Background.DefaultIndex == 0);
+			m_Menu.AddCheckerFunc("Menu.Background.Default.1", () => m_Background.DefaultIndex == 1);
+			m_Menu.AddCheckerFunc("Menu.Background.Default.2", () => m_Background.DefaultIndex == 2);
+			m_Menu.AddCheckerFunc("Menu.Background.Default.3", () => m_Background.DefaultIndex == 3);
+			m_Menu.AddCheckerFunc("Menu.Background.Default.Random", () => m_Background.DefaultIndex < 0);
 		}
 
 
@@ -514,7 +520,7 @@
 				m_Game.SetSpeedCurveDirty();
 				m_Music.Pitch = 1f;
 				m_Music.Seek(0f);
-				m_Gene.RefreshUI();
+				m_Gene.RefreshGene();
 				UI_RemoveUI();
 				RefreshLoading(-1f);
 				DebugLog_Project("Loaded");
@@ -539,7 +545,7 @@
 
 			// Beatmap
 			StageProject.OnBeatmapOpened = (map, key) => {
-				if (!(map is null)) {
+				if (map != null) {
 					m_Game.BPM = map.BPM;
 					m_Game.Shift = map.Shift;
 					m_Game.Ratio = map.Ratio;
@@ -553,15 +559,16 @@
 				m_Game.ClearAllContainers();
 				m_Music.Pitch = 1f;
 				m_Music.Seek(0f);
-				m_Gene.FixMapFromGene();
+				m_Gene.FixMapInfoFromGene();
+				m_Gene.FixMapDataFromGene();
 				UndoRedo.ClearUndo();
 				UndoRedo.SetDirty();
 				m_Preview.SetDirty();
-				Resources.UnloadUnusedAssets();
 				RefreshGridRenderer();
 				RefreshOnItemChange();
 				m_Inspector.RefreshUI();
 				DebugLog_Beatmap("Open");
+				Resources.UnloadUnusedAssets();
 			};
 			StageProject.OnBeatmapRemoved = () => {
 				TryRefreshProjectInfo();
@@ -732,7 +739,9 @@
 			StageEditor.GetRealZoneMinMax = () => m_Zone.GetZoneMinMax(true);
 			StageEditor.OnSelectionChanged = () => {
 				m_Preview.SetDirty();
+				m_Gene.RefreshInspector();
 				m_Inspector.RefreshUI();
+				UI_RemoveColorSelector();
 				if (m_MotionPainter.ItemType >= 0) {
 					if (m_Editor.SelectingItemType >= 0 && m_MotionPainter.ItemType == m_Editor.SelectingItemType) {
 						m_MotionPainter.ItemIndex = m_Editor.SelectingItemIndex;
@@ -775,9 +784,19 @@
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
 				m_MotionPainter.TrySetDirty();
-				if (editType == StageEditor.EditType.Create) {
-					m_Effect.SpawnCreateEffect(itemType, itemIndex);
-					m_Gene.FixItemFromGene(itemType, itemIndex);
+				switch (editType) {
+					case StageEditor.EditType.Create:
+						m_Gene.FixItemFromGene(itemType, itemIndex);
+						m_Effect.SpawnCreateEffect(itemType, itemIndex);
+						break;
+					case StageEditor.EditType.Modify:
+						m_Gene.FixItemFromGene(itemType, itemIndex);
+						break;
+					case StageEditor.EditType.Delete:
+						if (itemType == 1) {
+							m_Gene.FixAllStagesFromGene();
+						}
+						break;
 				}
 			};
 			StageEditor.GetFilledTime = m_Game.FillTime;
@@ -790,6 +809,8 @@
 			StageEditor.FixBrushIndexFromGene = m_Gene.FixBrushIndexFromGene;
 			StageEditor.FixContainerFromGene = m_Gene.FixContainerFromGene;
 			StageEditor.FixLockFromGene = m_Gene.FixLockFromGene;
+			StageEditor.FixEditorAxis = m_Gene.FixEditorAxis;
+			StageEditor.CheckTileTrack = m_Gene.CheckTileTrack;
 		}
 
 
@@ -857,6 +878,19 @@
 			StageGene.GetBeatmap = () => m_Project.Beatmap;
 			StageGene.SetContainerActive = m_Editor.SetContainerActive;
 			StageGene.SetUseLock = m_Editor.SetLock;
+			StageGene.GetMusicDuration = () => m_Music.Duration;
+			StageGene.GetSelectingItemType = () => m_Editor.SelectingItemType;
+			StageGene.GetSelectingItemIndex = () => m_Editor.SelectingItemIndex;
+		}
+
+
+		private void Awake_Command () {
+			StageCommand.OnCommandDone = () => {
+				RefreshOnItemChange();
+				m_Gene.FixMapDataFromGene();
+				UndoRedo.SetDirty();
+			};
+
 		}
 
 
@@ -969,12 +1003,6 @@
 
 		private void Awake_Inspector () {
 
-			// Stage
-			StageCommand.OnCommandDone = () => {
-				RefreshOnItemChange();
-				UndoRedo.SetDirty();
-			};
-
 			// Inspector
 			StageInspector.GetSelectingType = () => {
 				if (m_Editor.SelectingItemType == 4) {
@@ -991,9 +1019,11 @@
 			StageInspector.GetShift = () => m_Game.Shift;
 			StageInspector.OnItemEdited = () => {
 				RefreshOnItemChange();
+				UI_RemoveColorSelector();
 				UndoRedo.SetDirty();
 			};
 			StageInspector.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
+
 
 			// CMD
 			CommandUI.DoCommand = (type, command, index, value) => {
@@ -1021,6 +1051,7 @@
 			};
 			MotionPainterUI.OnSelectionChanged = () => {
 				UI_RemoveTweenSelector();
+				UI_RemoveColorSelector();
 			};
 			MotionPainterUI.GetSprite = m_TextSheet.Char_to_Sprite;
 			MotionPainterUI.GetPaletteCount = () => m_Project.Palette.Count;
@@ -1028,6 +1059,9 @@
 
 			TweenSelectorUI.GetProjectTweens = () => m_Project.Tweens;
 			TweenSelectorUI.TrySetCurrentTween = m_MotionPainter.TrySetCurrentTween;
+
+			ColorSelectorUI.GetPalette = () => m_Project.Palette;
+			ColorSelectorUI.TrySetCurrentColor = m_Inspector.SetCurrentColor;
 
 		}
 
@@ -1092,8 +1126,9 @@
 		private void Awake_Linker () {
 			LinkerUI.GetBeatmap = () => m_Project.Beatmap;
 			LinkerUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
-			LinkerUI.OnLink = () => {
+			LinkerUI.OnLink = (noteIndex) => {
 				RefreshOnItemChange();
+				m_Gene.FixItemFromGene(2, noteIndex);
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
 			};
@@ -1101,7 +1136,9 @@
 				m_Project.Beatmap != null &&
 				!m_Music.IsPlaying &&
 				!m_MotionInspector.gameObject.activeSelf &&
-				!m_Root.gameObject.activeSelf;
+				!m_Root.gameObject.activeSelf &&
+				m_Editor.SelectingItemType == 2 &&
+				m_Gene.FixAllowNoteLink(m_Editor.SelectingItemIndex);
 		}
 
 
@@ -1224,8 +1261,9 @@
 		}
 
 
-		private void RefreshOnBeatmapInfoChange () { ///////////////// Invoking /////////////////
+		private void RefreshOnBeatmapInfoChange () {
 			if (m_Project.Beatmap != null) {
+				m_Gene.FixMapInfoFromGene();
 				m_Game.BPM = m_Project.Beatmap.BPM;
 				m_Game.Shift = m_Project.Beatmap.Shift;
 				m_Game.Ratio = m_Project.Beatmap.Ratio;

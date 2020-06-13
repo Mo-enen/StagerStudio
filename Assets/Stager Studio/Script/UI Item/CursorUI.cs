@@ -6,6 +6,7 @@
 	using UnityEngine.UI;
 
 
+	[DisallowMultipleComponent]
 	public class CursorUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
 

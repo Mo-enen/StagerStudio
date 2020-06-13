@@ -32,7 +32,6 @@
 			public bool Motion;
 			public bool TileTrack;
 			public ActiveInt ItemType;
-			public ActiveInt TrackCount;
 			public ActiveInt Time_Real;
 			public ActiveInt Duration_Real;
 			public ActiveInt X;
@@ -48,7 +47,6 @@
 				Motion = true,
 				TileTrack = false,
 				ItemType = ActiveInt.Inactive,
-				TrackCount = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,
 				Y = ActiveInt.Inactive,
 				Rotation = ActiveInt.Inactive,
@@ -110,6 +108,8 @@
 			public ActiveInt Duration;
 			public ActiveInt Width;
 			public ActiveInt LinkedNoteIndex;
+			public ActiveInt Speed;
+			public ActiveInt ClickSound;
 
 
 			public static NoteConfig IgnoreAll => new NoteConfig() {
@@ -120,6 +120,8 @@
 				Duration = ActiveInt.Inactive,
 				Width = ActiveInt.Inactive,
 				LinkedNoteIndex = ActiveInt.Inactive,
+				Speed = ActiveInt.Inactive,
+				ClickSound = ActiveInt.Inactive,
 			};
 
 
@@ -134,6 +136,7 @@
 		public bool TrackAccessable = true;
 		public bool NoteAccessable = true;
 		public bool TimingAccessable = true;
+		public bool SfxAccessable = true;
 		public ActiveInt Ratio = ActiveInt.Inactive;
 		public StageConfig Config_Stage = StageConfig.IgnoreAll;
 		public TrackConfig Config_Track = TrackConfig.IgnoreAll;

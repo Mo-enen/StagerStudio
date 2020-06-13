@@ -22,6 +22,7 @@ MonoBehaviour:
     TrackAccessable: 1
     NoteAccessable: 1
     TimingAccessable: 0
+    SfxAccessable: 0
     Ratio:
       Active: 1
       Value: 1500
@@ -30,9 +31,6 @@ MonoBehaviour:
       Motion: 1
       TileTrack: 0
       ItemType:
-        Active: 0
-        Value: 0
-      TrackCount:
         Active: 0
         Value: 0
       Time_Real:
@@ -112,15 +110,18 @@ MonoBehaviour:
       LinkedNoteIndex:
         Active: 1
         Value: -1
+      Speed:
+        Active: 1
+        Value: 1000
+      ClickSound:
+        Active: 1
+        Value: 0
     StaticConfigs_Stage:
     - UseConfig: 1
       Motion: 0
       TileTrack: 0
       ItemType:
         Active: 1
-        Value: 0
-      TrackCount:
-        Active: 0
         Value: 0
       Time_Real:
         Active: 1

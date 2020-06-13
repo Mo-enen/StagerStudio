@@ -3,6 +3,7 @@
 	using System.Collections.Generic;
 	using UnityEngine;
 	using UnityEngine.UI;
+	using Saving;
 
 
 	public class BackgroundUI : MonoBehaviour {
@@ -15,6 +16,7 @@
 
 		// API
 		public float Brightness { get; private set; } = 0.309f;
+		public int DefaultIndex => BackgroundIndex.Value;
 
 		// Short
 		private Image IMG => _IMG != null ? _IMG : (_IMG = GetComponent<Image>());
@@ -28,6 +30,10 @@
 		private Coroutine SwipingCor = null;
 		private Image _IMG = null;
 		private AspectRatioFitter _Fitter = null;
+		private bool UsingDefault = true;
+
+		// Saving
+		private SavingInt BackgroundIndex = new SavingInt("BackgroundUI.BackgroundIndex", 0);
 
 
 		// API
@@ -45,14 +51,27 @@
 		}
 
 
+		public void SetDefaultIndex (int index) {
+			BackgroundIndex.Value = Mathf.Clamp(index, -1, m_DefaultBGs.Length - 1);
+			if (UsingDefault) {
+				SetBackgroundLogic(null, true);
+			}
+		}
+
+
 		// LGC
 		private void SetBackgroundLogic (Sprite sprite, bool animation) {
 			const float SCALE_MUTI = 1.06f;
 			// Blur Sprite
 			if (!sprite || !sprite.texture) {
-				sprite = m_DefaultBGs[(int)Random.Range(0f, m_DefaultBGs.Length - 0.001f)];
+				int index = BackgroundIndex.Value < 0 ?
+					(int)Random.Range(0f, m_DefaultBGs.Length - 0.0001f) :
+					Mathf.Clamp(BackgroundIndex.Value, 0, m_DefaultBGs.Length - 1);
+				sprite = m_DefaultBGs[index];
+				UsingDefault = true;
 			} else {
 				sprite = BlurTexture(sprite);
+				UsingDefault = false;
 			}
 			// Swip
 			if (SwipingCor != null) {

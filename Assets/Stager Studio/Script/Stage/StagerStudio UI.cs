@@ -106,6 +106,7 @@
 		[SerializeField] private ProjectCreatorUI m_ProjectCreatorPrefab = null;
 		[SerializeField] private CommandUI m_CommandPrefab = null;
 		[SerializeField] private TweenSelectorUI m_TweenSelectorPrefab = null;
+		[SerializeField] private ColorSelectorUI m_ColorSelectorPrefab = null;
 
 		[Header("Spawn Root")]
 		[SerializeField] private RectTransform m_Root = null;
@@ -121,6 +122,7 @@
 		[SerializeField] private RectTransform m_ProjectCreatorRoot = null;
 		[SerializeField] private RectTransform m_CommandRoot = null;
 		[SerializeField] private RectTransform m_TweenSelectorRoot = null;
+		[SerializeField] private RectTransform m_ColorSelectorRoot = null;
 
 
 		#endregion
@@ -562,8 +564,12 @@
 
 
 		public void UI_SpawnTweenSelector () {
-			//UI_RemoveUI();
 			Util.SpawnUI(m_TweenSelectorPrefab, m_TweenSelectorRoot, "TweenSelector").Open();
+		}
+
+
+		public void UI_SpawnColorSelector () {
+			Util.SpawnUI(m_ColorSelectorPrefab, m_ColorSelectorRoot, "ColorSelector").Open();
 		}
 
 
@@ -581,6 +587,7 @@
 			m_ProjectCreatorRoot.DestroyAllChildImmediately();
 			m_CommandRoot.DestroyAllChildImmediately();
 			m_TweenSelectorRoot.DestroyAllChildImmediately();
+			m_ColorSelectorRoot.DestroyAllChildImmediately();
 
 			m_SettingRoot.gameObject.SetActive(false);
 			m_ProjectInfoRoot.gameObject.SetActive(false);
@@ -594,6 +601,7 @@
 			m_ProjectCreatorRoot.gameObject.SetActive(false);
 			m_CommandRoot.gameObject.SetActive(false);
 			m_TweenSelectorRoot.gameObject.SetActive(false);
+			m_ColorSelectorRoot.gameObject.SetActive(false);
 
 			m_Root.InactiveIfNoChildActive();
 			m_Inspector.StopEditMotion(false);
@@ -605,6 +613,13 @@
 		public void UI_RemoveTweenSelector () {
 			m_TweenSelectorRoot.DestroyAllChildImmediately();
 			m_TweenSelectorRoot.gameObject.SetActive(false);
+			m_Root.InactiveIfNoChildActive();
+		}
+
+
+		public void UI_RemoveColorSelector () {
+			m_ColorSelectorRoot.DestroyAllChildImmediately();
+			m_ColorSelectorRoot.gameObject.SetActive(false);
 			m_Root.InactiveIfNoChildActive();
 		}
 
@@ -816,13 +831,13 @@
 		private float GetBrushSize (int index, int brushType) {
 			switch (index) {
 				default:
-					return 0f;
+				return 0f;
 				case 0: // Stage Width
-					return brushType == 0 ? m_Editor.StageBrushWidth : m_Editor.StageBrushHeight;
+				return brushType == 0 ? m_Editor.StageBrushWidth : m_Editor.StageBrushHeight;
 				case 1: // Track Width
-					return m_Editor.TrackBrushWidth;
+				return m_Editor.TrackBrushWidth;
 				case 2: // Note Width
-					return m_Editor.NoteBrushWidth;
+				return m_Editor.NoteBrushWidth;
 			}
 		}
 
@@ -832,24 +847,24 @@
 			size01 = Mathf.Round(size01 * 100f) / 100f;
 			switch (itemType) {
 				case 0: // Stage
-					if (brushType == 0) {
-						// Width
-						m_Editor.StageBrushWidth = size01;
-						InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString("0.##");
-					} else {
-						// Height
-						m_Editor.StageBrushHeight = size01;
-						InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString("0.##");
-					}
-					break;
+				if (brushType == 0) {
+					// Width
+					m_Editor.StageBrushWidth = size01;
+					InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString("0.##");
+				} else {
+					// Height
+					m_Editor.StageBrushHeight = size01;
+					InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString("0.##");
+				}
+				break;
 				case 1: // Track Width
-					m_Editor.TrackBrushWidth = size01;
-					InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString("0.##");
-					break;
+				m_Editor.TrackBrushWidth = size01;
+				InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString("0.##");
+				break;
 				case 2: // Note Width
-					m_Editor.NoteBrushWidth = size01;
-					InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString("0.##");
-					break;
+				m_Editor.NoteBrushWidth = size01;
+				InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString("0.##");
+				break;
 			}
 		}
 

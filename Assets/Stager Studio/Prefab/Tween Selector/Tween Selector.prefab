@@ -314,7 +314,7 @@ GameObject:
   - component: {fileID: 8084649285879447589}
   - component: {fileID: 1169667342}
   - component: {fileID: 1169667341}
-  - component: {fileID: 1169667340}
+  - component: {fileID: 1943899986718482645}
   m_Layer: 0
   m_Name: Tween Selector
   m_TagString: Untagged
@@ -380,7 +380,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
---- !u!114 &1169667340
+--- !u!114 &1943899986718482645
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
