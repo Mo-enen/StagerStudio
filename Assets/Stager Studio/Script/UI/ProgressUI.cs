@@ -91,21 +91,25 @@
 
 
 		public void OnPointerDown (PointerEventData e) {
-			WasPlaying = GetReadyPlay().isPlaying;
-			PauseMusic();
-			OnDrag(e);
+			if (e.button == PointerEventData.InputButton.Left) {
+				WasPlaying = GetReadyPlay().isPlaying;
+				PauseMusic();
+				OnDrag(e);
+			}
 		}
 
 
 		public void OnDrag (PointerEventData e) {
-			var rt = transform as RectTransform;
-			RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, e.pressEventCamera, out Vector2 localPoint);
-			float time = Mathf.Clamp01(localPoint.x / rt.rect.width) * GetDuration();
-			if (Snap) {
-				time = GetSnapTime(time, 1);
+			if (e.button == PointerEventData.InputButton.Left) {
+				var rt = transform as RectTransform;
+				RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, Input.mousePosition, e.pressEventCamera, out Vector2 localPoint);
+				float time = Mathf.Clamp01(localPoint.x / rt.rect.width) * GetDuration();
+				if (Snap) {
+					time = GetSnapTime(time, 1);
+				}
+				SeekMusic(time);
+				SetProgress(time);
 			}
-			SeekMusic(time);
-			SetProgress(time);
 		}
 
 

@@ -9,11 +9,12 @@
 
 
 		// Handler
+		public delegate float AreaHandler (byte id, float a, float b, float c);
 		public delegate float Float4Handler (float a, float b, float c);
 		public delegate float FloatHandler ();
 
 		// Api
-		public static Float4Handler GetAreaBetween { get; set; } = null;
+		public static AreaHandler GetAreaBetween { get; set; } = null;
 		public static Float4Handler GetSnapedTime { get; set; } = null;
 		public float MusicTime {
 			get => _MusicTime;
@@ -91,6 +92,7 @@
 			// Lines
 			float time = GetSnapedTime(MusicTime, sectionTimeGap, TimeOffset) - sectionTimeGap;
 			float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
+				0,
 				Mathf.Min(MusicTime, time),
 				Mathf.Max(MusicTime, time),
 				SpeedMuti
@@ -108,7 +110,7 @@
 							uvMin.x, uvMax.x, uvMin.y, uvMax.y, Vector3.zero, tint
 						);
 					}
-					y01 += GetAreaBetween(time, time + TimeGap, SpeedMuti);
+					y01 += GetAreaBetween(0, time, time + TimeGap, SpeedMuti);
 					time += TimeGap;
 				}
 			}

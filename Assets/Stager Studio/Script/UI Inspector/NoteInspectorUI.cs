@@ -26,6 +26,7 @@
 		[SerializeField] private InputField m_LinkIF = null;
 		[SerializeField] private InputField m_PosZIF = null;
 		[SerializeField] private InputField m_ClickIF = null;
+		[SerializeField] private InputField m_TimingIDIF = null;
 		[SerializeField] private InputField m_SfxParamAIF = null;
 		[SerializeField] private InputField m_SfxParamBIF = null;
 		[SerializeField] private Text m_SfxLabel = null;
@@ -47,6 +48,7 @@
 		public int GetLink () => m_LinkIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, -1) : -1;
 		public float GetPosZ () => m_PosZIF.text.TryParseFloatForInspector(out float result) ? result : 0;
 		public short GetClick () => short.TryParse(m_ClickIF.text, out short result) ? (short)Mathf.Max(result, -1) : (short)0;
+		public byte GetTimingID () => byte.TryParse(m_TimingIDIF.text, out byte result) ? (byte)Mathf.Max(result, 0) : (byte)0;
 		public byte GetSfx () => (byte)SfxIndex;
 		public int GetSfxParamA () => m_SfxParamAIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
 		public int GetSfxParamB () => m_SfxParamBIF.text.TryParseIntForInspector(out int result) ? Mathf.Max(result, 0) : 0;
@@ -63,6 +65,7 @@
 		public void SetLink (int value) => m_LinkIF.text = value.ToString();
 		public void SetPosZ (float value) => m_PosZIF.text = value.ToString();
 		public void SetClick (short value) => m_ClickIF.text = value.ToString();
+		public void SetTimingID (byte value) => m_TimingIDIF.text = value.ToString();
 		public void SetSfx (int value) {
 			if (!gameObject.activeSelf) { return; }
 			SfxIndex = value;

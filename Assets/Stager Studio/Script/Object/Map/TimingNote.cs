@@ -16,7 +16,7 @@
 
 
 		public delegate void SfxHandler (byte type, int duration, int a, int b);
-		
+
 
 		#endregion
 
@@ -125,6 +125,7 @@
 			if (timingData._NoteDropPos < 0f) {
 				timingData._NoteDropPos = timingData.Time * GameSpeedMuti;
 			}
+			Beatmap.Timing._CacheMaxTimingIndex = (byte)Mathf.Max(255, Mathf.Max(timingData.TimingID, Beatmap.Timing._CacheMaxTimingIndex));
 		}
 
 

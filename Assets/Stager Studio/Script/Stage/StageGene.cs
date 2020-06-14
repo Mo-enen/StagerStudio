@@ -48,6 +48,7 @@
 		[Header("Inspector Map")]
 		[SerializeField] private RectTransform m_Inspector_Map_Ratio = null;
 		[SerializeField] private RectTransform[] m_Inspector_SFX = null;
+		[SerializeField] private RectTransform[] m_Inspector_TimingID = null;
 		[Header("Inspector Stage")]
 		[SerializeField] private RectTransform m_Inspector_Stage_ItemType = null;
 		[SerializeField] private RectTransform m_Inspector_Stage_ItemTypeSelector = null;
@@ -61,7 +62,11 @@
 		[SerializeField] private RectTransform m_Inspector_Stage_Height = null;
 		[SerializeField] private RectTransform m_Inspector_Stage_PivotY = null;
 		[SerializeField] private RectTransform m_Inspector_Stage_Speed = null;
-		[SerializeField] private RectTransform[] m_Inspector_Stage_Motion = null;
+		[SerializeField] private RectTransform m_Inspector_Stage_Motion_Pos = null;
+		[SerializeField] private RectTransform m_Inspector_Stage_Motion_Rot = null;
+		[SerializeField] private RectTransform m_Inspector_Stage_Motion_Color = null;
+		[SerializeField] private RectTransform m_Inspector_Stage_Motion_Width = null;
+		[SerializeField] private RectTransform m_Inspector_Stage_Motion_Height = null;
 		[Header("Inspector Track")]
 		[SerializeField] private RectTransform m_Inspector_Track_ItemType = null;
 		[SerializeField] private RectTransform m_Inspector_Track_ItemTypeSelector = null;
@@ -74,7 +79,10 @@
 		[SerializeField] private RectTransform m_Inspector_Track_Width = null;
 		[SerializeField] private RectTransform m_Inspector_Track_Speed = null;
 		[SerializeField] private RectTransform m_Inspector_Track_Tray = null;
-		[SerializeField] private RectTransform[] m_Inspector_Track_Motion = null;
+		[SerializeField] private RectTransform m_Inspector_Track_Motion_X = null;
+		[SerializeField] private RectTransform m_Inspector_Track_Motion_Angle = null;
+		[SerializeField] private RectTransform m_Inspector_Track_Motion_Color = null;
+		[SerializeField] private RectTransform m_Inspector_Track_Motion_Width = null;
 		[Header("Inspector Note")]
 		[SerializeField] private RectTransform m_Inspector_Note_ItemType = null;
 		[SerializeField] private RectTransform m_Inspector_Note_ItemTypeSelector = null;
@@ -176,7 +184,9 @@
 			foreach (var sfx in m_Inspector_SFX) {
 				sfx.TrySetActive(gene.SfxAccessable);
 			}
-
+			foreach (var tID in m_Inspector_TimingID) {
+				tID.TrySetActive(gene.TimingAccessable);
+			}
 		}
 
 
@@ -229,29 +239,29 @@
 			var gene = GetGene();
 			switch (itemType) {
 				case 0: // Stage
-				if (itemIndex >= 0 && itemIndex < map.Stages.Count) {
-					FixStageLogic(map, gene, map.Stages[itemIndex], itemIndex);
-				}
-				break;
-				case 1: // Track
-				if (itemIndex >= 0 && itemIndex < map.Tracks.Count) {
-					var track = map.Tracks[itemIndex];
-					FixTrackLogic(map, gene, track, itemIndex);
-					if (track.stageIndex >= 0 && track.stageIndex < gene.StaticConfigs_Stage.Length && gene.StaticConfigs_Stage[track.stageIndex].TileTrack) {
-						FixAllStagesFromGeneLogic(map, gene);
+					if (itemIndex >= 0 && itemIndex < map.Stages.Count) {
+						FixStageLogic(map, gene, map.Stages[itemIndex], itemIndex);
 					}
-				}
-				break;
+					break;
+				case 1: // Track
+					if (itemIndex >= 0 && itemIndex < map.Tracks.Count) {
+						var track = map.Tracks[itemIndex];
+						FixTrackLogic(map, gene, track, itemIndex);
+						if (track.stageIndex >= 0 && track.stageIndex < gene.StaticConfigs_Stage.Length && gene.StaticConfigs_Stage[track.stageIndex].TileTrack) {
+							FixAllStagesFromGeneLogic(map, gene);
+						}
+					}
+					break;
 				case 2: // Note
-				if (itemIndex >= 0 && itemIndex < map.Notes.Count) {
-					FixNoteLogic(gene, map.Notes[itemIndex]);
-				}
-				break;
+					if (itemIndex >= 0 && itemIndex < map.Notes.Count) {
+						FixNoteLogic(gene, map.Notes[itemIndex]);
+					}
+					break;
 				case 3: // Timing
-				if (itemIndex >= 0 && itemIndex < map.Timings.Count) {
-					FixTimingLogic(gene, map.Timings[itemIndex]);
-				}
-				break;
+					if (itemIndex >= 0 && itemIndex < map.Timings.Count) {
+						FixTimingLogic(gene, map.Timings[itemIndex]);
+					}
+					break;
 			}
 		}
 
@@ -269,25 +279,25 @@
 			var gene = GetGene();
 			switch (brushIndex) {
 				case 0: // Stage
-				if (!gene.StageAccessable) {
-					brushIndex = -1;
-				}
-				break;
+					if (!gene.StageAccessable) {
+						brushIndex = -1;
+					}
+					break;
 				case 1: // Track
-				if (!gene.TrackAccessable) {
-					brushIndex = -1;
-				}
-				break;
+					if (!gene.TrackAccessable) {
+						brushIndex = -1;
+					}
+					break;
 				case 2: // Note
-				if (!gene.NoteAccessable) {
-					brushIndex = -1;
-				}
-				break;
+					if (!gene.NoteAccessable) {
+						brushIndex = -1;
+					}
+					break;
 				case 3: // Timing
-				if (!gene.TimingAccessable) {
-					brushIndex = -1;
-				}
-				break;
+					if (!gene.TimingAccessable) {
+						brushIndex = -1;
+					}
+					break;
 			}
 			return brushIndex;
 		}
@@ -297,17 +307,17 @@
 			var gene = GetGene();
 			switch (index) {
 				case 0:
-				active = !gene.StageAccessable || active;
-				break;
+					active = !gene.StageAccessable || active;
+					break;
 				case 1:
-				active = !gene.TrackAccessable || active;
-				break;
+					active = !gene.TrackAccessable || active;
+					break;
 				case 2:
-				active = !gene.NoteAccessable || active;
-				break;
+					active = !gene.NoteAccessable || active;
+					break;
 				case 3:
-				active = !gene.TimingAccessable || active;
-				break;
+					active = !gene.TimingAccessable || active;
+					break;
 			}
 			return active;
 		}
@@ -317,17 +327,17 @@
 			var gene = GetGene();
 			switch (index) {
 				case 0:
-				locked = !gene.StageAccessable || locked;
-				break;
+					locked = !gene.StageAccessable || locked;
+					break;
 				case 1:
-				locked = !gene.TrackAccessable || locked;
-				break;
+					locked = !gene.TrackAccessable || locked;
+					break;
 				case 2:
-				locked = !gene.NoteAccessable || locked;
-				break;
+					locked = !gene.NoteAccessable || locked;
+					break;
 				case 3:
-				locked = !gene.TimingAccessable || locked;
-				break;
+					locked = !gene.TimingAccessable || locked;
+					break;
 			}
 			return locked;
 		}
@@ -367,7 +377,7 @@
 					));
 				}
 				case 3: // Timing
-				return gene.TimingAccessable;
+					return gene.TimingAccessable;
 			}
 			return true;
 		}
@@ -439,11 +449,19 @@
 				if (config.Speed.Active) {
 					stage.speed = config.Speed.Value;
 				}
-				if (!config.Motion) {
+				if (!config.Motion_Pos) {
 					stage.positions.Clear();
+				}
+				if (!config.Motion_Rot) {
 					stage.rotations.Clear();
+				}
+				if (!config.Motion_Width) {
 					stage.widths.Clear();
+				}
+				if (!config.Motion_Height) {
 					stage.heights.Clear();
+				}
+				if (!config.Motion_Color) {
 					stage.colors.Clear();
 				}
 				// Tile Tracks
@@ -504,10 +522,16 @@
 				if (config.HasTray.Active) {
 					track.hasTray = config.HasTray.Value == 1;
 				}
-				if (!config.Motion) {
+				if (!config.Motion_X) {
 					track.xs.Clear();
+				}
+				if (!config.Motion_Angle) {
 					track.angles.Clear();
+				}
+				if (!config.Motion_Width) {
 					track.widths.Clear();
+				}
+				if (!config.Motion_Color) {
 					track.colors.Clear();
 				}
 			}
@@ -541,6 +565,9 @@
 				if (config.ClickSound.Active) {
 					note.clickSoundIndex = (short)config.ClickSound.Value;
 				}
+				if (!gene.TimingAccessable) {
+					note.TimingID = 0;
+				}
 			}
 		}
 
@@ -548,6 +575,7 @@
 		private void FixTimingLogic (GeneData gene, Beatmap.Timing timing) {
 			if (!gene.TimingAccessable) {
 				timing.Speed = 1f;
+				timing.TimingID = 0;
 			}
 			if (!gene.SfxAccessable) {
 				timing.soundFxIndex = 0;
@@ -581,9 +609,11 @@
 			m_Inspector_Stage_Height.TrySetActive(!useConfig || !config.Height.Active);
 			m_Inspector_Stage_PivotY.TrySetActive(!useConfig || !config.PivotY.Active);
 			m_Inspector_Stage_Speed.TrySetActive(!useConfig || !config.Speed.Active);
-			foreach (var motion in m_Inspector_Stage_Motion) {
-				motion.TrySetActive(!useConfig || config.Motion);
-			}
+			m_Inspector_Stage_Motion_Pos.TrySetActive(!useConfig || config.Motion_Pos);
+			m_Inspector_Stage_Motion_Rot.TrySetActive(!useConfig || config.Motion_Rot);
+			m_Inspector_Stage_Motion_Color.TrySetActive(!useConfig || config.Motion_Color);
+			m_Inspector_Stage_Motion_Width.TrySetActive(!useConfig || config.Motion_Width);
+			m_Inspector_Stage_Motion_Height.TrySetActive(!useConfig || config.Motion_Height);
 		}
 
 
@@ -604,9 +634,10 @@
 			m_Inspector_Track_Width.TrySetActive(!useConfig || !config.Width.Active);
 			m_Inspector_Track_Speed.TrySetActive(!useConfig || !config.Speed.Active);
 			m_Inspector_Track_Tray.TrySetActive(!useConfig || !config.HasTray.Active);
-			foreach (var motion in m_Inspector_Track_Motion) {
-				motion.TrySetActive(!useConfig || config.Motion);
-			}
+			m_Inspector_Track_Motion_X.TrySetActive(!useConfig || config.Motion_X);
+			m_Inspector_Track_Motion_Angle.TrySetActive(!useConfig || config.Motion_Angle);
+			m_Inspector_Track_Motion_Color.TrySetActive(!useConfig || config.Motion_Color);
+			m_Inspector_Track_Motion_Width.TrySetActive(!useConfig || config.Motion_Width);
 		}
 
 

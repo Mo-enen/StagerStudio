@@ -28,8 +28,12 @@ MonoBehaviour:
       Value: 1500
     Config_Stage:
       UseConfig: 0
-      Motion: 1
       TileTrack: 0
+      Motion_Pos: 1
+      Motion_Rot: 1
+      Motion_Color: 1
+      Motion_Width: 1
+      Motion_Height: 1
       ItemType:
         Active: 0
         Value: 0
@@ -62,7 +66,10 @@ MonoBehaviour:
         Value: 0
     Config_Track:
       UseConfig: 1
-      Motion: 1
+      Motion_X: 1
+      Motion_Angle: 0
+      Motion_Color: 1
+      Motion_Width: 1
       ItemType:
         Active: 1
         Value: 0
@@ -118,8 +125,12 @@ MonoBehaviour:
         Value: 0
     StaticConfigs_Stage:
     - UseConfig: 1
-      Motion: 0
       TileTrack: 0
+      Motion_Pos: 0
+      Motion_Rot: 0
+      Motion_Color: 0
+      Motion_Width: 0
+      Motion_Height: 0
       ItemType:
         Active: 1
         Value: 0

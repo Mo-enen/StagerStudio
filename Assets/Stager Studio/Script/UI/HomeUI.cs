@@ -84,7 +84,9 @@
 		// Const
 		private const string CHAPTER_ITEM_MENU_KEY = "Menu.ChapterItem";
 		private const string PROJECT_ITEM_MENU_KEY = "Menu.ProjectItem";
-
+		private const string CHAPTER_TRASHBIN_LABEL_KEY = "UI.Home.TrashbinLabel";
+		private const string CHAPTER_TUTORIAL_LABEL_KEY = "UI.Home.TutorialLabel";
+		private const string TUTORIAL_WEB_URL = "";/////////// TEMP ///////////////////////////
 
 		// Handler
 		public static LanguageHandler GetLanguage { get; set; } = null;
@@ -107,6 +109,7 @@
 		[SerializeField] private RectTransform m_MoveProjectContent = null;
 		[SerializeField] private RectTransform m_MoveProjectRoot = null;
 		[SerializeField] private RectTransform m_NoProjectHint = null;
+		[SerializeField] private RectTransform m_LinePrefab = null;
 		[SerializeField] private Grabber m_ChapterItemPrefab = null;
 		[SerializeField] private Grabber m_ChapterItemAltPrefab = null;
 		[SerializeField] private Grabber m_ProjectItemPrefab = null;
@@ -127,7 +130,11 @@
 
 
 		private void Awake () {
+			// Trashbin
 			Util.CreateFolder(Trashbin);
+			if (OpeningChapter.Value == Util.GetNameWithoutExtension(Trashbin)) {
+				OpeningChapter.Value = "";
+			}
 		}
 
 
@@ -139,10 +146,10 @@
 		#region --- API ---
 
 
-		public void Open () => OpenLogic();
+		public void Open () => OpenHomeLogic();
 
 
-		public void Close () => CloseLogic();
+		public void Close () => CloseHomeLogic();
 
 
 		public void CloseMoveProjectWindow () => CloseMoveProjectWindowLogic();
@@ -216,7 +223,7 @@
 					DialogUtil.MarkType.Warning,
 					null, null, () => {
 						Util.DeleteFile(path);
-						OpenLogic();
+						OpenHomeLogic();
 						OpenTrashbinLogic(true);
 					}, null, () => { }
 				);
@@ -228,7 +235,7 @@
 						 string newPath = Util.CombinePaths(Trashbin, Util.GetNameWithExtension(path));
 						 if (Util.FileExists(path)) {
 							 Util.MoveFile(path, newPath);
-							 OpenLogic();
+							 OpenHomeLogic();
 						 }
 					 }, null, null, null, () => { }
 				);
@@ -254,14 +261,14 @@
 
 		public void NewProject () {
 			NewProjectLogic();
-			OpenLogic();
+			OpenHomeLogic();
 		}
 
 
 		public void ImportProject () {
 			var path = DialogUtil.PickFileDialog(LanguageData.UI_ImportProjectTitle, "", "stager");
 			ImportProjectLogic(path);
-			OpenLogic();
+			OpenHomeLogic();
 		}
 
 
@@ -285,12 +292,12 @@
 		#region --- LGC ---
 
 
-		private void OpenLogic () {
+		private void OpenHomeLogic () {
 			ClearChapterContent();
 			ClearProjectContent();
 			CloseMoveProjectWindowLogic();
 			m_NoProjectHint.gameObject.SetActive(false);
-			// Default Chapter
+			// Move Root Files Into Default Chapter
 			var files = Util.GetFilesIn(GetWorkspace(), true, "*.stager");
 			if (files != null && files.Length > 0) {
 				string defaultChapterPath = Util.CombinePaths(GetWorkspace(), GetLanguage(LanguageData.DefaultChapterName));
@@ -306,15 +313,52 @@
 					} catch (System.Exception ex) { OnException(ex); }
 				}
 			}
+
 			// Load Chapters
 			bool openFlag = false;
 			var dirs = Util.GetDirectsIn(GetWorkspace(), true);
 			foreach (var dir in dirs) {
 				string name = dir.Name;
+				string chapterPath = dir.FullName;
 				if (string.IsNullOrEmpty(OpeningChapter)) {
 					OpeningChapter.Value = name;
 				}
-				int fileCount = Util.GetFileCount(dir.FullName, "*.stager", System.IO.SearchOption.TopDirectoryOnly);
+				SpawnChapter(name, chapterPath);
+				// Open Chapter
+				if (name == OpeningChapter) {
+					OpenChapter(name);
+					openFlag = true;
+				}
+			}
+
+			// Trashbin Chapter
+			SpawnLine();
+			string trashbinName = Util.GetNameWithoutExtension(Trashbin);
+			SpawnChapter(
+				trashbinName, Trashbin, false, false, false, true,
+				CHAPTER_TRASHBIN_LABEL_KEY, () => OpenTrashbinLogic()
+			);
+
+			// Tutorial Chapter
+			SpawnChapter(
+				"Stager_Tutorial", "", false, false, false, false,
+				CHAPTER_TUTORIAL_LABEL_KEY, () => { Application.OpenURL(TUTORIAL_WEB_URL); }
+			);
+
+			// Opening Trashbin
+			if (Util.HasFileIn(Trashbin, "*.stager") && OpeningChapter.Value == trashbinName) {
+				OpenTrashbinLogic(true);
+			} else if (!openFlag) {
+				OpenChapterAt(0);
+			}
+
+			// Func
+			void SpawnChapter (
+				string name, string chapterPath,
+				bool allowRename = true, bool allowMenu = true, bool allowTip = true, bool allowFileCount = true,
+				string labelKey = "", System.Action onClickAlt = null
+			) {
+				int fileCount = Util.GetFileCount(chapterPath, "*.stager", System.IO.SearchOption.TopDirectoryOnly);
 				// Spawn Chapter Item
 				var graber = Instantiate(m_ChapterItemPrefab, m_ChapterContent);
 				var rt = graber.transform as RectTransform;
@@ -330,43 +374,53 @@
 				var input = graber.Grab<InputField>("InputField");
 				var trigger = graber.Grab<TriggerUI>();
 				var label = graber.Grab<Text>("Label");
-				btn.onClick.AddListener(OnClick);
+				if (onClickAlt == null) {
+					btn.onClick.AddListener(() => OpenChapterLogic(name));
+				} else {
+					btn.onClick.AddListener(() => onClickAlt());
+				}
 				text.text = name;
-				input.text = name;
-				label.text = fileCount < 100 ? fileCount.ToString("00") : "99+";
+				input.text = string.IsNullOrEmpty(labelKey) ? name : GetLanguage(labelKey);
+				input.interactable = allowRename;
+				if (allowFileCount) {
+					label.text = fileCount < 100 ? fileCount.ToString("00") : "99+";
+				} else {
+					label.text = "--";
+				}
 				if (fileCount == 0) {
 					var count = graber.Grab<Image>("Count");
 					var c = count.color;
 					c.a = 0.2f;
 					count.color = c;
 				}
-				input.onEndEdit.AddListener(OnEditEnd);
-				trigger.CallbackRight.AddListener(OnTrigger);
-				// Open Chapter
-				if (name == OpeningChapter) {
-					OpenChapter(name);
-					openFlag = true;
+				if (allowRename) {
+					input.onEndEdit.AddListener((editText) => {
+						bool success = RenameChapterLogic(name, editText);
+						if (success && name == OpeningChapter) {
+							OpeningChapter.Value = editText;
+						}
+						InvokeOpen();
+					});
 				}
-				// Func
-				void OnClick () => OpenChapterLogic(name);
-				void OnEditEnd (string editText) {
-					bool success = RenameChapterLogic(name, editText);
-					if (success && name == OpeningChapter) {
-						OpeningChapter.Value = editText;
-					}
-					InvokeOpen();
+				if (allowMenu) {
+					trigger.CallbackRight.AddListener(() => OpenMenu(CHAPTER_ITEM_MENU_KEY, rt));
 				}
-				void OnTrigger () => OpenMenu(CHAPTER_ITEM_MENU_KEY, rt);
+				if (!allowTip) {
+					graber.Grab<TooltipUI>().enabled = false;
+				}
 			}
-			if (Util.HasFileIn(Trashbin, "*.stager") && OpeningChapter.Value == Util.GetNameWithoutExtension(Trashbin)) {
-				OpenTrashbinLogic(true);
-			} else if (!openFlag) {
-				OpenChapterAt(0);
+			void SpawnLine () {
+				var rt = Instantiate(m_LinePrefab, m_ChapterContent);
+				rt.localPosition = (Vector2)rt.localPosition;
+				rt.localRotation = Quaternion.identity;
+				rt.localScale = Vector3.one;
+				rt.SetAsLastSibling();
+				rt.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, (m_LinePrefab.transform as RectTransform).rect.height);
 			}
 		}
 
 
-		private void CloseLogic () {
+		private void CloseHomeLogic () {
 			ClearChapterContent();
 			ClearProjectContent();
 			CloseMoveProjectWindowLogic();
@@ -396,8 +450,10 @@
 			for (int i = 0; i < len; i++) {
 				var rt = m_ChapterContent.GetChild(i);
 				var graber = rt.GetComponent<Grabber>();
-				var text = graber.Grab<Text>("Name");
-				text.color = rt.name == name ? m_ChapterNameHighlight : m_ChapterNameNormal;
+				if (graber != null) {
+					var text = graber.Grab<Text>("Name");
+					text.color = rt.name == name ? m_ChapterNameHighlight : m_ChapterNameNormal;
+				}
 			}
 
 			OpeningChapter.Value = name;
@@ -530,7 +586,7 @@
 			if (fileCount == 0) {
 				// Delete
 				Util.DeleteDirectory(path);
-				OpenLogic();
+				OpenHomeLogic();
 			} else {
 				// Dialog
 				DialogUtil.Dialog_Delete_Cancel(LanguageData.UI_DeleteChapterConfirm, () => {
@@ -548,7 +604,7 @@
 					}
 					// Delete Folder
 					Util.DeleteDirectory(path);
-					OpenLogic();
+					OpenHomeLogic();
 				});
 			}
 		}
@@ -570,7 +626,7 @@
 			// Opening Chapter
 			OpeningChapter.Value = chapterName;
 			// Reopen
-			OpenLogic();
+			OpenHomeLogic();
 			// Start Rename
 			int len = m_ChapterContent.childCount;
 			for (int i = 0; i < len; i++) {
@@ -636,7 +692,7 @@
 		}
 
 
-		private void InvokeOpen (float dely = 0.01f) => Invoke("OpenLogic", dely);
+		private void InvokeOpen (float dely = 0.01f) => Invoke(nameof(OpenHomeLogic), dely);
 
 
 		#endregion

@@ -1,5 +1,4 @@
-﻿Menu.Background.Default.Random:随机
-Author:Stager 官方
+﻿Author:Stager 官方
 Command.Hint.CommandDone:指令已完成
 Dialog.Editor.CannotSelectStage:全景模式下不能选择舞台
 Dialog.Editor.CannotSelectStageBrush:全景模式下不能选择舞台笔刷
@@ -52,6 +51,7 @@ Menu.Background.Default.0:默认背景-孔雀蓝
 Menu.Background.Default.1:默认背景-罂粟红
 Menu.Background.Default.2:默认背景-梅花白
 Menu.Background.Default.3:默认背景-罗兰紫
+Menu.Background.Default.Random:随机
 Menu.BeatmapItem.DeleteBeatmap:删除谱面
 Menu.BeatmapItem.DuplicateBeatmap:复制谱面
 Menu.BeatmapItem.ExportBeatmap:导出谱面
@@ -261,7 +261,6 @@ Tip.Home.Menu:菜单
 Tip.Home.NewChapter:新建章节
 Tip.Home.NewProject:新建工程
 Tip.Home.ProjectItem:工程（双击打开）
-Tip.Home.Trushbin:回收站，将删除的工程彻底清除或恢复
 Tip.Inpsector.TweenSelector:打开补间选择器
 Tip.Insoector.MotionAngle:编辑角度运动
 Tip.Insoector.MotionColor:编辑颜色运动
@@ -299,6 +298,7 @@ Tip.Inspector.StageIndex:所属舞台的编号
 Tip.Inspector.Tag:谱面标签（EZ,HD等）
 Tip.Inspector.Time:物体在背景音乐中对应的时间（秒）
 Tip.Inspector.TimingDuration:特效的持续时长
+Tip.Inspector.TimingID:物体对应的时间点分组
 Tip.Inspector.TimingSpeed:音符的下落速度
 Tip.Inspector.TrackIndex:所属轨道的编号
 Tip.Inspector.Tray:是否有托盘
@@ -393,6 +393,8 @@ UI.Dialog.Yes:是
 UI.Done:完成
 UI.GoHomeConfirmMsg:是否回到主页？
 UI.GoHomeDirtyConfirmMsg:是否保存工程并回到主页？
+UI.Home.TrashbinLabel:回收站
+UI.Home.TutorialLabel:教程
 UI.ImportBeatmap:导入
 UI.Inspector.Angle:角度
 UI.Inspector.BPM:BPM
@@ -424,6 +426,7 @@ UI.Inspector.Speed:速度
 UI.Inspector.Stage:舞台
 UI.Inspector.Tag:标签
 UI.Inspector.Time:时间
+UI.Inspector.TimingID:时间组
 UI.Inspector.Track:轨道
 UI.Inspector.Tray:托盘
 UI.Inspector.Type:类型

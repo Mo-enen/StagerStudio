@@ -1,5 +1,4 @@
-﻿Menu.Background.Default.Random:Random
-Author:Stager Official
+﻿Author:Stager Official
 Command.Hint.CommandDone:Command done
 Dialog.Editor.CannotSelectStage:Can not select stage in panoramic mode
 Dialog.Editor.CannotSelectStageBrush:Can not select stage brush in panoramic mode
@@ -52,6 +51,7 @@ Menu.Background.Default.0:Default Background - Peacock
 Menu.Background.Default.1:Default Background - Coquelicot
 Menu.Background.Default.2:Default Background - Blossom
 Menu.Background.Default.3:Default Background - Violet
+Menu.Background.Default.Random:Random
 Menu.BeatmapItem.DeleteBeatmap:Delete Beatmap
 Menu.BeatmapItem.DuplicateBeatmap:Duplicate Beatmap
 Menu.BeatmapItem.ExportBeatmap:Export Beatmap
@@ -261,7 +261,6 @@ Tip.Home.Menu:Menu
 Tip.Home.NewChapter:New Chapter
 Tip.Home.NewProject:New Project
 Tip.Home.ProjectItem:Project (double click to open)
-Tip.Home.Trushbin:Trushbin, completely remove or restore the deleted project
 Tip.Inpsector.TweenSelector:Open tween selector
 Tip.Insoector.MotionAngle:Edit motion of angle
 Tip.Insoector.MotionColor:Edit motion of color
@@ -299,6 +298,7 @@ Tip.Inspector.StageIndex:Index of stage for this track
 Tip.Inspector.Tag:Tag of this beatmap (like EZ, HD)
 Tip.Inspector.Time:The corresponding time of the object in the music (sec)
 Tip.Inspector.TimingDuration:Duration of the sound effect
+Tip.Inspector.TimingID:The timing group of this item
 Tip.Inspector.TimingSpeed:Drop speed for notes
 Tip.Inspector.TrackIndex:Index of track for this note
 Tip.Inspector.Tray:Has tray of not
@@ -393,6 +393,8 @@ UI.Dialog.Yes:Yes
 UI.Done:Done
 UI.GoHomeConfirmMsg:Back to home page?
 UI.GoHomeDirtyConfirmMsg:Save project and back to home page?
+UI.Home.TrashbinLabel:Trashbin
+UI.Home.TutorialLabel:Tutorial
 UI.ImportBeatmap:Import
 UI.Inspector.Angle:Angle
 UI.Inspector.BPM:BPM
@@ -424,6 +426,7 @@ UI.Inspector.Speed:Speed
 UI.Inspector.Stage:Stage
 UI.Inspector.Tag:Tag
 UI.Inspector.Time:Time
+UI.Inspector.TimingID:Timing
 UI.Inspector.Track:Track
 UI.Inspector.Tray:Tray
 UI.Inspector.Type:Type

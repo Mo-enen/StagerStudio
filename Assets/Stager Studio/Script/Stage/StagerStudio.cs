@@ -470,8 +470,8 @@
 			StageObject.Shader_ClampAlphaID = Shader.PropertyToID("_ClampAlpha");
 			Note.GetFilledTime = m_Game.FillTime;
 			Note.GetDropSpeedAt = m_Game.GetDropSpeedAt;
-			Note.GetGameDropOffset = (muti) => m_Game.AreaBetween(0f, m_Music.Time, muti);
-			Note.GetDropOffset = (time, muti) => m_Game.AreaBetween(0f, time, muti);
+			Note.GetGameDropOffset = (id, muti) => m_Game.AreaBetween(id, 0f, m_Music.Time, muti);
+			Note.GetDropOffset = (id, time, muti) => m_Game.AreaBetween(id, 0f, time, muti);
 			Note.PlayClickSound = m_Music.PlayClickSound;
 			Note.PlaySfx = m_SoundFX.PlayFX;
 			TimingNote.PlaySfx = m_SoundFX.PlayFX;
@@ -565,7 +565,15 @@
 				UndoRedo.SetDirty();
 				m_Preview.SetDirty();
 				RefreshGridRenderer();
-				RefreshOnItemChange();
+
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Project.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
+
 				m_Inspector.RefreshUI();
 				DebugLog_Beatmap("Open");
 				Resources.UnloadUnusedAssets();
@@ -780,7 +788,17 @@
 				m_Linker.StopLinker();
 			};
 			StageEditor.OnObjectEdited = (editType, itemType, itemIndex) => {
-				RefreshOnItemChange();
+
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Project.SetDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
+
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
 				m_MotionPainter.TrySetDirty();
@@ -866,7 +884,14 @@
 				m_Editor.SetContainerActive(2, step.ContainerActive_2);
 				m_Editor.SetContainerActive(3, step.ContainerActive_3);
 				// Final
-				RefreshOnItemChange();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
 				TryRefreshProjectInfo();
 				LogHint_Key(Hint_Undo);
 			};
@@ -886,7 +911,15 @@
 
 		private void Awake_Command () {
 			StageCommand.OnCommandDone = () => {
-				RefreshOnItemChange();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Project.SetDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
 				m_Gene.FixMapDataFromGene();
 				UndoRedo.SetDirty();
 			};
@@ -942,7 +975,15 @@
 			ProjectInfoUI.SpawnColorPicker = SpawnColorPicker;
 			ProjectInfoUI.SpawnTweenEditor = SpawnTweenEditor;
 			ProjectInfoUI.OnBeatmapInfoChanged = () => {
-				RefreshOnBeatmapInfoChange();
+				if (m_Project.Beatmap != null) {
+					m_Gene.FixMapInfoFromGene();
+					m_Game.BPM = m_Project.Beatmap.BPM;
+					m_Game.Shift = m_Project.Beatmap.Shift;
+					m_Game.Ratio = m_Project.Beatmap.Ratio;
+					m_BeatmapSwiperLabel.text = m_Project.Beatmap.Tag;
+				}
+				m_Inspector.RefreshUI();
+				RefreshGridRenderer();
 				Invoke(nameof(TryRefreshProjectInfo), 0.01f);
 			};
 			ProjectInfoUI.OnProjectInfoChanged = () => {
@@ -1018,11 +1059,29 @@
 			StageInspector.GetBPM = () => m_Game.BPM;
 			StageInspector.GetShift = () => m_Game.Shift;
 			StageInspector.OnItemEdited = () => {
-				RefreshOnItemChange();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Project.SetDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
 				UI_RemoveColorSelector();
 				UndoRedo.SetDirty();
 			};
-			StageInspector.OnBeatmapEdited = () => RefreshOnBeatmapInfoChange();
+			StageInspector.OnBeatmapEdited = () => {
+				if (m_Project.Beatmap != null) {
+					m_Gene.FixMapInfoFromGene();
+					m_Game.BPM = m_Project.Beatmap.BPM;
+					m_Game.Shift = m_Project.Beatmap.Shift;
+					m_Game.Ratio = m_Project.Beatmap.Ratio;
+					m_BeatmapSwiperLabel.text = m_Project.Beatmap.Tag;
+				}
+				m_Inspector.RefreshUI();
+				RefreshGridRenderer();
+			};
 
 
 			// CMD
@@ -1046,7 +1105,15 @@
 			MotionPainterUI.GetBPM = () => m_Game.BPM;
 			MotionPainterUI.GetBeatPerSection = () => m_Game.BeatPerSection.Value;
 			MotionPainterUI.OnItemEdit = () => {
-				RefreshOnItemChange();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Project.SetDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
 				UndoRedo.SetDirty();
 			};
 			MotionPainterUI.OnSelectionChanged = () => {
@@ -1127,7 +1194,15 @@
 			LinkerUI.GetBeatmap = () => m_Project.Beatmap;
 			LinkerUI.GetSelectingIndex = () => m_Editor.SelectingItemIndex;
 			LinkerUI.OnLink = (noteIndex) => {
-				RefreshOnItemChange();
+				Note.SetCacheDirty();
+				TimingNote.SetCacheDirty();
+				ItemRenderer.SetGlobalDirty();
+				m_Game.SetSpeedCurveDirty();
+				m_Project.SetDirty();
+				m_Preview.SetDirty();
+				m_TimingPreview.SetDirty();
+				m_Game.ForceUpdateZone();
+				m_Linker.StopLinker();
 				m_Gene.FixItemFromGene(2, noteIndex);
 				UndoRedo.SetDirty();
 				m_Inspector.RefreshAllInspectors();
@@ -1150,7 +1225,7 @@
 				index >= 0 ? m_Cursors[index].Offset : Vector2.zero
 			);
 
-			GridRenderer.GetAreaBetween = (timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : m_Game.AreaBetween(timeA, timeB, muti);
+			GridRenderer.GetAreaBetween = (id, timeA, timeB, muti, ignoreDy) => ignoreDy ? Mathf.Abs(timeA - timeB) * muti : m_Game.AreaBetween(id, timeA, timeB, muti);
 			GridRenderer.GetSnapedTime = m_Game.SnapTime;
 
 			TrackSectionRenderer.GetAreaBetween = m_Game.AreaBetween;
@@ -1245,33 +1320,6 @@
 
 
 		#region --- LGC ---
-
-
-		// Change
-		private void RefreshOnItemChange () {
-			Note.SetCacheDirty();
-			TimingNote.SetCacheDirty();
-			ItemRenderer.SetGlobalDirty();
-			m_Game.SetSpeedCurveDirty();
-			m_Project.SetDirty();
-			m_Preview.SetDirty();
-			m_TimingPreview.SetDirty();
-			m_Game.ForceUpdateZone();
-			m_Linker.StopLinker();
-		}
-
-
-		private void RefreshOnBeatmapInfoChange () {
-			if (m_Project.Beatmap != null) {
-				m_Gene.FixMapInfoFromGene();
-				m_Game.BPM = m_Project.Beatmap.BPM;
-				m_Game.Shift = m_Project.Beatmap.Shift;
-				m_Game.Ratio = m_Project.Beatmap.Ratio;
-				m_BeatmapSwiperLabel.text = m_Project.Beatmap.Tag;
-			}
-			m_Inspector.RefreshUI();
-			RefreshGridRenderer();
-		}
 
 
 		// Try Refresh UI

@@ -509,6 +509,10 @@
 				get => clickSoundIndex;
 				set => clickSoundIndex = value;
 			}
+			public byte TimingID {
+				get => timingID;
+				set => timingID = value;
+			}
 			public byte SoundFxIndex {
 				get => soundFxIndex;
 				set => soundFxIndex = value;
@@ -528,6 +532,7 @@
 			public int trackIndex = -1;
 			public int linkedNoteIndex = -1;
 			public short clickSoundIndex = -1;
+			public byte timingID = 0;
 			public byte soundFxIndex = 0;
 			public int soundFxParamA = 0;
 			public int soundFxParamB = 0;
@@ -539,6 +544,7 @@
 			[System.NonSerialized] public float _NoteDropStart = -1f;
 			[System.NonSerialized] public float _NoteDropEnd = -1f;
 			[System.NonSerialized] public float _CacheTime = -1f;
+			[System.NonSerialized] public float _CacheTimingID = -1f;
 			[System.NonSerialized] public float _CacheDuration = -1f;
 			[System.NonSerialized] public int _LocalCacheDirtyID = 0;
 
@@ -566,14 +572,20 @@
 				get => soundFxParamB;
 				set => soundFxParamB = value;
 			}
+			public byte TimingID {
+				get => timingID;
+				set => timingID = value;
+			}
 
 			// SER
+			public byte timingID = 0;
 			public byte soundFxIndex = 0;
 			public int soundFxParamA = 0;
 			public int soundFxParamB = 0;
 
 			// Cache
 			[System.NonSerialized] public static int _CacheDirtyID = 1;
+			[System.NonSerialized] public static byte _CacheMaxTimingIndex = 0;
 			[System.NonSerialized] public float _AppearTime = -1f;
 			[System.NonSerialized] public float _NoteDropPos = -1f;
 			[System.NonSerialized] public int _LocalCacheDirtyID = 0;
@@ -812,7 +824,22 @@
 			var item = GetItem(type, index);
 			return item != null ? item.ItemType : 0;
 		}
-
+		public float GetSpeedMuti (int type, int index) {
+			var item = GetItem(type, index);
+			return item != null ? item._SpeedMuti : 1f;
+		}
+		public byte GetTimingID (int type, int index) {
+			if (type == 2) {
+				if (index >= 0 && index < Notes.Count) {
+					return Notes[index].TimingID;
+				}
+			} else if (type == 3) {
+				if (index >= 0 && index < Timings.Count) {
+					return Timings[index].TimingID;
+				}
+			}
+			return 0;
+		}
 
 		// Set
 		public void SetX (int type, int index, float x) {
@@ -905,10 +932,6 @@
 				item.Speed = speed;
 			}
 		}
-		public float GetSpeedMuti (int type, int index) {
-			var item = GetItem(type, index);
-			return item != null ? item._SpeedMuti : 1f;
-		}
 
 		public void SetStageY (int index, float y) {
 			if (index >= 0 && index < Stages.Count) {
@@ -992,6 +1015,11 @@
 				Notes[index].ClickSoundIndex = click;
 			}
 		}
+		public void SetNoteTimingID (int index, byte id) {
+			if (index >= 0 && index < Notes.Count) {
+				Notes[index].timingID = id;
+			}
+		}
 		public void SetNoteSfxIndex (int index, byte sfx) {
 			if (index >= 0 && index < Notes.Count) {
 				Notes[index].SoundFxIndex = sfx;
@@ -1028,7 +1056,11 @@
 				Timings[index].SoundFxParamB = param;
 			}
 		}
-
+		public void SetTimingTimingID (int index, byte id) {
+			if (index >= 0 && index < Timings.Count) {
+				Timings[index].timingID = id;
+			}
+		}
 
 		// Delete
 		public bool DeleteItem (int type, int index) {
@@ -1239,6 +1271,7 @@
 			Angle = angle,
 			Color = color,
 			ItemType = itemType,
+			Speed = 1f,
 			Widths = { },
 			Xs = { },
 			HasTray = hasTray,
@@ -1265,6 +1298,8 @@
 			SoundFxIndex = 0,
 			SoundFxParamA = 0,
 			SoundFxParamB = 0,
+			TimingID = 0,
+			Speed = 1f,
 		});
 
 

@@ -29,8 +29,12 @@
 
 			// API-SER
 			public bool UseConfig;
-			public bool Motion;
 			public bool TileTrack;
+			public bool Motion_Pos;
+			public bool Motion_Rot;
+			public bool Motion_Color;
+			public bool Motion_Width;
+			public bool Motion_Height;
 			public ActiveInt ItemType;
 			public ActiveInt Time_Real;
 			public ActiveInt Duration_Real;
@@ -44,7 +48,11 @@
 
 			public static StageConfig IgnoreAll => new StageConfig() {
 				UseConfig = false,
-				Motion = true,
+				Motion_Pos = true,
+				Motion_Rot = true,
+				Motion_Color = true,
+				Motion_Width = true,
+				Motion_Height = true,
 				TileTrack = false,
 				ItemType = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,
@@ -67,7 +75,10 @@
 
 			// API-SER
 			public bool UseConfig;
-			public bool Motion;
+			public bool Motion_X;
+			public bool Motion_Angle;
+			public bool Motion_Color;
+			public bool Motion_Width;
 			public ActiveInt ItemType;
 			public ActiveInt StageIndex;
 			public ActiveInt Time_Real;
@@ -80,7 +91,10 @@
 
 			public static TrackConfig IgnoreAll => new TrackConfig() {
 				UseConfig = false,
-				Motion = true,
+				Motion_X = true,
+				Motion_Angle = true,
+				Motion_Color = true,
+				Motion_Width = true,
 				StageIndex = ActiveInt.Inactive,
 				ItemType = ActiveInt.Inactive,
 				X = ActiveInt.Inactive,

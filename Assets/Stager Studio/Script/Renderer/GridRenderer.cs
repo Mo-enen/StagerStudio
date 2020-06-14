@@ -18,11 +18,11 @@
 
 
 		// Handler
-		public delegate float Float3BoolHandler(float a, float b, float c, bool bo);
-		public delegate float Float3Handler(float a, float b, float c);
+		public delegate float AreaHandler (byte id, float a, float b, float c, bool bo);
+		public delegate float Float3Handler (float a, float b, float c);
 
 		// Api
-		public static Float3BoolHandler GetAreaBetween { get; set; } = null;
+		public static AreaHandler GetAreaBetween { get; set; } = null;
 		public static Float3Handler GetSnapedTime { get; set; } = null;
 		public float MusicTime {
 			get => _MusicTime;
@@ -81,6 +81,7 @@
 		public bool GridShowed { get; private set; } = false;
 		public bool GridEnabled { get; private set; } = false;
 		public bool IgnoreDynamicSpeed { get; set; } = true;
+		public byte TimingID { get; set; } = 0;
 		public int CountX => _CountXs[Mode];
 		public bool Visible {
 			get => _Visible;
@@ -108,7 +109,7 @@
 		private bool _Visible = true;
 
 
-		protected override void OnMeshFill() {
+		protected override void OnMeshFill () {
 
 			if (!Visible) { return; }
 
@@ -163,7 +164,7 @@
 
 
 		// API
-		public void SetGridTransform(bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
+		public void SetGridTransform (bool enable, Vector3 pos = default, Quaternion rot = default, Vector3 scale = default) {
 			GridEnabled = enable;
 			RendererEnable = GridShowed && GridEnabled;
 			if (gameObject.activeSelf != RendererEnable) {
@@ -190,14 +191,14 @@
 		}
 
 
-		public void SetShow(bool show) {
+		public void SetShow (bool show) {
 			GridShowed = show;
 			gameObject.SetActive(GridShowed && GridEnabled);
 			RendererEnable = GridShowed && GridEnabled;
 		}
 
 
-		public Vector3 SnapWorld(Vector3 pos, bool yIsTime, bool groundY = false) {
+		public Vector3 SnapWorld (Vector3 pos, bool yIsTime, bool groundY = false) {
 			if (!RendererEnable && !groundY) { return pos; }
 			pos = transform.worldToLocalMatrix.MultiplyPoint3x4(pos);
 			if (RendererEnable) {
@@ -230,7 +231,7 @@
 		}
 
 
-		public void SetCountX(int mode, int value) {
+		public void SetCountX (int mode, int value) {
 			if (value != _CountXs[mode]) {
 				_CountXs[mode] = value;
 				SetDirty();
@@ -239,17 +240,18 @@
 
 
 		// LGC
-		private void ForAllY(System.Action<float> action) {
+		private void ForAllY (System.Action<float> action) {
 			float speedMuti = GameSpeedMuti * ObjectSpeedMuti;
 			float time = GetSnapedTime(MusicTime, TimeGap, TimeOffset);
 			float y01 = Mathf.Sign(time - MusicTime) * GetAreaBetween(
+				TimingID,
 				Mathf.Min(MusicTime, time),
 				Mathf.Max(MusicTime, time),
 				speedMuti, IgnoreDynamicSpeed
 			);
 			for (int i = 0; i < 64 && y01 < 1f && speedMuti > 0f; i++) {
 				if (y01 >= 0f) { action(y01); }
-				y01 += GetAreaBetween(time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
+				y01 += GetAreaBetween(TimingID, time, time + TimeGap, speedMuti, IgnoreDynamicSpeed);
 				time += TimeGap;
 			}
 		}

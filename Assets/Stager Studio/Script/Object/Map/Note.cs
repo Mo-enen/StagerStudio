@@ -14,10 +14,10 @@
 		#region --- SUB ---
 
 
-		public delegate float GameDropOffsetHandler (float muti);
-		public delegate float DropSpeedHandler (float time);
-		public delegate float DropOffsetHandler (float time, float muti);
-		public delegate float FilledTimeHandler (float time, float fill, float muti);
+		public delegate float GameDropOffsetHandler (byte id, float muti);
+		public delegate float DropSpeedHandler (byte id, float time);
+		public delegate float DropOffsetHandler (byte id, float time, float muti);
+		public delegate float FilledTimeHandler (byte id, float time, float fill, float muti);
 		public delegate void VoidIntFloatHandler (int i, float f);
 		public delegate void SfxHandler (byte type, int duration, int a, int b);
 
@@ -165,11 +165,15 @@
 				noteData._SpeedMuti = noteSpeedMuti;
 				noteData._CacheTime = -1f;
 			}
+			if (noteData._CacheTimingID != noteData.TimingID) {
+				noteData._CacheTimingID = noteData.TimingID;
+				noteData._CacheTime = -1f;
+			}
 			if (noteData._CacheTime != noteData.Time) {
 				noteData._CacheTime = noteData.Time;
-				noteData._AppearTime = GetFilledTime(noteData.Time, -1f, noteSpeedMuti);
+				noteData._AppearTime = GetFilledTime(noteData.TimingID, noteData.Time, -1f, noteSpeedMuti);
 				noteData._NoteDropStart = -1f;
-				noteData._SpeedOnDrop = GetDropSpeedAt(noteData.Time);
+				noteData._SpeedOnDrop = GetDropSpeedAt(noteData.TimingID, noteData.Time);
 			}
 			float duration = Mathf.Max(noteData.Duration, 0f);
 			if (noteData._CacheDuration != duration) {
@@ -178,8 +182,8 @@
 			}
 			// Note Drop
 			if (noteData._NoteDropStart < 0f) {
-				noteData._NoteDropStart = GetDropOffset(noteData.Time, noteSpeedMuti);
-				noteData._NoteDropEnd = GetDropOffset(noteData.Time + noteData.Duration, noteSpeedMuti);
+				noteData._NoteDropStart = GetDropOffset(noteData.TimingID, noteData.Time, noteSpeedMuti);
+				noteData._NoteDropEnd = GetDropOffset(noteData.TimingID, noteData.Time + noteData.Duration, noteSpeedMuti);
 			}
 			// Active
 			noteData._Active = trackActive && GetNoteActive(noteData, linkedNote, noteData._AppearTime);
@@ -204,7 +208,7 @@
 			float trackX = Track.GetTrackX(linkedTrack);
 			float trackWidth = Track.GetTrackWidth(linkedTrack);
 			float trackAngle = Track.GetTrackAngle(linkedTrack);
-			float gameOffset = GetGameDropOffset(noteData._SpeedMuti);
+			float gameOffset = GetGameDropOffset(noteData.TimingID, noteData._SpeedMuti);
 			float noteY01 = MusicTime < Time ? (noteData._NoteDropStart - gameOffset) : 0f;
 			float noteSizeY = noteData._NoteDropEnd - gameOffset - noteY01;
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
@@ -364,7 +368,7 @@
 
 			// Movement
 			var (zoneMin, zoneMax, zoneSize, _) = ZoneMinMax;
-			float gameOffset = GetGameDropOffset(noteData._SpeedMuti);
+			float gameOffset = GetGameDropOffset(noteData.TimingID, noteData._SpeedMuti);
 			float linkedNoteY01 = linkedNote._NoteDropStart - gameOffset;
 			linkedNoteY01 += GetMinHeight(SkinType.Note, noteData.ItemType);
 			var linkedZonePos = Track.LocalToZone(

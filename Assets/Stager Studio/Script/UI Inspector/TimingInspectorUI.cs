@@ -19,6 +19,7 @@
 		[SerializeField] private BeatInputUI m_BeatIF = null;
 		[SerializeField] private InputField m_DurationIF = null;
 		[SerializeField] private InputField m_SpeedIF = null;
+		[SerializeField] private InputField m_TimingIDIF = null;
 		[SerializeField] private InputField m_SfxParamAIF = null;
 		[SerializeField] private InputField m_SfxParamBIF = null;
 		[SerializeField] private Text m_SfxLabel = null;
@@ -33,6 +34,7 @@
 		public float GetBeat () => m_BeatIF.GetBeat();
 		public int GetSpeed () => m_SpeedIF.text.TryParseIntForInspector(out int result) ? Mathf.Clamp(result, -51200, 51200) : 100;
 		public float GetDuration () => m_DurationIF.text.TryParseFloatForInspector(out float result) ? Mathf.Max(result, 0f) : 0f;
+		public byte GetTimingID () => byte.TryParse(m_TimingIDIF.text, out byte result) ? (byte)Mathf.Max(result, 0) : (byte)0;
 		public byte GetSfx () => (byte)SfxIndex;
 		public int GetSfxParamA () => m_SfxParamAIF.text.TryParseIntForInspector(out int result) ? result : 0;
 		public int GetSfxParamB () => m_SfxParamBIF.text.TryParseIntForInspector(out int result) ? result : 0;
@@ -42,6 +44,7 @@
 		public void SetBeat (float value) => m_BeatIF.SetBeatToUI(value);
 		public void SetDuration (float value) => m_DurationIF.text = value.ToString();
 		public void SetSpeed (int value) => m_SpeedIF.text = value.ToString();
+		public void SetTimingID (byte value) => m_TimingIDIF.text = value.ToString();
 		public void SetSfx (int value) {
 			if (!gameObject.activeSelf) { return; }
 			SfxIndex = value;

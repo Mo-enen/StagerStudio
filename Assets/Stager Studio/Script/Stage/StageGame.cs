@@ -92,7 +92,8 @@
 		public int CurrentGridCountY => GetGridCount(3, Mathf.Clamp(GridCountIndex_Y.Value, 0, 2));
 
 		// Short
-		private ConstantFloat SpeedCurve { get; } = new ConstantFloat();
+		private const int SPEED_CURVE_COUNT = 256;
+		private ConstantFloat[] SpeedCurves { get; } = new ConstantFloat[SPEED_CURVE_COUNT];
 		private Camera Camera => _Camera != null ? _Camera : (_Camera = Camera.main);
 		private Transform StageContainer => m_Containers[0];
 		private Transform TrackContainer => m_Containers[1];
@@ -150,15 +151,22 @@
 
 
 #if UNITY_EDITOR
-		[Header("Test"), SerializeField] private Beatmap m_TestBeatmap = null;
-		public void SetTestBeatmap (Beatmap map) => m_TestBeatmap = map;
-		public Beatmap GetTestBeatmap () => m_TestBeatmap;
+		//[Header("Test"), SerializeField] private Beatmap m_TestBeatmap = null;
+		//public void SetTestBeatmap (Beatmap map) => m_TestBeatmap = map;
+		//public Beatmap GetTestBeatmap () => m_TestBeatmap;
 #endif
 
 
 
 
 		#region --- MSG ---
+
+
+		private void Awake () {
+			for (int i = 0; i < SPEED_CURVE_COUNT; i++) {
+				SpeedCurves[i] = new ConstantFloat();
+			}
+		}
 
 
 		private void Start () {
@@ -339,6 +347,7 @@
 			if (map == null) { return; }
 			int timingCount = map.Timings.Count;
 			var container = TimingContainer;
+			Beatmap.Timing._CacheMaxTimingIndex = 0;
 			for (int i = 0; i < timingCount; i++) {
 				var tf = container.GetChild(i);
 				var tData = map.Timings[i];
@@ -356,38 +365,37 @@
 		private void Update_SpeedCurve () {
 			if (MusicIsPlaying()) { return; }
 			// Speed Curve
-			if (GetBeatmap() is null) {
-				// No Map
-				if (SpeedCurve.Count > 0) {
-					SpeedCurve.Clear();
+			var map = GetBeatmap();
+			if (map != null) {
+				// Has Beatmap
+				var timings = map.Timings;
+				if (timings == null || timings.Count == 0) {
+					// Init Speed Note
+					if (timings is null) {
+						map.Timings = new List<Beatmap.Timing>() { new Beatmap.Timing(0, 1), };
+					} else {
+						timings.Add(new Beatmap.Timing(0, 1));
+					}
 					SpeedCurveDirty = true;
 				}
-			} else {
-				// Has Beatmap
-				var speedNotes = GetBeatmap().Timings;
-				if (speedNotes is null || speedNotes.Count == 0) {
-					// No SpeedNote
-					if (SpeedCurve.Count > 0) {
-						SpeedCurve.Clear();
+
+				// Refresh Curves
+				for (int i = 0; i < SPEED_CURVE_COUNT; i++) {
+					var sCurve = SpeedCurves[i];
+					if (SpeedCurveDirty) {
+						// Refresh
+						sCurve.Clear();
+						if (i > Beatmap.Timing._CacheMaxTimingIndex) { continue; }
+						foreach (var timing in timings) {
+							if (timing.TimingID != i) { continue; }
+							float time = timing.Time;
+							while (sCurve.ContainsKey(time)) { time += 0.0001f; }
+							sCurve.Add(time, timing.Value);
+						}
 					}
-					// Init Speed Note
-					if (speedNotes is null) {
-						GetBeatmap().Timings = new List<Beatmap.Timing>() { new Beatmap.Timing(0, 1), };
-					} else {
-						speedNotes.Add(new Beatmap.Timing(0, 1));
-					}
-					SpeedCurveDirty = true;
-				} else if (SpeedCurve.Count != speedNotes.Count || SpeedCurveDirty) {
-					// Reset Speed Curve
-					SpeedCurve.Clear();
-					foreach (var note in speedNotes) {
-						float time = note.Time;
-						while (SpeedCurve.ContainsKey(time)) { time += 0.0001f; }
-						SpeedCurve.Add(time, note.Value);
-					}
-					SpeedCurveDirty = true;
 				}
 			}
+
 			// Dirty
 			if (SpeedCurveDirty) {
 				OnSpeedCurveChanged();
@@ -545,15 +553,28 @@
 		public void SetSpeedCurveDirty () => SpeedCurveDirty = true;
 
 
-		public float GetDropSpeedAt (float time) => UseDynamicSpeed ? SpeedCurve.Evaluate(time) : 1f;
+		public float GetDropSpeedAt (byte curveIndex, float time) {
+			var curve = SpeedCurves[curveIndex];
+			return UseDynamicSpeed && curve.Count > 0 ?
+				curve.Evaluate(time) :
+				1f;
+		}
 
 
-		public float FillTime (float time, float fill, float muti) =>
-			UseDynamicSpeed ? SpeedCurve.Fill(time, fill, muti) : time + fill / muti;
+		public float FillTime (byte curveIndex, float time, float fill, float muti) {
+			var curve = SpeedCurves[curveIndex];
+			return UseDynamicSpeed && curve.Count > 0 ?
+				SpeedCurves[curveIndex].Fill(time, fill, muti) :
+				time + fill / muti;
+		}
 
 
-		public float AreaBetween (float timeA, float timeB, float muti) =>
-			UseDynamicSpeed ? SpeedCurve.GetAreaBetween(timeA, timeB, muti) : Mathf.Abs(timeA - timeB) * muti;
+		public float AreaBetween (byte curveIndex, float timeA, float timeB, float muti) {
+			var curve = SpeedCurves[curveIndex];
+			return UseDynamicSpeed && curve.Count > 0 ?
+				SpeedCurves[curveIndex].GetAreaBetween(timeA, timeB, muti) :
+				Mathf.Abs(timeA - timeB) * muti;
+		}
 
 
 		// Abreast
@@ -800,25 +821,25 @@ namespace StagerStudio.Editor {
 	using Stage;
 	[CustomEditor(typeof(StageGame))]
 	public class StageGameInspector : Editor {
-		private readonly static string[] Exclude = new string[] { "m_TestBeatmap" };
-		private void Awake () {
-			if (EditorApplication.isPlaying) {
-				(target as StageGame).SetTestBeatmap(FindObjectOfType<StageProject>().Beatmap);
-			}
-		}
-		public override void OnInspectorGUI () {
-			if (EditorApplication.isPlaying) {
-				base.OnInspectorGUI();
-				if (GUI.changed) {
-					(target as StageGame).SetSpeedCurveDirty();
-					StageGame.OnItemCountChanged();
-				}
-			} else {
-				serializedObject.Update();
-				DrawPropertiesExcluding(serializedObject, Exclude);
-				serializedObject.ApplyModifiedProperties();
-			}
-		}
+		//private readonly static string[] Exclude = new string[] { "m_TestBeatmap" };
+		//private void Awake () {
+		//	if (EditorApplication.isPlaying) {
+		//		(target as StageGame).SetTestBeatmap(FindObjectOfType<StageProject>().Beatmap);
+		//	}
+		//}
+		//public override void OnInspectorGUI () {
+		//	if (EditorApplication.isPlaying) {
+		//		base.OnInspectorGUI();
+		//		if (GUI.changed) {
+		//			(target as StageGame).SetSpeedCurveDirty();
+		//			StageGame.OnItemCountChanged();
+		//		}
+		//	} else {
+		//		serializedObject.Update();
+		//		DrawPropertiesExcluding(serializedObject, Exclude);
+		//		serializedObject.ApplyModifiedProperties();
+		//	}
+		//}
 	}
 }
 #endif

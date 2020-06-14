@@ -36,7 +36,7 @@
 		public delegate bool BoolIntHandler (int i);
 		public delegate void VoidStringBoolHandler (string str, bool b);
 		public delegate string StringStringHandler (string str);
-		public delegate float FillHandler (float time, float fill, float muti);
+		public delegate float FillHandler (byte id, float time, float fill, float muti);
 		public delegate void LogAxisHintHandler (int axis, string hint);
 		public delegate float SnapTimeHandler (float time, float gap, float offset);
 		public delegate void EditHandler (EditType editType, int itemType, int itemIndex);
@@ -326,64 +326,64 @@
 						mObj.Time = GetSnapedTime(musicTime, m_Grid.TimeGap, m_Grid.TimeOffset);
 						switch (CopyType) {
 							case 0: // Stage
-							if (obj is Beatmap.Stage sObj) {
-								if (mObj.Time >= musicTime) {
-									mObj.Time -= m_Grid.TimeGap;
+								if (obj is Beatmap.Stage sObj) {
+									if (mObj.Time >= musicTime) {
+										mObj.Time -= m_Grid.TimeGap;
+									}
+									map.AddStage(sObj);
+									BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
+									SetSelection(0, map.Stages.Count - 1);
+									OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
 								}
-								map.AddStage(sObj);
-								BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
-								SetSelection(0, map.Stages.Count - 1);
-								OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
-								// Hint
-								LogHint(GetLanguage(HINT_Paste), true);
-							}
-							break;
+								break;
 							case 1: // Track
-							if (obj is Beatmap.Track tObj) {
-								if (mObj.Time >= musicTime) {
-									mObj.Time -= m_Grid.TimeGap;
+								if (obj is Beatmap.Track tObj) {
+									if (mObj.Time >= musicTime) {
+										mObj.Time -= m_Grid.TimeGap;
+									}
+									if (SelectingItemType == 0) {
+										tObj.StageIndex = SelectingItemIndex;
+									}
+									map.AddTrack(tObj);
+									BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
+									SetSelection(1, map.Tracks.Count - 1);
+									OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
 								}
-								if (SelectingItemType == 0) {
-									tObj.StageIndex = SelectingItemIndex;
-								}
-								map.AddTrack(tObj);
-								BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
-								SetSelection(1, map.Tracks.Count - 1);
-								OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
-								// Hint
-								LogHint(GetLanguage(HINT_Paste), true);
-							}
-							break;
+								break;
 							case 2: // Note
-							if (obj is Beatmap.Note nObj) {
-								if (mObj.Time <= musicTime) {
-									mObj.Time += m_Grid.TimeGap;
+								if (obj is Beatmap.Note nObj) {
+									if (mObj.Time <= musicTime) {
+										mObj.Time += m_Grid.TimeGap;
+									}
+									nObj.LinkedNoteIndex = -1;
+									if (SelectingItemType == 1) {
+										nObj.TrackIndex = SelectingItemIndex;
+									}
+									map.AddNote(nObj);
+									BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
+									SetSelection(2, map.Notes.Count - 1);
+									OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
 								}
-								nObj.LinkedNoteIndex = -1;
-								if (SelectingItemType == 1) {
-									nObj.TrackIndex = SelectingItemIndex;
-								}
-								map.AddNote(nObj);
-								BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
-								SetSelection(2, map.Notes.Count - 1);
-								OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
-								// Hint
-								LogHint(GetLanguage(HINT_Paste), true);
-							}
-							break;
+								break;
 							case 3: // Timing
-							if (obj is Beatmap.Timing tiObj) {
-								if (mObj.Time <= musicTime) {
-									mObj.Time += m_Grid.TimeGap;
+								if (obj is Beatmap.Timing tiObj) {
+									if (mObj.Time <= musicTime) {
+										mObj.Time += m_Grid.TimeGap;
+									}
+									map.AddTiming(tiObj);
+									BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
+									SetSelection(3, map.Timings.Count - 1);
+									OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
+									// Hint
+									LogHint(GetLanguage(HINT_Paste), true);
 								}
-								map.AddTiming(tiObj);
-								BeforeObjectEdited(EditType.Create, 3, map.Timings.Count);
-								SetSelection(3, map.Timings.Count - 1);
-								OnObjectEdited(EditType.Create, 3, map.Timings.Count - 1);
-								// Hint
-								LogHint(GetLanguage(HINT_Paste), true);
-							}
-							break;
+								break;
 						}
 					}
 				}
@@ -555,7 +555,7 @@
 						BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
 						map.AddNote(
 							index,
-							GetFilledTime(GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
+							GetFilledTime(0, GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
 							0f,
 							localPos.x,
 							NoteBrushWidth
@@ -570,7 +570,7 @@
 							zoneMin, zoneMax_real,
 							ghostWorldPos.x, ghostWorldPos.y, ghostWorldPos.z
 						);
-						float timingTime = GetFilledTime(GetMusicTime(), zonePos.y, m_Grid.GameSpeedMuti);
+						float timingTime = GetFilledTime(0, GetMusicTime(), zonePos.y, m_Grid.GameSpeedMuti);
 						if (m_Grid.RendererEnable) {
 							timingTime = GetSnapedTime(timingTime, m_Grid.TimeGap, m_Grid.TimeOffset);
 						}
@@ -768,57 +768,66 @@
 			var ray = GetMouseRay();
 			var (zoneMin, zoneMax, zoneSize, zoneRatio) = GetRealZoneMinMax();
 			int gridingItemType = selectingMode ? SelectingItemType : SelectingBrushIndex;
+			int mode = 0;
+			bool ignoreDynamicSpeed = false;
+			byte timingID = 0;
 			switch (gridingItemType) {
 				case 0: // Stage
-				gridEnable = true;
-				pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
-				rot = Quaternion.identity;
-				scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
-				m_Grid.Mode = 0;
-				m_Grid.IgnoreDynamicSpeed = false;
-				break;
+					gridEnable = true;
+					pos = Util.Vector3Lerp3(zoneMin, zoneMax, 0.5f, 0f);
+					rot = Quaternion.identity;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					mode = 0;
+					ignoreDynamicSpeed = false;
+					break;
 				case 1: // Track
 				case 2:  // Note
-				int hoverItemType, hoverItemIndex;
-				Transform hoverTarget;
-				if (selectingMode) {
-					hoverItemType = gridingItemType - 1;
-					hoverItemIndex = map.GetParentIndex(gridingItemType, SelectingItemIndex);
-					hoverTarget = hoverItemIndex >= 0 ? m_Containers[hoverItemType].GetChild(hoverItemIndex) : null;
-				} else {
-					(hoverItemType, hoverItemIndex, _, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[gridingItemType - 1], true);
-				}
-				if (hoverTarget != null) {
-					gridEnable = true;
-					pos = hoverTarget.GetChild(0).position;
-					rot = hoverTarget.rotation;
-					scl = hoverTarget.GetChild(0).localScale;
-					objSpeedMuti = map.GetSpeedMuti(hoverItemType, hoverItemIndex) / m_Grid.GameSpeedMuti;
-				}
-				m_Grid.Mode = gridingItemType;
-				m_Grid.IgnoreDynamicSpeed = false;
-				break;
+					int hoverItemType, hoverItemIndex;
+					Transform hoverTarget;
+					if (selectingMode) {
+						hoverItemType = gridingItemType - 1;
+						hoverItemIndex = map.GetParentIndex(gridingItemType, SelectingItemIndex);
+						hoverTarget = hoverItemIndex >= 0 ? m_Containers[hoverItemType].GetChild(hoverItemIndex) : null;
+					} else {
+						(hoverItemType, hoverItemIndex, _, hoverTarget) = GetCastTypeIndex(ray, ItemMasks[gridingItemType - 1], true);
+					}
+					if (hoverTarget != null) {
+						gridEnable = true;
+						pos = hoverTarget.GetChild(0).position;
+						rot = hoverTarget.rotation;
+						scl = hoverTarget.GetChild(0).localScale;
+						objSpeedMuti = map.GetSpeedMuti(hoverItemType, hoverItemIndex) / m_Grid.GameSpeedMuti;
+					}
+					if (gridingItemType == 2) {
+						timingID = map.GetTimingID(2, hoverItemIndex);
+					}
+					mode = gridingItemType;
+					ignoreDynamicSpeed = false;
+					break;
 				case 3: // Timing
-				gridEnable = true;
-				scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
-				pos = new Vector3((zoneMin.x + zoneMax.x) / 2f, zoneMin.y, zoneMin.z);
-				rot = Quaternion.identity;
-				m_Grid.Mode = 3;
-				m_Grid.IgnoreDynamicSpeed = true;
-				break;
+					gridEnable = true;
+					scl = new Vector3(zoneSize, zoneSize / zoneRatio, 1f);
+					pos = new Vector3((zoneMin.x + zoneMax.x) / 2f, zoneMin.y, zoneMin.z);
+					rot = Quaternion.identity;
+					mode = 3;
+					ignoreDynamicSpeed = true;
+					break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
-				if (!selectingMode) { break; }
-				var target = m_Containers[gridingItemType].GetChild(SelectingItemIndex);
-				gridEnable = true;
-				pos = target.position;
-				rot = target.rotation;
-				scl = target.GetChild(0).localScale;
-				m_Grid.Mode = 3;
-				m_Grid.IgnoreDynamicSpeed = true;
-				objSpeedMuti = 1f / m_Grid.GameSpeedMuti;
-				break;
+					if (!selectingMode) { break; }
+					var target = m_Containers[gridingItemType].GetChild(SelectingItemIndex);
+					gridEnable = true;
+					pos = target.position;
+					rot = target.rotation;
+					scl = target.GetChild(0).localScale;
+					mode = 3;
+					ignoreDynamicSpeed = true;
+					objSpeedMuti = 1f / m_Grid.GameSpeedMuti;
+					break;
 			}
+			m_Grid.TimingID = timingID;
+			m_Grid.IgnoreDynamicSpeed = ignoreDynamicSpeed;
+			m_Grid.Mode = mode;
 			m_Grid.ObjectSpeedMuti = objSpeedMuti;
 			m_Grid.Visible = ShowGridOnSelect.Value || !selectingMode;
 			m_Grid.SetGridTransform(gridEnable, pos, rot, scl);
@@ -842,48 +851,48 @@
 			if (RayInsideZone(ray)) {
 				switch (SelectingBrushIndex) {
 					case 0: // Stage
-					if (!GetUseAbreast()) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = zoneSize * StageBrushWidth;
-							ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, false);
-							ghostPivotX = 0.5f;
+						if (!GetUseAbreast()) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = zoneSize * StageBrushWidth;
+								ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, false);
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 1: // Track
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
-					if (hoverTarget != null) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
-							ghostSize.y = hoverTarget.GetChild(0).localScale.y;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, true, true);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[0], true).target;
+						if (hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, true, true);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 2: // Note
-					hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
-					if (hoverTarget != null) {
-						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
-						ghostEnable = mousePos.HasValue;
-						if (mousePos.HasValue) {
-							ghostSize.x = NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
-							ghostSize.y = GHOST_NOTE_Y / zoneSize;
-							ghostPos = mousePos.Value;
-							ghostPos = m_Grid.SnapWorld(ghostPos, true);
-							ghostRot = hoverTarget.transform.rotation;
-							ghostPivotX = 0.5f;
+						hoverTarget = GetCastTypeIndex(ray, ItemMasks[1], true).target;
+						if (hoverTarget != null) {
+							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
+							ghostEnable = mousePos.HasValue;
+							if (mousePos.HasValue) {
+								ghostSize.x = NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.y = GHOST_NOTE_Y / zoneSize;
+								ghostPos = mousePos.Value;
+								ghostPos = m_Grid.SnapWorld(ghostPos, true);
+								ghostRot = hoverTarget.transform.rotation;
+								ghostPivotX = 0.5f;
+							}
 						}
-					}
-					break;
+						break;
 					case 3: { // Speed
 						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
 						ghostEnable = mousePos.HasValue;
@@ -1112,41 +1121,41 @@
 			switch (direction) {
 				case 0:
 				case 1:
-				float x = map.GetX(SelectingItemType, SelectingItemIndex);
-				float deltaX = direction == 0 ? -0.05f : 0.05f;
-				if (SelectingItemType == 3) { deltaX /= 10f; }
-				BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-				map.SetX(SelectingItemType, SelectingItemIndex, Mathf.Clamp01(x + deltaX));
-				// Switch Tile Track for Notes
-				int tIndex = map.GetParentIndex(2, SelectingItemIndex);
-				int sIndex = map.GetParentIndex(1, tIndex);
-				if (SelectingItemType == 2 && CheckTileTrack(sIndex)) {
-					int newTrackIndex = direction == 0 ? tIndex - 1 : tIndex + 1;
-					if (sIndex == map.GetParentIndex(1, newTrackIndex)) {
-						map.SetNoteTrackIndex(SelectingItemIndex, newTrackIndex);
+					float x = map.GetX(SelectingItemType, SelectingItemIndex);
+					float deltaX = direction == 0 ? -0.05f : 0.05f;
+					if (SelectingItemType == 3) { deltaX /= 10f; }
+					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					map.SetX(SelectingItemType, SelectingItemIndex, Mathf.Clamp01(x + deltaX));
+					// Switch Tile Track for Notes
+					int tIndex = map.GetParentIndex(2, SelectingItemIndex);
+					int sIndex = map.GetParentIndex(1, tIndex);
+					if (SelectingItemType == 2 && CheckTileTrack(sIndex)) {
+						int newTrackIndex = direction == 0 ? tIndex - 1 : tIndex + 1;
+						if (sIndex == map.GetParentIndex(1, newTrackIndex)) {
+							map.SetNoteTrackIndex(SelectingItemIndex, newTrackIndex);
+						}
 					}
-				}
-				// Final
-				OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-				break;
+					// Final
+					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					break;
 				case 2:
 				case 3:
-				if (SelectingItemType == 1) { break; }
-				if (SelectingItemType == 0) {
-					// Stage
-					float y = map.GetStageY(SelectingItemIndex);
-					float deltaY = direction == 2 ? -0.05f : 0.05f;
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					map.SetStageY(SelectingItemIndex, Mathf.Clamp01(y + deltaY));
-					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-				} else {
-					// Note, Timing
-					float time = map.GetTime(SelectingItemType, SelectingItemIndex);
-					BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-					map.SetTime(SelectingItemType, SelectingItemIndex, Mathf.Max(direction == 2 ? time - m_Grid.TimeGap / 4f : time + m_Grid.TimeGap / 4f, 0f));
-					OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
-				}
-				break;
+					if (SelectingItemType == 1) { break; }
+					if (SelectingItemType == 0) {
+						// Stage
+						float y = map.GetStageY(SelectingItemIndex);
+						float deltaY = direction == 2 ? -0.05f : 0.05f;
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetStageY(SelectingItemIndex, Mathf.Clamp01(y + deltaY));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					} else {
+						// Note, Timing
+						float time = map.GetTime(SelectingItemType, SelectingItemIndex);
+						BeforeObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+						map.SetTime(SelectingItemType, SelectingItemIndex, Mathf.Max(direction == 2 ? time - m_Grid.TimeGap / 4f : time + m_Grid.TimeGap / 4f, 0f));
+						OnObjectEdited(EditType.Modify, SelectingItemType, SelectingItemIndex);
+					}
+					break;
 			}
 		}
 
@@ -1330,21 +1339,21 @@
 			// Dragging
 			switch (SelectingItemType) {
 				case 0: // Stage
-				StageAxisDragLogic(map, axis, SelectingItemIndex, isDown, pos, downPos);
-				break;
+					StageAxisDragLogic(map, axis, SelectingItemIndex, isDown, pos, downPos);
+					break;
 				case 1: // Track
-				TrackAxisDragLogic(map, axis, SelectingItemIndex, isDown, pos, downPos, axisWorldPos);
-				break;
+					TrackAxisDragLogic(map, axis, SelectingItemIndex, isDown, pos, downPos, axisWorldPos);
+					break;
 				case 2: // Note
-				NoteAxisDragLogic(map, axis, SelectingItemIndex, pos, downPos);
-				break;
+					NoteAxisDragLogic(map, axis, SelectingItemIndex, pos, downPos);
+					break;
 				case 3: // Timing
-				TimingAxisDragLogic(map, axis, SelectingItemIndex, pos, downPos);
-				break;
+					TimingAxisDragLogic(map, axis, SelectingItemIndex, pos, downPos);
+					break;
 				case 4: // Stage Timer
 				case 5: // Track Timer
-				TimerAxisDragLogic(map, axis, SelectingItemIndex, pos);
-				break;
+					TimerAxisDragLogic(map, axis, SelectingItemIndex, pos);
+					break;
 			}
 		}
 
@@ -1563,6 +1572,7 @@
 				}
 				if (axis == 1 || axis == 2) {
 					float newTime = GetFilledTime(
+						note.TimingID,
 						m_Grid.MusicTime,
 						localPos.y,
 						m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
@@ -1604,6 +1614,7 @@
 			}
 			if (axis == 4) {
 				float newDuration = GetFilledTime(
+					note.TimingID,
 					m_Grid.MusicTime,
 					localPos.y,
 					m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti
@@ -1680,17 +1691,17 @@
 		private void LogAxisMSG (int axis, float value0, float value1) {
 			switch (axis) {
 				case 0:
-				LogAxisMessage(axis, value0.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
 				case 1:
-				LogAxisMessage(axis, value1.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value1.ToString("0.##"));
+					break;
 				case 2:
-				LogAxisMessage(axis, value0.ToString("0.##") + ", " + value1.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##") + ", " + value1.ToString("0.##"));
+					break;
 				case 3:
-				LogAxisMessage(axis, value0.ToString("0.##"));
-				break;
+					LogAxisMessage(axis, value0.ToString("0.##"));
+					break;
 			}
 		}
 
@@ -1698,33 +1709,33 @@
 		private void SetAxisIconDelta (int axis, float delta, float deltaAlt = 0f) {
 			switch (axis) {
 				case 0:
-				m_AxisMoveX_Icon.localPosition = m_AxisMoveX_IconPos +
-					Vector3.right * Mathf.Clamp(delta * 10f, -0.4f, 0.4f);
-				break;
+					m_AxisMoveX_Icon.localPosition = m_AxisMoveX_IconPos +
+						Vector3.right * Mathf.Clamp(delta * 10f, -0.4f, 0.4f);
+					break;
 				case 1:
-				m_AxisMoveY_Icon.localPosition = m_AxisMoveY_IconPos +
-					Vector3.up * Mathf.Clamp(deltaAlt * 10f, -0.4f, 0.4f);
-				break;
+					m_AxisMoveY_Icon.localPosition = m_AxisMoveY_IconPos +
+						Vector3.up * Mathf.Clamp(deltaAlt * 10f, -0.4f, 0.4f);
+					break;
 				case 2:
-				m_AxisMoveXY_Icon.localPosition = m_AxisMoveXY_IconPos +
-					new Vector3(Mathf.Clamp(delta * 10f, -0.12f, 0.12f), Mathf.Clamp(deltaAlt * 10f, -0.12f, 0.12f), 0f);
-				break;
+					m_AxisMoveXY_Icon.localPosition = m_AxisMoveXY_IconPos +
+						new Vector3(Mathf.Clamp(delta * 10f, -0.12f, 0.12f), Mathf.Clamp(deltaAlt * 10f, -0.12f, 0.12f), 0f);
+					break;
 				case 3:
-				m_AxisWidth_Icon.localScale = m_AxisWidth_IconScl *
-					(1f + Mathf.Clamp(delta * 10f, -0.3f, 0.3f));
-				break;
+					m_AxisWidth_Icon.localScale = m_AxisWidth_IconScl *
+						(1f + Mathf.Clamp(delta * 10f, -0.3f, 0.3f));
+					break;
 				case 4:
-				m_AxisHeight_Icon.localScale = m_AxisHeight_IconScl *
-					(1f + Mathf.Clamp(delta * 10f, -0.3f, 0.3f));
-				break;
+					m_AxisHeight_Icon.localScale = m_AxisHeight_IconScl *
+						(1f + Mathf.Clamp(delta * 10f, -0.3f, 0.3f));
+					break;
 				case 5:
-				// Rot
-				if (SelectingItemType == 0) {
-					m_AxisRot_Icon.localRotation = Quaternion.Euler(0f, delta, 0f);
-				} else if (SelectingItemType == 1) {
-					m_AxisRot_Icon.localRotation = Quaternion.Euler(delta, 0f, 0f);
-				}
-				break;
+					// Rot
+					if (SelectingItemType == 0) {
+						m_AxisRot_Icon.localRotation = Quaternion.Euler(0f, delta, 0f);
+					} else if (SelectingItemType == 1) {
+						m_AxisRot_Icon.localRotation = Quaternion.Euler(delta, 0f, 0f);
+					}
+					break;
 			}
 		}
 
