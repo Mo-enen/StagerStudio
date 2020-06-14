@@ -298,6 +298,9 @@
 
 				// Gene
 				_Gene = project.Gene;
+				if (_Gene == null || string.IsNullOrEmpty(_Gene.Key)) {
+					_Gene = GeneData.GetDefault();
+				}
 
 				// Music
 				LogLoadingProgress(LanguageData.Loading_Audio, 0.2f);

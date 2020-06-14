@@ -13,6 +13,16 @@
 		// Event
 		[System.Serializable] public class IntEvent : UnityEvent<int> { }
 
+		// Api
+		public int TypeIndex {
+			get => m_TypeIndex;
+			set {
+				if (m_TypeIndex != value) {
+					m_TypeIndex = value;
+					LocalDirtyID = GlobalDirtyID - 1;
+				}
+			}
+		}
 
 		// Ser
 		[SerializeField] private Grabber m_TypePrefab = null;
@@ -26,8 +36,9 @@
 		private int LocalDirtyID = -1;
 
 
+
 		// MSG
-		private void OnEnable () {
+		private void Update () {
 			if (LocalDirtyID != GlobalDirtyID) {
 				LocalDirtyID = GlobalDirtyID;
 				var container = transform as RectTransform;
@@ -84,6 +95,7 @@
 				NoteSpritess.Add(resultList.ToArray());
 			}
 		}
+
 
 
 	}

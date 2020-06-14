@@ -17,6 +17,8 @@
 		public delegate float FloatHandler ();
 		public delegate void VoidHandler ();
 		public delegate string StringStringHandler (string str);
+		public delegate void SetBrushInfoHandler (int brushType, (float? width, float? height, int? itemType) info);
+		public delegate (float? width, float? height, int? itemType) GetBrushInfoHandler (int brushType);
 
 		// Const
 		private const string HEADER_BEATMAP = "Inspector.Header.Beatmap";
@@ -24,8 +26,11 @@
 		private const string HEADER_TRACK = "Inspector.Header.Track";
 		private const string HEADER_NOTE = "Inspector.Header.Note";
 		private const string HEADER_TIMING = "Inspector.Header.Timing";
+		private const string HEADER_BRUSH = "Inspector.Header.Brush";
+
 
 		// Handler
+		public static IntHandler GetSelectingBrush { get; set; } = null;
 		public static IntHandler GetSelectingType { get; set; } = null;
 		public static IntHandler GetSelectingIndex { get; set; } = null;
 		public static BeatmapHandler GetBeatmap { get; set; } = null;
@@ -34,6 +39,9 @@
 		public static VoidHandler OnBeatmapEdited { get; set; } = null;
 		public static VoidHandler OnItemEdited { get; set; } = null;
 		public static StringStringHandler GetLanguage { get; set; } = null;
+		public static SetBrushInfoHandler SetBrushInfo { get; set; } = null;
+		public static GetBrushInfoHandler GetBrushInfo { get; set; } = null;
+
 
 		// Api
 		public static (int stage, int track, int note) TypeCount { get; set; } = (0, 0, 0);
@@ -44,6 +52,7 @@
 		private TrackInspectorUI InspectorTrack => _TrackInspector != null ? _TrackInspector : (_TrackInspector = m_Container.GetChild(2).GetComponent<TrackInspectorUI>());
 		private NoteInspectorUI InspectorNote => _NoteInspector != null ? _NoteInspector : (_NoteInspector = m_Container.GetChild(3).GetComponent<NoteInspectorUI>());
 		private TimingInspectorUI InspectorTiming => _TimingInspector != null ? _TimingInspector : (_TimingInspector = m_Container.GetChild(4).GetComponent<TimingInspectorUI>());
+		private BrushInspectorUI InspectorBrush => _BrushInspector != null ? _BrushInspector : (_BrushInspector = m_Container.GetChild(5).GetComponent<BrushInspectorUI>());
 
 		// Ser
 		[SerializeField] private Text m_Header = null;
@@ -58,6 +67,7 @@
 		private TrackInspectorUI _TrackInspector = null;
 		private NoteInspectorUI _NoteInspector = null;
 		private TimingInspectorUI _TimingInspector = null;
+		private BrushInspectorUI _BrushInspector = null;
 		private Coroutine MotionInspectorCor = null;
 		private bool UIReady = true;
 
@@ -79,6 +89,9 @@
 			foreach (var label in InspectorTiming.LanguageLabels) {
 				label.text = GetLanguage(label.name);
 			}
+			foreach (var label in InspectorBrush.LanguageLabels) {
+				label.text = GetLanguage(label.name);
+			}
 			RefreshUI();
 		}
 
@@ -90,6 +103,7 @@
 			RefreshTrackInspector();
 			RefreshNoteInspector();
 			RefreshTimingInspector();
+			RefreshBrushInspector();
 		}
 
 
@@ -97,6 +111,7 @@
 			int type = GetSelectingType();
 			if (GetBeatmap() != null) {
 				int selectingIndex = GetSelectingIndex();
+				int selectingBrush = GetSelectingBrush();
 				if (type >= 0 && type < m_Container.childCount && selectingIndex >= 0) {
 					switch (type) {
 						case 0: // Stage
@@ -128,6 +143,11 @@
 							RefreshTimingInspector();
 							break;
 					}
+				} else if (selectingBrush >= 0) {
+					m_Header.text = GetLanguage(HEADER_BRUSH);
+					m_Index.transform.parent.gameObject.TrySetActive(false);
+					SetInspectorActive(5);
+					RefreshBrushInspector();
 				} else {
 					m_Header.text = GetLanguage(HEADER_BEATMAP);
 					m_Index.transform.parent.gameObject.TrySetActive(false);
@@ -180,24 +200,39 @@
 		public void UI_SwitchItemType () {
 			int selectingType = GetSelectingType();
 			int selectingIndex = GetSelectingIndex();
+			int selectingBrush = GetSelectingBrush();
 			var map = GetBeatmap();
-			if (map == null || selectingType < 0 || selectingType > 2 || selectingIndex < 0) { return; }
-			int typeCount = selectingType == 0 ? TypeCount.stage : selectingType == 1 ? TypeCount.track : TypeCount.note;
-			int itemType = map.GetItemType(selectingType, selectingIndex);
-			itemType = (itemType + 1) % typeCount;
-			map.SetItemType(selectingType, selectingIndex, itemType);
-			OnItemEdited();
+			if (map == null) { return; }
+			if (selectingType < 0 || selectingType > 2 || selectingIndex < 0) {
+				int typeCount = selectingType == 0 ? TypeCount.stage : selectingType == 1 ? TypeCount.track : TypeCount.note;
+				int itemType = map.GetItemType(selectingType, selectingIndex);
+				itemType = (itemType + 1) % typeCount;
+				map.SetItemType(selectingType, selectingIndex, itemType);
+				OnItemEdited();
+			}
+			if (selectingBrush >= 0) {
+				int typeCount = selectingBrush == 0 ? TypeCount.stage : selectingBrush == 1 ? TypeCount.track : TypeCount.note;
+				int itemType = GetBrushInfo(selectingBrush).itemType ?? 0;
+				itemType = (itemType + 1) % typeCount;
+				SetBrushInfo(selectingBrush, (null, null, itemType));
+			}
 			RefreshAllInspectors();
 		}
 
 
 		public void UI_SetItemType (int value) {
+			var map = GetBeatmap();
+			if (map == null) { return; }
 			int selectingType = GetSelectingType();
 			int selectingIndex = GetSelectingIndex();
-			var map = GetBeatmap();
-			if (map == null || selectingType < 0 || selectingIndex < 0) { return; }
-			map.SetItemType(selectingType, selectingIndex, value);
-			OnItemEdited();
+			int selectingBrush = GetSelectingBrush();
+			if (selectingType >= 0 && selectingIndex >= 0) {
+				map.SetItemType(selectingType, selectingIndex, value);
+				OnItemEdited();
+			}
+			if (selectingBrush >= 0) {
+				SetBrushInfo(selectingBrush, (null, null, value));
+			}
 			RefreshAllInspectors();
 		}
 
@@ -423,6 +458,27 @@
 		}
 
 
+		public void UI_OnEndEdit_Brush (string id) {
+			int selectingBrush = GetSelectingBrush();
+			if (!UIReady || selectingBrush < 0) { return; }
+			switch (id.ToLower()) {
+				case "width":
+					SetBrushInfo(selectingBrush, (InspectorBrush.GetWidth1000() / 1000f, null, null));
+					break;
+				case "height":
+					SetBrushInfo(selectingBrush, (null, InspectorBrush.GetHeight1000() / 1000f, null));
+					break;
+				case "type":
+					SetBrushInfo(selectingBrush, (null, null, InspectorBrush.GetItemType()));
+					break;
+				default:
+					Debug.LogWarning("wrong id: " + id.ToLower());
+					break;
+			}
+			RefreshBrushInspector();
+		}
+
+
 		public void SetCurrentColor (int newColor) {
 			int selectingType = GetSelectingType();
 			int selectingIndex = GetSelectingIndex();
@@ -551,6 +607,22 @@
 				InspectorTiming.SetSfx(timing.SoundFxIndex);
 				InspectorTiming.SetSfxParamA(timing.SoundFxParamA);
 				InspectorTiming.SetSfxParamB(timing.SoundFxParamB);
+			} catch { }
+			UIReady = true;
+		}
+
+
+		private void RefreshBrushInspector () {
+			int selectingBrush = GetSelectingBrush();
+			if (selectingBrush < 0) { return; }
+			InspectorBrush.BrushType = selectingBrush;
+			InspectorBrush.ShowHeight(selectingBrush == 0);
+			UIReady = false;
+			try {
+				var (width, height, type) = GetBrushInfo(selectingBrush);
+				InspectorBrush.SetWidth1000(Mathf.RoundToInt((width ?? 0) * 1000f));
+				InspectorBrush.SetHeight1000(Mathf.RoundToInt((height ?? 0) * 1000f));
+				InspectorBrush.SetItemType(Mathf.RoundToInt(type ?? 0));
 			} catch { }
 			UIReady = true;
 		}

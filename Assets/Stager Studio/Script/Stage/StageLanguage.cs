@@ -303,6 +303,7 @@ namespace StagerStudio.Editor {
 			LayoutH(() => {
 				GUIRect(0, 1);
 				if (GUI.Button(GUIRect(62, 18), "Save", EditorStyles.miniButtonLeft)) {
+					GUI.FocusControl(null);
 					Save();
 				}
 				if (GUI.Button(GUIRect(62, 18), "+", EditorStyles.miniButtonRight)) {
@@ -360,6 +361,9 @@ namespace StagerStudio.Editor {
 			}
 			Space(4);
 
+			if (Event.current.type == EventType.MouseDown) {
+				GUI.FocusControl(null);
+			}
 			//base.OnInspectorGUI();
 
 		}

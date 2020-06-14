@@ -34,6 +34,7 @@ Gene.Stager.Fuck:ドSドS
 Gene.Voez:FREE-TRACK
 Gene.Voez.Fuck:EAT-MY-RHOMBUS
 Inspector.Header.Beatmap:Beatmap
+Inspector.Header.Brush:Brush
 Inspector.Header.Note:Note
 Inspector.Header.Stage:Stage
 Inspector.Header.Timing:Timing
@@ -273,6 +274,9 @@ Tip.Inspector.Angle:Tilt angle
 Tip.Inspector.Beat:Time in unit of beat
 Tip.Inspector.BeatDivide:Subdivision of beat time
 Tip.Inspector.BPM:Beat per minute
+Tip.Inspector.BrushHeight:Height of the current brush
+Tip.Inspector.BrushType:Item type of current brush
+Tip.Inspector.BrushWidth:Width of the current brush
 Tip.Inspector.Click:Index of the click sound, set to -1 for no click sound
 Tip.Inspector.Color:Color index of the object
 Tip.Inspector.ColorSelector:Open color selector
@@ -341,7 +345,6 @@ Tip.Setting.Keypress:Show the keys pressed on the screen for seconds
 Tip.Setting.LargeUI:Large UI, for small physical size display
 Tip.Setting.MusicVolume:Music volume
 Tip.Setting.NormalUI:Normal UI, for normal size display
-Tip.Setting.NoteBrushWidth:Width of the note painted by brush
 Tip.Setting.PositiveScroll:Only for mouse scrolling inside editor, such as adjusting y-position of notes
 Tip.Setting.Preview:Show preview of the beatmap on the progress bar or not
 Tip.Setting.Reset:Reset all settings
@@ -355,10 +358,7 @@ Tip.Setting.SizeSnapCount:Count of snap when adjust item size by dragging axis
 Tip.Setting.SmallUI:Small UI, for larger physical size display
 Tip.Setting.SoloOnEditMotion:Eg. When editing motion of a track, hide all notes, other tracks and other stages.
 Tip.Setting.SoundVolume:Snap music time based on BPM
-Tip.Setting.StageBrushHeight:Height of the stage painted by brush
-Tip.Setting.StageBrushWidth:Width of the stage painted by brush
 Tip.Setting.Tip:Show tooltip or not
-Tip.Setting.TrackBrushWidth:Width of the track painted by brush
 Tip.Setting.UseEditorEffect:Whether to display effects when editing the beatmap, such as effects for adding or deleting objects, etc.
 Tip.Setting.UseLog:Log debuging info into text file
 Tip.Setting.UseSnap:Snap to the surrounding objects when adjusting the stage, track, and notes
@@ -398,6 +398,9 @@ UI.Home.TutorialLabel:Tutorial
 UI.ImportBeatmap:Import
 UI.Inspector.Angle:Angle
 UI.Inspector.BPM:BPM
+UI.Inspector.BrushHeight:Height
+UI.Inspector.BrushType:Type
+UI.Inspector.BrushWidth:Width
 UI.Inspector.Click:Click
 UI.Inspector.Color:Color
 UI.Inspector.Command:CMD
@@ -470,7 +473,6 @@ UI.Setting.GridCountX1:Grid Count X (Track)
 UI.Setting.GridCountX2:Grid Count X (Note)
 UI.Setting.GridCountY:Grid Count Y
 UI.Setting.MusicVolume:Music Volume
-UI.Setting.NoteBrushWidth:Note Brush Width
 UI.Setting.PositiveScroll:Use Positive Mouse Scroll
 UI.Setting.Preview:Show Beatmap Preview
 UI.Setting.RotationSnapCount:Rotation Snap Count
@@ -484,9 +486,6 @@ UI.Setting.SizeSnapCount:Size Snap Count
 UI.Setting.SnapProgress:Snap When Setting Music Time with Progressbar
 UI.Setting.SoloOnEditMotion:Solo On Edit Motion
 UI.Setting.SoundVolume:Sound Volume
-UI.Setting.StageBrushHeight:Stage Brush Height
-UI.Setting.StageBrushWidth:Stage Brush Width
-UI.Setting.TrackBrushWidth:Track Brush Width
 UI.Setting.UIScale:UI Scale
 UI.Setting.UIScale.0:Small
 UI.Setting.UIScale.1:Normal

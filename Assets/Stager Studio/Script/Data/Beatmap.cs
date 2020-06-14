@@ -1230,77 +1230,9 @@
 
 
 		// Item - Add
-		public void AddStage (
-			float time, float duration,
-			float x = 0f, float y = 0f,
-			float width = 1f, float height = 1f,
-			int itemType = 0, float pivotY = 0f,
-			float rotation = 0f, float speed = 1f,
-			int color = 0
-		) => Stages.Add(new Stage() {
-			Time = time,
-			Duration = duration,
-			X = x,
-			Y = y,
-			Width = width,
-			Height = height,
-			ItemType = itemType,
-			PivotY = pivotY,
-			Rotation = rotation,
-			Speed = speed,
-			Color = color,
-			Rotations = { },
-			Widths = { },
-			Heights = { },
-			Colors = { },
-			Positions = { },
-		});
-
-
-		public void AddTrack (
-			int stageIndex, float time, float duration,
-			float x = 0f, float width = 0f, float angle = 0f,
-			int color = 0, int itemType = 0,
-			bool hasTray = false
-		) => Tracks.Add(new Track() {
-			StageIndex = stageIndex,
-			Time = time,
-			Duration = duration,
-			X = x,
-			Width = width,
-			Angle = angle,
-			Color = color,
-			ItemType = itemType,
-			Speed = 1f,
-			Widths = { },
-			Xs = { },
-			HasTray = hasTray,
-			Colors = { },
-			Angles = { },
-		});
-
-
-		public void AddNote (
-			int trackIndex, float time, float duration,
-			float x = 0f, float width = 0f,
-			int linkedNoteIndex = -1, int itemType = 0,
-			float z = 0f, byte clickSoundIndex = 0
-		) => Notes.Add(new Note() {
-			TrackIndex = trackIndex,
-			Time = time,
-			Duration = duration,
-			X = x,
-			Z = z,
-			Width = width,
-			ItemType = itemType,
-			ClickSoundIndex = clickSoundIndex,
-			LinkedNoteIndex = linkedNoteIndex,
-			SoundFxIndex = 0,
-			SoundFxParamA = 0,
-			SoundFxParamB = 0,
-			TimingID = 0,
-			Speed = 1f,
-		});
+		public void AddStage (Stage stage) => Stages.Add(stage);
+		public void AddTrack (Track track) => Tracks.Add(track);
+		public void AddNote (Note note) => Notes.Add(note);
 
 
 		public void AddTiming (
@@ -1314,9 +1246,6 @@
 		});
 
 
-		public void AddStage (Stage stage) => Stages.Add(stage);
-		public void AddTrack (Track track) => Tracks.Add(track);
-		public void AddNote (Note note) => Notes.Add(note);
 		public void AddTiming (Timing timing) => Timings.Add(timing);
 
 

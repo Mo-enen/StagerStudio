@@ -33,10 +33,6 @@
 			GridCount_Y_S,
 			GridCount_Y_M,
 			GridCount_Y_L,
-			StageBrushWidth,
-			StageBrushHeight,
-			TrackBrushWidth,
-			NoteBrushWidth,
 			SizeSnapCount,
 			RotationSnapCount,
 
@@ -308,31 +304,6 @@
 				new SavingString("SS.GridCount_Y_L", "8"),
 				true
 			));
-
-			// Brush
-			InputItemMap.Add(InputType.StageBrushWidth, ((str) => {
-				if (str.TryParseFloatForInspector(out float result)) {
-					SetBrushSize(0, 0, result);
-				}
-			}, null, new SavingString("SS.StageBrushWidth", "1"), true));
-
-			InputItemMap.Add(InputType.StageBrushHeight, ((str) => {
-				if (str.TryParseFloatForInspector(out float result)) {
-					SetBrushSize(0, 1, result);
-				}
-			}, null, new SavingString("SS.StageBrushHeight", "1"), true));
-
-			InputItemMap.Add(InputType.TrackBrushWidth, ((str) => {
-				if (str.TryParseFloatForInspector(out float result)) {
-					SetBrushSize(1, 0, result);
-				}
-			}, null, new SavingString("SS.TrackBrushWidth", "0.2"), true));
-
-			InputItemMap.Add(InputType.NoteBrushWidth, ((str) => {
-				if (str.TryParseFloatForInspector(out float result)) {
-					SetBrushSize(2, 0, result);
-				}
-			}, null, new SavingString("SS.NoteBrushWidth", "0.2"), true));
 
 			InputItemMap.Add(InputType.SizeSnapCount, ((str) => {
 				if (str.TryParseIntForInspector(out int result)) {
@@ -776,19 +747,6 @@
 		}
 
 
-		// Brush
-		public void BrushSizeUp (bool alt) => SetBrushSize(
-			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
-			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) + 0.05f, 0.05f, 1f)
-		);
-
-
-		public void BrushSizeDown (bool alt) => SetBrushSize(
-			m_Editor.SelectingBrushIndex, alt ? 1 : 0,
-			Mathf.Clamp(GetBrushSize(m_Editor.SelectingBrushIndex, alt ? 1 : 0) - 0.05f, 0.05f, 1f)
-		);
-
-
 		#endregion
 
 
@@ -824,48 +782,6 @@
 		private void SetMusicVolume (float value) {
 			m_Music.Volume = value;
 			SliderItemMap[SliderType.MusicVolume].saving.Value = value * 12f;
-		}
-
-
-		// Brush
-		private float GetBrushSize (int index, int brushType) {
-			switch (index) {
-				default:
-				return 0f;
-				case 0: // Stage Width
-				return brushType == 0 ? m_Editor.StageBrushWidth : m_Editor.StageBrushHeight;
-				case 1: // Track Width
-				return m_Editor.TrackBrushWidth;
-				case 2: // Note Width
-				return m_Editor.NoteBrushWidth;
-			}
-		}
-
-
-		private void SetBrushSize (int itemType, int brushType, float size01) {
-			size01 = Mathf.Clamp01(size01);
-			size01 = Mathf.Round(size01 * 100f) / 100f;
-			switch (itemType) {
-				case 0: // Stage
-				if (brushType == 0) {
-					// Width
-					m_Editor.StageBrushWidth = size01;
-					InputItemMap[InputType.StageBrushWidth].saving.Value = size01.ToString("0.##");
-				} else {
-					// Height
-					m_Editor.StageBrushHeight = size01;
-					InputItemMap[InputType.StageBrushHeight].saving.Value = size01.ToString("0.##");
-				}
-				break;
-				case 1: // Track Width
-				m_Editor.TrackBrushWidth = size01;
-				InputItemMap[InputType.TrackBrushWidth].saving.Value = size01.ToString("0.##");
-				break;
-				case 2: // Note Width
-				m_Editor.NoteBrushWidth = size01;
-				InputItemMap[InputType.NoteBrushWidth].saving.Value = size01.ToString("0.##");
-				break;
-			}
 		}
 
 

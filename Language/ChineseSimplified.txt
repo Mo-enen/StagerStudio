@@ -34,6 +34,7 @@ Gene.Stager.Fuck:抖S抖S
 Gene.Voez:自由轨道
 Gene.Voez.Fuck:吃我菱形
 Inspector.Header.Beatmap:谱  面
+Inspector.Header.Brush:笔  刷
 Inspector.Header.Note:音  符
 Inspector.Header.Stage:舞  台
 Inspector.Header.Timing:时间点
@@ -273,6 +274,9 @@ Tip.Inspector.Angle:倾斜角度
 Tip.Inspector.Beat:单位为节拍数的时间
 Tip.Inspector.BeatDivide:节拍的细分程度
 Tip.Inspector.BPM:每分钟节拍数
+Tip.Inspector.BrushHeight:当前笔刷的高度
+Tip.Inspector.BrushType:当前笔刷的类型
+Tip.Inspector.BrushWidth:当前笔刷的宽度
 Tip.Inspector.Click:按键音编号，无按键音时为-1
 Tip.Inspector.Color:物体的颜色编号
 Tip.Inspector.ColorSelector:打开颜色选择器
@@ -341,7 +345,6 @@ Tip.Setting.Keypress:将一段时间内按过的按键展示在屏幕上
 Tip.Setting.LargeUI:较大的界面，适合物理尺寸较小的显示器
 Tip.Setting.MusicVolume:音乐音量
 Tip.Setting.NormalUI:中等的界面，适合普通显示器
-Tip.Setting.NoteBrushWidth:音符笔刷绘制内容的宽度
 Tip.Setting.PositiveScroll:仅限编辑器内的鼠标滚动，例如调整音符纵向位置等
 Tip.Setting.Preview:是否在进度条上显示谱面预览
 Tip.Setting.Reset:重制所有设置
@@ -355,10 +358,7 @@ Tip.Setting.SizeSnapCount:拖拽控件调整物体尺寸时的紧贴台阶数
 Tip.Setting.SmallUI:较小的界面，适合物理尺寸较大的显示器
 Tip.Setting.SoloOnEditMotion:例如：编辑一个轨道的运动时，不显示音符、其它轨道和其它舞台
 Tip.Setting.SoundVolume:根据BPM来对齐调整的时间
-Tip.Setting.StageBrushHeight:舞台笔刷绘制内容的高度
-Tip.Setting.StageBrushWidth:舞台笔刷绘制内容的宽度
 Tip.Setting.Tip:是否显示工具提示
-Tip.Setting.TrackBrushWidth:轨道笔刷绘制内容的宽度
 Tip.Setting.UseEditorEffect:是否在编辑谱面时显示特效，比如添加或删除物体时的光效等
 Tip.Setting.UseLog:是否将调试信息输出到日志文件
 Tip.Setting.UseSnap:在调整舞台、轨道、音符时紧贴至邻近的物体
@@ -398,6 +398,9 @@ UI.Home.TutorialLabel:教程
 UI.ImportBeatmap:导入
 UI.Inspector.Angle:角度
 UI.Inspector.BPM:BPM
+UI.Inspector.BrushHeight:高度
+UI.Inspector.BrushType:类型
+UI.Inspector.BrushWidth:宽度
 UI.Inspector.Click:按键音
 UI.Inspector.Color:颜色
 UI.Inspector.Command:命令行
@@ -470,7 +473,6 @@ UI.Setting.GridCountX1:网格数量 X（轨道）
 UI.Setting.GridCountX2:网格数量 X（音符）
 UI.Setting.GridCountY:网格数量 Y
 UI.Setting.MusicVolume:音乐音量
-UI.Setting.NoteBrushWidth:音符笔刷宽度
 UI.Setting.PositiveScroll:使用正向的鼠标滚动
 UI.Setting.Preview:显示谱面预览
 UI.Setting.RotationSnapCount:角度紧贴数量
@@ -484,9 +486,6 @@ UI.Setting.SizeSnapCount:尺寸紧贴数量
 UI.Setting.SnapProgress:使用进度条设置时间时对齐到节拍
 UI.Setting.SoloOnEditMotion:编辑运动时隐藏其它物体
 UI.Setting.SoundVolume:音效音量
-UI.Setting.StageBrushHeight:舞台笔刷高度
-UI.Setting.StageBrushWidth:舞台笔刷宽度
-UI.Setting.TrackBrushWidth:轨道笔刷宽度
 UI.Setting.UIScale:界面尺寸
 UI.Setting.UIScale.0:小
 UI.Setting.UIScale.1:中

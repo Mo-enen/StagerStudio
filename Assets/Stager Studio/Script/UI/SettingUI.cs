@@ -144,7 +144,6 @@
 		[SerializeField] private RectTransform m_Window = null;
 		[SerializeField] private RectTransform m_GeneralContent = null;
 		[SerializeField] private RectTransform m_EditorContent = null;
-		[SerializeField] private RectTransform m_BrushContent = null;
 		[SerializeField] private RectTransform m_SkinContent = null;
 		[SerializeField] private RectTransform m_LanguageContent = null;
 		[SerializeField] private RectTransform m_ShortcutContent = null;
@@ -183,7 +182,6 @@
 			// Content
 			m_GeneralContent.parent.parent.gameObject.SetActive(true);
 			m_EditorContent.parent.parent.gameObject.SetActive(false);
-			m_BrushContent.parent.parent.gameObject.SetActive(false);
 			m_SkinContent.parent.parent.gameObject.SetActive(false);
 			m_LanguageContent.parent.parent.gameObject.SetActive(false);
 			m_ShortcutContent.parent.parent.gameObject.SetActive(false);

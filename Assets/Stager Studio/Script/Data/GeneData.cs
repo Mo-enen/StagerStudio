@@ -160,5 +160,12 @@
 		public NoteConfig[] StaticConfigs_Note = { };
 
 
+
+		// API
+		public static GeneData GetDefault () => new GeneData() {
+			Key = "Gene.Stager",
+		};
+
+
 	}
 }

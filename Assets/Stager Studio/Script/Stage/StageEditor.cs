@@ -27,6 +27,22 @@
 		}
 
 
+		public class SavingBrushConfig {
+
+			public SavingFloat StageWidth { get; set; } = new SavingFloat("StageEditor.StageWidth", 1f);
+			public SavingFloat StageHeight { get; set; } = new SavingFloat("StageEditor.StageHeight", 1f);
+			public SavingFloat TrackWidth { get; set; } = new SavingFloat("StageEditor.TrackWidth", 0.2f);
+			public SavingFloat NoteWidth { get; set; } = new SavingFloat("StageEditor.NoteWidth", 0.5f);
+
+			public SavingInt StageType { get; set; } = new SavingInt("StageEditor.StageType", 0);
+			public SavingInt TrackType { get; set; } = new SavingInt("StageEditor.TrackType", 0);
+			public SavingInt NoteType { get; set; } = new SavingInt("StageEditor.NoteType", 0);
+
+		}
+
+
+
+
 		public delegate (Vector3 min, Vector3 max, float size, float ratio) ZoneHandler ();
 		public delegate void VoidHandler ();
 		public delegate float FloatHandler ();
@@ -98,10 +114,6 @@
 		public int SelectingItemIndex { get; private set; } = -1;
 		public int SelectingItemSubIndex { get; private set; } = -1;
 		public int SelectingBrushIndex { get; private set; } = -1;
-		public float StageBrushWidth { get; set; } = 1f;
-		public float StageBrushHeight { get; set; } = 1f;
-		public float TrackBrushWidth { get; set; } = 0.2f;
-		public float NoteBrushWidth { get; set; } = 0.2f;
 		public bool AxisDragging { get; private set; } = false;
 		public int SizeSnapCount { get; set; } = 20;
 		public int RotationSnapCount { get; set; } = 24;
@@ -167,6 +179,7 @@
 		// Saving
 		public SavingBool ShowGridOnSelect { get; set; } = new SavingBool("StageEditor.ShowGridOnSelect", false);
 		public SavingBool UseMagnetSnap { get; set; } = new SavingBool("StageEditor.UseMagnetSnap", false);
+		public SavingBrushConfig BrushConfig { get; set; } = new SavingBrushConfig();
 
 
 		#endregion
@@ -477,14 +490,15 @@
 						}
 						float musicDuration = GetMusicDuration();
 						BeforeObjectEdited(EditType.Create, 0, map.Stages.Count);
-						map.AddStage(
-							paintTime,
-							musicDuration - paintTime,
-							zonePos.x,
-							zonePos.y,
-							StageBrushWidth,
-							StageBrushHeight / zoneRatio
-						);
+						map.AddStage(new Beatmap.Stage() {
+							Time = paintTime,
+							Duration = musicDuration - paintTime,
+							X = zonePos.x,
+							Y = zonePos.y,
+							Width = BrushConfig.StageWidth,
+							Height = BrushConfig.StageHeight / zoneRatio,
+							ItemType = BrushConfig.StageType,
+						});
 						OnObjectEdited(EditType.Create, 0, map.Stages.Count - 1);
 					}
 					break;
@@ -517,13 +531,14 @@
 							Stage.GetStageWorldRotationZ(stage)
 						).x;
 						BeforeObjectEdited(EditType.Create, 1, map.Tracks.Count);
-						map.AddTrack(
-							index,
-							paintTime,
-							Mathf.Max(stage.Duration - (paintTime - stage.Time), 0.001f),
-							trackX,
-							TrackBrushWidth
-						);
+						map.AddTrack(new Beatmap.Track() {
+							StageIndex = index,
+							Time = paintTime,
+							Duration = Mathf.Max(stage.Duration - (paintTime - stage.Time), 0.001f),
+							X = trackX,
+							Width = BrushConfig.TrackWidth,
+							ItemType = BrushConfig.TrackType,
+						});
 						OnObjectEdited(EditType.Create, 1, map.Tracks.Count - 1);
 					}
 					break;
@@ -553,13 +568,13 @@
 							Track.GetTrackAngle(track)
 						);
 						BeforeObjectEdited(EditType.Create, 2, map.Notes.Count);
-						map.AddNote(
-							index,
-							GetFilledTime(0, GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
-							0f,
-							localPos.x,
-							NoteBrushWidth
-						);
+						map.AddNote(new Beatmap.Note() {
+							TrackIndex = index,
+							Time = GetFilledTime(0, GetMusicTime(), localPos.y, m_Grid.GameSpeedMuti * m_Grid.ObjectSpeedMuti),
+							X = localPos.x,
+							Width = BrushConfig.NoteWidth,
+							ItemType = BrushConfig.NoteType,
+						});
 						OnObjectEdited(EditType.Create, 2, map.Notes.Count - 1);
 					}
 					break;
@@ -855,8 +870,8 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = zoneSize * StageBrushWidth;
-								ghostSize.y = zoneSize * StageBrushHeight / zoneRatio;
+								ghostSize.x = zoneSize * BrushConfig.StageWidth;
+								ghostSize.y = zoneSize * BrushConfig.StageHeight / zoneRatio;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, false);
 								ghostPivotX = 0.5f;
@@ -869,7 +884,7 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = TrackBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.x = BrushConfig.TrackWidth * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, true, true);
@@ -884,7 +899,7 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = NoteBrushWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.x = BrushConfig.NoteWidth * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = GHOST_NOTE_Y / zoneSize;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, true);
@@ -1112,6 +1127,46 @@
 
 
 		public void SetErase () => SetEraseLogic();
+
+
+		public void AddBrushSize (float delta) {
+			switch (SelectingBrushIndex) {
+				case 0:
+					BrushConfig.StageWidth.Value = Mathf.Round(Mathf.Clamp(
+						BrushConfig.StageWidth + delta, 0.05f, 1f
+					) * 1000f) / 1000f;
+					OnBrushChanged();
+					break;
+				case 1:
+					BrushConfig.TrackWidth.Value = Mathf.Round(Mathf.Clamp(
+						BrushConfig.TrackWidth + delta, 0.05f, 1f
+					) * 1000f) / 1000f;
+					OnBrushChanged();
+					break;
+				case 2:
+					BrushConfig.NoteWidth.Value = Mathf.Round(Mathf.Clamp(
+						BrushConfig.NoteWidth + delta, 0.05f, 1f
+					) * 1000f) / 1000f;
+					OnBrushChanged();
+					break;
+			}
+		}
+
+
+		public void AddBrushSize_Alt (float delta) {
+			switch (SelectingBrushIndex) {
+				case 0:
+					BrushConfig.StageHeight.Value = Mathf.Round(Mathf.Clamp(
+						BrushConfig.StageHeight + delta, 0.05f, 1f
+					) * 1000f) / 1000f;
+					OnBrushChanged();
+					break;
+				case 1:
+				case 2:
+					AddBrushSize(delta);
+					break;
+			}
+		}
 
 
 		// Translate

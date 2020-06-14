@@ -340,10 +340,10 @@
 			);
 
 			// Tutorial Chapter
-			SpawnChapter(
-				"Stager_Tutorial", "", false, false, false, false,
-				CHAPTER_TUTORIAL_LABEL_KEY, () => { Application.OpenURL(TUTORIAL_WEB_URL); }
-			);
+			//SpawnChapter(
+			//	"Stager_Tutorial", "", false, false, false, false,
+			//	CHAPTER_TUTORIAL_LABEL_KEY, () => { Application.OpenURL(TUTORIAL_WEB_URL); }
+			//);
 
 			// Opening Trashbin
 			if (Util.HasFileIn(Trashbin, "*.stager") && OpeningChapter.Value == trashbinName) {
