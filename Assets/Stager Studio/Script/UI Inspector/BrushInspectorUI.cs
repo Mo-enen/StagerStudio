@@ -38,6 +38,10 @@
 		public void ShowHeight (bool show) {
 			m_HeightIF.transform.parent.TrySetActive(show);
 		}
+		public void ShowType (bool show) {
+			m_TypeIF.transform.parent.TrySetActive(show);
+			m_TypeSelector.transform.TrySetActive(show);
+		}
 
 
 	}

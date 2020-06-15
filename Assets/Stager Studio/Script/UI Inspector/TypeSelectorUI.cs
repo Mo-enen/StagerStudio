@@ -71,14 +71,17 @@
 			GlobalDirtyID++;
 			NoteSpritess.Clear();
 			if (skin == null || skin.Texture == null) { return; }
-			AddToList(SkinType.Stage);
-			AddToList(SkinType.Track);
-			AddToList(SkinType.Note);
+			AddToList(SkinType.Stage, SkinType.JudgeLine);
+			AddToList(SkinType.Track, SkinType.TrackTint);
+			AddToList(SkinType.Note, SkinType.Pole);
 			// === Func ===
-			void AddToList (SkinType skinType) {
+			void AddToList (SkinType skinType, SkinType skinTypeAlt) {
 				var resultList = new List<Sprite>();
-				if (skin.Items.Count > (int)skinType) {
+				if ((int)skinType < skin.Items.Count && (int)skinTypeAlt < skin.Items.Count) {
 					var noteRects = skin.Items[(int)skinType].Rects;
+					if (noteRects.Count == 0) {
+						noteRects = skin.Items[(int)skinTypeAlt].Rects;
+					}
 					foreach (var rect in noteRects) {
 						resultList.Add(Sprite.Create(
 							skin.Texture,

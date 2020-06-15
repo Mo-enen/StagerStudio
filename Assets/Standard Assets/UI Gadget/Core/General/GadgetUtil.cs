@@ -110,6 +110,15 @@
 		}
 
 
+		public static void FillQuad (VertexHelper toFill, Vector2 a, Vector2 b, Vector2 c, Vector2 d) {
+			VertexCache[0].position = a;
+			VertexCache[1].position = b;
+			VertexCache[2].position = c;
+			VertexCache[3].position = d;
+			toFill.AddUIVertexQuad(VertexCache);
+		}
+
+
 		public static void FillLine (VertexHelper toFill, Vector3 a, Vector3 b, float size) {
 			Vector3 cross = Vector3.Cross(a - b, Vector3.forward).normalized * (size * 0.5f);
 			VertexCache[0].position = a - cross;

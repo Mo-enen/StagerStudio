@@ -654,9 +654,7 @@
 				TimingNote.SetCacheDirty();
 			};
 			StageGame.OnDropSpeedChanged = () => {
-				if (!m_Game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
-				}
+				m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
 				m_TimingPreview.SetDirty();
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
@@ -681,9 +679,7 @@
 				m_Zone.SetFitterRatio(ratio);
 				m_TimingPreview.SetDirty();
 				RefreshGridRenderer();
-				if (!m_Game.UseDynamicSpeed) {
-					m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
-				}
+				m_Wave.Length01 = 1f / m_Game.GameDropSpeed / m_Music.Duration;
 			};
 			StageGame.GetBeatmap = () => m_Project.Beatmap;
 			StageGame.GetMusicTime = () => m_Music.Time;
@@ -810,7 +806,7 @@
 						m_Effect.SpawnCreateEffect(itemType, itemIndex);
 						break;
 					case StageEditor.EditType.Modify:
-						m_Gene.FixItemFromGene(itemType, itemIndex);
+						m_Gene.FixItemFromGene(itemType == 4 ? 0 : itemType == 5 ? 1 : itemType, itemIndex);
 						break;
 					case StageEditor.EditType.Delete:
 						if (itemType == 1) {
@@ -843,7 +839,11 @@
 				TypeSelectorUI.CalculateSprites(data);
 				m_Game.ClearAllContainers();
 				m_SkinSwiperLabel.text = StageSkin.Data.Name;
-				StageInspector.TypeCount = (data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.Note));
+				StageInspector.TypeCount = (
+					Mathf.Max(data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.JudgeLine)),
+					Mathf.Max(data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.TrackTint)),
+					Mathf.Max(data.TryGetItemCount(SkinType.Note), data.TryGetItemCount(SkinType.Pole))
+				);
 			};
 			StageSkin.OnSkinDeleted = () => {
 				TryRefreshSetting();

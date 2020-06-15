@@ -977,6 +977,7 @@
 				project.BackgroundData = Background.data;
 				project.MusicData = Music.data;
 				project.LastEditTime = LastEditTime = Util.GetLongTime();
+				project.Gene = _Gene;
 				// Click Sound
 				project.ClickSounds.Clear();
 				foreach (var (data, _) in ClickSounds) {

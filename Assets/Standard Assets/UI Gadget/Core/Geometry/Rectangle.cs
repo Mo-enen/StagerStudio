@@ -46,15 +46,6 @@
 				}
 			}
 		}
-		public Color FillColor {
-			get => m_FillColor;
-			set {
-				if (m_FillColor != value) {
-					m_FillColor = value;
-					SetVerticesDirty();
-				}
-			}
-		}
 		public Color BorderColor {
 			get => m_BorderColor;
 			set {
@@ -68,7 +59,6 @@
 		// Ser
 		[Header("Rect"), SerializeField] private int m_Detail = 12;
 		[SerializeField] private float m_Round = 8f;
-		[SerializeField] private Color m_FillColor = Color.white;
 		[Header("Border"), SerializeField] private float m_Border = 4f;
 		[Range(0f, 1f), SerializeField] private float m_BorderOffset = 0.5f;
 		[SerializeField] private Color m_BorderColor = Color.black;
@@ -80,7 +70,7 @@
 
 			toFill.Clear();
 			var rect = GetPixelAdjustedRect();
-			if (color.a < GadgetUtil.FLOAT_GAP || rect.width <= GadgetUtil.FLOAT_GAP || rect.height <= GadgetUtil.FLOAT_GAP) { return; }
+			if (rect.width <= GadgetUtil.FLOAT_GAP || rect.height <= GadgetUtil.FLOAT_GAP) { return; }
 			float round = Mathf.Clamp(m_Round, 0f, Mathf.Min(rect.width / 2f, rect.height / 2f));
 			float border = Mathf.Max(m_Border, 0f);
 			float borderOffset = Mathf.Clamp01(border > GadgetUtil.FLOAT_GAP ?
@@ -94,9 +84,9 @@
 			var max0 = rect.max - Vector2.one * borderGap;
 
 			// Fill
-			if (m_FillColor.a > GadgetUtil.FLOAT_GAP) {
+			if (color.a > GadgetUtil.FLOAT_GAP) {
 
-				GadgetUtil.SetCacheColor(m_FillColor * color);
+				GadgetUtil.SetCacheColor(color);
 
 				// Mid
 				var midMin = Vector2.Max(min0, min1);
@@ -121,7 +111,7 @@
 
 			// Border
 			if (m_BorderColor.a > GadgetUtil.FLOAT_GAP && border > GadgetUtil.FLOAT_GAP) {
-				GadgetUtil.SetCacheColor(m_BorderColor * color);
+				GadgetUtil.SetCacheColor(m_BorderColor);
 				float startRadius = round - borderGap;
 				float endRadius = startRadius + border;
 				var bMin = min0 - Vector2.one * border;

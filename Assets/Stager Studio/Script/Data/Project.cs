@@ -260,7 +260,10 @@
 		public GeneData Gene { get; set; } = null;
 
 		// Config
-		private bool[] TargetData { get; } = new bool[10] { true, true, true, true, true, true, true, true, true, true, };
+		private bool[] TargetData { get; } = new bool[10] { 
+			true, true, true, true, true,
+			true, true, true, true, true, 
+		};
 
 
 		#endregion

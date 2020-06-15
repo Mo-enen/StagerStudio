@@ -192,8 +192,8 @@
 
 		public void RefreshInspector () {
 			switch (GetSelectingItemType()) {
-				case 0: RefreshStageInspector(); break;
-				case 1: RefreshTrackInspector(); break;
+				case 0: case 4: RefreshStageInspector(); break;
+				case 1: case 5: RefreshTrackInspector(); break;
 				case 2: RefreshNoteInspector(); break;
 			}
 		}
@@ -347,7 +347,8 @@
 			if (configIndex < 0) { return false; }
 			var gene = GetGene();
 			switch (itemType) {
-				case 0: { // Stage
+				case 0:
+				case 4: { // Stage
 					var config = GetStageConfig(gene, configIndex);
 					return gene.StageAccessable && (!config.UseConfig || (
 						axis == 0 ? !config.X.Active :
@@ -358,7 +359,8 @@
 						axis != 5 || !config.Rotation.Active
 					));
 				}
-				case 1: { // Track
+				case 1:
+				case 5: { // Track
 					var config = GetTrackConfig(gene, configIndex);
 					return gene.TrackAccessable && (!config.UseConfig || (
 						axis == 0 ? !config.X.Active :

@@ -22,16 +22,26 @@
 
 		[SerializeField] private string m_TipKey = "";
 		[SerializeField] private string m_HotKey = "";
+		[SerializeField] private string m_HotKey_Alt = "";
 
 
 		// MSG
 		private void OnDisable () => LogTip("");
-		public void OnPointerEnter (PointerEventData e) => LogTip(m_TipKey, m_HotKey);
+		public void OnPointerEnter (PointerEventData e) => LogTip(m_TipKey, m_HotKey, m_HotKey_Alt);
 		public void OnPointerExit (PointerEventData e) => LogTip("");
 
 
 		// API
-		public static void LogTip (string key, string hotkey = "") => SetTip(ShowTip ? $"{GetLanguage(key)}   {GetHotKey(hotkey)}" : "");
+		public static void LogTip (string key) =>
+			SetTip(ShowTip ? GetLanguage(key) : "");
+
+
+		public static void LogTip (string key, string hotkey) =>
+			SetTip(ShowTip ? $"{GetLanguage(key)}   {GetHotKey(hotkey)}" : "");
+
+
+		public static void LogTip (string key, string hotkey, string hotKeyAlt) =>
+			SetTip(ShowTip ? $"{GetLanguage(key)}   {GetHotKey(hotkey)}   {GetHotKey(hotKeyAlt)}" : "");
 
 
 	}

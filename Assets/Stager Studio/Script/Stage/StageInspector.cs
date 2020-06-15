@@ -212,9 +212,13 @@
 			}
 			if (selectingBrush >= 0) {
 				int typeCount = selectingBrush == 0 ? TypeCount.stage : selectingBrush == 1 ? TypeCount.track : TypeCount.note;
-				int itemType = GetBrushInfo(selectingBrush).itemType ?? 0;
-				itemType = (itemType + 1) % typeCount;
-				SetBrushInfo(selectingBrush, (null, null, itemType));
+				if (typeCount > 0) {
+					int itemType = GetBrushInfo(selectingBrush).itemType ?? 0;
+					itemType = (itemType + 1) % typeCount;
+					SetBrushInfo(selectingBrush, (null, null, itemType));
+				} else {
+					SetBrushInfo(selectingBrush, (null, null, 0));
+				}
 			}
 			RefreshAllInspectors();
 		}
@@ -617,6 +621,7 @@
 			if (selectingBrush < 0) { return; }
 			InspectorBrush.BrushType = selectingBrush;
 			InspectorBrush.ShowHeight(selectingBrush == 0);
+			InspectorBrush.ShowType(selectingBrush == 0 || selectingBrush == 1 || selectingBrush == 2);
 			UIReady = false;
 			try {
 				var (width, height, type) = GetBrushInfo(selectingBrush);
