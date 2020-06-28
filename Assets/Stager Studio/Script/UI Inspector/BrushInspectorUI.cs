@@ -35,14 +35,6 @@
 		public void SetHeight1000 (int value) => m_HeightIF.text = value.ToString();
 		public void SetItemType (int value) => m_TypeIF.text = value.ToString();
 
-		public void ShowHeight (bool show) {
-			m_HeightIF.transform.parent.TrySetActive(show);
-		}
-		public void ShowType (bool show) {
-			m_TypeIF.transform.parent.TrySetActive(show);
-			m_TypeSelector.transform.TrySetActive(show);
-		}
-
-
+		
 	}
 }

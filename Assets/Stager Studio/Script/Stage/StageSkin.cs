@@ -14,10 +14,10 @@
 		#region --- SUB ---
 
 
-		public delegate void VoidSkinHandler(SkinData skin);
-		public delegate void VoidHandler();
-		public delegate string StringStringHandler(string key);
-		public delegate void VoidStringStringBoolHandler(string msg, string detail, bool isWarning);
+		public delegate void VoidSkinHandler (SkinData skin);
+		public delegate void VoidHandler ();
+		public delegate string StringStringHandler (string key);
+		public delegate void VoidStringStringBoolHandler (string msg, string detail, bool isWarning);
 
 
 		private static class LanguageData {
@@ -82,7 +82,7 @@
 		private string[] SkinNames = null;
 
 		// Saving
-		private SavingString SkinName = new SavingString("StageSkin.SkinName", "Stager");
+		private SavingString SkinName = new SavingString("StageSkin.SkinName", "");
 
 
 		#endregion
@@ -93,12 +93,8 @@
 		#region --- MSG ---
 
 
-		private void Awake() {
-			// Load Skin
+		private void Awake () {
 			LoadSkin(SkinName);
-
-
-
 		}
 
 
@@ -110,10 +106,10 @@
 		#region --- API ---
 
 
-		public void RefreshAllSkinNames() => SkinNames = null;
+		public void RefreshAllSkinNames () => SkinNames = null;
 
 
-		public SkinData GetSkinFromDisk(string name) {
+		public SkinData GetSkinFromDisk (string name) {
 			try {
 				var path = Util.CombinePaths(SkinFolderPath, name + SKIN_EX);
 				if (Util.FileExists(path)) {
@@ -124,41 +120,35 @@
 		}
 
 
-		public string GetPath(string name) => Util.CombinePaths(SkinFolderPath, name + SKIN_EX);
+		public string GetPath (string name) => Util.CombinePaths(SkinFolderPath, name + SKIN_EX);
 
 
-		public void ReloadSkin() => LoadSkin(SkinName);
+		public void ReloadSkin () => LoadSkin(SkinName);
 
 
-		public void LoadSkin(string name) {
+		public void LoadSkin (string name) {
 			if (!string.IsNullOrEmpty(name)) {
+				// Load Skin
 				try {
 					Data = (GetSkinFromDisk(name), name);
-				} catch { }
-				// Load First in Disk
-				try {
-					if (Data.Data == null) {
-						LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
-						Data = (GetSkinFromDisk(SkinNames[0]), SkinNames[0]);
-					}
 				} catch { }
 				// Load Built-in Default
 				try {
 					if (Data.Data == null) {
 						LogMessage(LanguageData.ERROR_SkinNotLoaded, true);
-						Data = (m_DefaultSkin, "Stager");
-						name = "Stager";
+						Data = (m_DefaultSkin, "");
+						name = "";
 					}
 				} catch { }
 			} else {
-				Data = (m_DefaultSkin, name);
+				Data = (m_DefaultSkin, "");
 			}
 			SkinName.Value = name;
 			OnSkinLoaded(Data.Data);
 		}
 
 
-		public string SaveSkin(SkinData skin, string name) {
+		public string SaveSkin (SkinData skin, string name) {
 			if (skin == null || string.IsNullOrEmpty(name)) { return ""; }
 			string path = "";
 			try {
@@ -175,7 +165,7 @@
 		}
 
 
-		public void UI_NewSkin() => DialogUtil.Dialog_OK_Cancel(LanguageData.CONFIRM_NewSkinConfirm, DialogUtil.MarkType.Info, () => {
+		public void UI_NewSkin () => DialogUtil.Dialog_OK_Cancel(LanguageData.CONFIRM_NewSkinConfirm, DialogUtil.MarkType.Info, () => {
 			var name = "Skin_" + Util.GetTimeString();
 			var skin = new SkinData();
 			skin.Fillup();
@@ -184,13 +174,13 @@
 		});
 
 
-		public void UI_LoadSkin(object skinNameObj) {
+		public void UI_LoadSkin (object skinNameObj) {
 			if (!(skinNameObj is RectTransform)) { return; }
 			LoadSkin((skinNameObj as RectTransform).name);
 		}
 
 
-		public void UI_DeleteSkin(object skinNameObj) {
+		public void UI_DeleteSkin (object skinNameObj) {
 			if (!(skinNameObj is RectTransform)) { return; }
 			string skinName = (skinNameObj as RectTransform).name;
 			DialogUtil.Open(
@@ -214,7 +204,7 @@
 		#region --- LGC ---
 
 
-		private void LogMessage(string key, bool warning = false) => DialogUtil.Open(GetLanguage(key), warning ? DialogUtil.MarkType.Warning : DialogUtil.MarkType.Info, () => { });
+		private void LogMessage (string key, bool warning = false) => DialogUtil.Open(GetLanguage(key), warning ? DialogUtil.MarkType.Warning : DialogUtil.MarkType.Info, () => { });
 
 
 		#endregion
@@ -224,7 +214,7 @@
 
 		#region --- EDT ---
 #if UNITY_EDITOR
-		public void EDITOR_SetDefaultSkin(SkinData skin, Texture2D texture) {
+		public void EDITOR_SetDefaultSkin (SkinData skin, Texture2D texture) {
 			m_DefaultSkin = skin;
 			if (texture) {
 				var path = @"Assets\Stager Studio\Image\UI\Stager Skin.png";
@@ -249,7 +239,7 @@ namespace StagerStudio.Editor {
 	using Stage;
 	[CustomEditor(typeof(StageSkin))]
 	public class StagerSkinInspector : Editor {
-		private void OnDisable() {
+		private void OnDisable () {
 			try {
 				var skin = (target as StageSkin).GetSkinFromDisk("Stager");
 				(target as StageSkin).EDITOR_SetDefaultSkin(skin, skin.Texture);

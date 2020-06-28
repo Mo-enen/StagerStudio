@@ -8,8 +8,8 @@
 	using Saving;
 	using Object;
 	using UI;
-	using System.Drawing.Drawing2D;
-	using UnityEditorInternal;
+
+
 
 	public class StageEditor : MonoBehaviour {
 
@@ -60,6 +60,7 @@
 		public delegate int FixBrushIndexHandler (int i);
 		public delegate bool FixEyeLockHandler (int i, bool a);
 		public delegate bool FixEditorAxisHandler (int type, int index, int axis);
+		public delegate (float? width, float? height) FixSizeHandler (int type, float? width, float? height);
 
 
 		#endregion
@@ -106,6 +107,7 @@
 		public static FixBrushIndexHandler FixBrushIndexFromGene { get; set; } = null;
 		public static FixEyeLockHandler FixContainerFromGene { get; set; } = null;
 		public static FixEyeLockHandler FixLockFromGene { get; set; } = null;
+		public static FixSizeHandler FixGhostSizeFromGene { get; set; } = null;
 		public static FixEditorAxisHandler FixEditorAxis { get; set; } = null;
 		public static BoolIntHandler CheckTileTrack { get; set; } = null;
 
@@ -870,8 +872,9 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = zoneSize * BrushConfig.StageWidth;
-								ghostSize.y = zoneSize * BrushConfig.StageHeight / zoneRatio;
+								var (fixedWidth, fixedHegiht) = FixGhostSizeFromGene(0, BrushConfig.StageWidth, BrushConfig.StageHeight);
+								ghostSize.x = zoneSize * (fixedWidth ?? BrushConfig.StageWidth);
+								ghostSize.y = zoneSize * (fixedHegiht ?? BrushConfig.StageHeight) / zoneRatio;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, false);
 								ghostPivotX = 0.5f;
@@ -884,7 +887,7 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, true);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = BrushConfig.TrackWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.x = (FixGhostSizeFromGene(1, BrushConfig.TrackWidth, null).width ?? BrushConfig.TrackWidth) * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = hoverTarget.GetChild(0).localScale.y;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, true, true);
@@ -899,7 +902,7 @@
 							var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, hoverTarget, false);
 							ghostEnable = mousePos.HasValue;
 							if (mousePos.HasValue) {
-								ghostSize.x = BrushConfig.NoteWidth * hoverTarget.GetChild(0).localScale.x;
+								ghostSize.x = (FixGhostSizeFromGene(2, BrushConfig.NoteWidth, null).width ?? BrushConfig.NoteWidth) * hoverTarget.GetChild(0).localScale.x;
 								ghostSize.y = GHOST_NOTE_Y / zoneSize;
 								ghostPos = mousePos.Value;
 								ghostPos = m_Grid.SnapWorld(ghostPos, true);
@@ -908,7 +911,7 @@
 							}
 						}
 						break;
-					case 3: { // Speed
+					case 3: { // Timing
 						var mousePos = Util.GetRayPosition(ray, zoneMin, zoneMax, null, false);
 						ghostEnable = mousePos.HasValue;
 						if (mousePos.HasValue) {

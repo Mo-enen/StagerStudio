@@ -203,7 +203,7 @@
 			int selectingBrush = GetSelectingBrush();
 			var map = GetBeatmap();
 			if (map == null) { return; }
-			if (selectingType < 0 || selectingType > 2 || selectingIndex < 0) {
+			if (selectingType >= 0 && selectingType <= 2 && selectingIndex >= 0) {
 				int typeCount = selectingType == 0 ? TypeCount.stage : selectingType == 1 ? TypeCount.track : TypeCount.note;
 				int itemType = map.GetItemType(selectingType, selectingIndex);
 				itemType = (itemType + 1) % typeCount;
@@ -620,8 +620,8 @@
 			int selectingBrush = GetSelectingBrush();
 			if (selectingBrush < 0) { return; }
 			InspectorBrush.BrushType = selectingBrush;
-			InspectorBrush.ShowHeight(selectingBrush == 0);
-			InspectorBrush.ShowType(selectingBrush == 0 || selectingBrush == 1 || selectingBrush == 2);
+			//InspectorBrush.ShowHeight(selectingBrush == 0);
+			//InspectorBrush.ShowType(selectingBrush == 0 || selectingBrush == 1 || selectingBrush == 2);
 			UIReady = false;
 			try {
 				var (width, height, type) = GetBrushInfo(selectingBrush);

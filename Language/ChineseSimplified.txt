@@ -42,7 +42,8 @@ Inspector.Header.Track:轨  道
 Menu.Abreast.Width0:全景舞台宽度 25%
 Menu.Abreast.Width1:全景舞台宽度 33%
 Menu.Abreast.Width2:全景舞台宽度 62%
-Menu.Abreast.Width3:全景舞台宽度 100%
+Menu.Abreast.Width3:全景舞台宽度 75%
+Menu.Abreast.Width4:全景舞台宽度 100%
 Menu.AutoSave.0:每30秒自动保存
 Menu.AutoSave.1:每2分钟自动保存
 Menu.AutoSave.2:每5分钟自动保存

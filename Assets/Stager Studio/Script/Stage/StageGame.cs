@@ -37,7 +37,7 @@
 
 
 		// Const
-		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 1f, };
+		private readonly static float[] ABREAST_WIDTHS = { 0.25f, 0.33f, 0.618f, 0.75f, 1f, };
 		private const string GAME_DROP_SPEED_HINT = "Game.Hint.GameDropSpeed";
 		private const string MUSIC_PITCH_HINT = "Game.Hint.Pitch";
 		private const string ABREAST_WIDTH_HINT = "Game.Hint.AbreastWidth";

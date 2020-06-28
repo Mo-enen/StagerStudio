@@ -31,7 +31,7 @@
 		[Space, SerializeField] private IntEvent m_OnClick = null;
 
 		// Data
-		private readonly static List<Sprite[]> NoteSpritess = new List<Sprite[]>();
+		private readonly static List<(Sprite icon, Sprite iconAlt)[]> NoteSpritess = new List<(Sprite, Sprite)[]>();
 		private static int GlobalDirtyID = 0;
 		private int LocalDirtyID = -1;
 
@@ -48,13 +48,18 @@
 				var nsList = NoteSpritess[m_TypeIndex];
 				for (int i = 0; i < nsList.Length; i++) {
 					int index = i;
-					var sprite = nsList[index];
+					var (icon, iconAlt) = nsList[index];
 					var grab = Instantiate(m_TypePrefab, container);
 					var rt = grab.transform as RectTransform;
 					rt.anchoredPosition3D = rt.anchoredPosition;
 					rt.localScale = Vector3.one;
 					rt.localRotation = Quaternion.identity;
-					grab.Grab<Image>("Icon").sprite = sprite;
+					var iconIMG = grab.Grab<Image>("Icon");
+					var iconIMG_Alt = grab.Grab<Image>("Icon Alt");
+					iconIMG.sprite = icon;
+					iconIMG.color = icon != null ? Color.white : Color.clear;
+					iconIMG_Alt.sprite = iconAlt;
+					iconIMG_Alt.color = iconAlt != null ? Color.white : Color.clear;
 					grab.Grab<Button>().onClick.AddListener(() => m_OnClick.Invoke(index));
 				}
 				// Resize
@@ -71,28 +76,52 @@
 			GlobalDirtyID++;
 			NoteSpritess.Clear();
 			if (skin == null || skin.Texture == null) { return; }
-			AddToList(SkinType.Stage, SkinType.JudgeLine);
+			AddToList(SkinType.JudgeLine, SkinType.Stage);
 			AddToList(SkinType.Track, SkinType.TrackTint);
 			AddToList(SkinType.Note, SkinType.Pole);
 			// === Func ===
 			void AddToList (SkinType skinType, SkinType skinTypeAlt) {
-				var resultList = new List<Sprite>();
+				var resultList = new List<(Sprite icon, Sprite iconAlt)>();
 				if ((int)skinType < skin.Items.Count && (int)skinTypeAlt < skin.Items.Count) {
 					var noteRects = skin.Items[(int)skinType].Rects;
-					if (noteRects.Count == 0) {
-						noteRects = skin.Items[(int)skinTypeAlt].Rects;
-					}
-					foreach (var rect in noteRects) {
-						resultList.Add(Sprite.Create(
-							skin.Texture,
-							new Rect(rect.X, rect.Y, rect.Width, rect.Height),
-							Vector2.one * 0.5f,
-							100,
-							0,
-							SpriteMeshType.FullRect,
-							Vector4.zero,
-							false
-						));
+					var noteRects_Alt = skin.Items[(int)skinTypeAlt].Rects;
+					Sprite iconSP;
+					Sprite iconSP_Alt;
+					for (int i = 0; i < noteRects.Count || i < noteRects_Alt.Count; i++) {
+						// Icon
+						if (i < noteRects.Count) {
+							var rect = noteRects[i];
+							iconSP = Sprite.Create(
+								skin.Texture,
+								new Rect(rect.X, rect.Y, rect.Width, rect.Height),
+								Vector2.one * 0.5f,
+								100,
+								0,
+								SpriteMeshType.FullRect,
+								Vector4.zero,
+								false
+							);
+						} else {
+							iconSP = null;
+						}
+						// Icon Alt
+						if (i < noteRects_Alt.Count) {
+							var rect = noteRects_Alt[i];
+							iconSP_Alt = Sprite.Create(
+								skin.Texture,
+								new Rect(rect.X, rect.Y, rect.Width, rect.Height),
+								Vector2.one * 0.5f,
+								100,
+								0,
+								SpriteMeshType.FullRect,
+								Vector4.zero,
+								false
+							);
+						} else {
+							iconSP_Alt = null;
+						}
+						// Add
+						resultList.Add((iconSP, iconSP_Alt));
 					}
 				}
 				NoteSpritess.Add(resultList.ToArray());

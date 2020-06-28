@@ -90,7 +90,7 @@ MonoBehaviour:
         Value: 0
       Width:
         Active: 1
-        Value: 0
+        Value: 200
       Speed:
         Active: 1
         Value: 1000

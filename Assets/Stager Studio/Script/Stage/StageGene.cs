@@ -40,11 +40,6 @@
 		public static IntHandler GetSelectingItemIndex { get; set; } = null;
 
 		// Ser
-		[Header("Brush")]
-		[SerializeField] private RectTransform m_StageBrushRoot = null;
-		[SerializeField] private RectTransform m_TrackBrushRoot = null;
-		[SerializeField] private RectTransform m_NoteBrushRoot = null;
-		[SerializeField] private RectTransform m_TimingBrushRoot = null;
 		[Header("Inspector Map")]
 		[SerializeField] private RectTransform m_Inspector_Map_Ratio = null;
 		[SerializeField] private RectTransform[] m_Inspector_SFX = null;
@@ -93,6 +88,15 @@
 		[SerializeField] private RectTransform m_Inspector_Note_LinkIndex = null;
 		[SerializeField] private RectTransform m_Inspector_Note_Speed = null;
 		[SerializeField] private RectTransform m_Inspector_Note_ClickSound = null;
+		[Header("Brush")]
+		[SerializeField] private RectTransform m_StageBrushRoot = null;
+		[SerializeField] private RectTransform m_TrackBrushRoot = null;
+		[SerializeField] private RectTransform m_NoteBrushRoot = null;
+		[SerializeField] private RectTransform m_TimingBrushRoot = null;
+		[SerializeField] private RectTransform m_Inspector_Brush_Width = null;
+		[SerializeField] private RectTransform m_Inspector_Brush_Height = null;
+		[SerializeField] private RectTransform m_Inspector_Brush_ItemType = null;
+		[SerializeField] private RectTransform m_Inspector_Brush_ItemTypeSelector = null;
 
 
 		#endregion
@@ -199,6 +203,37 @@
 		}
 
 
+		public void RefreshBrushInspector (int brushType) {
+			var gene = GetGene();
+			switch (brushType) {
+				case 0: // Stage
+					var sConfig = GetStageConfig(gene, -1);
+					m_Inspector_Brush_Width.TrySetActive(!sConfig.UseConfig || !sConfig.Width.Active);
+					m_Inspector_Brush_Height.TrySetActive(!sConfig.UseConfig || !sConfig.Height.Active);
+					m_Inspector_Brush_ItemType.TrySetActive(!sConfig.UseConfig || !sConfig.ItemType.Active);
+					m_Inspector_Brush_ItemTypeSelector.TrySetActive(!sConfig.UseConfig || !sConfig.ItemType.Active);
+					break;
+				case 1: // Track
+					var tConfig = GetTrackConfig(gene, -1);
+					m_Inspector_Brush_Width.TrySetActive(!tConfig.UseConfig || !tConfig.Width.Active);
+					m_Inspector_Brush_Height.TrySetActive(false);
+					m_Inspector_Brush_ItemType.TrySetActive(!tConfig.UseConfig || !tConfig.ItemType.Active);
+					m_Inspector_Brush_ItemTypeSelector.TrySetActive(!tConfig.UseConfig || !tConfig.ItemType.Active);
+					break;
+				case 2: // Note
+					var nConfig = GetNoteConfig(gene, -1);
+					m_Inspector_Brush_Width.TrySetActive(!nConfig.UseConfig || !nConfig.Width.Active);
+					m_Inspector_Brush_Height.TrySetActive(false);
+					m_Inspector_Brush_ItemType.TrySetActive(!nConfig.UseConfig || !nConfig.ItemType.Active);
+					m_Inspector_Brush_ItemTypeSelector.TrySetActive(!nConfig.UseConfig || !nConfig.ItemType.Active);
+					break;
+				case 3: // Timing
+
+					break;
+			}
+		}
+
+
 		// Fix Map Item
 		public void FixMapDataFromGene () {
 			var map = GetBeatmap();
@@ -239,11 +274,13 @@
 			var gene = GetGene();
 			switch (itemType) {
 				case 0: // Stage
+				case 4: // Stage
 					if (itemIndex >= 0 && itemIndex < map.Stages.Count) {
 						FixStageLogic(map, gene, map.Stages[itemIndex], itemIndex);
 					}
 					break;
 				case 1: // Track
+				case 5: // Track
 					if (itemIndex >= 0 && itemIndex < map.Tracks.Count) {
 						var track = map.Tracks[itemIndex];
 						FixTrackLogic(map, gene, track, itemIndex);
@@ -271,6 +308,42 @@
 			if (map == null) { return; }
 			var gene = GetGene();
 			FixAllStagesFromGeneLogic(map, gene);
+		}
+
+
+		// Fix Brush
+		public (float? width, float? height) FixGhostSizeFromGene (int brushType, float? width, float? height) {
+			var gene = GetGene();
+			float? res_width = width * 1000f;
+			float? res_height = height * 1000f;
+			switch (brushType) {
+				case 0: // Stage
+					var sConfig = GetStageConfig(gene, -1);
+					if (width.HasValue && sConfig.Width.Active) {
+						res_width = sConfig.Width.Value;
+					}
+					if (height.HasValue && sConfig.Height.Active) {
+						res_height = sConfig.Height.Value;
+					}
+					break;
+				case 1: // Track
+					var tConfig = GetTrackConfig(gene, -1);
+					if (width.HasValue && tConfig.Width.Active) {
+						res_width = tConfig.Width.Value;
+					}
+					break;
+				case 2: // Note
+					var nConfig = GetNoteConfig(gene, -1);
+					if (width.HasValue && nConfig.Width.Active) {
+						res_width = nConfig.Width.Value;
+					}
+					break;
+				case 3: // Timing
+
+
+					break;
+			}
+			return (res_width / 1000f, res_height / 1000f);
 		}
 
 

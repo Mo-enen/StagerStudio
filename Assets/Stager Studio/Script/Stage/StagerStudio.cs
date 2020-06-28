@@ -761,6 +761,7 @@
 				m_EraseBrushMark.gameObject.TrySetActive(m_Editor.SelectingBrushIndex == -2);
 				m_Inspector.RefreshUI();
 				m_Linker.StopLinker();
+				m_Gene.RefreshBrushInspector(m_Editor.SelectingBrushIndex);
 			};
 			StageEditor.OnLockEyeChanged = () => {
 				m_Editor.SetSelection(m_Editor.SelectingItemType, m_Editor.SelectingItemIndex, m_Editor.SelectingItemSubIndex);
@@ -786,7 +787,6 @@
 				m_Linker.StopLinker();
 			};
 			StageEditor.OnObjectEdited = (editType, itemType, itemIndex) => {
-
 				Note.SetCacheDirty();
 				TimingNote.SetCacheDirty();
 				ItemRenderer.SetGlobalDirty();
@@ -806,7 +806,7 @@
 						m_Effect.SpawnCreateEffect(itemType, itemIndex);
 						break;
 					case StageEditor.EditType.Modify:
-						m_Gene.FixItemFromGene(itemType == 4 ? 0 : itemType == 5 ? 1 : itemType, itemIndex);
+						m_Gene.FixItemFromGene(itemType, itemIndex);
 						break;
 					case StageEditor.EditType.Delete:
 						if (itemType == 1) {
@@ -825,6 +825,7 @@
 			StageEditor.FixBrushIndexFromGene = m_Gene.FixBrushIndexFromGene;
 			StageEditor.FixContainerFromGene = m_Gene.FixContainerFromGene;
 			StageEditor.FixLockFromGene = m_Gene.FixLockFromGene;
+			StageEditor.FixGhostSizeFromGene = m_Gene.FixGhostSizeFromGene;
 			StageEditor.FixEditorAxis = m_Gene.FixEditorAxis;
 			StageEditor.CheckTileTrack = m_Gene.CheckTileTrack;
 		}
@@ -838,7 +839,7 @@
 				Resources.UnloadUnusedAssets();
 				TypeSelectorUI.CalculateSprites(data);
 				m_Game.ClearAllContainers();
-				m_SkinSwiperLabel.text = StageSkin.Data.Name;
+				m_SkinSwiperLabel.text = !string.IsNullOrEmpty(StageSkin.Data.Name) ? StageSkin.Data.Name : "--";
 				StageInspector.TypeCount = (
 					Mathf.Max(data.TryGetItemCount(SkinType.Stage), data.TryGetItemCount(SkinType.JudgeLine)),
 					Mathf.Max(data.TryGetItemCount(SkinType.Track), data.TryGetItemCount(SkinType.TrackTint)),
