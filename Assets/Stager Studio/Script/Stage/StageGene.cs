@@ -107,10 +107,10 @@
 		#region --- MSG ---
 
 
-		private void Update () {
+		private void LateUpdate () {
 			var map = GetBeatmap();
 			if (map == null) { return; }
-			// Stage
+			// Static Stage
 			var gene = GetGene();
 			int staticStageCount = gene.StaticConfigs_Stage.Length;
 			if (staticStageCount > 0 && map.Stages.Count != staticStageCount) {
@@ -126,23 +126,43 @@
 					stages.Add(stage);
 				}
 			}
-			// Track
+
+			// Add Track For Trackless Stage
+			if (!gene.TrackAccessable && gene.Config_Track.UseConfig) {
+				var tracks = map.tracks;
+				for (int i = 0; i < map.Stages.Count; i++) {
+					var stage = map.stages[i];
+					if (stage.c_TrackCount == 0) {
+						tracks.Add(new Beatmap.Track() {
+							StageIndex = i,
+						});
+						int count = tracks.Count;
+						FixTrackLogic(map, gene, tracks[count - 1], count - 1);
+					}
+				}
+			}
+
+			// Static Track
 			int staticTrackCount = gene.StaticConfigs_Track.Length;
 			if (staticTrackCount > 0 && map.Tracks.Count != staticTrackCount) {
 				var tracks = map.tracks;
 				int count = tracks.Count;
-				if (count > staticTrackCount) {
-					while (tracks.Count > staticTrackCount) {
-						tracks.RemoveAt(tracks.Count - 1);
+				if (gene.TrackAccessable || !gene.Config_Track.UseConfig) {
+					if (count > staticTrackCount) {
+						while (tracks.Count > staticTrackCount) {
+							tracks.RemoveAt(tracks.Count - 1);
+						}
+					} else if (count < staticTrackCount) {
+						tracks.Add(new Beatmap.Track());
 					}
-				} else if (count < staticTrackCount) {
-					tracks.Add(new Beatmap.Track());
 				}
+				// Fix Track
 				count = tracks.Count;
 				for (int i = 0; i < count; i++) {
 					FixTrackLogic(map, gene, tracks[i], i);
 				}
 			}
+
 		}
 
 
@@ -558,6 +578,11 @@
 						currentTrackIndex++;
 					}
 				}
+				// Add Track For Trackless Stage
+				if (!gene.TrackAccessable) {
+
+				}
+
 			}
 		}
 

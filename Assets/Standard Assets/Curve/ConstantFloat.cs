@@ -55,7 +55,7 @@
 
 			if (Items.Count == 0 || area == 0f) { return key; }
 
-			float deltaArea;
+			float deltaArea = 0f;
 			bool right = area > 0f;
 			area = right ? area : -area;
 			var itemKeys = Items.Keys;
@@ -100,6 +100,7 @@
 				float keyAlt;
 				float value = EvaluateKey(itemKeys, itemValues, key, muti);
 				float valueAlt;
+				float prevDeltaArea = deltaArea;
 				for (
 					int index = right ? Search(itemKeys, key) + 1 : Search(itemKeys, key);
 					index >= 0 && index < Items.Count;
@@ -108,14 +109,19 @@
 					keyAlt = itemKeys[index];
 					valueAlt = Items[keyAlt].Value * muti;
 					deltaArea = GetAreaBetweenKeys(key, keyAlt, muti);
-					// Alt
-					if (deltaArea < 0 && -deltaArea > areaDone) {
-						return right ? key + areaDone / Mathf.Abs(value) : key - areaDone / Mathf.Abs(valueAlt);
+
+					// Alt R
+					if (right && deltaArea < 0 && -deltaArea > areaDone) {
+						return key + areaDone / Mathf.Abs(value);
 					}
 					// Normal
 					if (area <= deltaArea) {
 						return right ? key + area / value : key - area / valueAlt;
 					} else {
+						// Alt L
+						if (!right && deltaArea < 0 && prevDeltaArea < -deltaArea) {
+							return key - prevDeltaArea / Mathf.Abs(valueAlt);
+						}
 						area -= deltaArea;
 						areaDone += deltaArea;
 						key = keyAlt;
