@@ -5,17 +5,21 @@
 
 
 
-![Screenshot](Resource/Screenshot.jpg)
-
-
-
 ##### 注意事项
 
 - 使用前需要先将压缩包解压
+
 - 下载并使用其他用户制作的皮肤、语言包等内容可以提升使用体验
+
 - 导入、导出其它音游的谱面文件需要使用额外的谱面转换器（例如Stager Map Converter）
+
 - 您的作品将被保存在程序目录下的 Projects 文件夹内
+
 - 建议在 [YouTube](https://www.youtube.com/) 或 [Bilibili](https://www.bilibili.com/) 等网站搜索并观看视频教程
+
+    
+
+![Screenshot](Resource/Screenshot.jpg)
 
 
 
