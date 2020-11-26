@@ -1,4 +1,4 @@
-# <img src="Logo 64.png"/>   Stager Studio 测试版
+# <img src="Logo64.png"/>   Stager Studio 测试版
 
 
 > Stager Studio 是一款下落式音游通用谱面编辑器，凭借其 “舞台-轨道-音符” 的逻辑灵活的兼容多款主流音游。
