@@ -30,7 +30,6 @@
 - Email moenen6@gmail.com | moenenn@163.com
 - Twitter [_Moenen](https://twitter.com/_Moenen)
 - YouTube [Moenen](https://www.youtube.com/channel/UC1aZDGIux_vlev_xN9Dx2Lg)
-- Telegram [Stager Studio Official](https://t.me/StagerStudio)
 - Github [Mo-enen](https://github.com/Mo-enen)
 - 作者QQ 1182032752
 - 官方QQ群 754100943
