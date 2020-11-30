@@ -125,7 +125,7 @@
 				}
 			}
 		}
-		public string Workspace => Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Projects");
+		public string Workspace => Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Projects");
 		public float UI_AutoSaveTime => AutoSaveTime.Value;
 
 		// Project Data
