@@ -5,6 +5,13 @@
 
 
 
+**版本需求**
+
+- Unity Editor 2020.1.10f1c1
+- 代码API .NET 4.x
+
+
+
 ##### 注意事项
 
 - 使用前需要先将压缩包解压
@@ -20,6 +27,12 @@
     
 
 ![Screenshot](Resource/Screenshot.jpg)
+
+
+
+**工程设置**
+
+![Tag Layer v0.1.3](Resource/Tag Layer v0.1.3.png)
 
 
 
