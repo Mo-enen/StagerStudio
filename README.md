@@ -8,7 +8,7 @@
 ##### **版本需求**
 
 - Unity Editor 2020.1.10f1c1
-- 代码API .NET 4.x
+- API Compatibility Level .NET 4.x
 
 
 
@@ -33,15 +33,6 @@
 ##### **工程设置**
 
 ![Tag Layer v0.1.3](Resource/TagLayer_0_1_3.png)
-
-
-
-##### 版权声明
-
-- Stager Studio 采用 [Unity](https://unity.com/) 游戏引擎，由**楠瓜Moenen**设计开发并保留著作权；
-- 下载后即可使用 Stager Studio 的全部功能；
-- 本产品不包含作者本人作品之外的广告内容；
-- 用户使用 Stager Studio 创作的谱面归该用户所有；
 
 
 
