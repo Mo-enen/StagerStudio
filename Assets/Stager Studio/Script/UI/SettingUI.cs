@@ -26,7 +26,7 @@
 				public StagerStudio.InputType Type;
 				public InputField Item;
 				[System.NonSerialized] public System.Func<string> GetHandler;
-				public void InitItem(UnityAction<string> setHandler) => Item.onEndEdit.AddListener(setHandler);
+				public void InitItem (UnityAction<string> setHandler) => Item.onEndEdit.AddListener(setHandler);
 			}
 
 
@@ -35,7 +35,7 @@
 				public StagerStudio.ToggleType Type;
 				public Toggle Item;
 				[System.NonSerialized] public System.Func<bool> GetHandler;
-				public void InitItem(UnityAction<bool> setHandler) => Item.onValueChanged.AddListener(setHandler);
+				public void InitItem (UnityAction<bool> setHandler) => Item.onValueChanged.AddListener(setHandler);
 			}
 
 
@@ -44,7 +44,7 @@
 				public StagerStudio.SliderType Type;
 				public Slider Item;
 				[System.NonSerialized] public System.Func<float> GetHandler;
-				public void InitItem(UnityAction<float> setHandler) => Item.onValueChanged.AddListener(setHandler);
+				public void InitItem (UnityAction<float> setHandler) => Item.onValueChanged.AddListener(setHandler);
 			}
 
 
@@ -54,7 +54,7 @@
 			public SliderData[] Sliders;
 
 
-			public void RefreshAllUI() {
+			public void RefreshAllUI () {
 				foreach (var i in Inputs) {
 					i.Item.text = i.GetHandler();
 				}
@@ -67,17 +67,17 @@
 			}
 
 
-			public void ForAllInputs(System.Action<InputData> action) {
+			public void ForAllInputs (System.Action<InputData> action) {
 				foreach (var i in Inputs) {
 					action(i);
 				}
 			}
-			public void ForAllToggles(System.Action<ToggleData> action) {
+			public void ForAllToggles (System.Action<ToggleData> action) {
 				foreach (var t in Toggles) {
 					action(t);
 				}
 			}
-			public void ForAllSliders(System.Action<SliderData> action) {
+			public void ForAllSliders (System.Action<SliderData> action) {
 				foreach (var s in Sliders) {
 					action(s);
 				}
@@ -87,19 +87,19 @@
 
 
 		// Handler
-		public delegate void VoidHandler();
-		public delegate string StringStringHandler(string value);
-		public delegate string StringHandler();
-		public delegate void VoidStringHandler(string str);
-		public delegate string StringLanguageHandler(SystemLanguage language);
-		public delegate bool BoolLanguageHandler(SystemLanguage language);
-		public delegate List<SystemLanguage> LanguagesHandler();
-		public delegate string[] StringsHandler();
-		public delegate void VoidRtHandler(RectTransform rt);
-		public delegate int IntHandler();
-		public delegate (string name, KeyCode key, bool ctrl, bool shift, bool alt) ShortcutItemIntHandler(int index);
-		public delegate int ShortcutHandler(int index, KeyCode key, bool ctrl, bool shift, bool alt);
-		public delegate void StringBoolHandler(string str, bool b);
+		public delegate void VoidHandler ();
+		public delegate string StringStringHandler (string value);
+		public delegate string StringHandler ();
+		public delegate void VoidStringHandler (string str);
+		public delegate string StringLanguageHandler (SystemLanguage language);
+		public delegate bool BoolLanguageHandler (SystemLanguage language);
+		public delegate List<SystemLanguage> LanguagesHandler ();
+		public delegate string[] StringsHandler ();
+		public delegate void VoidRtHandler (RectTransform rt);
+		public delegate int IntHandler ();
+		public delegate (string name, KeyCode key, bool ctrl, bool shift, bool alt) ShortcutItemIntHandler (int index);
+		public delegate int ShortcutHandler (int index, KeyCode key, bool ctrl, bool shift, bool alt);
+		public delegate void StringBoolHandler (string str, bool b);
 
 
 		#endregion
@@ -160,10 +160,10 @@
 		#region --- MSG ---
 
 
-		private void Awake() => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
+		private void Awake () => m_Window.anchoredPosition3D = new Vector2(m_Window.anchoredPosition3D.x, -46f);
 
 
-		private void Update() => m_Window.LerpUI(Vector2.zero, 8f);
+		private void Update () => m_Window.LerpUI(Vector2.zero, 8f);
 
 
 		#endregion
@@ -174,7 +174,7 @@
 		#region --- API ---
 
 
-		public void Init() {
+		public void Init () {
 
 			// Language
 			RefreshLanguageTexts();
@@ -191,13 +191,13 @@
 		}
 
 
-		public void Refresh() {
+		public void Refresh () {
 			SkinRefreshAllSkinNames();
 			RefreshLogic(true);
 		}
 
 
-		public void RefreshLogic(bool refreshDynamic) {
+		public void RefreshLogic (bool refreshDynamic) {
 
 			// General
 			UIReady = false;
@@ -225,7 +225,7 @@
 						graber.Grab<Button>().onClick.AddListener(OnClick);
 						graber.Grab<Text>("Text").text = LanguageGetDisplayName_Language(lan);
 						// Func
-						void OnClick() {
+						void OnClick () {
 							LoadLanguage(lan);
 							RefreshLanguageTexts();
 						}
@@ -249,9 +249,9 @@
 						graber.Grab<Text>("Name").text = skinName;
 						graber.Grab<RectTransform>("Mark").gameObject.SetActive(skinName == GetSkinName());
 						// Func
-						void OnClick() => SkinLoadSkin(skinName);
-						void OnEdit() => SpawnSkinEditor(skinName, true);
-						void OnDelete() => SkinDeleteSkin(rt);
+						void OnClick () => SkinLoadSkin(skinName);
+						void OnEdit () => SpawnSkinEditor(skinName, true);
+						void OnDelete () => SkinDeleteSkin(rt);
 					}
 					// Shortcut
 					m_ShortcutContent.DestroyAllChildImmediately();
@@ -333,45 +333,45 @@
 		}
 
 
-		public void ResetSettings() => DialogUtil.Dialog_OK_Cancel(RESET_CONFIRM_KEY, DialogUtil.MarkType.Warning, () => {
+		public void ResetSettings () => DialogUtil.Dialog_OK_Cancel(RESET_CONFIRM_KEY, DialogUtil.MarkType.Warning, () => {
 			ResetAllSettings();
 			RefreshLogic(true);
 		});
 
 
 		// UI
-		public void Close() {
+		public void Close () {
 			transform.parent.gameObject.SetActive(false);
 			transform.parent.parent.InactiveIfNoChildActive();
 			transform.parent.DestroyAllChildImmediately();
 		}
 
 
-		public void OpenLanguageFolder() {
-			var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language");
+		public void OpenLanguageFolder () {
+			var path = Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Language");
 			if (!Util.DirectoryExists(path)) { return; }
 			Util.ShowInExplorer(path);
 		}
 
 
-		public void OpenSkinFolder() {
-			var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Skins");
+		public void OpenSkinFolder () {
+			var path = Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Skins");
 			if (!Util.DirectoryExists(path)) { return; }
 			Util.ShowInExplorer(path);
 		}
 
 
-		public void OpenShortcutFolder() {
-			var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Shortcut");
+		public void OpenShortcutFolder () {
+			var path = Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Shortcut");
 			if (!Util.DirectoryExists(path)) { return; }
 			Util.ShowInExplorer(path);
 		}
 
 
-		public void UI_NewSkin() => SkinNewSkin();
+		public void UI_NewSkin () => SkinNewSkin();
 
 
-		public void UI_OpenMenu(string key) => OpenMenu(key);
+		public void UI_OpenMenu (string key) => OpenMenu(key);
 
 
 		#endregion
@@ -382,7 +382,7 @@
 		#region --- LGC ---
 
 
-		private void RefreshLanguageTexts() {
+		private void RefreshLanguageTexts () {
 			foreach (var tx in m_LanguageLabels) {
 				tx.text = GetLanguage(tx.name);
 			}
