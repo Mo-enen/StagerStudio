@@ -419,6 +419,15 @@
 		#region --- Path ---
 
 
+		public static string GetRuntimeBuiltRootPath () {
+#if UNITY_EDITOR
+			return CombinePaths(GetParentPath(Application.dataPath), "_Built", $"{Application.productName} v{Application.version}");
+#else
+			return GetParentPath(Application.dataPath);
+#endif
+		}
+
+
 		public static string GetParentPath (string path) => Directory.GetParent(path).FullName;
 
 
@@ -756,8 +765,8 @@
 
 
 		public static float Time_to_Beat (float time, float bpm, float shift) => (time - shift) / 60f * bpm;
-		
-		
+
+
 		public static float Beat_to_Time (float beat, float bpm, float shift) => 60f * beat / bpm + shift;
 
 

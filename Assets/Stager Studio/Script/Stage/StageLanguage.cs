@@ -30,11 +30,13 @@
 		// Handle
 		public static VoidHandler OnLanguageLoaded { get; set; } = null;
 
-
 		// API
 		public List<SystemLanguage> AllLanguages => _AllLanguages ?? (_AllLanguages = RefreshAllLanguageNames());
 
 		public Dictionary<string, string> Map { get; } = new Dictionary<string, string>();
+
+		// Short
+		private string RootPath => Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Language");
 
 		// Ser
 		[SerializeField] private string[] m_DefaultData = null;
@@ -122,10 +124,25 @@
 			}
 			bool success = LoadLanguage(language);
 			if (!success) {
-				if (language == SystemLanguage.ChineseTraditional) {
-					success = LoadLanguage(SystemLanguage.ChineseSimplified);
-				} else if (language == SystemLanguage.ChineseSimplified) {
-					success = LoadLanguage(SystemLanguage.ChineseTraditional);
+				switch (language) {
+					case SystemLanguage.Chinese:
+						success = LoadLanguage(SystemLanguage.ChineseSimplified);
+						if (!success) {
+							success = LoadLanguage(SystemLanguage.ChineseTraditional);
+						}
+						break;
+					case SystemLanguage.ChineseSimplified:
+						success = LoadLanguage(SystemLanguage.Chinese);
+						if (!success) {
+							success = LoadLanguage(SystemLanguage.ChineseTraditional);
+						}
+						break;
+					case SystemLanguage.ChineseTraditional:
+						success = LoadLanguage(SystemLanguage.Chinese);
+						if (!success) {
+							success = LoadLanguage(SystemLanguage.ChineseSimplified);
+						}
+						break;
 				}
 			}
 			if (!success) {
@@ -146,7 +163,7 @@
 		public List<SystemLanguage> RefreshAllLanguageNames () {
 			_AllLanguages = new List<SystemLanguage>();
 			try {
-				var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language");
+				var path = RootPath;
 				if (!Util.DirectoryExists(path)) { return _AllLanguages; }
 				var files = Util.GetFilesIn(path, true, "*.txt");
 				foreach (var file in files) {
@@ -175,7 +192,7 @@
 
 		public bool GetLanguageMap (SystemLanguage language, Dictionary<string, string> map) {
 			try {
-				var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language", language.ToString() + ".txt");
+				var path = Util.CombinePaths(RootPath, language.ToString() + ".txt");
 				if (!Util.FileExists(path)) { return false; }
 				map.Clear();
 				using (var reader = new StreamReader(path, true)) {
@@ -241,11 +258,15 @@ namespace StagerStudio.Editor {
 		// VAR
 		private List<SystemLanguage> Languages { get; } = new List<SystemLanguage>();
 		private (string key, string value)[][] Datas { get; set; } = new (string, string)[0][];
+		private string RootPath => Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Language");
 
 
 
 		// MSG
 		private void OnEnable () {
+
+			Util.CreateFolder(RootPath);
+
 			var targetLanguage = target as StageLanguage;
 			// Get Languages
 			var languages = targetLanguage.RefreshAllLanguageNames();
@@ -376,7 +397,7 @@ namespace StagerStudio.Editor {
 			int index = 0;
 			foreach (var language in Languages) {
 				try {
-					var path = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language", language.ToString() + ".txt");
+					var path = Util.CombinePaths(RootPath, language.ToString() + ".txt");
 					var builder = new System.Text.StringBuilder();
 					var values = Datas[index];
 					foreach (var value in values) {
@@ -415,7 +436,7 @@ namespace StagerStudio.Editor {
 				if (name == "Hugarian" || name == "Chinese" || name == "Unknown") { continue; }
 				hBuilder.AppendLine(name);
 			}
-			var helperPath = Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Language", "_File Name Helper.txt");
+			var helperPath = Util.CombinePaths(RootPath, "_File Name Helper.txt");
 			Util.TextToFile(hBuilder.ToString(), helperPath);
 		}
 

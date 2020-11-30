@@ -70,7 +70,7 @@
 		public string CurrentSkinName => SkinName;
 
 		// Short
-		private string SkinFolderPath => Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Skins");
+		private string SkinFolderPath => Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Skins");
 
 		// Ser
 		[SerializeField] private SkinData m_DefaultSkin = null;

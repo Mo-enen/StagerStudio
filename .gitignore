@@ -11,12 +11,8 @@
 *.config
 /Projects
 /QuickAccess Config.json
-/Assets/Stager Studio/测试
-/Assets/Stager Studio/测试.meta
-/_Built
 /_BackUp
 /Log
 /_Release
 /_Paper
 /_Res
-/Hierponent Config.txt

@@ -18,7 +18,7 @@
 			public bool Alt = false;
 			public Transform[] AntiTFs = null;
 			public UnityEvent Action = null;
-			public override string ToString() {
+			public override string ToString () {
 				var builder = new System.Text.StringBuilder();
 				builder.Append(' ');
 				if (Ctrl) {
@@ -41,7 +41,7 @@
 		public ShortcutData[] Datas => m_Datas;
 
 		// Short
-		private string DataFilePath => Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Shortcut", "Shortcut.txt");
+		private string DataFilePath => Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Shortcut", "Shortcut.txt");
 
 		// Ser
 		[SerializeField] private ShortcutData[] m_Datas = null;
@@ -51,13 +51,13 @@
 
 
 		// MSG
-		private void Awake() {
+		private void Awake () {
 			LoadFromFile();
 			ReloadMap();
 		}
 
-		
-		private void OnGUI() {
+
+		private void OnGUI () {
 			if (Util.IsTypeing || Event.current.type != EventType.KeyDown) { return; }
 			if (Event.current.keyCode == KeyCode.Return || Event.current.keyCode == KeyCode.Space) {
 				UnityEngine.EventSystems.EventSystem.current.SetSelectedGameObject(null);
@@ -70,7 +70,7 @@
 				}
 			}
 			// Func
-			bool CheckAnti(Transform[] antiTFs) {
+			bool CheckAnti (Transform[] antiTFs) {
 				if (antiTFs is null) { return true; }
 				foreach (var tf in antiTFs) {
 					if (tf && tf.gameObject.activeSelf) { return false; }
@@ -81,7 +81,7 @@
 
 
 		// API
-		public string GetHotkeyLabel(string name) {
+		public string GetHotkeyLabel (string name) {
 			foreach (var data in m_Datas) {
 				if (data.Name == name) {
 					return $"[{data.ToString()}]";
@@ -91,7 +91,7 @@
 		}
 
 
-		public void LoadFromFile() {
+		public void LoadFromFile () {
 			string path = DataFilePath;
 			if (Util.FileExists(path)) {
 				var strs = Util.FileToText(path).Replace("\t", "").Replace("\r", "").Replace("\n", "").Split('#');
@@ -122,7 +122,7 @@
 		}
 
 
-		public void SaveToFile() {
+		public void SaveToFile () {
 			string str = "";
 			for (int i = 0; i < m_Datas.Length; i++) {
 				var data = m_Datas[i];
@@ -137,7 +137,7 @@
 		}
 
 
-		public void ReloadMap() {
+		public void ReloadMap () {
 			Map.Clear();
 			foreach (var data in m_Datas) {
 				var key = (data.Key, data.Ctrl, data.Shift, data.Alt);
@@ -164,7 +164,7 @@ namespace StagerStudio.Editor {
 	public class StageShortcutInspector : Editor {
 
 
-		private void OnDisable() {
+		private void OnDisable () {
 			// Shortcut
 			(target as StageShortcut).SaveToFile();
 			// Helper
@@ -186,7 +186,7 @@ namespace StagerStudio.Editor {
 				var key = (KeyCode)keyCodes.GetValue(i);
 				str += $"\t{key.ToString()}\r\n";
 			}
-			Util.TextToFile(str, Util.CombinePaths(Util.GetParentPath(Application.dataPath), "Shortcut", "Helper.txt"));
+			Util.TextToFile(str, Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Shortcut", "Helper.txt"));
 		}
 
 

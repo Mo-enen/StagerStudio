@@ -1331,6 +1331,11 @@
 
 			BackgroundUI.OnException = (ex) => DebugLog_Exception("Background", ex);
 
+			Util.CreateFolder(Util.GetRuntimeBuiltRootPath());
+			Util.CreateFolder(Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Shortcut"));
+			Util.CreateFolder(Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Language"));
+			Util.CreateFolder(Util.CombinePaths(Util.GetRuntimeBuiltRootPath(), "Skin"));
+
 		}
 
 
