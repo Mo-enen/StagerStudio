@@ -13,15 +13,15 @@ TagManager:
   - UI
   - 
   - 
-  - Stage
-  - Track
-  - HoldNote
-  - Note
-  - Timing
-  - Stage Timer
-  - Track Timer
-  - Axis
-  - Motion Axis
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
   - 
   - 
   - 
@@ -38,48 +38,6 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: BG
-    uniqueID: 1576896029
-    locked: 0
   - name: Default
     uniqueID: 0
-    locked: 0
-  - name: Stage
-    uniqueID: 1015721941
-    locked: 0
-  - name: TrackTint
-    uniqueID: 3368637301
-    locked: 0
-  - name: Track
-    uniqueID: 3887238767
-    locked: 0
-  - name: Judge
-    uniqueID: 2160321925
-    locked: 0
-  - name: Tray
-    uniqueID: 1547789557
-    locked: 0
-  - name: HoldNote
-    uniqueID: 2307194901
-    locked: 0
-  - name: Pole Back
-    uniqueID: 1836629153
-    locked: 0
-  - name: Note
-    uniqueID: 206081735
-    locked: 0
-  - name: Pole Front
-    uniqueID: 2329179985
-    locked: 0
-  - name: Motion
-    uniqueID: 1752940799
-    locked: 0
-  - name: Luminous
-    uniqueID: 4139360361
-    locked: 0
-  - name: Gizmos
-    uniqueID: 3582693175
-    locked: 0
-  - name: UI
-    uniqueID: 972425191
     locked: 0

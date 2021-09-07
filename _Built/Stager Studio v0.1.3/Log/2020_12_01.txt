@@ -1,4 +1,0 @@
-﻿04-15-56, System,Start,Stager Version:0.1.3,DotNET Framework Versions:4.0.30319.42000,OS Version:Microsoft Windows NT 10.0.19042.0;
-04-16-05, Beatmap,Open,map:StagerStudio.Data.Beatmap,BeatmapKey:6d5f0409-6026-4b44-a0a0-da10b0d6e8af,CreatedTime:637255000618020454,Tag:Phigros,Bpm:179;
-04-16-05, Project,Loaded,ProjectName:Credits,ProjectPath:C:\Data\Mine\Unity3D\Project - Stager Studio\_Built\Stager Studio v0.1.3\Projects\Chapter I\202005061603518296_Credits.stager,Workspace:C:\Data\Mine\Unity3D\Project - Stager Studio\_Built\Stager Studio v0.1.3\Projects;
-04-16-32, System,Start,Stager Version:0.1.3,DotNET Framework Versions:4.0.30319.42000,OS Version:Microsoft Windows NT 10.0.19042.0;
