@@ -1,38 +1,13 @@
-# <img src="Resource/Logo64.png"/>   Stager Studio
+# <img src="_Res/Logo/Logo64.png"/>   Stager Studio
 
 
 > Stager Studio 是一款下落式音游通用谱面编辑器，凭借其 “舞台-轨道-音符” 的逻辑灵活的兼容多款主流音游。
 
 
 
-##### **版本需求**
+**新版本正在重制中，你可以在 _Res/Old Version v0.1.3.zip 中找到之前版本的全部内容**
 
-- Unity Editor 2020.1.10f1c1
-- API Compatibility Level .NET 4.x
-
-
-
-##### 注意事项
-
-- 下载并使用其他用户制作的皮肤、语言包等内容可以提升使用体验
-
-- 导入、导出其它音游的谱面文件需要使用额外的谱面转换器（例如Stager Map Converter）
-
-- 您的作品将被保存在程序目录下的 Projects 文件夹内
-
-- 建议在 [YouTube](https://www.youtube.com/) 或 [Bilibili](https://www.bilibili.com/) 等网站搜索并观看视频教程
-
-    
-
-![Screenshot](Resource/Screenshot.jpg)
-
-
-
-##### **工程设置**
-
-![Tag Layer v0.1.3](Resource/TagLayer_0_1_3.png)
-
-
+##### 
 
 ##### 联系方式
 
