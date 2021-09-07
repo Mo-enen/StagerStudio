@@ -5,7 +5,7 @@
 
 
 
-**新版本正在重制中，你可以在 _Res/Old Version v0.1.3.zip 中找到之前版本的全部内容**
+**正在重制新版，您可以在[这里](https://drive.google.com/file/d/1pRaY1gM181VkaIOULsIeJtUo483g9gI9/view?usp=sharing)下载之前版本的全部内容**
 
 ##### 
 
