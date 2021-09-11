@@ -1,0 +1,183 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbe5e7ec33202747bb5104334c751d6, type: 3}
+  m_Name: Deemo
+  m_EditorClassIdentifier: 
+  Type: 3
+  Beatmap: {fileID: 4900000, guid: 5dc459b117b5ea547826842feae7a786, type: 3}
+  Palette: {fileID: 2800000, guid: de4dd37fb21c6b140913f8733242334f, type: 3}
+  Tween: {fileID: 4900000, guid: 4e2c32bf974f305479792013a50d8097, type: 3}
+  Gene:
+    Key: Gene.Deemo
+    StageAccessable: 0
+    TrackAccessable: 0
+    NoteAccessable: 1
+    TimingAccessable: 0
+    SfxAccessable: 0
+    Ratio:
+      Active: 1
+      Value: 1500
+    Config_Stage:
+      UseConfig: 0
+      Motion: 1
+      TileTrack: 0
+      ItemType:
+        Active: 0
+        Value: 0
+      Time_Real:
+        Active: 0
+        Value: 0
+      Duration_Real:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Y:
+        Active: 0
+        Value: 0
+      Rotation:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      Height:
+        Active: 0
+        Value: 0
+      PivotY:
+        Active: 0
+        Value: 0
+      Speed:
+        Active: 0
+        Value: 0
+    Config_Track:
+      UseConfig: 0
+      Motion: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      StageIndex:
+        Active: 0
+        Value: 0
+      Time_Real:
+        Active: 0
+        Value: 0
+      Duration_Real:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Angle:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      Speed:
+        Active: 0
+        Value: 0
+      HasTray:
+        Active: 0
+        Value: 0
+    Config_Note:
+      UseConfig: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Z:
+        Active: 1
+        Value: 0
+      Duration:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      LinkedNoteIndex:
+        Active: 0
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+      ClickSound:
+        Active: 1
+        Value: 0
+    StaticConfigs_Stage:
+    - UseConfig: 1
+      Motion: 0
+      TileTrack: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Y:
+        Active: 1
+        Value: 0
+      Rotation:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Height:
+        Active: 1
+        Value: 1000
+      PivotY:
+        Active: 1
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+    StaticConfigs_Track:
+    - UseConfig: 1
+      Motion: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      StageIndex:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Angle:
+        Active: 1
+        Value: 30
+      Width:
+        Active: 1
+        Value: 1000
+      Speed:
+        Active: 1
+        Value: 1000
+      HasTray:
+        Active: 1
+        Value: 0
+    StaticConfigs_Note: []

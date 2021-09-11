@@ -1,0 +1,128 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbe5e7ec33202747bb5104334c751d6, type: 3}
+  m_Name: Phigros
+  m_EditorClassIdentifier: 
+  Type: 6
+  Beatmap: {fileID: 4900000, guid: 141e81409a5ff0b46b60ca98750aeb28, type: 3}
+  Palette: {fileID: 2800000, guid: d97013d275c160d498bdb66f7796fe8f, type: 3}
+  Tween: {fileID: 4900000, guid: 2e869615f4d63214a8ea9f1a7f810bb1, type: 3}
+  Gene:
+    Key: Gene.Phigros
+    StageAccessable: 1
+    TrackAccessable: 0
+    NoteAccessable: 1
+    TimingAccessable: 1
+    SfxAccessable: 0
+    Ratio:
+      Active: 1
+      Value: 1692
+    Config_Stage:
+      UseConfig: 1
+      TileTrack: 0
+      Motion_Pos: 1
+      Motion_Rot: 1
+      Motion_Color: 0
+      Motion_Width: 0
+      Motion_Height: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 0
+        Value: 0
+      Duration_Real:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Y:
+        Active: 0
+        Value: 0
+      Rotation:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Height:
+        Active: 1
+        Value: 1000
+      PivotY:
+        Active: 1
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+    Config_Track:
+      UseConfig: 1
+      Motion_X: 0
+      Motion_Angle: 0
+      Motion_Color: 0
+      Motion_Width: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      StageIndex:
+        Active: 0
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Angle:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Speed:
+        Active: 1
+        Value: 1000
+      HasTray:
+        Active: 1
+        Value: 0
+    Config_Note:
+      UseConfig: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Z:
+        Active: 1
+        Value: 0
+      Duration:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      LinkedNoteIndex:
+        Active: 1
+        Value: -1
+      Speed:
+        Active: 0
+        Value: 0
+      ClickSound:
+        Active: 1
+        Value: 0
+    StaticConfigs_Stage: []
+    StaticConfigs_Track: []
+    StaticConfigs_Note: []

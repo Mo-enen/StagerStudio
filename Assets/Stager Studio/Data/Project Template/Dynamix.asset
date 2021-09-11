@@ -1,0 +1,307 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fdbe5e7ec33202747bb5104334c751d6, type: 3}
+  m_Name: Dynamix
+  m_EditorClassIdentifier: 
+  Type: 2
+  Beatmap: {fileID: 4900000, guid: b30be3bf4a1e17f4283d078f13c7c4d1, type: 3}
+  Palette: {fileID: 2800000, guid: d4e11a84affa00848b8dfb173e729918, type: 3}
+  Tween: {fileID: 4900000, guid: 42a05c5d4cd57054e83d95fac72a1a0b, type: 3}
+  Gene:
+    Key: Gene.Dynamix
+    StageAccessable: 0
+    TrackAccessable: 0
+    NoteAccessable: 1
+    TimingAccessable: 0
+    SfxAccessable: 0
+    Ratio:
+      Active: 1
+      Value: 1500
+    Config_Stage:
+      UseConfig: 0
+      Motion: 1
+      TileTrack: 0
+      ItemType:
+        Active: 0
+        Value: 0
+      Time_Real:
+        Active: 0
+        Value: 0
+      Duration_Real:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Y:
+        Active: 0
+        Value: 0
+      Rotation:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      Height:
+        Active: 0
+        Value: 0
+      PivotY:
+        Active: 0
+        Value: 0
+      Speed:
+        Active: 0
+        Value: 0
+    Config_Track:
+      UseConfig: 0
+      Motion: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      StageIndex:
+        Active: 0
+        Value: 0
+      Time_Real:
+        Active: 0
+        Value: 0
+      Duration_Real:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Angle:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      Speed:
+        Active: 0
+        Value: 0
+      HasTray:
+        Active: 0
+        Value: 0
+    Config_Note:
+      UseConfig: 1
+      ItemType:
+        Active: 0
+        Value: 0
+      X:
+        Active: 0
+        Value: 0
+      Z:
+        Active: 1
+        Value: 0
+      Duration:
+        Active: 0
+        Value: 0
+      Width:
+        Active: 0
+        Value: 0
+      LinkedNoteIndex:
+        Active: 1
+        Value: -1
+      Speed:
+        Active: 1
+        Value: 1000
+      ClickSound:
+        Active: 1
+        Value: 0
+    StaticConfigs_Stage:
+    - UseConfig: 1
+      Motion: 0
+      TileTrack: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Y:
+        Active: 1
+        Value: 0
+      Rotation:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Height:
+        Active: 1
+        Value: 667
+      PivotY:
+        Active: 1
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+    - UseConfig: 1
+      Motion: 0
+      TileTrack: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 1000
+      Y:
+        Active: 1
+        Value: 333
+      Rotation:
+        Active: 1
+        Value: -90
+      Width:
+        Active: 1
+        Value: 667
+      Height:
+        Active: 1
+        Value: 500
+      PivotY:
+        Active: 1
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+    - UseConfig: 1
+      Motion: 0
+      TileTrack: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 0
+      Y:
+        Active: 1
+        Value: 333
+      Rotation:
+        Active: 1
+        Value: 90
+      Width:
+        Active: 1
+        Value: 667
+      Height:
+        Active: 1
+        Value: 500
+      PivotY:
+        Active: 1
+        Value: 0
+      Speed:
+        Active: 1
+        Value: 1000
+    StaticConfigs_Track:
+    - UseConfig: 1
+      Motion: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      StageIndex:
+        Active: 1
+        Value: 0
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Angle:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Speed:
+        Active: 1
+        Value: 1000
+      HasTray:
+        Active: 1
+        Value: 0
+    - UseConfig: 1
+      Motion: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      StageIndex:
+        Active: 1
+        Value: 1
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Angle:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Speed:
+        Active: 1
+        Value: 1000
+      HasTray:
+        Active: 0
+        Value: 0
+    - UseConfig: 1
+      Motion: 0
+      ItemType:
+        Active: 1
+        Value: 0
+      StageIndex:
+        Active: 1
+        Value: 2
+      Time_Real:
+        Active: 1
+        Value: 0
+      Duration_Real:
+        Active: 1
+        Value: 1000
+      X:
+        Active: 1
+        Value: 500
+      Angle:
+        Active: 1
+        Value: 0
+      Width:
+        Active: 1
+        Value: 1000
+      Speed:
+        Active: 1
+        Value: 1000
+      HasTray:
+        Active: 0
+        Value: 0
+    StaticConfigs_Note: []

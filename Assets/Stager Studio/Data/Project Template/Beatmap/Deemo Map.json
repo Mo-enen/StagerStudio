@@ -1,0 +1,48 @@
+﻿{
+  "bpm": 120,
+  "level": 1,
+  "tag": "Normal",
+  "createdTime": 0,
+  "shift": 0,
+  "ratio": 1500,
+  "stages": [
+    {
+      "itemType": 0,
+      "time": 0,
+      "duration": 2147482752,
+      "x": 500,
+      "speed": 667,
+      "y": 0,
+      "width": 800,
+      "height": 1000,
+      "rotation": 0,
+      "pivotY": 0,
+      "color": 0,
+      "positions": [],
+      "rotations": [],
+      "colors": [],
+      "widths": [],
+      "heights": []
+    }
+  ],
+  "tracks": [
+    {
+      "itemType": 0,
+      "time": 0,
+      "duration": 2147482752,
+      "x": 500,
+      "speed": 1000,
+      "width": 1000,
+      "angle": 30,
+      "stageIndex": 0,
+      "color": 1,
+      "hasTray": false,
+      "xs": [],
+      "angles": [],
+      "colors": [],
+      "widths": []
+    }
+  ],
+  "notes": [],
+  "timings": []
+}

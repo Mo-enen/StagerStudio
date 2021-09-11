@@ -1,0 +1,2 @@
+﻿16-11-45, System,Start,Stager Version:0.1.3,DotNET Framework Versions:4.0.30319.42000,OS Version:Microsoft Windows NT 10.0.19042.0;
+20-28-02, System,Start,Stager Version:0.1.3,DotNET Framework Versions:4.0.30319.42000,OS Version:Microsoft Windows NT 10.0.19042.0;
